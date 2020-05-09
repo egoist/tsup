@@ -2,6 +2,7 @@
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
+import { handlError } from './errors'
 
 const cli = cac('tsup')
 
@@ -15,22 +16,43 @@ cli
   .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
     default: 'es2017',
   })
+  .option('--watch', 'Watch mode')
   .action(async (files: string[], options) => {
-    const { rollup } = await import('rollup')
+    const { rollup, watch } = await import('rollup')
     const { default: hashbangPlugin } = await import('rollup-plugin-hashbang')
     const { default: esbuildPlugin } = await import('rollup-plugin-esbuild')
+    const { default: commonjsPlugin } = await import('@rollup/plugin-commonjs')
+    const { resolvePlugin } = await import('./resolve-plugin')
 
-    const result = await rollup({
+    const inputOptions = {
       input: files,
       plugins: [
         hashbangPlugin(),
+        resolvePlugin(),
+        commonjsPlugin(),
         esbuildPlugin({ minify: options.minify, target: options.target }),
       ],
-    })
-    await result.write({
+    }
+    const outputOptions = {
       dir: options.outDir,
       format: options.format,
-    })
+    }
+    if (options.watch) {
+      const watcher = watch({
+        ...inputOptions,
+        output: outputOptions,
+      })
+      watcher.on('event', (event) => {
+        console.log(event)
+      })
+    } else {
+      try {
+        const result = await rollup(inputOptions)
+        await result.write(outputOptions)
+      } catch (error) {
+        handlError(error)
+      }
+    }
   })
 
 cli.help()
@@ -38,4 +60,8 @@ cli.help()
 const pkgPath = join(__dirname, '../package.json')
 cli.version(JSON.parse(readFileSync(pkgPath, 'utf8')).version)
 
-cli.parse()
+try {
+  cli.parse()
+} catch (error) {
+  handlError(error)
+}
