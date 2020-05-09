@@ -7,7 +7,10 @@ const cli = cac('tsup')
 
 cli
   .command('<...files>', 'Entry files')
-  .option('--format <format>', 'Bundle format')
+  .option('--out-dir', 'Output directory', { default: 'dist' })
+  .option('--format <format>', 'Bundle format, "cjs" or "iife"', {
+    default: 'cjs',
+  })
   .option('--minify', 'Minify bundle')
   .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
     default: 'es2017',
@@ -25,8 +28,8 @@ cli
       ],
     })
     await result.write({
-      dir: 'dist',
-      format: options.format || 'cjs',
+      dir: options.outDir,
+      format: options.format,
     })
   })
 
