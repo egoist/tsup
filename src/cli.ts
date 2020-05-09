@@ -1,34 +1,32 @@
 #!/usr/bin/env node
 import { readFileSync } from 'fs'
-import {join} from 'path'
+import { join } from 'path'
 import { cac } from 'cac'
 
 const cli = cac('tsup')
 
-cli.command('[file]', 'Bundle a speific file')
-.option('--format <format>', 'Bundle format')
-  .action(async (file: string, options) => {
-    const {rollup} = await import('rollup')
+cli
+  .command('<...files>', 'Entry files')
+  .option('--format <format>', 'Bundle format')
+  .option('--minify', 'Minify bundle')
+  .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
+    default: 'es2017',
+  })
+  .action(async (files: string[], options) => {
+    const { rollup } = await import('rollup')
+    const { default: hashbangPlugin } = await import('rollup-plugin-hashbang')
+    const { default: esbuildPlugin } = await import('rollup-plugin-esbuild')
 
-    return rollup({
-      input: file,
+    const result = await rollup({
+      input: files,
       plugins: [
-        require('rollup-plugin-hashbang')(),
-        require('rollup-plugin-babel')({
-          extensions: ['.js', '.jsx', '.ts', '.tsx'],
-          presets: [
-            [require.resolve('@babel/preset-env'), {
-              modules: false
-            }],
-            require.resolve('@babel/preset-typescript')
-          ]
-        })
-      ]
-    }).then(result => {
-      result.write({
-        dir: 'dist',
-        format: options.format || 'cjs'
-      })
+        hashbangPlugin(),
+        esbuildPlugin({ minify: options.minify, target: options.target }),
+      ],
+    })
+    await result.write({
+      dir: 'dist',
+      format: options.format || 'cjs',
     })
   })
 
