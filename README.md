@@ -2,6 +2,8 @@
 
 Rollup + ESBundle.
 
+This library is intentionally kept simple, if you want customizations please use Rollup directly.
+
 ## Install
 
 Install it locally in your project folder:
