@@ -16,6 +16,7 @@ cli
   .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
     default: 'es2017',
   })
+  .option('--bundle', 'Bundle node_modules')
   .option('--watch', 'Watch mode')
   .action(async (files: string[], options) => {
     const { rollup, watch } = await import('rollup')
@@ -28,7 +29,7 @@ cli
       input: files,
       plugins: [
         hashbangPlugin(),
-        resolvePlugin(),
+        resolvePlugin({ bundle: options.bundle }),
         commonjsPlugin(),
         esbuildPlugin({ minify: options.minify, target: options.target }),
       ],

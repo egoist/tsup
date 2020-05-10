@@ -15,7 +15,7 @@ const resolvePackage = (id: string, options: ResolveOpts): Promise<string> =>
 
 const PACKAGE_NAME_RE = /^[@a-z]/
 
-export const resolvePlugin = (): Plugin => {
+export const resolvePlugin = ({ bundle }: { bundle?: boolean }): Plugin => {
   return {
     name: 'resolve',
 
@@ -25,11 +25,14 @@ export const resolvePlugin = (): Plugin => {
         return false
       }
 
-      const cwd = importer && dirname(importer)
-      if (cwd && PACKAGE_NAME_RE.test(source)) {
-        const id = await resolvePackage(source, { basedir: cwd })
-        return id
+      if (bundle) {
+        const cwd = importer && dirname(importer)
+        if (cwd && PACKAGE_NAME_RE.test(source)) {
+          const id = await resolvePackage(source, { basedir: cwd })
+          return id
+        }
       }
+
       return null
     },
   }
