@@ -1259,10 +1259,10 @@ error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
-esbuild@^0.2.9:
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.2.10.tgz#28ad1d39a032ae4dfe78b5eb344ed5062e70a4c2"
-  integrity sha512-Drg5gA+NF+Dc1Qd2J/Jjvpmtv2PQqeyEjIP6ipY6bz1sUOHKK3/R+v7oitr7/M8rNrI9PrUYPSR5M6hb2edoog==
+esbuild@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.3.0.tgz#6b199504e51950e767eafef02a766c25f1a3318c"
+  integrity sha512-LUF/biKX687ywIf6zcecP2+UwHDy+O4oA5vRkU1ZFl4AqWeRi+/C87pYjfIWOjPi4KO0ZfO/q8gyTrJrpIhcxA==
 
 escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -3035,13 +3035,20 @@ rimraf@^3.0.0:
   dependencies:
     glob "^7.1.3"
 
-rollup-plugin-esbuild@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-esbuild/-/rollup-plugin-esbuild-1.3.1.tgz#f87c25bec618c940a44ecc95ce52f61eb544b494"
-  integrity sha512-wsb0fXwBsNThSzgdJuom7UtZD1hMoe+/K4YHNz+XGxp4I8SXW+bFEgUvpl6snnFOnee8p+ozxK3BDR1z/rmjRg==
+rollup-plugin-dts@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-dts/-/rollup-plugin-dts-1.4.2.tgz#eabe4cee9f85c0ad04c8c75ee9c8781d1cc0ed40"
+  integrity sha512-Ghd3+p9rczMcoJcJ6uq7eaVpiw150u+fB8oHnNY/CMD25RgKijltRdWVGUE6de6fdnec3iR76naQk7LVXp97gQ==
+  optionalDependencies:
+    "@babel/code-frame" "^7.8.3"
+
+rollup-plugin-esbuild@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-esbuild/-/rollup-plugin-esbuild-1.4.1.tgz#b388ebd4cda1198208d7746feea7656d485019b0"
+  integrity sha512-gTzKtVo/OiOOe6pwRFHQCyCtEeYxcxLmjpqMiT4TnwXtPdF8RNP9c5wh/NZPztQydcMdEe1W+TO7poXwbLQekw==
   dependencies:
     "@rollup/pluginutils" "^3.0.10"
-    esbuild "^0.2.9"
+    esbuild "^0.3.0"
 
 rollup-plugin-hashbang@^2.2.2:
   version "2.2.2"
@@ -3050,10 +3057,10 @@ rollup-plugin-hashbang@^2.2.2:
   dependencies:
     magic-string "^0.22.4"
 
-rollup@^2.8.2:
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.8.2.tgz#08427a8eb118e6e4ac8d80eba22774bc1d059c81"
-  integrity sha512-LRzMcB8V1M69pSvf6uCbR+W9OPCy5FuxcIwqioWg5RKidrrqKbzjJF9pEGXceaMVkbptNFZgIVJlUokCU0sfng==
+rollup@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.10.0.tgz#73332273fa177cd85c1042659dee6f103761be0d"
+  integrity sha512-7BmpEfUN9P6esJzWIn3DmR//90mW6YwYB1t3y48LpF8ITpYtL8s1kEirMKqUu44dVH/6a/rs0EuwYVL3FuRDoA==
   optionalDependencies:
     fsevents "~2.1.2"
 

@@ -9,7 +9,7 @@ const cli = cac('tsup')
 cli
   .command('<...files>', 'Entry files')
   .option('--out-dir', 'Output directory', { default: 'dist' })
-  .option('--format <format>', 'Bundle format, "cjs" or "iife"', {
+  .option('--format <format>', 'Bundle format, "cjs", "iife", "umd", "esm"', {
     default: 'cjs',
   })
   .option('--minify', 'Minify bundle')
@@ -17,39 +17,69 @@ cli
     default: 'es2017',
   })
   .option('--bundle', 'Bundle node_modules')
+  .option('--dts', 'Generate declaration file')
   .option('--watch', 'Watch mode')
+  .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
+    default: 'React.createElement',
+  })
+  .option('--jsxFragment <jsxFragment>', 'Name of JSX fragment function', {
+    default: 'React.Fragment',
+  })
   .action(async (files: string[], options) => {
     const { rollup, watch } = await import('rollup')
     const { default: hashbangPlugin } = await import('rollup-plugin-hashbang')
     const { default: esbuildPlugin } = await import('rollup-plugin-esbuild')
     const { default: commonjsPlugin } = await import('@rollup/plugin-commonjs')
     const { resolvePlugin } = await import('./resolve-plugin')
+    const { default: dtsPlugin } = await import('rollup-plugin-dts')
 
-    const inputOptions = {
-      input: files,
-      plugins: [
-        hashbangPlugin(),
-        resolvePlugin({ bundle: options.bundle }),
-        commonjsPlugin(),
-        esbuildPlugin({ minify: options.minify, target: options.target }),
-      ],
+    const getRollupConfig = ({ dts }: { dts?: boolean }) => {
+      return {
+        inputConfig: {
+          input: files,
+          plugins: [
+            hashbangPlugin(),
+            resolvePlugin({ bundle: options.bundle }),
+            commonjsPlugin(),
+            !dts &&
+              esbuildPlugin({
+                target: options.target,
+                watch: options.watch,
+                minify: options.minify,
+                jsxFactory: options.jsxFactory,
+                jsxFragment: options.jsxFragment,
+              }),
+            dts && dtsPlugin(),
+          ].filter(Boolean),
+        },
+        outputConfig: {
+          dir: options.outDir,
+          format: options.format,
+        },
+      }
     }
-    const outputOptions = {
-      dir: options.outDir,
-      format: options.format,
-    }
+    const rollupConfigs = [
+      getRollupConfig({}),
+      options.dts && getRollupConfig({ dts: true }),
+    ].filter(Boolean)
     if (options.watch) {
-      const watcher = watch({
-        ...inputOptions,
-        output: outputOptions,
-      })
+      const watcher = watch(
+        rollupConfigs.map((config) => ({
+          ...config.inputConfig,
+          output: config.outputConfig,
+        }))
+      )
       watcher.on('event', (event) => {
         console.log(event)
       })
     } else {
       try {
-        const result = await rollup(inputOptions)
-        await result.write(outputOptions)
+        await Promise.all(
+          rollupConfigs.map(async (config) => {
+            const result = await rollup(config.inputConfig)
+            await result.write(config.outputConfig)
+          })
+        )
       } catch (error) {
         handlError(error)
       }
