@@ -16,6 +16,9 @@ type Options = {
   jsxFragment?: string
   outDir: string
   format: ModuleFormat
+  define?: {
+    [k: string]: string
+  }
 }
 
 export async function createRollupConfigs(files: string[], options: Options) {
@@ -34,6 +37,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
               minify: options.minify,
               jsxFactory: options.jsxFactory,
               jsxFragment: options.jsxFragment,
+              define: options.define
             }),
           dts && dtsPlugin(),
         ].filter(Boolean),

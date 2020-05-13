@@ -7,8 +7,8 @@ import { handlError } from './errors'
 const cli = cac('tsup')
 
 cli
-  .command('<...files>', 'Entry files')
-  .option('--out-dir', 'Output directory', { default: 'dist' })
+  .command('<...files>', 'Bundle files')
+  .option('-d, --out-dir', 'Output directory', { default: 'dist' })
   .option('--format <format>', 'Bundle format, "cjs", "iife", "umd", "esm"', {
     default: 'cjs',
   })
@@ -19,6 +19,7 @@ cli
   .option('--bundle', 'Bundle node_modules')
   .option('--dts', 'Generate declaration file')
   .option('--watch', 'Watch mode')
+  .option('--define.* <value>', 'Define compile-time constants')
   .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
     default: 'React.createElement',
   })
@@ -38,6 +39,7 @@ cli
       dts: options.dts,
       bundle: options.bundle,
       outDir: options.outDir,
+      define: options.define,
     })
     if (options.watch) {
       const watcher = watch(
@@ -67,12 +69,14 @@ cli
   .command('run <file>', 'Bundle and execute a file', {
     allowUnknownOptions: true,
   })
-  .action(async (file: string) => {
+  .option('--define.* <value>', 'Define compile-time constants')
+  .action(async (file: string, options) => {
     const extraArgs = process.argv.slice(process.argv.indexOf(file) + 1)
     const { rollup } = await import('rollup')
     const { createRollupConfigs } = await import('./')
     const { runCode } = await import('./run')
     const [rollupConfig] = await createRollupConfigs([file], {
+      define: options.define,
       outDir: 'dist',
       format: 'cjs',
     })
