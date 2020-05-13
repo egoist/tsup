@@ -27,41 +27,18 @@ cli
   })
   .action(async (files: string[], options) => {
     const { rollup, watch } = await import('rollup')
-    const { default: hashbangPlugin } = await import('rollup-plugin-hashbang')
-    const { default: esbuildPlugin } = await import('rollup-plugin-esbuild')
-    const { default: commonjsPlugin } = await import('@rollup/plugin-commonjs')
-    const { resolvePlugin } = await import('./resolve-plugin')
-    const { default: dtsPlugin } = await import('rollup-plugin-dts')
-
-    const getRollupConfig = ({ dts }: { dts?: boolean }) => {
-      return {
-        inputConfig: {
-          input: files,
-          plugins: [
-            hashbangPlugin(),
-            resolvePlugin({ bundle: options.bundle }),
-            commonjsPlugin(),
-            !dts &&
-              esbuildPlugin({
-                target: options.target,
-                watch: options.watch,
-                minify: options.minify,
-                jsxFactory: options.jsxFactory,
-                jsxFragment: options.jsxFragment,
-              }),
-            dts && dtsPlugin(),
-          ].filter(Boolean),
-        },
-        outputConfig: {
-          dir: options.outDir,
-          format: options.format,
-        },
-      }
-    }
-    const rollupConfigs = [
-      getRollupConfig({}),
-      options.dts && getRollupConfig({ dts: true }),
-    ].filter(Boolean)
+    const { createRollupConfigs } = await import('./')
+    const rollupConfigs = await createRollupConfigs(files, {
+      watch: options.watch,
+      minify: options.minify,
+      jsxFragment: options.jsxFragment,
+      jsxFactory: options.jsxFactory,
+      format: options.format,
+      target: options.target,
+      dts: options.dts,
+      bundle: options.bundle,
+      outDir: options.outDir,
+    })
     if (options.watch) {
       const watcher = watch(
         rollupConfigs.map((config) => ({
@@ -84,6 +61,26 @@ cli
         handlError(error)
       }
     }
+  })
+
+cli
+  .command('run <file>', 'Bundle and execute a file', {
+    allowUnknownOptions: true,
+  })
+  .action(async (file: string) => {
+    const extraArgs = process.argv.slice(process.argv.indexOf(file) + 1)
+    const { rollup } = await import('rollup')
+    const { createRollupConfigs } = await import('./')
+    const { runCode } = await import('./run')
+    const [rollupConfig] = await createRollupConfigs([file], {
+      outDir: 'dist',
+      format: 'cjs',
+    })
+    const bundle = await rollup(rollupConfig.inputConfig)
+    const { output } = await bundle.write(rollupConfig.outputConfig)
+    runCode(join('dist', output[0].fileName), {
+      args: extraArgs,
+    })
   })
 
 cli.help()

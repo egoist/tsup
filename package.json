@@ -9,7 +9,7 @@
   "author": "EGOIST",
   "license": "MIT",
   "scripts": {
-    "build:esbuild": "rm -rf dist && esbuild src/cli.ts --platform=node --outdir=dist --format=cjs --target=es2018 --external:rollup --external:rollup-plugin-esbuild --external:typescript --bundle && chmod +x dist/cli.js",
+    "build": "rm -rf dist && esbuild src/cli.ts --platform=node --outdir=dist --format=cjs --target=es2018 --external:rollup --external:rollup-plugin-esbuild --external:typescript --bundle && chmod +x dist/cli.js",
     "prepublishOnly": "npm run build",
     "test": "npm run build && jest"
   },
