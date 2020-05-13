@@ -49,8 +49,12 @@ export async function createRollupConfigs(files: string[], options: Options) {
         plugins: [
           hashbangPlugin(),
           jsonPlugin(),
-          resolvePlugin({ bundle: options.bundle, external: options.external }),
-          commonjsPlugin({
+          resolvePlugin({
+            bundle: options.bundle,
+            external: options.external,
+            dts,
+          }),
+          !dts && commonjsPlugin({
             namedExports: {
               // commonjs plugin failed to detect named exports for `resolve`, TODO: report this bug
               resolve: Object.keys(require('resolve')),

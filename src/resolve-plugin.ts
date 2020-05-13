@@ -11,11 +11,16 @@ const joycon = new JoyCon()
 export const resolvePlugin = ({
   bundle,
   external,
+  dts,
 }: {
   bundle?: boolean
   external?: string[]
+  dts?: boolean
 }): Plugin => {
-  const nodeResolve = nodeResolvePlugin()
+  const nodeResolve = nodeResolvePlugin({
+    mainFields: dts ? ['types'] : ['module', 'main'],
+    extensions: dts ? ['.d.ts'] : ['.mjs', '.js', '.json', '.node'],
+  })
 
   return {
     ...nodeResolve,
