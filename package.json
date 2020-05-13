@@ -9,17 +9,19 @@
   "author": "EGOIST",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf dist && esbuild src/cli.ts --platform=node --outdir=dist --format=cjs --target=es2018 --external:rollup --external:rollup-plugin-esbuild --external:typescript --bundle && chmod +x dist/cli.js",
+    "build": "rm -rf dist && esbuild src/cli.ts --platform=node --outdir=dist --format=cjs --target=es2018 --external:rollup --external:rollup-plugin-esbuild --external:joycon --external:typescript --bundle && chmod +x dist/cli.js",
     "prepublishOnly": "npm run build",
     "test": "npm run build && jest"
   },
   "dependencies": {
+    "joycon": "^2.2.5",
     "rollup": "^2.10.0",
     "rollup-plugin-esbuild": "^1.4.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.1.0",
-    "rollup-plugin-dts": "^1.4.2",
+    "@rollup/plugin-json": "^4.0.3",
+    "@rollup/plugin-node-resolve": "^7.1.3",
     "@types/fs-extra": "^8.1.0",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.9.2",
@@ -31,8 +33,9 @@
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
     "resolve": "^1.17.0",
+    "rollup-plugin-dts": "^1.4.2",
     "rollup-plugin-hashbang": "^2.2.2",
     "ts-jest": "^25.5.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.2"
   }
 }

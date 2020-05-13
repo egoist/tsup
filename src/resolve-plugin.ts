@@ -1,23 +1,24 @@
-import {builtinModules} from 'module'
+import { builtinModules } from 'module'
 import { dirname } from 'path'
 import { Plugin } from 'rollup'
-import r, { Opts as ResolveOpts } from 'resolve'
-
-const resolvePackage = (id: string, options: ResolveOpts): Promise<string> =>
-  new Promise((resolve, reject) => {
-    r(id, options, (err, result) => {
-      if (err) {
-        return reject(err)
-      }
-      resolve(result)
-    })
-  })
+import JoyCon from 'joycon'
+import nodeResolvePlugin from '@rollup/plugin-node-resolve'
 
 const PACKAGE_NAME_RE = /^[@a-z]/
 
-export const resolvePlugin = ({ bundle }: { bundle?: boolean }): Plugin => {
+const joycon = new JoyCon()
+
+export const resolvePlugin = ({
+  bundle,
+  external,
+}: {
+  bundle?: boolean
+  external?: string[]
+}): Plugin => {
+  const nodeResolve = nodeResolvePlugin()
+
   return {
-    name: 'resolve',
+    ...nodeResolve,
 
     async resolveId(source, importer) {
       // Always exclude builtin modules
@@ -28,8 +29,25 @@ export const resolvePlugin = ({ bundle }: { bundle?: boolean }): Plugin => {
       if (bundle) {
         const cwd = importer && dirname(importer)
         if (cwd && PACKAGE_NAME_RE.test(source)) {
-          const id = await resolvePackage(source, { basedir: cwd })
-          return id
+          // Exclude specified packages
+          if (external && external.includes(source)) {
+            return false
+          }
+
+          // Exclude "dependencies" in package.json
+          const pkg = joycon.loadSync(['package.json'], process.cwd())
+
+          const deps = Object.keys((pkg.data && pkg.data.dependencies) || {})
+
+          if (deps.includes(source)) {
+            return false
+          }
+        }
+
+        const result = await nodeResolve.resolveId!.call(this, source, importer)
+
+        if (result !== null) {
+          return result
         }
       }
 

@@ -20,6 +20,7 @@ cli
   .option('--dts', 'Generate declaration file')
   .option('--watch', 'Watch mode')
   .option('--define.* <value>', 'Define compile-time constants')
+  .option('--external <name>', 'Mark specific packages as external (use with --bundle)')
   .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
     default: 'React.createElement',
   })
@@ -40,6 +41,7 @@ cli
       bundle: options.bundle,
       outDir: options.outDir,
       define: options.define,
+      external: options.external,
     })
     if (options.watch) {
       const watcher = watch(
@@ -53,12 +55,16 @@ cli
       })
     } else {
       try {
+        const startTime = Date.now()
+
         await Promise.all(
           rollupConfigs.map(async (config) => {
             const result = await rollup(config.inputConfig)
             await result.write(config.outputConfig)
           })
         )
+        const endTime = Date.now()
+        console.log(`Done in ${endTime - startTime}ms`)
       } catch (error) {
         handlError(error)
       }
