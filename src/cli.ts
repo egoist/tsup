@@ -85,6 +85,7 @@ cli
       define: options.define,
       outDir: 'dist',
       format: 'cjs',
+      target: 'es2017'
     })
     const bundle = await rollup(rollupConfig.inputConfig)
     const { output } = await bundle.write(rollupConfig.outputConfig)
