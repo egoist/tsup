@@ -18,9 +18,27 @@ You can also install it globally but it's not recommended.
 
 ## Usage
 
+### Bundle files
+
 ```bash
 tsup [...files]
 ```
+
+### Bundle files and node modules
+
+```bash
+tsup [...files] --bundle
+```
+
+When you're bundling a lot files, this can be 10x~200x slower than ESBuild.
+
+### Run a program
+
+```bash
+tsup run main.ts
+```
+
+---
 
 For more details:
 
