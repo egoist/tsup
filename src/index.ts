@@ -1,10 +1,13 @@
 import { ModuleFormat, InputOptions, OutputOptions } from 'rollup'
 import { Target as EsbuildTarget } from 'esbuild'
+import prettyBytes from 'pretty-bytes'
+import colors from 'colorette'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import esbuildPlugin from 'rollup-plugin-esbuild'
 import commonjsPlugin from '@rollup/plugin-commonjs'
 import jsonPlugin from '@rollup/plugin-json'
 import dtsPlugin from 'rollup-plugin-dts'
+import { sizePlugin, caches } from './size-plugin'
 import { resolvePlugin } from './resolve-plugin'
 
 type Options = {
@@ -50,8 +53,8 @@ export async function createRollupConfigs(files: string[], options: Options) {
           commonjsPlugin({
             namedExports: {
               // commonjs plugin failed to detect named exports for `resolve`, TODO: report this bug
-              resolve: Object.keys(require('resolve'))
-            }
+              resolve: Object.keys(require('resolve')),
+            },
           }),
           dts && dtsPlugin(),
           !dts &&
@@ -63,6 +66,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
               jsxFragment: options.jsxFragment,
               define: options.define,
             }),
+          sizePlugin(),
         ].filter(Boolean),
       },
       outputConfig: {
@@ -78,4 +82,23 @@ export async function createRollupConfigs(files: string[], options: Options) {
   }
 
   return rollupConfigs
+}
+
+export function printSizes() {
+  const result: Map<string, number> = new Map()
+  for (const cache of caches.values()) {
+    for (const [filename, getSize] of cache.entries()) {
+      result.set(filename, getSize())
+    }
+  }
+  const maxNameLength = [...result.keys()].sort((a, b) =>
+    a.length > b.length ? -1 : 1
+  )[0].length
+  for (const [filename, size] of result.entries()) {
+    console.log(
+      `${colors.bold(filename.padEnd(maxNameLength))} - ${colors.green(
+        prettyBytes(size)
+      )}`
+    )
+  }
 }

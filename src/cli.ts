@@ -8,7 +8,7 @@ const cli = cac('tsup')
 
 cli
   .command('<...files>', 'Bundle files')
-  .option('-d, --out-dir', 'Output directory', { default: 'dist' })
+  .option('-d, --out-dir <dir>', 'Output directory', { default: 'dist' })
   .option('--format <format>', 'Bundle format, "cjs", "iife", "umd", "esm"', {
     default: 'cjs',
   })
@@ -29,7 +29,7 @@ cli
   })
   .action(async (files: string[], options) => {
     const { rollup, watch } = await import('rollup')
-    const { createRollupConfigs } = await import('./')
+    const { createRollupConfigs, printSizes } = await import('./')
     const rollupConfigs = await createRollupConfigs(files, {
       watch: options.watch,
       minify: options.minify,
@@ -63,6 +63,7 @@ cli
             await result.write(config.outputConfig)
           })
         )
+        printSizes()
         const endTime = Date.now()
         console.log(`Done in ${endTime - startTime}ms`)
       } catch (error) {
