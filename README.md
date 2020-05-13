@@ -40,6 +40,8 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`.
 tsup [...files] --bundle
 ```
 
+`dependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark specific package as external.
+
 When you're bundling a lot files, this can be 10x~200x slower than ESBuild.
 
 ### Run a program
