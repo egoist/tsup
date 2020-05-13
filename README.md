@@ -24,6 +24,16 @@ You can also install it globally but it's not recommended.
 tsup [...files]
 ```
 
+Files are written into `./dist`.
+
+### Generate declaration file
+
+```bash
+tsup index.ts --dts
+```
+
+This will emit `./dist/index.js` and `./dist/index.d.ts`.
+
 ### Bundle files and node modules
 
 ```bash
