@@ -18,8 +18,13 @@ export const resolvePlugin = ({
   dts?: boolean
 }): Plugin => {
   const nodeResolve = nodeResolvePlugin({
-    mainFields: dts ? ['types'] : ['module', 'main'],
+    mainFields: dts ? ['types', 'typings'] : ['module', 'main'],
     extensions: dts ? ['.d.ts'] : ['.mjs', '.js', '.json', '.node'],
+    customResolveOptions: {
+      moduleDirectory: dts
+        ? ['node_modules/@types', 'node_modules']
+        : 'node_modules',
+    },
   })
 
   return {
