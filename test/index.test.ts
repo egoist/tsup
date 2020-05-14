@@ -25,9 +25,11 @@ function runTest(title: string, files: { [name: string]: string }) {
     expect(output).toMatchInlineSnapshot(`
       "'use strict';
 
+      Object.defineProperty(exports, '__esModule', { value: true });
+
       var foo2 = \\"foo\\";
 
-      module.exports = foo2;
+      exports.default = foo2;
       "
     `)
   })
