@@ -20,6 +20,7 @@ type Options = {
   jsxFragment?: string
   outDir: string
   format: ModuleFormat
+  moduleName?: string
   define?: {
     [k: string]: string
   }
@@ -76,7 +77,8 @@ export async function createRollupConfigs(files: string[], options: Options) {
       outputConfig: {
         dir: options.outDir,
         format: options.format,
-        exports: 'named'
+        exports: 'named',
+        name: options.moduleName
       },
     }
   }

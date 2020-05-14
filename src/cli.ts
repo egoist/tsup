@@ -21,6 +21,7 @@ cli
   .option('--watch', 'Watch mode')
   .option('--define.* <value>', 'Define compile-time constants')
   .option('--external <name>', 'Mark specific packages as external (use with --bundle)')
+  .option('--module-name <name>', 'Module name (with with --format umd)')
   .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
     default: 'React.createElement',
   })
@@ -42,6 +43,7 @@ cli
       outDir: options.outDir,
       define: options.define,
       external: options.external,
+      moduleName: options.moduleName
     })
     if (options.watch) {
       const watcher = watch(
