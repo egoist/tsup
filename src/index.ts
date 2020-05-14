@@ -76,6 +76,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
       outputConfig: {
         dir: options.outDir,
         format: options.format,
+        exports: 'named'
       },
     }
   }
