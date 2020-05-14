@@ -3544,10 +3544,10 @@ ts-jest@^25.5.1:
     semver "6.x"
     yargs-parser "18.x"
 
-tsup@^1.4.3:
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/tsup/-/tsup-1.4.3.tgz#b264ee26ee3e52163f2d393631225f58f26151a2"
-  integrity sha512-WRSpX1KDa/aM0SxjQXSaiMYA4WvaQeof5sXmrSbwQlntWl+BDoieDzghAXsTDauJfaYVNQqGh5gig11PblQAQQ==
+tsup@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/tsup/-/tsup-1.4.4.tgz#014d34eafa58b418224c38ce1773e1e96c6a9cfc"
+  integrity sha512-x9AKi9iHgflC4IOGSnbyze9a8WF9ef6vxFJWhSp7ZACxtLdubautGxNLuXxEBZOtnFvXm0X0yZjVelKeqqLJ4A==
   dependencies:
     joycon "^2.2.5"
     rollup "^2.10.0"
