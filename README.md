@@ -10,6 +10,10 @@ This library is intentionally kept simple, if you want customizations please use
 
 Because esbuild isn't mature enough, here we use Rollup to bundle `.d.ts` files, add code splitting support, import non-js assets etc. tsup uses esbuild to compile TypeScript/ESNext code to ES2015.
 
+## What can it bundle?
+
+Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. Plus `.ts`, `.vue` (soon), `.css` (soon).
+
 ## Install
 
 Install it locally in your project folder:
