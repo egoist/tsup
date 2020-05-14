@@ -1290,9 +1290,9 @@ error-ex@^1.3.1:
     is-arrayish "^0.2.1"
 
 esbuild@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.3.0.tgz#6b199504e51950e767eafef02a766c25f1a3318c"
-  integrity sha512-LUF/biKX687ywIf6zcecP2+UwHDy+O4oA5vRkU1ZFl4AqWeRi+/C87pYjfIWOjPi4KO0ZfO/q8gyTrJrpIhcxA==
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.3.2.tgz#3f6bdfbf51b2e776bb57952691930097b3770705"
+  integrity sha512-sm5o2D/nHhXSrs2D4UySNeyjSxJlgxQ6Ze2Cy6OOIJqbuDd/u6sMtiSn243bAEiyyYzlazueeryrrWJJCkv8lA==
 
 escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -3549,10 +3549,10 @@ ts-jest@^25.5.1:
     semver "6.x"
     yargs-parser "18.x"
 
-tsup@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/tsup/-/tsup-1.4.1.tgz#ca03916748f54fb66870887406ca8a3c4177870f"
-  integrity sha512-WY6vYr++ddTYk9RDUDCHtDnrbfTm/WLI9RmlBoqd3mp3c2702xZIsp031QCNOyH1VPLM+OTTryBNcEWVTKengA==
+tsup@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/tsup/-/tsup-1.4.3.tgz#b264ee26ee3e52163f2d393631225f58f26151a2"
+  integrity sha512-WRSpX1KDa/aM0SxjQXSaiMYA4WvaQeof5sXmrSbwQlntWl+BDoieDzghAXsTDauJfaYVNQqGh5gig11PblQAQQ==
   dependencies:
     joycon "^2.2.5"
     rollup "^2.10.0"

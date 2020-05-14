@@ -38,7 +38,7 @@
     "rollup-plugin-dts": "^1.4.2",
     "rollup-plugin-hashbang": "^2.2.2",
     "ts-jest": "^25.5.1",
-    "tsup": "^1.4.1",
+    "tsup": "^1.4.3",
     "typescript": "^3.9.2"
   }
 }
