@@ -3080,10 +3080,10 @@ rimraf@^3.0.0:
   dependencies:
     glob "^7.1.3"
 
-rollup-plugin-dts@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-dts/-/rollup-plugin-dts-1.4.2.tgz#eabe4cee9f85c0ad04c8c75ee9c8781d1cc0ed40"
-  integrity sha512-Ghd3+p9rczMcoJcJ6uq7eaVpiw150u+fB8oHnNY/CMD25RgKijltRdWVGUE6de6fdnec3iR76naQk7LVXp97gQ==
+rollup-plugin-dts@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-dts/-/rollup-plugin-dts-1.4.3.tgz#debd56abd4c08bcaa619268927e13ad643a82bb5"
+  integrity sha512-/zs3KkyN7xEC3RJMrfcY0z1Hvn3TIuen4pjOh9ASAWMcoXsMNVnZZIO75izE8VyWopSJrNz3Rm4EXF2gjqvt5A==
   optionalDependencies:
     "@babel/code-frame" "^7.8.3"
 
