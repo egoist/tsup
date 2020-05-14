@@ -4,6 +4,12 @@ Rollup + ESBundle.
 
 This library is intentionally kept simple, if you want customizations please use Rollup directly.
 
+## Why Rollup?
+
+> Rollup is at least an order of magnitude slower than ESBuild, why not use ESBuild directly?
+
+Because ESBuild isn't mature enough, here we use Rollup to bundle `.d.ts` files, add code splitting support, import non-js assets etc. 
+
 ## Install
 
 Install it locally in your project folder:
