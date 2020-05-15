@@ -10,6 +10,7 @@ import dtsPlugin from 'rollup-plugin-dts'
 import { sizePlugin, caches } from './size-plugin'
 import { resolvePlugin } from './resolve-plugin'
 import { isExternal } from './utils'
+import { restoreRequirePlugin } from './restore-require-plugin'
 
 type Options = {
   bundle?: boolean
@@ -51,6 +52,16 @@ export async function createRollupConfigs(files: string[], options: Options) {
         plugins: [
           hashbangPlugin(),
           jsonPlugin(),
+          !dts && restoreRequirePlugin(),
+          !dts &&
+          esbuildPlugin({
+            target: options.target,
+            watch: options.watch,
+            minify: options.minify,
+            jsxFactory: options.jsxFactory,
+            jsxFragment: options.jsxFragment,
+            define: options.define,
+          }),
           resolvePlugin({
             bundle: options.bundle,
             external: options.external,
@@ -71,15 +82,6 @@ export async function createRollupConfigs(files: string[], options: Options) {
               },
             }),
           dts && dtsPlugin(),
-          !dts &&
-            esbuildPlugin({
-              target: options.target,
-              watch: options.watch,
-              minify: options.minify,
-              jsxFactory: options.jsxFactory,
-              jsxFragment: options.jsxFragment,
-              define: options.define,
-            }),
           sizePlugin(),
         ].filter(Boolean),
       },
