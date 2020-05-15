@@ -28,6 +28,7 @@ type Options = {
   }
   /** Don't bundle these packages */
   external?: string[]
+  inlineDynamicImports?: boolean
 }
 
 export async function createRollupConfigs(files: string[], options: Options) {
@@ -40,6 +41,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
       inputConfig: {
         input: files,
         preserveEntrySignatures: 'strict',
+        inlineDynamicImports: options.inlineDynamicImports,
         onwarn(warning, handler) {
           if (
             warning.code === 'UNRESOLVED_IMPORT' ||

@@ -28,6 +28,7 @@ cli
   .option('--jsxFragment <jsxFragment>', 'Name of JSX fragment function', {
     default: 'React.Fragment',
   })
+  .option('--inlineDynamicImports', 'Create a single bundle that inlines dynamic imports')
   .action(async (files: string[], options) => {
     const { rollup, watch } = await import('rollup')
     const { createRollupConfigs, printSizes } = await import('./')
@@ -43,7 +44,8 @@ cli
       outDir: options.outDir,
       define: options.define,
       external: options.external,
-      moduleName: options.moduleName
+      moduleName: options.moduleName,
+      inlineDynamicImports: options.inlineDynamicImports
     })
     if (options.watch) {
       const watcher = watch(
