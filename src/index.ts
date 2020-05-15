@@ -9,6 +9,7 @@ import jsonPlugin from '@rollup/plugin-json'
 import dtsPlugin from 'rollup-plugin-dts'
 import { sizePlugin, caches } from './size-plugin'
 import { resolvePlugin } from './resolve-plugin'
+import { isExternal } from './utils'
 
 type Options = {
   bundle?: boolean
@@ -55,12 +56,20 @@ export async function createRollupConfigs(files: string[], options: Options) {
             external: options.external,
             dts,
           }),
-          !dts && commonjsPlugin({
-            namedExports: {
-              // commonjs plugin failed to detect named exports for `resolve`, TODO: report this bug
-              resolve: Object.keys(require('resolve')),
-            },
-          }),
+          !dts &&
+            commonjsPlugin({
+              namedExports: {
+                // commonjs plugin failed to detect named exports for `resolve`, TODO: report this bug
+                resolve: Object.keys(require('resolve')),
+              },
+              // @ts-ignore wrong typing in @rollup/plugin-commonjs
+              ignore:(name: string) => {
+                if (!options.external) {
+                  return false
+                }
+                return isExternal(options.external, name)
+              },
+            }),
           dts && dtsPlugin(),
           !dts &&
             esbuildPlugin({
@@ -78,7 +87,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
         dir: options.outDir,
         format: options.format,
         exports: 'named',
-        name: options.moduleName
+        name: options.moduleName,
       },
     }
   }

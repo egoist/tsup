@@ -3,6 +3,7 @@ import { dirname } from 'path'
 import { Plugin } from 'rollup'
 import JoyCon from 'joycon'
 import nodeResolvePlugin from '@rollup/plugin-node-resolve'
+import { isExternal } from './utils'
 
 const PACKAGE_NAME_RE = /^[@a-z]/
 
@@ -40,7 +41,7 @@ export const resolvePlugin = ({
         const cwd = importer && dirname(importer)
         if (cwd && PACKAGE_NAME_RE.test(source)) {
           // Exclude specified packages
-          if (external && external.includes(source)) {
+          if (external && isExternal(external, source, importer)) {
             return false
           }
 
