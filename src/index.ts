@@ -34,8 +34,9 @@ export async function createRollupConfigs(files: string[], options: Options) {
     dts,
   }: {
     dts?: boolean
-  }): Promise<{ inputConfig: InputOptions; outputConfig: OutputOptions }> => {
+  }): Promise<{ name: string, inputConfig: InputOptions; outputConfig: OutputOptions }> => {
     return {
+      name: `dts: ${dts}, bundle: ${options.bundle}`,
       inputConfig: {
         input: files,
         preserveEntrySignatures: 'strict',
@@ -70,7 +71,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
             commonjsPlugin({
               namedExports: {
                 // commonjs plugin failed to detect named exports for `resolve`, TODO: report this bug
-                resolve: Object.keys(await import('resolve')),
+                resolve: ['sync', 'isCore', 'default']
               },
               // @ts-ignore wrong typing in @rollup/plugin-commonjs
               ignore: (name: string) => {
