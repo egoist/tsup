@@ -72,7 +72,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
             commonjsPlugin({
               namedExports: {
                 // commonjs plugin failed to detect named exports for `resolve`, TODO: report this bug
-                resolve: Object.keys(require('resolve')),
+                resolve: Object.keys(await import('resolve')),
               },
               // @ts-ignore wrong typing in @rollup/plugin-commonjs
               ignore: (name: string) => {
