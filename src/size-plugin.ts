@@ -1,3 +1,4 @@
+import { join, relative } from 'path'
 import { Plugin } from 'rollup'
 
 type Cache = Map<string, () => number>
@@ -20,7 +21,10 @@ export const sizePlugin = (): Plugin => {
         for (const key of Object.keys(bundle)) {
           const file = bundle[key]
           if (file.type === 'chunk') {
-            cache.set(file.fileName, () => file.code.length)
+            cache.set(
+              relative(process.cwd(), join(options.dir || '', file.fileName)),
+              () => file.code.length
+            )
           }
         }
       }
