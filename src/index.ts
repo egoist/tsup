@@ -6,7 +6,6 @@ import hashbangPlugin from 'rollup-plugin-hashbang'
 import esbuildPlugin from 'rollup-plugin-esbuild'
 import commonjsPlugin from '@rollup/plugin-commonjs'
 import jsonPlugin from '@rollup/plugin-json'
-import dtsPlugin from 'rollup-plugin-dts'
 import { sizePlugin, caches } from './size-plugin'
 import { resolvePlugin } from './resolve-plugin'
 import { isExternal } from './utils'
@@ -32,11 +31,11 @@ type Options = {
 }
 
 export async function createRollupConfigs(files: string[], options: Options) {
-  const getRollupConfig = ({
+  const getRollupConfig = async ({
     dts,
   }: {
     dts?: boolean
-  }): { inputConfig: InputOptions; outputConfig: OutputOptions } => {
+  }): Promise<{ inputConfig: InputOptions; outputConfig: OutputOptions }> => {
     return {
       inputConfig: {
         input: files,
@@ -56,14 +55,14 @@ export async function createRollupConfigs(files: string[], options: Options) {
           jsonPlugin(),
           !dts && restoreRequirePlugin(),
           !dts &&
-          esbuildPlugin({
-            target: options.target,
-            watch: options.watch,
-            minify: options.minify,
-            jsxFactory: options.jsxFactory,
-            jsxFragment: options.jsxFragment,
-            define: options.define,
-          }),
+            esbuildPlugin({
+              target: options.target,
+              watch: options.watch,
+              minify: options.minify,
+              jsxFactory: options.jsxFactory,
+              jsxFragment: options.jsxFragment,
+              define: options.define,
+            }),
           resolvePlugin({
             bundle: options.bundle,
             external: options.external,
@@ -76,14 +75,15 @@ export async function createRollupConfigs(files: string[], options: Options) {
                 resolve: Object.keys(require('resolve')),
               },
               // @ts-ignore wrong typing in @rollup/plugin-commonjs
-              ignore:(name: string) => {
+              ignore: (name: string) => {
                 if (!options.external) {
                   return false
                 }
                 return isExternal(options.external, name)
               },
             }),
-          dts && dtsPlugin(),
+          dts &&
+            (await import('rollup-plugin-dts').then((res) => res.default())),
           sizePlugin(),
         ].filter(Boolean),
       },
@@ -95,10 +95,10 @@ export async function createRollupConfigs(files: string[], options: Options) {
       },
     }
   }
-  const rollupConfigs = [getRollupConfig({})]
+  const rollupConfigs = [await getRollupConfig({})]
 
   if (options.dts) {
-    rollupConfigs.push(getRollupConfig({ dts: true }))
+    rollupConfigs.push(await getRollupConfig({ dts: true }))
   }
 
   return rollupConfigs
