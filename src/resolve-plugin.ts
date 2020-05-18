@@ -12,17 +12,17 @@ const joycon = new JoyCon()
 export const resolvePlugin = ({
   bundle,
   external,
-  dts,
+  dtsBundle,
 }: {
   bundle?: boolean
   external?: string[]
-  dts?: boolean
+  dtsBundle?: boolean
 }): Plugin => {
   const nodeResolve = nodeResolvePlugin({
-    mainFields: dts ? ['types', 'typings'] : ['module', 'main'],
-    extensions: dts ? ['.d.ts'] : ['.mjs', '.js', '.json', '.node'],
+    mainFields: dtsBundle ? ['types', 'typings'] : ['module', 'main'],
+    extensions: dtsBundle ? ['.d.ts'] : ['.mjs', '.js', '.json', '.node'],
     customResolveOptions: {
-      moduleDirectory: dts
+      moduleDirectory: dtsBundle
         ? ['node_modules/@types', 'node_modules']
         : 'node_modules',
     },

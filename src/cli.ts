@@ -18,9 +18,13 @@ cli
   })
   .option('--bundle', 'Bundle node_modules')
   .option('--dts', 'Generate declaration file')
+  .option('--dts-bundle', 'Bundle types from node_modules')
   .option('--watch', 'Watch mode')
   .option('--define.* <value>', 'Define compile-time constants')
-  .option('--external <name>', 'Mark specific packages as external (use with --bundle)')
+  .option(
+    '--external <name>',
+    'Mark specific packages as external (use with --bundle)'
+  )
   .option('--module-name <name>', 'Module name (with with --format umd)')
   .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
     default: 'React.createElement',
@@ -28,25 +32,14 @@ cli
   .option('--jsxFragment <jsxFragment>', 'Name of JSX fragment function', {
     default: 'React.Fragment',
   })
-  .option('--inlineDynamicImports', 'Create a single bundle that inlines dynamic imports')
+  .option(
+    '--inlineDynamicImports',
+    'Create a single bundle that inlines dynamic imports'
+  )
   .action(async (files: string[], options) => {
     const { rollup, watch } = await import('rollup')
     const { createRollupConfigs, printSizes } = await import('./')
-    const rollupConfigs = await createRollupConfigs(files, {
-      watch: options.watch,
-      minify: options.minify,
-      jsxFragment: options.jsxFragment,
-      jsxFactory: options.jsxFactory,
-      format: options.format,
-      target: options.target,
-      dts: options.dts,
-      bundle: options.bundle,
-      outDir: options.outDir,
-      define: options.define,
-      external: options.external,
-      moduleName: options.moduleName,
-      inlineDynamicImports: options.inlineDynamicImports
-    })
+    const rollupConfigs = await createRollupConfigs(files, options)
     if (options.watch) {
       const watcher = watch(
         rollupConfigs.map((config) => ({
@@ -90,7 +83,7 @@ cli
       define: options.define,
       outDir: 'dist',
       format: 'cjs',
-      target: 'es2017'
+      target: 'es2017',
     })
     const bundle = await rollup(rollupConfig.inputConfig)
     const { output } = await bundle.write(rollupConfig.outputConfig)

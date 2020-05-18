@@ -11,8 +11,12 @@ import { resolvePlugin } from './resolve-plugin'
 import { isExternal } from './utils'
 
 type Options = {
+  // Bundle packages in node_modules
   bundle?: boolean
+  // Generate .d.ts file
   dts?: boolean
+  // Bundle .d.ts files in node_modules
+  dtsBundle?: boolean
   target?: EsbuildTarget
   watch?: boolean
   minify?: boolean
@@ -69,7 +73,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
           resolvePlugin({
             bundle: options.bundle,
             external: options.external,
-            dts,
+            dtsBundle: options.dtsBundle,
           }),
           !dts &&
             commonjsPlugin({
