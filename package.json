@@ -17,8 +17,8 @@
   "dependencies": {
     "joycon": "^2.2.5",
     "rollup": "^2.10.0",
-    "rollup-plugin-esbuild": "^1.4.1",
-    "rollup-plugin-dts": "^1.4.6"
+    "rollup-plugin-dts": "^1.4.6",
+    "rollup-plugin-esbuild": "^1.4.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.1.0",

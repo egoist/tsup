@@ -7,9 +7,14 @@ const bin = join(__dirname, '../dist/cli.js')
 
 beforeAll(async () => {
   await fs.remove(cacheDir)
+  await execa('yarn', { cwd: __dirname })
 })
 
-function runTest(title: string, files: { [name: string]: string }) {
+function runTest(
+  title: string,
+  files: { [name: string]: string },
+  options: { flags?: string[]; snapshot?: boolean } = {}
+) {
   const testDir = join(cacheDir, title)
   test(title, async () => {
     await Promise.all(
@@ -17,25 +22,33 @@ function runTest(title: string, files: { [name: string]: string }) {
         return fs.outputFile(join(testDir, name), files[name], 'utf8')
       })
     )
-    const { exitCode } = await execa(bin, ['input.js'], {
-      cwd: testDir,
-    })
+    const { exitCode } = await execa(
+      bin,
+      ['input.ts', ...(options.flags || [])],
+      {
+        cwd: testDir,
+      }
+    )
     expect(exitCode).toBe(0)
-    const output = await fs.readFile(join(testDir, 'dist/input.js'), 'utf8')
-    expect(output).toMatchInlineSnapshot(`
-      "'use strict';
-
-      Object.defineProperty(exports, '__esModule', { value: true });
-
-      var foo2 = \\"foo\\";
-
-      exports.default = foo2;
-      "
-    `)
+    if (options.snapshot !== false) {
+      const output = await fs.readFile(join(testDir, 'dist/input.js'), 'utf8')
+      expect(output).toMatchSnapshot()
+    }
   })
 }
 
 runTest('simple', {
-  'input.js': `import foo from './foo';export default foo`,
+  'input.ts': `import foo from './foo';export default foo`,
   'foo.js': `export default 'foo'`,
 })
+
+runTest(
+  'bundle graphql-tools',
+  {
+    'input.ts': `export { makeExecutableSchema, SchemaDirectiveVisitor } from 'graphql-tools'`,
+  },
+  {
+    flags: ['--bundle'],
+    snapshot: false,
+  }
+)

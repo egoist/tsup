@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "devDependencies": {
+    "graphql-tools": "^5.0.0"
+  }
+}
