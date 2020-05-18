@@ -34,6 +34,10 @@ type Options = {
 }
 
 export async function createRollupConfigs(files: string[], options: Options) {
+  if (options.dtsBundle) {
+    options.dts = true
+  }
+
   const getRollupConfig = async ({
     dts,
   }: {
