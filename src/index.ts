@@ -70,11 +70,14 @@ export async function createRollupConfigs(files: string[], options: Options) {
               jsxFragment: options.jsxFragment,
               define: options.define,
             }),
-          resolvePlugin({
-            bundle: options.bundle,
-            external: options.external,
-            dtsBundle: options.dtsBundle,
-          }),
+          dts &&
+            (await import('rollup-plugin-dts').then((res) => res.default())),
+          !dts &&
+            resolvePlugin({
+              bundle: options.bundle,
+              external: options.external,
+              dtsBundle: options.dtsBundle,
+            }),
           !dts &&
             commonjsPlugin({
               namedExports: {
@@ -89,8 +92,6 @@ export async function createRollupConfigs(files: string[], options: Options) {
                 return isExternal(options.external, name)
               },
             }),
-          dts &&
-            (await import('rollup-plugin-dts').then((res) => res.default())),
           sizePlugin(),
         ].filter(Boolean),
       },

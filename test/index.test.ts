@@ -2,6 +2,8 @@ import { join } from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
 
+jest.setTimeout(60000)
+
 const cacheDir = join(__dirname, '.cache')
 const bin = join(__dirname, '../dist/cli.js')
 
@@ -42,8 +44,9 @@ runTest('simple', {
   'foo.js': `export default 'foo'`,
 })
 
+// Somehow it can't bundle graphql-tools
 runTest(
-  'bundle graphql-tools',
+  'bundle graphql-tools with dts enabled',
   {
     'input.ts': `export { makeExecutableSchema, SchemaDirectiveVisitor } from 'graphql-tools'`,
   },
