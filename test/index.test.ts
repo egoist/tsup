@@ -44,14 +44,13 @@ runTest('simple', {
   'foo.js': `export default 'foo'`,
 })
 
-// Somehow it can't bundle graphql-tools
 runTest(
-  'bundle graphql-tools with dts enabled',
+  'bundle graphql-tools with dts bundle',
   {
     'input.ts': `export { makeExecutableSchema, SchemaDirectiveVisitor } from 'graphql-tools'`,
   },
   {
-    flags: ['--bundle', '--dts'],
+    flags: ['--bundle', '--dts-bundle'],
     snapshot: false,
   }
 )

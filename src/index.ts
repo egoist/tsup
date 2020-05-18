@@ -40,8 +40,10 @@ export async function createRollupConfigs(files: string[], options: Options) {
 
   const getRollupConfig = async ({
     dts,
+    dtsBundle,
   }: {
     dts?: boolean
+    dtsBundle?: boolean
   }): Promise<{
     name: string
     inputConfig: InputOptions
@@ -74,13 +76,11 @@ export async function createRollupConfigs(files: string[], options: Options) {
               jsxFragment: options.jsxFragment,
               define: options.define,
             }),
-          dts &&
-            (await import('rollup-plugin-dts').then((res) => res.default())),
-          !dts &&
+          (!dts || dtsBundle) &&
             resolvePlugin({
               bundle: options.bundle,
               external: options.external,
-              dtsBundle: options.dtsBundle,
+              dtsBundle: dtsBundle,
             }),
           !dts &&
             commonjsPlugin({
@@ -96,6 +96,8 @@ export async function createRollupConfigs(files: string[], options: Options) {
                 return isExternal(options.external, name)
               },
             }),
+          dts &&
+            (await import('rollup-plugin-dts').then((res) => res.default())),
           sizePlugin(),
         ].filter(Boolean),
       },
@@ -110,7 +112,9 @@ export async function createRollupConfigs(files: string[], options: Options) {
   const rollupConfigs = [await getRollupConfig({})]
 
   if (options.dts) {
-    rollupConfigs.push(await getRollupConfig({ dts: true }))
+    rollupConfigs.push(
+      await getRollupConfig({ dts: true, dtsBundle: options.dtsBundle })
+    )
   }
 
   return rollupConfigs

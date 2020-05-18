@@ -44,6 +44,8 @@ tsup index.ts --dts
 
 This will emit `./dist/index.js` and `./dist/index.d.ts`.
 
+If you want to bundle types from `node_modules` as well, use the `--dts-bundle` flag instead, which implicitly set `--dts` flag as well. (Note that this is experimental.)
+
 ### Bundle files and node modules
 
 ```bash
