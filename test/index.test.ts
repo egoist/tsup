@@ -48,7 +48,7 @@ runTest(
     'input.ts': `export { makeExecutableSchema, SchemaDirectiveVisitor } from 'graphql-tools'`,
   },
   {
-    flags: ['--bundle'],
+    flags: ['--bundle', '--dts'],
     snapshot: false,
   }
 )

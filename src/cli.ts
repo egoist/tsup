@@ -56,8 +56,17 @@ cli
 
         await Promise.all(
           rollupConfigs.map(async (config) => {
-            const result = await rollup(config.inputConfig)
-            await result.write(config.outputConfig)
+            try {
+              const result = await rollup(config.inputConfig)
+              await result.write(config.outputConfig)
+            } catch (err) {
+              console.error(
+                `Failed with following plugins used: ${config.inputConfig.plugins
+                  ?.map((p) => p.name)
+                  .join(', ')}`
+              )
+              throw err
+            }
           })
         )
         printSizes()
