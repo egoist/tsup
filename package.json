@@ -17,7 +17,8 @@
   "dependencies": {
     "joycon": "^2.2.5",
     "rollup": "^2.10.0",
-    "rollup-plugin-esbuild": "^1.4.1"
+    "rollup-plugin-esbuild": "^1.4.1",
+    "rollup-plugin-dts": "^1.4.6"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.1.0",
@@ -35,7 +36,6 @@
     "prettier": "^2.0.5",
     "pretty-bytes": "^5.3.0",
     "resolve": "^1.17.0",
-    "rollup-plugin-dts": "^1.4.4",
     "rollup-plugin-hashbang": "^2.2.2",
     "ts-jest": "^25.5.1",
     "tsup": "^1.4.4",
