@@ -28,7 +28,7 @@
     "@types/jest": "^25.2.3",
     "@types/node": "^14.0.6",
     "@types/resolve": "^1.17.1",
-    "cac": "^6.5.9",
+    "cac": "^6.5.10",
     "colorette": "^1.2.0",
     "execa": "^4.0.1",
     "fs-extra": "^9.0.0",
