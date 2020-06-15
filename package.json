@@ -30,7 +30,7 @@
     "@types/resolve": "^1.17.1",
     "cac": "^6.5.10",
     "colorette": "^1.2.0",
-    "execa": "^4.0.1",
+    "execa": "^4.0.2",
     "fs-extra": "^9.0.1",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
