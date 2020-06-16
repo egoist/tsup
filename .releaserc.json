@@ -6,7 +6,6 @@
       {
         "preset": "angular",
         "releaseRules": [
-          { "type": "chore", "release": "patch" },
           { "type": "refactor", "release": "patch" },
           { "type": "style", "release": "patch" },
           { "scope": "no-release", "release": false },
