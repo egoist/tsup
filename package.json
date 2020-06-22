@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "joycon": "^2.2.5",
-    "rollup": "^2.16.1",
+    "rollup": "^2.18.0",
     "rollup-plugin-dts": "^1.4.7",
     "rollup-plugin-esbuild": "^1.4.1"
   },
