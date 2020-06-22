@@ -487,10 +487,10 @@
     is-module "^1.0.0"
     resolve "^1.14.2"
 
-"@rollup/pluginutils@^3.0.10", "@rollup/pluginutils@^3.0.8":
-  version "3.0.10"
-  resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-3.0.10.tgz#a659b9025920378494cd8f8c59fbf9b3a50d5f12"
-  integrity sha512-d44M7t+PjmMrASHbhgpSbVgtL6EFyX7J4mYxwQ/c5eoaE6N2VgCgEcWVzNnwycIloti+/MpwFr8qfw+nRw00sw==
+"@rollup/pluginutils@^3.0.10", "@rollup/pluginutils@^3.0.8", "@rollup/pluginutils@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-3.1.0.tgz#706b4524ee6dc8b103b3c995533e5ad680c02b9b"
+  integrity sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==
   dependencies:
     "@types/estree" "0.0.39"
     estree-walker "^1.0.1"
@@ -1288,6 +1288,11 @@ esbuild@^0.3.0:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.3.2.tgz#3f6bdfbf51b2e776bb57952691930097b3770705"
   integrity sha512-sm5o2D/nHhXSrs2D4UySNeyjSxJlgxQ6Ze2Cy6OOIJqbuDd/u6sMtiSn243bAEiyyYzlazueeryrrWJJCkv8lA==
+
+esbuild@^0.5.3:
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.5.9.tgz#122446c4db6cd24f128332e1872f41896ce1aa76"
+  integrity sha512-ZCA8DRDroE4qDnT2eqtaAA4zsgSzS5H4gCAYUMcELn/ytIjkWud+l+363BHKohXfo5rZfl3DMynEWD4/XFA00w==
 
 escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -3089,6 +3094,14 @@ rollup-plugin-esbuild@^1.4.1:
   dependencies:
     "@rollup/pluginutils" "^3.0.10"
     esbuild "^0.3.0"
+
+rollup-plugin-esbuild@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-esbuild/-/rollup-plugin-esbuild-2.1.0.tgz#8e12337c63a5b1144e0c5e8adf2f1568ad4d7d69"
+  integrity sha512-XYqmwk4X0SPEExgilARbre/PplhLtE3q6wiZtfgIbwxJOVGXWec1Bkcux7TFTHGX3TQozzqEASTsRJCt7py/5Q==
+  dependencies:
+    "@rollup/pluginutils" "^3.1.0"
+    esbuild "^0.5.3"
 
 rollup-plugin-hashbang@^2.2.2:
   version "2.2.2"
