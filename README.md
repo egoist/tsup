@@ -1,18 +1,12 @@
 # tsup
 
-Rollup + [esbuild](https://github.com/evanw/esbuild).
+Rollup your TypeScript library with no config.
 
 This library is intentionally kept simple, if you want customizations please use Rollup directly.
 
-## Why Rollup?
-
-> Rollup is at least an order of magnitude slower than esbuild, why not use esbuild directly?
-
-Because esbuild isn't mature enough, here we use Rollup to bundle `.d.ts` files, add code splitting support, import non-js assets etc. tsup uses esbuild to compile TypeScript/ESNext code to ES2015.
-
 ## What can it bundle?
 
-Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. Plus `.ts`, `.vue` (soon), `.css` (soon).
+Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. And TypeScript `.ts`, `.tsx`
 
 ## Install
 
@@ -53,8 +47,6 @@ tsup [...files] --bundle
 ```
 
 `dependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark specific package as external.
-
-When you're bundling a lot files, this can be 10x~200x slower than esbuild.
 
 ### Run a program
 

@@ -1,14 +1,13 @@
 import { ModuleFormat, InputOptions, OutputOptions } from 'rollup'
-import { Target as EsbuildTarget } from 'esbuild'
 import prettyBytes from 'pretty-bytes'
 import colors from 'colorette'
 import hashbangPlugin from 'rollup-plugin-hashbang'
-import esbuildPlugin from 'rollup-plugin-esbuild'
+import tsPlugin from '@rollup/plugin-typescript'
 import commonjsPlugin from '@rollup/plugin-commonjs'
 import jsonPlugin from '@rollup/plugin-json'
 import { sizePlugin, caches } from './size-plugin'
 import { resolvePlugin } from './resolve-plugin'
-import { isExternal } from './utils'
+import { isExternal, resolveTsConfig } from './utils'
 
 type Options = {
   // Bundle packages in node_modules
@@ -17,9 +16,7 @@ type Options = {
   dts?: boolean
   // Bundle .d.ts files in node_modules
   dtsBundle?: boolean
-  target?: EsbuildTarget
   watch?: boolean
-  minify?: boolean
   jsxFactory?: string
   jsxFragment?: string
   outDir: string
@@ -36,6 +33,12 @@ type Options = {
 export async function createRollupConfigs(files: string[], options: Options) {
   if (options.dtsBundle) {
     options.dts = true
+  }
+
+  const tsconfig = resolveTsConfig(process.cwd()) || false
+
+  if (tsconfig) {
+    console.log(`Using tsconfig: ${tsconfig}`)
   }
 
   const getRollupConfig = async ({
@@ -68,13 +71,9 @@ export async function createRollupConfigs(files: string[], options: Options) {
           hashbangPlugin(),
           jsonPlugin(),
           !dts &&
-            esbuildPlugin({
-              target: options.target,
-              watch: options.watch,
-              minify: options.minify,
-              jsxFactory: options.jsxFactory,
-              jsxFragment: options.jsxFragment,
-              define: options.define,
+            tsPlugin({
+              module: 'esnext',
+              tsconfig,
             }),
           (!dts || dtsBundle) &&
             resolvePlugin({

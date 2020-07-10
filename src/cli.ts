@@ -13,10 +13,6 @@ async function main() {
     .option('--format <format>', 'Bundle format, "cjs", "iife", "umd", "esm"', {
       default: 'cjs',
     })
-    .option('--minify', 'Minify bundle')
-    .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
-      default: 'es2017',
-    })
     .option('--bundle', 'Bundle node_modules')
     .option('--dts', 'Generate declaration file')
     .option('--dts-bundle', 'Bundle types from node_modules')
@@ -93,7 +89,6 @@ async function main() {
         define: options.define,
         outDir: 'dist',
         format: 'cjs',
-        target: 'es2017',
       })
       const bundle = await rollup(rollupConfig.inputConfig)
       const { output } = await bundle.write(rollupConfig.outputConfig)

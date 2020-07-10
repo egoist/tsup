@@ -1,3 +1,5 @@
+import JoyCon from 'joycon'
+
 // No backslash in path
 function slash(input: string) {
   return input.replace(/\\/g, '/')
@@ -36,4 +38,9 @@ export function isExternal(
   }
 
   return false
+}
+
+export function resolveTsConfig(cwd: string) {
+  const joycon = new JoyCon()
+  return joycon.resolveSync(['tsconfig.build.json', 'tsconfig.json'], cwd)
 }
