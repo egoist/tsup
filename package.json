@@ -18,6 +18,7 @@
     "test": "npm run build && jest"
   },
   "dependencies": {
+    "cac": "^6.5.12",
     "joycon": "^2.2.5",
     "rollup": "^2.20.0",
     "rollup-plugin-dts": "^1.4.7",
@@ -32,7 +33,6 @@
     "@types/jest": "^26.0.4",
     "@types/node": "^14.0.21",
     "@types/resolve": "^1.17.1",
-    "cac": "^6.5.10",
     "colorette": "^1.2.0",
     "execa": "^4.0.2",
     "fs-extra": "^9.0.1",
