@@ -75,7 +75,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
               tsconfigOverride: {
                 compilerOptions: {
                   module: 'esnext',
-                }
+                },
               },
               tsconfig,
             }),
@@ -87,10 +87,6 @@ export async function createRollupConfigs(files: string[], options: Options) {
             }),
           !dts &&
             commonjsPlugin({
-              namedExports: {
-                // commonjs plugin failed to detect named exports for `resolve`, TODO: report this bug
-                resolve: ['sync', 'isCore', 'default'],
-              },
               // @ts-ignore wrong typing in @rollup/plugin-commonjs
               ignore: (name: string) => {
                 if (!options.external) {
