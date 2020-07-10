@@ -42,7 +42,7 @@
     "resolve": "^1.17.0",
     "rollup-plugin-hashbang": "^2.2.2",
     "ts-jest": "^26.1.1",
-    "tsup": "^2.0.0",
+    "tsup": "^2.0.1",
     "typescript": "^3.9.6"
   }
 }

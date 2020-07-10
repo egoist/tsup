@@ -3616,10 +3616,10 @@ tslib@^2.0.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.0.tgz#18d13fc2dce04051e20f074cc8387fd8089ce4f3"
   integrity sha512-lTqkx847PI7xEDYJntxZH89L2/aXInsyF2luSafe/+0fHOMjlBNXdH6th7f70qxLDhul7KZK0zC8V5ZIyHl0/g==
 
-tsup@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/tsup/-/tsup-2.0.0.tgz#90dfe94c11b5b5a716413a23849fb7657e33415c"
-  integrity sha512-fT8Ury8cfvxCCA2gJ05dB7h2vYkky++XTHTePiND9roJ5mtpFV7LArGcpZrrwdF+YaqoYjwYByv4w+vREUIcNg==
+tsup@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/tsup/-/tsup-2.0.1.tgz#1356c4645a8557be3878ff98f99bbad6bb00ad3c"
+  integrity sha512-yInVRdjlJfjUDByNAUCdVQPgLtw8nPlw7Zw4wwUHP0BCIRFWb4D2Di6bakCsWbwfp4PjF9lvUfiNbElmB9GFAQ==
   dependencies:
     joycon "^2.2.5"
     rollup "^2.20.0"
