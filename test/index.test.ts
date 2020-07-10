@@ -41,7 +41,7 @@ function runTest(
 
 runTest('simple', {
   'input.ts': `import foo from './foo';export default foo`,
-  'foo.js': `export default 'foo'`,
+  'foo.ts': `export default 'foo'`,
 })
 
 runTest(

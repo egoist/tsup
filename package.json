@@ -18,10 +18,10 @@
     "test": "npm run build && jest"
   },
   "dependencies": {
-    "@rollup/plugin-typescript": "^5.0.1",
     "joycon": "^2.2.5",
     "rollup": "^2.20.0",
     "rollup-plugin-dts": "^1.4.7",
+    "rollup-plugin-typescript2": "^0.27.1",
     "tslib": "^2.0.0"
   },
   "devDependencies": {

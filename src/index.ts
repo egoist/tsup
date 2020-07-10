@@ -2,7 +2,7 @@ import { ModuleFormat, InputOptions, OutputOptions } from 'rollup'
 import prettyBytes from 'pretty-bytes'
 import colors from 'colorette'
 import hashbangPlugin from 'rollup-plugin-hashbang'
-import tsPlugin from '@rollup/plugin-typescript'
+import tsPlugin from 'rollup-plugin-typescript2'
 import commonjsPlugin from '@rollup/plugin-commonjs'
 import jsonPlugin from '@rollup/plugin-json'
 import { sizePlugin, caches } from './size-plugin'
@@ -35,7 +35,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
     options.dts = true
   }
 
-  const tsconfig = resolveTsConfig(process.cwd()) || false
+  const tsconfig = resolveTsConfig(process.cwd()) || undefined
 
   if (tsconfig) {
     console.log(`Using tsconfig: ${tsconfig}`)
@@ -72,7 +72,11 @@ export async function createRollupConfigs(files: string[], options: Options) {
           jsonPlugin(),
           !dts &&
             tsPlugin({
-              module: 'esnext',
+              tsconfigOverride: {
+                compilerOptions: {
+                  module: 'esnext',
+                }
+              },
               tsconfig,
             }),
           (!dts || dtsBundle) &&
