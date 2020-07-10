@@ -2,11 +2,11 @@
 
 Rollup your TypeScript library with no config.
 
-This library is intentionally kept simple, if you want customizations please use Rollup directly.
-
 ## What can it bundle?
 
-Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. And TypeScript `.ts`, `.tsx`
+Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. And TypeScript `.ts`, `.tsx`.
+
+This project is designed for bundling Node.js libraries.
 
 ## Install
 
