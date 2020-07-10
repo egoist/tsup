@@ -75,6 +75,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
               tsconfigOverride: {
                 compilerOptions: {
                   module: 'esnext',
+                  declaration: false,
                 },
               },
               tsconfig,
