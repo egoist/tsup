@@ -52,6 +52,14 @@ export async function createRollupConfigs(files: string[], options: Options) {
     inputConfig: InputOptions
     outputConfig: OutputOptions
   }> => {
+    const compilerOptions: any = {
+      module: 'esnext',
+    }
+
+    if (dts) {
+      compilerOptions.declaration = false
+    }
+
     return {
       name: `dts: ${dts}, bundle: ${options.bundle}`,
       inputConfig: {
@@ -73,10 +81,7 @@ export async function createRollupConfigs(files: string[], options: Options) {
           !dts &&
             tsPlugin({
               tsconfigOverride: {
-                compilerOptions: {
-                  module: 'esnext',
-                  declaration: false,
-                },
+                compilerOptions,
               },
               tsconfig,
             }),
