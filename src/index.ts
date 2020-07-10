@@ -1,6 +1,6 @@
 import { ModuleFormat, InputOptions, OutputOptions } from 'rollup'
 import prettyBytes from 'pretty-bytes'
-import colors from 'colorette'
+import colors from 'kleur'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import tsPlugin from 'rollup-plugin-typescript2'
 import commonjsPlugin from '@rollup/plugin-commonjs'

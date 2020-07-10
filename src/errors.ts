@@ -1,4 +1,4 @@
-import colors from 'colorette'
+import colors from 'kleur'
 
 export class PrettyError extends Error {
   constructor(message: string) {
