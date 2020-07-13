@@ -33,7 +33,7 @@
     "@types/jest": "^26.0.4",
     "@types/node": "^14.0.23",
     "@types/resolve": "^1.17.1",
-    "execa": "^4.0.2",
+    "execa": "^4.0.3",
     "fs-extra": "^9.0.1",
     "jest": "^26.1.0",
     "kleur": "^4.0.2",
