@@ -41,7 +41,7 @@
     "pretty-bytes": "^5.3.0",
     "resolve": "^1.17.0",
     "rollup-plugin-hashbang": "^2.2.2",
-    "ts-jest": "^26.1.1",
+    "ts-jest": "^26.1.2",
     "tsup": "^2.0.1",
     "typescript": "^3.9.6"
   }
