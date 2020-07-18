@@ -1,6 +1,6 @@
 # tsup
 
-Rollup your TypeScript library with no config.
+Rollup your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
 
 ## What can it bundle?
 

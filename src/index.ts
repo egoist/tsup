@@ -2,7 +2,7 @@ import { ModuleFormat, InputOptions, OutputOptions } from 'rollup'
 import prettyBytes from 'pretty-bytes'
 import colors from 'kleur'
 import hashbangPlugin from 'rollup-plugin-hashbang'
-import tsPlugin from 'rollup-plugin-typescript2'
+import tsPlugin from 'rollup-plugin-esbuild'
 import commonjsPlugin from '@rollup/plugin-commonjs'
 import jsonPlugin from '@rollup/plugin-json'
 import { sizePlugin, caches } from './size-plugin'
@@ -16,10 +16,12 @@ type Options = {
   dts?: boolean
   // Bundle .d.ts files in node_modules
   dtsBundle?: boolean
+  target?: string
+  minify?: boolean
   watch?: boolean
   jsxFactory?: string
   jsxFragment?: string
-  outDir: string
+  outDir?: string
   format: ModuleFormat
   moduleName?: string
   define?: {
@@ -80,10 +82,13 @@ export async function createRollupConfigs(files: string[], options: Options) {
           jsonPlugin(),
           !dts &&
             tsPlugin({
-              tsconfigOverride: {
-                compilerOptions,
-              },
-              tsconfig,
+              target: options.target,
+              watch: options.watch,
+              minify: options.minify,
+              jsxFactory: options.jsxFactory,
+              jsxFragment: options.jsxFragment,
+              define: options.define,
+              tsconfig
             }),
           (!dts || dtsBundle) &&
             resolvePlugin({
@@ -107,8 +112,8 @@ export async function createRollupConfigs(files: string[], options: Options) {
         ].filter(Boolean),
       },
       outputConfig: {
-        dir: options.outDir,
-        format: options.format,
+        dir: options.outDir || 'dist',
+        format: options.format || 'cjs',
         exports: 'named',
         name: options.moduleName,
       },

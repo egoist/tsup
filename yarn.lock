@@ -1312,6 +1312,11 @@ error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
+esbuild@^0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.6.3.tgz#a957e22f2503c745793514388110f9b55b3a6f83"
+  integrity sha512-4lHgz/EvGLRQnDYzzrvW+eilaPHim5pCLz4mP0k0QIalD/n8Ji2NwQwoIa1uX+yKkbn9R/FAZvaEbodjx55rDg==
+
 escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
@@ -3150,6 +3155,15 @@ rollup-plugin-dts@^1.4.7, rollup-plugin-dts@^1.4.8:
   optionalDependencies:
     "@babel/code-frame" "^7.10.4"
 
+rollup-plugin-esbuild@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-esbuild/-/rollup-plugin-esbuild-2.4.1.tgz#6e05850e3051a56811b2f491e2243272701b060d"
+  integrity sha512-UyL3LKbh4DxV8VZCzEw3kZB/z+vhkIXSMT8Y5JzOMc/PI3FGA6w94vSRl68IZUsS1hLxG1NB+W+0ck/9fDLk3A==
+  dependencies:
+    "@rollup/pluginutils" "^3.1.0"
+    joycon "^2.2.5"
+    strip-json-comments "^3.1.1"
+
 rollup-plugin-hashbang@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/rollup-plugin-hashbang/-/rollup-plugin-hashbang-2.2.2.tgz#971fc49b452e63f9dfdc75f79ae7256b3485e750"
@@ -3483,6 +3497,11 @@ strip-final-newline@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/strip-final-newline/-/strip-final-newline-2.0.0.tgz#89b852fb2fcbe936f6f4b3187afb0a12c1ab58ad"
   integrity sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==
+
+strip-json-comments@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
+  integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
 
 supports-color@^5.3.0:
   version "5.5.0"

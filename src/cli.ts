@@ -8,10 +8,16 @@ async function main() {
   const cli = cac('tsup')
 
   cli
-    .command('[...files]', 'Bundle files')
+    .command('[...files]', 'Bundle files', {
+      ignoreOptionDefaultValue: true,
+    })
     .option('-d, --out-dir <dir>', 'Output directory', { default: 'dist' })
     .option('--format <format>', 'Bundle format, "cjs", "iife", "umd", "esm"', {
       default: 'cjs',
+    })
+    .option('--minify', 'Minify bundle')
+    .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
+      default: 'es2017',
     })
     .option('--bundle', 'Bundle node_modules')
     .option('--dts', 'Generate declaration file')
