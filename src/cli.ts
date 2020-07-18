@@ -48,8 +48,19 @@ async function main() {
             output: config.outputConfig,
           }))
         )
+        let builtOnce = false
         watcher.on('event', (event) => {
-          console.log(event)
+          if (event.code === 'START') {
+            if (builtOnce) {
+              console.log(`Rebuilding..`)
+            } else {
+              console.log(`Building..`)
+            }
+          }
+          if (event.code === 'END') {
+            builtOnce = true
+            printSizes()
+          }
         })
       } else {
         const startTime = Date.now()
