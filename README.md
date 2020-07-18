@@ -48,6 +48,12 @@ tsup [...files] --bundle
 
 `dependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark specific package as external.
 
+### What about type checking?
+
+esbuild is fast because it doesn't perform any type checking, you already get type checking from your IDE like VS Code or WebStorm.
+
+Additionally, if you want type checking at build time, you can enable `--dts`, which will run a real TypeScript compiler to generate declaration file so you get type checking as well.
+
 ### Run a program
 
 ```bash
