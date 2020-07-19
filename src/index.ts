@@ -1,133 +1,144 @@
-import { ModuleFormat, InputOptions, OutputOptions } from 'rollup'
+import fs from 'fs'
+import { dirname, join } from 'path'
+import { InputOptions, OutputOptions } from 'rollup'
 import prettyBytes from 'pretty-bytes'
 import colors from 'kleur'
+import { Service, startService } from 'esbuild'
 import hashbangPlugin from 'rollup-plugin-hashbang'
-import tsPlugin from 'rollup-plugin-esbuild'
-import commonjsPlugin from '@rollup/plugin-commonjs'
 import jsonPlugin from '@rollup/plugin-json'
 import { sizePlugin, caches } from './size-plugin'
-import { resolvePlugin } from './resolve-plugin'
-import { isExternal, resolveTsConfig } from './utils'
+import { getDeps } from './utils'
+import { outputFile } from 'fs-extra'
 
-type Options = {
-  // Bundle packages in node_modules
-  bundle?: boolean
-  // Generate .d.ts file
-  dts?: boolean
-  // Bundle .d.ts files in node_modules
-  dtsBundle?: boolean
+const textDecoder = new TextDecoder('utf-8')
+
+export type Format = 'cjs' | 'esm' | 'iife'
+
+export type Options = {
+  entryPoints: string[]
+  /**
+   * Compile target, like `es2018`
+   */
   target?: string
   minify?: boolean
   watch?: boolean
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string
-  format: ModuleFormat
-  moduleName?: string
+  format: Format[]
+  globalName?: string
   define?: {
     [k: string]: string
   }
+  dts?: boolean
   /** Don't bundle these packages */
   external?: string[]
-  inlineDynamicImports?: boolean
 }
 
-export async function createRollupConfigs(files: string[], options: Options) {
-  if (options.dtsBundle) {
-    options.dts = true
+const services: Map<string, Service> = new Map()
+
+export async function runEsbuild(
+  options: Options,
+  { format }: { format: Format }
+) {
+  let service = services.get(format)
+  if (!service) {
+    service = await startService()
+    services.set(format, service)
   }
-
-  const tsconfig = resolveTsConfig(process.cwd()) || undefined
-
-  if (tsconfig) {
-    console.log(`Using tsconfig: ${tsconfig}`)
-  }
-
-  const getRollupConfig = async ({
-    dts,
-    dtsBundle,
-  }: {
-    dts?: boolean
-    dtsBundle?: boolean
-  }): Promise<{
-    name: string
-    inputConfig: InputOptions
-    outputConfig: OutputOptions
-  }> => {
-    const compilerOptions: any = {
-      module: 'esnext',
-    }
-
-    if (dts) {
-      compilerOptions.declaration = false
-    }
-
-    return {
-      name: `dts: ${dts}, bundle: ${options.bundle}`,
-      inputConfig: {
-        input: files,
-        preserveEntrySignatures: 'strict',
-        inlineDynamicImports: options.inlineDynamicImports,
-        onwarn(warning, handler) {
-          if (
-            warning.code === 'UNRESOLVED_IMPORT' ||
-            warning.code === 'CIRCULAR_DEPENDENCY'
-          ) {
-            return
-          }
-          return handler(warning)
-        },
-        plugins: [
-          hashbangPlugin(),
-          jsonPlugin(),
-          !dts &&
-            tsPlugin({
-              target: options.target,
-              watch: options.watch,
-              minify: options.minify,
-              jsxFactory: options.jsxFactory,
-              jsxFragment: options.jsxFragment,
-              define: options.define,
-              tsconfig
-            }),
-          (!dts || dtsBundle) &&
-            resolvePlugin({
-              bundle: options.bundle,
-              external: options.external,
-              dtsBundle: dtsBundle,
-            }),
-          !dts &&
-            commonjsPlugin({
-              // @ts-ignore wrong typing in @rollup/plugin-commonjs
-              ignore: (name: string) => {
-                if (!options.external) {
-                  return false
-                }
-                return isExternal(options.external, name)
-              },
-            }),
-          dts &&
-            (await import('rollup-plugin-dts').then((res) => res.default())),
-          sizePlugin(),
-        ].filter(Boolean),
-      },
-      outputConfig: {
-        dir: options.outDir || 'dist',
-        format: options.format || 'cjs',
-        exports: 'named',
-        name: options.moduleName,
-      },
-    }
-  }
-  const rollupConfigs = [await getRollupConfig({})]
-
-  if (options.dts) {
-    rollupConfigs.push(
-      await getRollupConfig({ dts: true, dtsBundle: options.dtsBundle })
+  const deps = await getDeps(process.cwd())
+  const external = [...deps, ...(options.external || [])]
+  const outDir = options.outDir || 'dist'
+  const result = await service.build({
+    entryPoints: options.entryPoints,
+    format: format === 'cjs' ? 'esm' : format,
+    bundle: true,
+    platform: 'node',
+    globalName: options.globalName,
+    jsxFactory: options.jsxFactory,
+    jsxFragment: options.jsxFragment,
+    define: options.define,
+    external,
+    outdir: format === 'cjs' ? outDir : join(outDir, format),
+    write: format !== 'cjs',
+    splitting: format === 'cjs' || format === 'esm',
+  })
+  // Manually write files in cjs format
+  // Cause we need to transform to code from esm to cjs first
+  if (result.outputFiles && format === 'cjs') {
+    const { transform } = await import('sucrase')
+    await Promise.all(
+      result.outputFiles.map(async (file) => {
+        const dir = dirname(file.path)
+        const outPath = file.path
+        await fs.promises.mkdir(dir, { recursive: true })
+        if (format === 'cjs') {
+          const content = transform(textDecoder.decode(file.contents), {
+            transforms: ['imports'],
+          })
+          await fs.promises.writeFile(outPath, content.code, 'utf8')
+        } else {
+          await fs.promises.writeFile(outPath, file.contents)
+        }
+      })
     )
   }
+}
 
-  return rollupConfigs
+const getRollupConfig = async (
+  options: Options
+): Promise<{
+  inputConfig: InputOptions
+  outputConfig: OutputOptions
+}> => {
+  return {
+    inputConfig: {
+      input: options.entryPoints,
+      preserveEntrySignatures: 'strict',
+      onwarn(warning, handler) {
+        if (
+          warning.code === 'UNRESOLVED_IMPORT' ||
+          warning.code === 'CIRCULAR_DEPENDENCY'
+        ) {
+          return
+        }
+        return handler(warning)
+      },
+      plugins: [
+        hashbangPlugin(),
+        jsonPlugin(),
+        await import('rollup-plugin-dts').then((res) => res.default()),
+        sizePlugin(),
+      ].filter(Boolean),
+    },
+    outputConfig: {
+      dir: options.outDir || 'dist',
+      format: 'esm',
+      exports: 'named',
+      name: options.globalName,
+    },
+  }
+}
+
+async function runRollup(options: {
+  inputConfig: InputOptions
+  outputConfig: OutputOptions
+}) {
+  const { rollup } = await import('rollup')
+  const bundle = await rollup(options.inputConfig)
+  await bundle.write(options.outputConfig)
+}
+
+export async function build(options: Options) {
+  await Promise.all([
+    ...options.format.map((format) => runEsbuild(options, { format })),
+    options.dts
+      ? getRollupConfig(options).then((config) => runRollup(config))
+      : Promise.resolve(),
+  ])
+  for (const service of services.values()) {
+    service.stop()
+  }
 }
 
 export function printSizes() {

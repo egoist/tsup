@@ -19,11 +19,12 @@
   },
   "dependencies": {
     "cac": "^6.5.13",
-    "esbuild": "^0.6.3",
+    "esbuild": "^0.6.4",
     "joycon": "^2.2.5",
     "rollup": "^2.21.0",
     "rollup-plugin-dts": "^1.4.8",
-    "rollup-plugin-esbuild": "^2.4.1"
+    "rollup-plugin-esbuild": "^2.4.1",
+    "sucrase": "^3.15.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.1",
@@ -42,7 +43,7 @@
     "resolve": "^1.17.0",
     "rollup-plugin-hashbang": "^2.2.2",
     "ts-jest": "^26.1.2",
-    "tsup": "^2.0.1",
+    "tsup": "^2.1.0",
     "typescript": "^3.9.6"
   }
 }

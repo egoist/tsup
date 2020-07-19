@@ -3,6 +3,14 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
 import { handlError, PrettyError } from './errors'
+import { Format } from './'
+
+function stringyOrArray(input: string, defaultValue: string[]): string[] {
+  if (!input) {
+    return defaultValue
+  }
+  return Array.isArray(input) ? input : input.split(',')
+}
 
 async function main() {
   const cli = cac('tsup')
@@ -44,52 +52,13 @@ async function main() {
         throw new PrettyError(`Missing input files, e.g. tsup src/index.ts`)
       }
 
-      const { rollup, watch } = await import('rollup')
-      const { createRollupConfigs, printSizes } = await import('./')
-      const rollupConfigs = await createRollupConfigs(files, options)
-      if (options.watch) {
-        const watcher = watch(
-          rollupConfigs.map((config) => ({
-            ...config.inputConfig,
-            output: config.outputConfig,
-          }))
-        )
-        let builtOnce = false
-        watcher.on('event', (event) => {
-          if (event.code === 'START') {
-            if (builtOnce) {
-              console.log(`Rebuilding..`)
-            } else {
-              console.log(`Building..`)
-            }
-          }
-          if (event.code === 'END') {
-            builtOnce = true
-            printSizes()
-          }
-        })
-      } else {
-        const startTime = Date.now()
-
-        await Promise.all(
-          rollupConfigs.map(async (config) => {
-            try {
-              const result = await rollup(config.inputConfig)
-              await result.write(config.outputConfig)
-            } catch (err) {
-              console.error(
-                `Failed with following plugins used: ${config.inputConfig.plugins
-                  ?.map((p) => p.name)
-                  .join(', ')}`
-              )
-              throw err
-            }
-          })
-        )
-        printSizes()
-        const endTime = Date.now()
-        console.log(`Done in ${endTime - startTime}ms`)
-      }
+      const { build } = await import('./')
+      await build({
+        ...options,
+        entryPoints: files,
+        format: stringyOrArray(options.format, ['cjs']) as Format[],
+        external: stringyOrArray(options.external, []),
+      })
     })
 
   cli
@@ -97,22 +66,7 @@ async function main() {
       allowUnknownOptions: true,
     })
     .option('--define.* <value>', 'Define compile-time constants')
-    .action(async (file: string, options) => {
-      const extraArgs = process.argv.slice(process.argv.indexOf(file) + 1)
-      const { rollup } = await import('rollup')
-      const { createRollupConfigs } = await import('./')
-      const { runCode } = await import('./run')
-      const [rollupConfig] = await createRollupConfigs([file], {
-        define: options.define,
-        outDir: 'dist',
-        format: 'cjs',
-      })
-      const bundle = await rollup(rollupConfig.inputConfig)
-      const { output } = await bundle.write(rollupConfig.outputConfig)
-      runCode(join('dist', output[0].fileName), {
-        args: extraArgs,
-      })
-    })
+    .action(async (file: string, options) => {})
 
   cli.help()
 
