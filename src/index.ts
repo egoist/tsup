@@ -1,15 +1,10 @@
 import fs from 'fs'
 import { dirname, join } from 'path'
-import { InputOptions, OutputOptions } from 'rollup'
-import prettyBytes from 'pretty-bytes'
-import colors from 'kleur'
+import { Worker } from 'worker_threads'
+import colors from 'chalk'
 import { Service, startService, BuildResult } from 'esbuild'
-import hashbangPlugin from 'rollup-plugin-hashbang'
-import jsonPlugin from '@rollup/plugin-json'
-import { sizePlugin, caches } from './size-plugin'
 import { getDeps, resolveTsConfig } from './utils'
 import { FSWatcher } from 'chokidar'
-import { handlError } from './errors'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -38,7 +33,7 @@ export type Options = {
 
 const services: Map<string, Service> = new Map()
 
-const makeLabel = (input: string, type: 'info' | 'success' | 'error') =>
+export const makeLabel = (input: string, type: 'info' | 'success' | 'error') =>
   colors[type === 'info' ? 'bgBlue' : type === 'error' ? 'bgRed' : 'bgGreen'](
     colors.black(` ${input.toUpperCase()} `)
   )
@@ -57,7 +52,7 @@ export async function runEsbuild(
   const outDir = options.outDir || 'dist'
   const runService = async () => {
     console.log(`${makeLabel(format, 'info')} Build start`)
-    const startTime = process.hrtime()
+    const startTime = Date.now()
     const result =
       service &&
       (await service.build({
@@ -74,8 +69,7 @@ export async function runEsbuild(
         write: false,
         splitting: format === 'cjs' || format === 'esm',
       }))
-    const endTime = process.hrtime(startTime)
-    const timeInMs = (endTime[0] * 1000000000 + endTime[1]) / 1000000
+    const timeInMs = Date.now() - startTime
     console.log(
       `${makeLabel(format, 'success')} Build success in ${Math.floor(
         timeInMs
@@ -122,50 +116,6 @@ export async function runEsbuild(
   return runService
 }
 
-const getRollupConfig = async (
-  options: Options
-): Promise<{
-  inputConfig: InputOptions
-  outputConfig: OutputOptions
-}> => {
-  return {
-    inputConfig: {
-      input: options.entryPoints,
-      preserveEntrySignatures: 'strict',
-      onwarn(warning, handler) {
-        if (
-          warning.code === 'UNRESOLVED_IMPORT' ||
-          warning.code === 'CIRCULAR_DEPENDENCY'
-        ) {
-          return
-        }
-        return handler(warning)
-      },
-      plugins: [
-        hashbangPlugin(),
-        jsonPlugin(),
-        await import('rollup-plugin-dts').then((res) => res.default()),
-        sizePlugin(),
-      ].filter(Boolean),
-    },
-    outputConfig: {
-      dir: options.outDir || 'dist',
-      format: 'esm',
-      exports: 'named',
-      name: options.globalName,
-    },
-  }
-}
-
-async function runRollup(options: {
-  inputConfig: InputOptions
-  outputConfig: OutputOptions
-}) {
-  const { rollup } = await import('rollup')
-  const bundle = await rollup(options.inputConfig)
-  await bundle.write(options.outputConfig)
-}
-
 function stopServices() {
   for (const [name, service] of services.entries()) {
     service.stop()
@@ -187,7 +137,7 @@ export async function build(options: Options) {
             join(dirname(entry), '**/*.{ts,tsx,js,jsx,mjs,json}')
           ),
           '!**/{dist,node_modules}/**',
-          options.outDir ? join(options.outDir, '**') : '',
+          options.outDir ? `!${join(options.outDir, '**')}` : '',
         ].filter(Boolean),
         {
           ignoreInitial: true,
@@ -209,7 +159,16 @@ export async function build(options: Options) {
       ...options.format.map((format) => runEsbuild(options, { format })),
     ])
     if (options.dts) {
-      await getRollupConfig(options).then((config) => runRollup(config))
+      // Run rollup in a worker so it doesn't block the event loop
+      const worker = new Worker(join(__dirname, 'rollup.js'))
+      worker.postMessage({
+        options,
+      })
+      worker.on('message', data => {
+        if (data === 'exit') {
+          worker.unref()
+        }
+      })
     }
     if (options.watch) {
       await startWatcher()
@@ -223,24 +182,5 @@ export async function build(options: Options) {
       startWatcher()
     }
     throw error
-  }
-}
-
-export function printSizes() {
-  const result: Map<string, number> = new Map()
-  for (const cache of caches.values()) {
-    for (const [filename, getSize] of cache.entries()) {
-      result.set(filename, getSize())
-    }
-  }
-  const maxNameLength = [...result.keys()].sort((a, b) =>
-    a.length > b.length ? -1 : 1
-  )[0].length
-  for (const [filename, size] of result.entries()) {
-    console.log(
-      `${colors.bold(filename.padEnd(maxNameLength))} - ${colors.green(
-        prettyBytes(size)
-      )}`
-    )
   }
 }
