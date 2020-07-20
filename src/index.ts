@@ -71,7 +71,7 @@ export async function runEsbuild(
         define: options.define,
         external,
         outdir: format === 'cjs' ? outDir : join(outDir, format),
-        write: format !== 'cjs',
+        write: false,
         splitting: format === 'cjs' || format === 'esm',
       }))
     const endTime = process.hrtime(startTime)
@@ -83,23 +83,38 @@ export async function runEsbuild(
     )
     return result
   }
-  const result = await runService()
-  // Manually write files in cjs format
-  // Cause we need to transform to code from esm to cjs first
-  if (result && result.outputFiles && format === 'cjs') {
+  let result
+  try {
+    result = await runService()
+  } catch (error) {
+    console.error(`${makeLabel(format, 'error')} Build failed`)
+    return runService
+  }
+  // Manually write files
+  if (result && result.outputFiles) {
     const { transform } = await import('sucrase')
     await Promise.all(
       result.outputFiles.map(async (file) => {
         const dir = dirname(file.path)
         const outPath = file.path
         await fs.promises.mkdir(dir, { recursive: true })
+        let mode: number | undefined
+        if (file.contents[0] === 35 && file.contents[1] === 33) {
+          mode = 0o755
+        }
+        // Cause we need to transform to code from esm to cjs first
         if (format === 'cjs' && outPath.endsWith('.js')) {
           const content = transform(textDecoder.decode(file.contents), {
             transforms: ['imports'],
           })
-          await fs.promises.writeFile(outPath, content.code, 'utf8')
+          await fs.promises.writeFile(outPath, content.code, {
+            encoding: 'utf8',
+            mode,
+          })
         } else {
-          await fs.promises.writeFile(outPath, file.contents)
+          await fs.promises.writeFile(outPath, file.contents, {
+            mode,
+          })
         }
       })
     )
@@ -179,18 +194,7 @@ export async function build(options: Options) {
         }
       ).on('all', async () => {
         if (runServices) {
-          await Promise.all(
-            runServices.map((runService, index) =>
-              runService().catch((error) => {
-                console.error(
-                  `${makeLabel(options.format[index], 'error')} Build failed`
-                )
-                if (!error.warnings && !error.errors) {
-                  handlError(error)
-                }
-              })
-            )
-          )
+          await Promise.all(runServices.map((runService) => runService()))
         }
       })
   }
