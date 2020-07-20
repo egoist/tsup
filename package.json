@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "cac": "^6.5.13",
+    "chokidar": "^3.4.1",
     "esbuild": "^0.6.4",
     "joycon": "^2.2.5",
     "rollup": "^2.21.0",

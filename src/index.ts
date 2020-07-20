@@ -3,11 +3,13 @@ import { dirname, join } from 'path'
 import { InputOptions, OutputOptions } from 'rollup'
 import prettyBytes from 'pretty-bytes'
 import colors from 'kleur'
-import { Service, startService } from 'esbuild'
+import { Service, startService, BuildResult } from 'esbuild'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { sizePlugin, caches } from './size-plugin'
-import { getDeps } from './utils'
+import { getDeps, resolveTsConfig } from './utils'
+import { FSWatcher } from 'chokidar'
+import { handlError } from './errors'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -36,10 +38,15 @@ export type Options = {
 
 const services: Map<string, Service> = new Map()
 
+const makeLabel = (input: string, type: 'info' | 'success' | 'error') =>
+  colors[type === 'info' ? 'bgBlue' : type === 'error' ? 'bgRed' : 'bgGreen'](
+    colors.black(` ${input.toUpperCase()} `)
+  )
+
 export async function runEsbuild(
   options: Options,
   { format }: { format: Format }
-) {
+): Promise<() => Promise<BuildResult | void>> {
   let service = services.get(format)
   if (!service) {
     service = await startService()
@@ -48,30 +55,45 @@ export async function runEsbuild(
   const deps = await getDeps(process.cwd())
   const external = [...deps, ...(options.external || [])]
   const outDir = options.outDir || 'dist'
-  const result = await service.build({
-    entryPoints: options.entryPoints,
-    format: format === 'cjs' ? 'esm' : format,
-    bundle: true,
-    platform: 'node',
-    globalName: options.globalName,
-    jsxFactory: options.jsxFactory,
-    jsxFragment: options.jsxFragment,
-    define: options.define,
-    external,
-    outdir: format === 'cjs' ? outDir : join(outDir, format),
-    write: format !== 'cjs',
-    splitting: format === 'cjs' || format === 'esm',
-  })
+  const runService = async () => {
+    console.log(`${makeLabel(format, 'info')} Build start`)
+    const startTime = process.hrtime()
+    const result =
+      service &&
+      (await service.build({
+        entryPoints: options.entryPoints,
+        format: format === 'cjs' ? 'esm' : format,
+        bundle: true,
+        platform: 'node',
+        globalName: options.globalName,
+        jsxFactory: options.jsxFactory,
+        jsxFragment: options.jsxFragment,
+        define: options.define,
+        external,
+        outdir: format === 'cjs' ? outDir : join(outDir, format),
+        write: format !== 'cjs',
+        splitting: format === 'cjs' || format === 'esm',
+      }))
+    const endTime = process.hrtime(startTime)
+    const timeInMs = (endTime[0] * 1000000000 + endTime[1]) / 1000000
+    console.log(
+      `${makeLabel(format, 'success')} Build success in ${Math.floor(
+        timeInMs
+      )}ms`
+    )
+    return result
+  }
+  const result = await runService()
   // Manually write files in cjs format
   // Cause we need to transform to code from esm to cjs first
-  if (result.outputFiles && format === 'cjs') {
+  if (result && result.outputFiles && format === 'cjs') {
     const { transform } = await import('sucrase')
     await Promise.all(
       result.outputFiles.map(async (file) => {
         const dir = dirname(file.path)
         const outPath = file.path
         await fs.promises.mkdir(dir, { recursive: true })
-        if (format === 'cjs') {
+        if (format === 'cjs' && outPath.endsWith('.js')) {
           const content = transform(textDecoder.decode(file.contents), {
             transforms: ['imports'],
           })
@@ -82,6 +104,7 @@ export async function runEsbuild(
       })
     )
   }
+  return runService
 }
 
 const getRollupConfig = async (
@@ -136,16 +159,65 @@ function stopServices() {
 }
 
 export async function build(options: Options) {
+  let watcher: FSWatcher | undefined
+  let runServices: Array<() => Promise<BuildResult | void>> | undefined
+
+  const startWatcher = async () => {
+    const { watch } = await import('chokidar')
+    watcher =
+      watcher ||
+      watch(
+        [
+          ...options.entryPoints.map((entry) =>
+            join(dirname(entry), '**/*.{ts,tsx,js,jsx,mjs,json}')
+          ),
+          '!**/{dist,node_modules}/**',
+          options.outDir ? join(options.outDir, '**') : '',
+        ].filter(Boolean),
+        {
+          ignoreInitial: true,
+        }
+      ).on('all', async () => {
+        if (runServices) {
+          await Promise.all(
+            runServices.map((runService, index) =>
+              runService().catch((error) => {
+                console.error(
+                  `${makeLabel(options.format[index], 'error')} Build failed`
+                )
+                if (!error.warnings && !error.errors) {
+                  handlError(error)
+                }
+              })
+            )
+          )
+        }
+      })
+  }
+
   try {
-    await Promise.all([
+    const tsconfig = resolveTsConfig(process.cwd())
+    if (tsconfig) {
+      console.log(makeLabel('CLI', 'info'), `Using tsconfig: ${tsconfig}`)
+    }
+
+    runServices = await Promise.all([
       ...options.format.map((format) => runEsbuild(options, { format })),
-      options.dts
-        ? getRollupConfig(options).then((config) => runRollup(config))
-        : Promise.resolve(),
     ])
-    stopServices()
+    if (options.dts) {
+      await getRollupConfig(options).then((config) => runRollup(config))
+    }
+    if (options.watch) {
+      await startWatcher()
+    } else {
+      stopServices()
+    }
   } catch (error) {
-    stopServices()
+    if (!options.watch) {
+      stopServices()
+    } else {
+      startWatcher()
+    }
     throw error
   }
 }
