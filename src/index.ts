@@ -8,7 +8,6 @@ import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { sizePlugin, caches } from './size-plugin'
 import { getDeps } from './utils'
-import { outputFile } from 'fs-extra'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -129,15 +128,25 @@ async function runRollup(options: {
   await bundle.write(options.outputConfig)
 }
 
-export async function build(options: Options) {
-  await Promise.all([
-    ...options.format.map((format) => runEsbuild(options, { format })),
-    options.dts
-      ? getRollupConfig(options).then((config) => runRollup(config))
-      : Promise.resolve(),
-  ])
-  for (const service of services.values()) {
+function stopServices() {
+  for (const [name, service] of services.entries()) {
     service.stop()
+    services.delete(name)
+  }
+}
+
+export async function build(options: Options) {
+  try {
+    await Promise.all([
+      ...options.format.map((format) => runEsbuild(options, { format })),
+      options.dts
+        ? getRollupConfig(options).then((config) => runRollup(config))
+        : Promise.resolve(),
+    ])
+    stopServices()
+  } catch (error) {
+    stopServices()
+    throw error
   }
 }
 

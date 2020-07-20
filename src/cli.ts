@@ -27,15 +27,11 @@ async function main() {
     .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
       default: 'es2017',
     })
-    .option('--bundle', 'Bundle node_modules')
     .option('--dts', 'Generate declaration file')
     .option('--dts-bundle', 'Bundle types from node_modules')
     .option('--watch', 'Watch mode')
     .option('--define.* <value>', 'Define compile-time constants')
-    .option(
-      '--external <name>',
-      'Mark specific packages as external (use with --bundle)'
-    )
+    .option('--external <name>', 'Mark specific packages as external')
     .option('--module-name <name>', 'Module name (with with --format umd)')
     .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
       default: 'React.createElement',

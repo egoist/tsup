@@ -1,6 +1,6 @@
 # tsup
 
-Rollup your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
+Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
 
 ## What can it bundle?
 
@@ -30,6 +30,11 @@ tsup [...files]
 
 Files are written into `./dist`.
 
+### Excluding packages
+
+
+By default tsup bundles all `import`-ed modules but `dependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark other packages as external.
+
 ### Generate declaration file
 
 ```bash
@@ -40,13 +45,6 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`.
 
 If you want to bundle types from `node_modules` as well, use the `--dts-bundle` flag instead, which implicitly set `--dts` flag as well. (Note that this is experimental.)
 
-### Bundle files and node modules
-
-```bash
-tsup [...files] --bundle
-```
-
-`dependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark specific package as external.
 
 ### Run a program
 
