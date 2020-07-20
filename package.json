@@ -13,7 +13,7 @@
     "url": "https://github.com/egoist/tsup.git"
   },
   "scripts": {
-    "build": "rm -rf dist && tsup src/cli.ts src/index.ts src/rollup.ts --external typescript --bundle --dts",
+    "build": "rm -rf dist && tsup src/cli.ts src/index.ts src/rollup.ts --dts",
     "prepublishOnly": "npm run build",
     "test": "npm run build && jest"
   },
@@ -39,7 +39,7 @@
     "prettier": "^2.0.5",
     "rollup-plugin-hashbang": "^2.2.2",
     "ts-jest": "^26.1.2",
-    "tsup": "^2.1.0",
+    "tsup": "^3.0.0",
     "typescript": "^3.9.6"
   }
 }
