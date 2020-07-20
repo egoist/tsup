@@ -31,7 +31,7 @@ async function main() {
     .option('--watch', 'Watch mode')
     .option('--define.* <value>', 'Define compile-time constants')
     .option('--external <name>', 'Mark specific packages as external')
-    .option('--global-name <name>', 'Global variable name (with with --format iife)')
+    .option('--global-name <name>', 'Global variable name for iife format')
     .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
       default: 'React.createElement',
     })
