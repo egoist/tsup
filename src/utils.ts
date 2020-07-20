@@ -1,11 +1,16 @@
 import JoyCon from 'joycon'
 
+const joycon = new JoyCon()
+
 // No backslash in path
 function slash(input: string) {
   return input.replace(/\\/g, '/')
 }
 
-export type External = string | RegExp | ((id: string, parentId?: string) => boolean)
+export type External =
+  | string
+  | RegExp
+  | ((id: string, parentId?: string) => boolean)
 
 export function isExternal(
   externals: External | External[],
@@ -41,6 +46,13 @@ export function isExternal(
 }
 
 export function resolveTsConfig(cwd: string) {
-  const joycon = new JoyCon()
   return joycon.resolveSync(['tsconfig.build.json', 'tsconfig.json'], cwd)
+}
+
+export async function getDeps(cwd: string) {
+  const { data } = await joycon.load(['package.json'], cwd)
+
+  const deps = Object.keys(data?.dependencies || {})
+
+  return deps
 }

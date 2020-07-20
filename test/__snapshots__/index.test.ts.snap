@@ -1,12 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`simple 1`] = `
-"'use strict';
+"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// foo.ts
+var foo_default = \\"foo\\";
 
-Object.defineProperty(exports, '__esModule', { value: true });
+// input.ts
+var input_default = foo_default;
 
-var foo2 = \\"foo\\";
 
-exports.default = foo2;
+exports.default = input_default;
 "
 `;

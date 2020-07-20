@@ -1,4 +1,4 @@
-import colors from 'kleur'
+import colors from 'chalk'
 
 export class PrettyError extends Error {
   constructor(message: string) {

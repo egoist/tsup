@@ -1,150 +1,186 @@
-import { ModuleFormat, InputOptions, OutputOptions } from 'rollup'
-import prettyBytes from 'pretty-bytes'
-import colors from 'kleur'
-import hashbangPlugin from 'rollup-plugin-hashbang'
-import tsPlugin from 'rollup-plugin-esbuild'
-import commonjsPlugin from '@rollup/plugin-commonjs'
-import jsonPlugin from '@rollup/plugin-json'
-import { sizePlugin, caches } from './size-plugin'
-import { resolvePlugin } from './resolve-plugin'
-import { isExternal, resolveTsConfig } from './utils'
+import fs from 'fs'
+import { dirname, join } from 'path'
+import { Worker } from 'worker_threads'
+import colors from 'chalk'
+import { Service, startService, BuildResult } from 'esbuild'
+import { getDeps, resolveTsConfig } from './utils'
+import { FSWatcher } from 'chokidar'
 
-type Options = {
-  // Bundle packages in node_modules
-  bundle?: boolean
-  // Generate .d.ts file
-  dts?: boolean
-  // Bundle .d.ts files in node_modules
-  dtsBundle?: boolean
+const textDecoder = new TextDecoder('utf-8')
+
+export type Format = 'cjs' | 'esm' | 'iife'
+
+export type Options = {
+  entryPoints: string[]
+  /**
+   * Compile target, like `es2018`
+   */
   target?: string
   minify?: boolean
   watch?: boolean
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string
-  format: ModuleFormat
-  moduleName?: string
+  format: Format[]
+  globalName?: string
   define?: {
     [k: string]: string
   }
+  dts?: boolean
   /** Don't bundle these packages */
   external?: string[]
-  inlineDynamicImports?: boolean
 }
 
-export async function createRollupConfigs(files: string[], options: Options) {
-  if (options.dtsBundle) {
-    options.dts = true
+const services: Map<string, Service> = new Map()
+
+export const makeLabel = (input: string, type: 'info' | 'success' | 'error') =>
+  colors[type === 'info' ? 'bgBlue' : type === 'error' ? 'bgRed' : 'bgGreen'](
+    colors.black(` ${input.toUpperCase()} `)
+  )
+
+export async function runEsbuild(
+  options: Options,
+  { format }: { format: Format }
+): Promise<() => Promise<BuildResult | void>> {
+  let service = services.get(format)
+  if (!service) {
+    service = await startService()
+    services.set(format, service)
   }
-
-  const tsconfig = resolveTsConfig(process.cwd()) || undefined
-
-  if (tsconfig) {
-    console.log(`Using tsconfig: ${tsconfig}`)
-  }
-
-  const getRollupConfig = async ({
-    dts,
-    dtsBundle,
-  }: {
-    dts?: boolean
-    dtsBundle?: boolean
-  }): Promise<{
-    name: string
-    inputConfig: InputOptions
-    outputConfig: OutputOptions
-  }> => {
-    const compilerOptions: any = {
-      module: 'esnext',
-    }
-
-    if (dts) {
-      compilerOptions.declaration = false
-    }
-
-    return {
-      name: `dts: ${dts}, bundle: ${options.bundle}`,
-      inputConfig: {
-        input: files,
-        preserveEntrySignatures: 'strict',
-        inlineDynamicImports: options.inlineDynamicImports,
-        onwarn(warning, handler) {
-          if (
-            warning.code === 'UNRESOLVED_IMPORT' ||
-            warning.code === 'CIRCULAR_DEPENDENCY'
-          ) {
-            return
-          }
-          return handler(warning)
-        },
-        plugins: [
-          hashbangPlugin(),
-          jsonPlugin(),
-          !dts &&
-            tsPlugin({
-              target: options.target,
-              watch: options.watch,
-              minify: options.minify,
-              jsxFactory: options.jsxFactory,
-              jsxFragment: options.jsxFragment,
-              define: options.define,
-              tsconfig
-            }),
-          (!dts || dtsBundle) &&
-            resolvePlugin({
-              bundle: options.bundle,
-              external: options.external,
-              dtsBundle: dtsBundle,
-            }),
-          !dts &&
-            commonjsPlugin({
-              // @ts-ignore wrong typing in @rollup/plugin-commonjs
-              ignore: (name: string) => {
-                if (!options.external) {
-                  return false
-                }
-                return isExternal(options.external, name)
-              },
-            }),
-          dts &&
-            (await import('rollup-plugin-dts').then((res) => res.default())),
-          sizePlugin(),
-        ].filter(Boolean),
-      },
-      outputConfig: {
-        dir: options.outDir || 'dist',
-        format: options.format || 'cjs',
-        exports: 'named',
-        name: options.moduleName,
-      },
-    }
-  }
-  const rollupConfigs = [await getRollupConfig({})]
-
-  if (options.dts) {
-    rollupConfigs.push(
-      await getRollupConfig({ dts: true, dtsBundle: options.dtsBundle })
-    )
-  }
-
-  return rollupConfigs
-}
-
-export function printSizes() {
-  const result: Map<string, number> = new Map()
-  for (const cache of caches.values()) {
-    for (const [filename, getSize] of cache.entries()) {
-      result.set(filename, getSize())
-    }
-  }
-  const maxNameLength = [...result.keys()].sort((a, b) =>
-    a.length > b.length ? -1 : 1
-  )[0].length
-  for (const [filename, size] of result.entries()) {
+  const deps = await getDeps(process.cwd())
+  const external = [...deps, ...(options.external || [])]
+  const outDir = options.outDir || 'dist'
+  const runService = async () => {
+    console.log(`${makeLabel(format, 'info')} Build start`)
+    const startTime = Date.now()
+    const result =
+      service &&
+      (await service.build({
+        entryPoints: options.entryPoints,
+        format: format === 'cjs' ? 'esm' : format,
+        bundle: true,
+        platform: 'node',
+        globalName: options.globalName,
+        jsxFactory: options.jsxFactory,
+        jsxFragment: options.jsxFragment,
+        define: options.define,
+        external,
+        outdir: format === 'cjs' ? outDir : join(outDir, format),
+        write: false,
+        splitting: format === 'cjs' || format === 'esm',
+      }))
+    const timeInMs = Date.now() - startTime
     console.log(
-      `${colors.bold(filename.padEnd(maxNameLength))} - ${colors.green(
-        prettyBytes(size)
-      )}`
+      `${makeLabel(format, 'success')} Build success in ${Math.floor(
+        timeInMs
+      )}ms`
     )
+    return result
+  }
+  let result
+  try {
+    result = await runService()
+  } catch (error) {
+    console.error(`${makeLabel(format, 'error')} Build failed`)
+    return runService
+  }
+  // Manually write files
+  if (result && result.outputFiles) {
+    const { transform } = await import('sucrase')
+    await Promise.all(
+      result.outputFiles.map(async (file) => {
+        const dir = dirname(file.path)
+        const outPath = file.path
+        await fs.promises.mkdir(dir, { recursive: true })
+        let mode: number | undefined
+        if (file.contents[0] === 35 && file.contents[1] === 33) {
+          mode = 0o755
+        }
+        // Cause we need to transform to code from esm to cjs first
+        if (format === 'cjs' && outPath.endsWith('.js')) {
+          const content = transform(textDecoder.decode(file.contents), {
+            transforms: ['imports'],
+          })
+          await fs.promises.writeFile(outPath, content.code, {
+            encoding: 'utf8',
+            mode,
+          })
+        } else {
+          await fs.promises.writeFile(outPath, file.contents, {
+            mode,
+          })
+        }
+      })
+    )
+  }
+  return runService
+}
+
+function stopServices() {
+  for (const [name, service] of services.entries()) {
+    service.stop()
+    services.delete(name)
+  }
+}
+
+export async function build(options: Options) {
+  let watcher: FSWatcher | undefined
+  let runServices: Array<() => Promise<BuildResult | void>> | undefined
+
+  const startWatcher = async () => {
+    const { watch } = await import('chokidar')
+    watcher =
+      watcher ||
+      watch(
+        [
+          ...options.entryPoints.map((entry) =>
+            join(dirname(entry), '**/*.{ts,tsx,js,jsx,mjs,json}')
+          ),
+          '!**/{dist,node_modules}/**',
+          options.outDir ? `!${join(options.outDir, '**')}` : '',
+        ].filter(Boolean),
+        {
+          ignoreInitial: true,
+        }
+      ).on('all', async () => {
+        if (runServices) {
+          await Promise.all(runServices.map((runService) => runService()))
+        }
+      })
+  }
+
+  try {
+    const tsconfig = resolveTsConfig(process.cwd())
+    if (tsconfig) {
+      console.log(makeLabel('CLI', 'info'), `Using tsconfig: ${tsconfig}`)
+    }
+
+    runServices = await Promise.all([
+      ...options.format.map((format) => runEsbuild(options, { format })),
+    ])
+    if (options.dts) {
+      // Run rollup in a worker so it doesn't block the event loop
+      const worker = new Worker(join(__dirname, 'rollup.js'))
+      worker.postMessage({
+        options,
+      })
+      worker.on('message', data => {
+        if (data === 'exit') {
+          worker.unref()
+        }
+      })
+    }
+    if (options.watch) {
+      await startWatcher()
+    } else {
+      stopServices()
+    }
+  } catch (error) {
+    if (!options.watch) {
+      stopServices()
+    } else {
+      startWatcher()
+    }
+    throw error
   }
 }
