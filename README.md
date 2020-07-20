@@ -66,13 +66,6 @@ dist
 └── index.js
 ```
 
-
-### Run a program
-
-```bash
-tsup run main.ts
-```
-
 ---
 
 For more details:

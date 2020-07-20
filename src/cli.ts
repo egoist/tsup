@@ -56,13 +56,6 @@ async function main() {
       })
     })
 
-  cli
-    .command('run <file>', 'Bundle and execute a file', {
-      allowUnknownOptions: true,
-    })
-    .option('--define.* <value>', 'Define compile-time constants')
-    .action(async (file: string, options) => {})
-
   cli.help()
 
   const pkgPath = join(__dirname, '../package.json')
