@@ -20,7 +20,7 @@ async function main() {
       ignoreOptionDefaultValue: true,
     })
     .option('-d, --out-dir <dir>', 'Output directory', { default: 'dist' })
-    .option('--format <format>', 'Bundle format, "cjs", "iife", "umd", "esm"', {
+    .option('--format <format>', 'Bundle format, "cjs", "iife", "esm"', {
       default: 'cjs',
     })
     .option('--minify', 'Minify bundle')
@@ -28,11 +28,10 @@ async function main() {
       default: 'es2017',
     })
     .option('--dts', 'Generate declaration file')
-    .option('--dts-bundle', 'Bundle types from node_modules')
     .option('--watch', 'Watch mode')
     .option('--define.* <value>', 'Define compile-time constants')
     .option('--external <name>', 'Mark specific packages as external')
-    .option('--module-name <name>', 'Module name (with with --format umd)')
+    .option('--global-name <name>', 'Global variable name (with with --format iife)')
     .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
       default: 'React.createElement',
     })

@@ -45,6 +45,27 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`.
 
 If you want to bundle types from `node_modules` as well, use the `--dts-bundle` flag instead, which implicitly set `--dts` flag as well. (Note that this is experimental.)
 
+### Bundle formats
+
+Supported format: `esm`, `cjs`, (default) and `iife`.
+
+You can bundle in multiple format in one go:
+
+```bash
+tsup src/index.ts --format esm,cjs,iife
+```
+
+That will output files in following folder structure:
+
+```bash
+dist
+├── esm
+│   └── index.js
+├── iife
+│   └── index.js
+└── index.js
+```
+
 
 ### Run a program
 
