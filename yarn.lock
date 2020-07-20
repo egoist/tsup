@@ -1315,9 +1315,9 @@ esbuild@^0.6.3:
   integrity sha512-4lHgz/EvGLRQnDYzzrvW+eilaPHim5pCLz4mP0k0QIalD/n8Ji2NwQwoIa1uX+yKkbn9R/FAZvaEbodjx55rDg==
 
 esbuild@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.6.4.tgz#39dafe0cd6fd98d606fe4510cf9decfa161ed351"
-  integrity sha512-WWicY5Lc19K8C+PfrW3wGHXoqqQ5bJrS4pqTK8rYjEFwOAKkXjoPVJk0WhUXlm9May2P+jQBSsJNkx6QAC1yzA==
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.6.5.tgz#efbe11cf51abd0d4d489ca1bc80fd4761a35bd16"
+  integrity sha512-glMZd0b6W2soHuUuchM6c55e6gbdDhVpvYcmLsH3OJo87hQZcb3lFPZAJ5MbzLCJa2bChQOaoC4bqVtbqfsM/A==
 
 escape-string-regexp@^1.0.5:
   version "1.0.5"

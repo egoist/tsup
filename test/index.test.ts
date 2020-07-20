@@ -44,13 +44,13 @@ runTest('simple', {
   'foo.ts': `export default 'foo'`,
 })
 
-// runTest(
-//   'bundle graphql-tools with dts bundle',
-//   {
-//     'input.ts': `export { makeExecutableSchema, SchemaDirectiveVisitor } from 'graphql-tools'`,
-//   },
-//   {
-//     flags: ['--bundle', '--dts-bundle'],
-//     snapshot: false,
-//   }
-// )
+runTest(
+  'bundle graphql-tools with --dts flag',
+  {
+    'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
+  },
+  {
+    snapshot: false,
+    flags: ['--dts']
+  }
+)
