@@ -23,7 +23,7 @@
     "chokidar": "^3.4.1",
     "esbuild": "^0.6.4",
     "joycon": "^2.2.5",
-    "rollup": "^2.21.0",
+    "rollup": "^2.22.1",
     "rollup-plugin-dts": "^1.4.8",
     "sucrase": "^3.15.0"
   },
