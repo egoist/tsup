@@ -18,7 +18,7 @@
     "test": "npm run build && jest"
   },
   "dependencies": {
-    "cac": "^6.5.13",
+    "cac": "^6.6.1",
     "chalk": "^4.1.0",
     "chokidar": "^3.4.1",
     "esbuild": "^0.6.4",
