@@ -30,6 +30,14 @@ tsup [...files]
 
 Files are written into `./dist`.
 
+You can bundle multiple files in one go:
+
+```bash
+tsup src/index.ts src/cli.ts
+```
+
+Code splitting is enabled by default and supported in `cjs` and `esm` format.
+
 ### Excluding packages
 
 
@@ -64,6 +72,12 @@ dist
 ├── iife
 │   └── index.js
 └── index.js
+```
+
+### Watch mode
+
+```bash
+tsup src/index.ts --watch
 ```
 
 ---
