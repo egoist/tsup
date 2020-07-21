@@ -43,7 +43,7 @@ export const makeLabel = (input: string, type: 'info' | 'success' | 'error') =>
 export async function runEsbuild(
   options: Options,
   { format }: { format: Format }
-): Promise<() => Promise<BuildResult | void>> {
+): Promise<BuildResult | undefined> {
   let service = services.get(format)
   if (!service) {
     service = await startService()
@@ -52,12 +52,15 @@ export async function runEsbuild(
   const deps = await getDeps(process.cwd())
   const external = [...deps, ...(options.external || [])]
   const outDir = options.outDir || 'dist'
-  const runService = async () => {
-    console.log(`${makeLabel(format, 'info')} Build start`)
-    const startTime = Date.now()
-    const result =
-      service &&
-      (await service.build({
+
+  console.log(`${makeLabel(format, 'info')} Build start`)
+  const startTime = Date.now()
+
+  let result: BuildResult | undefined
+
+  if (service) {
+    try {
+      result = await service.build({
         entryPoints: options.entryPoints,
         format: format === 'cjs' ? 'esm' : format,
         bundle: true,
@@ -71,25 +74,22 @@ export async function runEsbuild(
         outdir: format === 'cjs' ? outDir : join(outDir, format),
         write: false,
         splitting: format === 'cjs' || format === 'esm',
-        logLevel: 'error'
-      }))
+        logLevel: 'error',
+      })
+    } catch (error) {
+      console.error(`${makeLabel(format, 'error')} Build failed`)
+    }
+  }
+
+  // Manually write files
+  if (result && result.outputFiles) {
     const timeInMs = Date.now() - startTime
     console.log(
       `${makeLabel(format, 'success')} Build success in ${Math.floor(
         timeInMs
       )}ms`
     )
-    return result
-  }
-  let result
-  try {
-    result = await runService()
-  } catch (error) {
-    console.error(`${makeLabel(format, 'error')} Build failed`)
-    return runService
-  }
-  // Manually write files
-  if (result && result.outputFiles) {
+
     const { transform } = await import('sucrase')
     await Promise.all(
       result.outputFiles.map(async (file) => {
@@ -133,7 +133,8 @@ export async function runEsbuild(
       })
     )
   }
-  return runService
+
+  return result
 }
 
 function stopServices() {
@@ -165,11 +166,13 @@ export async function build(options: Options) {
           ignoreInitial: true,
         }
       ).on('all', async () => {
-        if (runServices) {
-          await Promise.all(runServices.map((runService) => runService()))
-        }
+        await buildAll()
       })
   }
+
+  const buildAll = () => Promise.all([
+    ...options.format.map((format) => runEsbuild(options, { format })),
+  ])
 
   try {
     const tsconfig = await loadTsConfig(process.cwd())
@@ -190,10 +193,7 @@ export async function build(options: Options) {
       options.target = 'es2018'
     }
     console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
-
-    runServices = await Promise.all([
-      ...options.format.map((format) => runEsbuild(options, { format })),
-    ])
+    
     if (options.dts) {
       // Run rollup in a worker so it doesn't block the event loop
       const worker = new Worker(join(__dirname, 'rollup.js'))
@@ -206,6 +206,9 @@ export async function build(options: Options) {
         }
       })
     }
+
+    await buildAll()
+
     if (options.watch) {
       await startWatcher()
     } else {
