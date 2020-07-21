@@ -24,14 +24,16 @@ function runTest(
         return fs.outputFile(join(testDir, name), files[name], 'utf8')
       })
     )
-    const { exitCode } = await execa(
+    const { exitCode, stdout, stderr } = await execa(
       bin,
       ['input.ts', ...(options.flags || [])],
       {
         cwd: testDir,
       }
     )
-    expect(exitCode).toBe(0)
+    if (exitCode !== 0) {
+      throw new Error(stdout + stderr)
+    }
     if (options.snapshot !== false) {
       const output = await fs.readFile(join(testDir, 'dist/input.js'), 'utf8')
       expect(output).toMatchSnapshot()
@@ -51,6 +53,24 @@ runTest(
   },
   {
     snapshot: false,
-    flags: ['--dts']
+    flags: ['--dts'],
+  }
+)
+
+runTest(
+  'es5 target',
+  {
+    'input.ts': `
+  export class Foo {
+    hi (): void {
+      let a = () => 'foo'
+
+      console.log(a())
+    }
+  }
+  `,
+  },
+  {
+    flags: ['--target', 'es5'],
   }
 )

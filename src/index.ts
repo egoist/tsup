@@ -2,9 +2,11 @@ import fs from 'fs'
 import { dirname, join } from 'path'
 import { Worker } from 'worker_threads'
 import colors from 'chalk'
+import { transform as transformToEs5 } from 'buble'
 import { Service, startService, BuildResult } from 'esbuild'
-import { getDeps, resolveTsConfig } from './utils'
+import { getDeps, loadTsConfig } from './utils'
 import { FSWatcher } from 'chokidar'
+import { PrettyError } from './errors'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -63,11 +65,13 @@ export async function runEsbuild(
         globalName: options.globalName,
         jsxFactory: options.jsxFactory,
         jsxFragment: options.jsxFragment,
+        target: options.target === 'es5' ? 'es2016' : options.target,
         define: options.define,
         external,
         outdir: format === 'cjs' ? outDir : join(outDir, format),
         write: false,
         splitting: format === 'cjs' || format === 'esm',
+        logLevel: 'error'
       }))
     const timeInMs = Date.now() - startTime
     console.log(
@@ -91,25 +95,41 @@ export async function runEsbuild(
       result.outputFiles.map(async (file) => {
         const dir = dirname(file.path)
         const outPath = file.path
+        if (!outPath.endsWith('.js')) return
         await fs.promises.mkdir(dir, { recursive: true })
         let mode: number | undefined
         if (file.contents[0] === 35 && file.contents[1] === 33) {
           mode = 0o755
         }
-        // Cause we need to transform to code from esm to cjs first
-        if (format === 'cjs' && outPath.endsWith('.js')) {
-          const content = transform(textDecoder.decode(file.contents), {
-            transforms: ['imports'],
-          })
-          await fs.promises.writeFile(outPath, content.code, {
-            encoding: 'utf8',
-            mode,
-          })
-        } else {
-          await fs.promises.writeFile(outPath, file.contents, {
-            mode,
-          })
+        let contents = textDecoder.decode(file.contents)
+        if (options.target === 'es5') {
+          try {
+            contents = transformToEs5(contents, {
+              source: file.path,
+              file: file.path,
+              transforms: {
+                modules: false,
+                arrow: true,
+                dangerousTaggedTemplateString: true,
+                spreadRest: true,
+              },
+            }).code
+          } catch (error) {
+            throw new PrettyError(
+              `Error compiling to es5 target:\n${error.snippet}`
+            )
+          }
         }
+        // Cause we need to transform to code from esm to cjs first
+        if (format === 'cjs') {
+          contents = transform(contents, {
+            transforms: ['imports'],
+          }).code
+        }
+        await fs.promises.writeFile(outPath, contents, {
+          encoding: 'utf8',
+          mode,
+        })
       })
     )
   }
@@ -124,6 +144,8 @@ function stopServices() {
 }
 
 export async function build(options: Options) {
+  options = { ...options }
+
   let watcher: FSWatcher | undefined
   let runServices: Array<() => Promise<BuildResult | void>> | undefined
 
@@ -150,10 +172,24 @@ export async function build(options: Options) {
   }
 
   try {
-    const tsconfig = resolveTsConfig(process.cwd())
-    if (tsconfig) {
-      console.log(makeLabel('CLI', 'info'), `Using tsconfig: ${tsconfig}`)
+    const tsconfig = await loadTsConfig(process.cwd())
+    if (tsconfig.path && tsconfig.data) {
+      console.log(makeLabel('CLI', 'info'), `Using tsconfig: ${tsconfig.path}`)
+      if (!options.target) {
+        options.target = tsconfig.data.compilerOptions?.target
+      }
+      if (!options.jsxFactory) {
+        options.jsxFactory = tsconfig.data.compilerOptions?.jsxFactory
+      }
+      if (!options.jsxFragment) {
+        options.jsxFragment = tsconfig.data.compilerOptions?.jsxFragmentFactory
+      }
     }
+
+    if (!options.target) {
+      options.target = 'es2018'
+    }
+    console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
 
     runServices = await Promise.all([
       ...options.format.map((format) => runEsbuild(options, { format })),
@@ -164,7 +200,7 @@ export async function build(options: Options) {
       worker.postMessage({
         options,
       })
-      worker.on('message', data => {
+      worker.on('message', (data) => {
         if (data === 'exit') {
           worker.unref()
         }

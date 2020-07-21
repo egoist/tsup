@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-json": "^4.1.0",
+    "@types/buble": "^0.19.2",
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^26.0.5",
     "@types/node": "^14.0.23",
@@ -40,6 +41,8 @@
     "rollup-plugin-hashbang": "^2.2.2",
     "ts-jest": "^26.1.3",
     "tsup": "^3.0.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "strip-json-comments": "^3.1.1",
+    "buble": "^0.20.0"
   }
 }

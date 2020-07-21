@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`es5 target 1`] = `
+"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+var Foo = function Foo () {};
+
+Foo.prototype.hi = function hi () {
+  var a = function () { return \\"foo\\"; };
+  console.log(a());
+};
+
+
+exports.Foo = Foo;
+"
+`;
+
 exports[`simple 1`] = `
 "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// foo.ts
 var foo_default = \\"foo\\";

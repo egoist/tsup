@@ -1,6 +1,18 @@
+import fs from 'fs'
 import JoyCon from 'joycon'
+import stripJsonComments from 'strip-json-comments'
 
 const joycon = new JoyCon()
+
+joycon.addLoader({
+  test: /\.json$/,
+  async load(filepath) {
+    const content = stripJsonComments(
+      await fs.promises.readFile(filepath, 'utf8')
+    )
+    return JSON.parse(content)
+  },
+})
 
 // No backslash in path
 function slash(input: string) {
@@ -45,8 +57,8 @@ export function isExternal(
   return false
 }
 
-export function resolveTsConfig(cwd: string) {
-  return joycon.resolveSync(['tsconfig.build.json', 'tsconfig.json'], cwd)
+export function loadTsConfig(cwd: string) {
+  return joycon.load(['tsconfig.build.json', 'tsconfig.json'], cwd)
 }
 
 export async function getDeps(cwd: string) {
