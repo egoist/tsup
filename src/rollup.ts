@@ -92,6 +92,6 @@ parentPort?.on('message', async (data: { options: Options }) => {
     watchRollup(config)
   } else {
     await runRollup(config)
-    parentPort?.postMessage('exit')
+    parentPort?.close()
   }
 })

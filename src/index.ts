@@ -170,9 +170,10 @@ export async function build(options: Options) {
       })
   }
 
-  const buildAll = () => Promise.all([
-    ...options.format.map((format) => runEsbuild(options, { format })),
-  ])
+  const buildAll = () =>
+    Promise.all([
+      ...options.format.map((format) => runEsbuild(options, { format })),
+    ])
 
   try {
     const tsconfig = await loadTsConfig(process.cwd())
@@ -193,17 +194,12 @@ export async function build(options: Options) {
       options.target = 'es2018'
     }
     console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
-    
+
     if (options.dts) {
       // Run rollup in a worker so it doesn't block the event loop
       const worker = new Worker(join(__dirname, 'rollup.js'))
       worker.postMessage({
         options,
-      })
-      worker.on('message', (data) => {
-        if (data === 'exit') {
-          worker.unref()
-        }
       })
     }
 
