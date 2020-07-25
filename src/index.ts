@@ -105,6 +105,7 @@ export async function runEsbuild(
         write: false,
         splitting: format === 'cjs' || format === 'esm',
         logLevel: 'error',
+        minify: options.minify,
       })
     } catch (error) {
       console.error(`${makeLabel(format, 'error')} Build failed`)
