@@ -6,6 +6,7 @@ import { transform as transformToEs5 } from 'buble'
 import { Service, startService, BuildResult } from 'esbuild'
 import { getDeps, loadTsConfig, loadPkg } from './utils'
 import { FSWatcher } from 'chokidar'
+import glob from 'fast-glob'
 import { PrettyError } from './errors'
 
 const textDecoder = new TextDecoder('utf-8')
@@ -177,8 +178,9 @@ function stopServices() {
 export async function build(options: Options) {
   options = { ...options }
 
+  options.entryPoints = await glob(options.entryPoints)
+
   let watcher: FSWatcher | undefined
-  let runServices: Array<() => Promise<BuildResult | void>> | undefined
 
   const startWatcher = async () => {
     const { watch } = await import('chokidar')
