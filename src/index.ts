@@ -1,10 +1,10 @@
 import fs from 'fs'
-import { dirname, join } from 'path'
+import { dirname, join, extname } from 'path'
 import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import { transform as transformToEs5 } from 'buble'
 import { Service, startService, BuildResult } from 'esbuild'
-import { getDeps, loadTsConfig } from './utils'
+import { getDeps, loadTsConfig, loadPkg } from './utils'
 import { FSWatcher } from 'chokidar'
 import { PrettyError } from './errors'
 
@@ -40,6 +40,24 @@ export const makeLabel = (input: string, type: 'info' | 'success' | 'error') =>
     colors.black(` ${input.toUpperCase()} `)
   )
 
+const getOutputExtensionMap = (
+  pkgTypeField: string | undefined,
+  format: Format
+) => {
+  const isModule = pkgTypeField === 'module'
+  const map: any = {}
+  if (isModule && format === 'cjs') {
+    map['.js'] = '.cjs'
+  }
+  if (!isModule && format === 'esm') {
+    map['.js'] = '.mjs'
+  }
+  if (format === 'iife') {
+    map['.js'] = '.global.js'
+  }
+  return map
+}
+
 export async function runEsbuild(
   options: Options,
   { format }: { format: Format }
@@ -49,9 +67,12 @@ export async function runEsbuild(
     service = await startService()
     services.set(format, service)
   }
+  const pkg = await loadPkg(process.cwd())
   const deps = await getDeps(process.cwd())
   const external = [...deps, ...(options.external || [])]
   const outDir = options.outDir || 'dist'
+
+  const outExtension = getOutputExtensionMap(pkg.type, format)
 
   console.log(`${makeLabel(format, 'info')} Build start`)
   const startTime = Date.now()
@@ -71,7 +92,8 @@ export async function runEsbuild(
         target: options.target === 'es5' ? 'es2016' : options.target,
         define: options.define,
         external,
-        outdir: format === 'cjs' ? outDir : join(outDir, format),
+        outdir: outDir,
+        outExtension: outExtension,
         write: false,
         splitting: format === 'cjs' || format === 'esm',
         logLevel: 'error',
@@ -95,7 +117,8 @@ export async function runEsbuild(
       result.outputFiles.map(async (file) => {
         const dir = dirname(file.path)
         const outPath = file.path
-        if (!outPath.endsWith('.js')) return
+        const ext = extname(outPath)
+        if (ext !== '.js' && ext !== outExtension['.js']) return
         await fs.promises.mkdir(dir, { recursive: true })
         let mode: number | undefined
         if (file.contents[0] === 35 && file.contents[1] === 33) {

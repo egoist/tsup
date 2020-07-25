@@ -1,6 +1,7 @@
 import { join } from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
+import glob from 'fast-glob'
 
 jest.setTimeout(60000)
 
@@ -36,7 +37,11 @@ function runTest(
     }
     if (options.snapshot !== false) {
       const output = await fs.readFile(join(testDir, 'dist/input.js'), 'utf8')
-      expect(output).toMatchSnapshot()
+      expect(output).toMatchSnapshot('output file')
+      const files = await glob('**/*', {
+        cwd: join(testDir, 'dist'),
+      })
+      expect(files).toMatchSnapshot('output file list')
     }
   })
 }
@@ -72,5 +77,30 @@ runTest(
   },
   {
     flags: ['--target', 'es5'],
+  }
+)
+
+runTest(
+  'multiple formats',
+  {
+    'input.ts': `
+  export const a = 1
+  `,
+  },
+  {
+    flags: ['--format', 'esm,cjs,iife'],
+  }
+)
+
+runTest(
+  'multiple formats and pkg.type is module',
+  {
+    'input.ts': `
+  export const a = 1
+  `,
+    'package.json': JSON.stringify({ type: 'module' }),
+  },
+  {
+    flags: ['--format', 'esm,cjs,iife'],
   }
 )

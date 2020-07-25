@@ -40,7 +40,6 @@ Code splitting is enabled by default and supported in `cjs` and `esm` format.
 
 ### Excluding packages
 
-
 By default tsup bundles all `import`-ed modules but `dependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark other packages as external.
 
 ### Generate declaration file
@@ -65,12 +64,21 @@ That will output files in following folder structure:
 
 ```bash
 dist
-├── esm
-│   └── index.js
-├── iife
-│   └── index.js
-└── index.js
+├── index.mjs         # esm
+├── index.global.js   # iife
+└── index.js          # cjs
 ```
+
+If the `type` field in your `package.json` is set to `module`, the filenames will be slightly different:
+
+```bash
+dist
+├── index.js          # esm
+├── index.global.js   # iife
+└── index.cjs         # cjs
+```
+
+Read more about [`esm` support in Node.js](https://nodejs.org/api/esm.html#esm_enabling).
 
 ### ES5 support
 

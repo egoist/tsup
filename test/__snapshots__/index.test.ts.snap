@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`es5 target 1`] = `
+exports[`es5 target: output file 1`] = `
 "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
 var Foo = function Foo () {};
 
@@ -14,7 +14,47 @@ exports.Foo = Foo;
 "
 `;
 
-exports[`simple 1`] = `
+exports[`es5 target: output file list 1`] = `
+Array [
+  "input.js",
+]
+`;
+
+exports[`multiple formats and pkg.type is module: output file 1`] = `
+"// input.ts
+const a = 1;
+export {
+  a
+};
+"
+`;
+
+exports[`multiple formats and pkg.type is module: output file list 1`] = `
+Array [
+  "input.cjs",
+  "input.global.js",
+  "input.js",
+]
+`;
+
+exports[`multiple formats: output file 1`] = `
+"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+const a = 1;
+
+
+exports.a = a;
+"
+`;
+
+exports[`multiple formats: output file list 1`] = `
+Array [
+  "input.global.js",
+  "input.js",
+  "input.mjs",
+]
+`;
+
+exports[`simple: output file 1`] = `
 "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// foo.ts
 var foo_default = \\"foo\\";
 
@@ -24,4 +64,10 @@ var input_default = foo_default;
 
 exports.default = input_default;
 "
+`;
+
+exports[`simple: output file list 1`] = `
+Array [
+  "input.js",
+]
 `;

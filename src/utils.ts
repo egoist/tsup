@@ -62,9 +62,14 @@ export function loadTsConfig(cwd: string) {
 }
 
 export async function getDeps(cwd: string) {
-  const { data } = await joycon.load(['package.json'], cwd)
+  const data = await loadPkg(cwd)
 
-  const deps = Object.keys(data?.dependencies || {})
+  const deps = Object.keys(data.dependencies || {})
 
   return deps
+}
+
+export async function loadPkg(cwd: string) {
+  const { data } = await joycon.load(['package.json'], cwd)
+  return data || {}
 }
