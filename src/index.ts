@@ -224,6 +224,11 @@ export async function build(options: Options) {
       worker.postMessage({
         options,
       })
+      worker.on('message', (data) => {
+        if (data === 'has-error') {
+          process.exitCode = 1
+        }
+      })
     }
 
     await buildAll()

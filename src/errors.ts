@@ -1,3 +1,4 @@
+import { isMainThread, parentPort } from 'worker_threads'
 import colors from 'chalk'
 
 export class PrettyError extends Error {
@@ -33,4 +34,7 @@ export function handlError(error: any) {
     }
   }
   process.exitCode = 1
+  if (!isMainThread && parentPort) {
+    parentPort.postMessage('has-error')
+  }
 }
