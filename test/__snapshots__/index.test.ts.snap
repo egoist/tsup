@@ -37,6 +37,23 @@ Array [
 ]
 `;
 
+exports[`multiple formats with legacy output: output file 1`] = `
+"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+const a = 1;
+
+
+exports.a = a;
+"
+`;
+
+exports[`multiple formats with legacy output: output file list 1`] = `
+Array [
+  "input.js",
+  "esm/input.js",
+  "iife/input.js",
+]
+`;
+
 exports[`multiple formats: output file 1`] = `
 "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
 const a = 1;

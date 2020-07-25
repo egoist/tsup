@@ -80,6 +80,23 @@ dist
 
 Read more about [`esm` support in Node.js](https://nodejs.org/api/esm.html#esm_enabling).
 
+If you don't want to extensions like `.mjs` or `.cjs`, e.g. you want your library to be used in a bundler (environment) that doesn't support those, you can enable `--legacy-output` flag:
+
+```bash
+tsup src/index.ts --format esm,cjs,iife --legacy-output
+```
+
+..which outputs to:
+
+```bash
+dist
+├── esm
+│   └── index.js
+├── iife
+│   └── index.js
+└── index.js
+```
+
 ### ES5 support
 
 You can use `--target es5` or `"target": "es5"` in `tsconfig.json` to compile the code down to es5, it's processed by [buble](http://buble.surge.sh/). Some features are NOT supported by this target, namely: `for .. of`.

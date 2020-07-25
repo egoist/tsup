@@ -27,6 +27,10 @@ async function main() {
     .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
       default: 'es2017',
     })
+    .option(
+      '--legacy-output',
+      'Output different formats to different folder instead of using different extensions'
+    )
     .option('--dts', 'Generate declaration file')
     .option('--watch', 'Watch mode')
     .option('--define.* <value>', 'Define compile-time constants')

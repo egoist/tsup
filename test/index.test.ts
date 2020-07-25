@@ -104,3 +104,16 @@ runTest(
     flags: ['--format', 'esm,cjs,iife'],
   }
 )
+
+runTest(
+  'multiple formats with legacy output',
+  {
+    'input.ts': `
+  export const a = 1
+  `,
+    'package.json': JSON.stringify({ type: 'module' }),
+  },
+  {
+    flags: ['--format', 'esm,cjs,iife', '--legacy-output'],
+  }
+)

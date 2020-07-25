@@ -15,6 +15,10 @@ export type Format = 'cjs' | 'esm' | 'iife'
 export type Options = {
   entryPoints: string[]
   /**
+   * Output different formats to differen folder instead of using different extensions
+   */
+  legacyOutput?: boolean
+  /**
    * Compile target, like `es2018`
    */
   target?: string
@@ -92,8 +96,11 @@ export async function runEsbuild(
         target: options.target === 'es5' ? 'es2016' : options.target,
         define: options.define,
         external,
-        outdir: outDir,
-        outExtension: outExtension,
+        outdir:
+          options.legacyOutput && format !== 'cjs'
+            ? join(outDir, format)
+            : outDir,
+        outExtension: options.legacyOutput ? undefined : outExtension,
         write: false,
         splitting: format === 'cjs' || format === 'esm',
         logLevel: 'error',
