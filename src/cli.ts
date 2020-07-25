@@ -24,6 +24,9 @@ async function main() {
       default: 'cjs',
     })
     .option('--minify', 'Minify bundle')
+    .option('--minify-whitespace', 'Minify whitespace')
+    .option('--minify-identifiers', 'Minify identifiers')
+    .option('--minify-syntax', 'Minify syntax')
     .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
       default: 'es2017',
     })
