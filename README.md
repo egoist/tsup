@@ -54,7 +54,7 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`.
 
 Supported format: `esm`, `cjs`, (default) and `iife`.
 
-You can bundle in multiple format in one go:
+You can bundle in multiple formats in one go:
 
 ```bash
 tsup src/index.ts --format esm,cjs,iife
