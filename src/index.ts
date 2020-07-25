@@ -24,6 +24,9 @@ export type Options = {
    */
   target?: string
   minify?: boolean
+  minifyWhitespace?: boolean
+  minifyIdentifiers?: boolean
+  minifySyntax?: boolean
   watch?: boolean
   jsxFactory?: string
   jsxFragment?: string
@@ -106,6 +109,9 @@ export async function runEsbuild(
         splitting: format === 'cjs' || format === 'esm',
         logLevel: 'error',
         minify: options.minify,
+        minifyWhitespace: options.minifyWhitespace,
+        minifyIdentifiers: options.minifyIdentifiers,
+        minifySyntax: options.minifySyntax,
       })
     } catch (error) {
       console.error(`${makeLabel(format, 'error')} Build failed`)
