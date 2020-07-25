@@ -1349,6 +1349,11 @@ esbuild@^0.6.4:
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.6.5.tgz#efbe11cf51abd0d4d489ca1bc80fd4761a35bd16"
   integrity sha512-glMZd0b6W2soHuUuchM6c55e6gbdDhVpvYcmLsH3OJo87hQZcb3lFPZAJ5MbzLCJa2bChQOaoC4bqVtbqfsM/A==
 
+esbuild@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.6.6.tgz#354227da80d9eb5ca855adb1217e1b4ef388dd67"
+  integrity sha512-eDnYl7ZT1kqkbvwY+sCuGC82cqRPuBRaU0Tqdx72wESLIjZNAF3plAtZBk1Ybku0U152Q1xWVvFpVdwVhhqDaw==
+
 escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
