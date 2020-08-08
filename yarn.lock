@@ -1385,10 +1385,10 @@ error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
-esbuild@^0.6.6:
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.6.6.tgz#354227da80d9eb5ca855adb1217e1b4ef388dd67"
-  integrity sha512-eDnYl7ZT1kqkbvwY+sCuGC82cqRPuBRaU0Tqdx72wESLIjZNAF3plAtZBk1Ybku0U152Q1xWVvFpVdwVhhqDaw==
+esbuild@^0.6.15, esbuild@^0.6.6:
+  version "0.6.15"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.6.15.tgz#08c425a34a1fcaa28a2822f590b6f4de366ab24d"
+  integrity sha512-A/F3YK+mTB8RVYcKK85iIzJArrkYrWEjLg82T6Kvku7KWzPd9XpOtHgOK4jkF0whXmnELHUhJlVcyxUItu2DQQ==
 
 escape-string-regexp@^1.0.5:
   version "1.0.5"
