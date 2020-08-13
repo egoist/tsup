@@ -21,7 +21,7 @@
     "cac": "^6.6.1",
     "chalk": "^4.1.0",
     "chokidar": "^3.4.2",
-    "esbuild": "^0.6.15",
+    "esbuild": "^0.6.19",
     "joycon": "^2.2.5",
     "rollup": "^2.23.1",
     "rollup-plugin-dts": "^1.4.10",
