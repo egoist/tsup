@@ -115,6 +115,7 @@ export async function runEsbuild(
       })
     } catch (error) {
       console.error(`${makeLabel(format, 'error')} Build failed`)
+      throw error
     }
   }
 
@@ -220,6 +221,9 @@ export async function build(options: Options) {
       console.log(makeLabel('CLI', 'info'), `Using tsconfig: ${tsconfig.path}`)
       if (!options.target) {
         options.target = tsconfig.data.compilerOptions?.target
+      }
+      if (options.target) {
+        options.target = options.target.toLowerCase()
       }
       if (!options.jsxFactory) {
         options.jsxFactory = tsconfig.data.compilerOptions?.jsxFactory
