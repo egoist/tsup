@@ -1,5 +1,7 @@
 # tsup
 
+[![npm version](https://badgen.net/npm/v/tsup)](https://npm.im/tsup) [![npm downloads](https://badgen.net/npm/dm/tsup)](https://npm.im/tsup)
+
 Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
 
 ## What can it bundle?
