@@ -38,6 +38,8 @@ You can bundle multiple files in one go:
 tsup src/index.ts src/cli.ts
 ```
 
+This will output `dist/index.js` and `dist/cli.js`.
+
 Code splitting is enabled by default and supported in `cjs` and `esm` format.
 
 ### Excluding packages
@@ -51,6 +53,8 @@ tsup index.ts --dts
 ```
 
 This will emit `./dist/index.js` and `./dist/index.d.ts`.
+
+If you set multiple entry files, each entry will get a corresponding `.d.ts` file.
 
 ### Bundle formats
 
