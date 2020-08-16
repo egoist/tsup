@@ -218,7 +218,12 @@ function stopServices() {
 export async function build(options: Options) {
   options = { ...options }
 
-  options.entryPoints = await glob(options.entryPoints)
+  const input = options.entryPoints
+  options.entryPoints = await glob(input)
+
+  if (options.entryPoints.length === 0) {
+    throw new PrettyError(`Cannot find ${input}`)
+  }
 
   let watcher: FSWatcher | undefined
 
