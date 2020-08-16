@@ -37,6 +37,7 @@ async function main() {
     )
     .option('--dts', 'Generate declaration file')
     .option('--watch', 'Watch mode')
+    .option('--env.* <value>', 'Define compile-time env variables')
     .option('--define.* <value>', 'Define compile-time constants')
     .option('--external <name>', 'Mark specific packages as external')
     .option('--global-name <name>', 'Global variable name for iife format')

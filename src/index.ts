@@ -33,6 +33,9 @@ export type Options = {
   outDir?: string
   format: Format[]
   globalName?: string
+  env?: {
+    [k: string]: string
+  }
   define?: {
     [k: string]: string
   }
@@ -83,6 +86,11 @@ export async function runEsbuild(
   const outDir = options.outDir || 'dist'
 
   const outExtension = getOutputExtensionMap(pkg.type, format)
+  const env: { [k: string]: string } = {
+    NODE_ENV:
+      options.minify || options.minifyWhitespace ? 'production' : 'development',
+    ...options.env,
+  }
 
   console.log(`${makeLabel(format, 'info')} Build start`)
   const startTime = Date.now()
@@ -100,7 +108,15 @@ export async function runEsbuild(
         jsxFactory: options.jsxFactory,
         jsxFragment: options.jsxFragment,
         target: options.target === 'es5' ? 'es2016' : options.target,
-        define: options.define,
+        define: {
+          ...options.define,
+          ...Object.keys(env).reduce((res, key) => {
+            return {
+              ...res,
+              [key]: JSON.stringify(env[key]),
+            }
+          }, {}),
+        },
         external,
         outdir:
           options.legacyOutput && format !== 'cjs'
