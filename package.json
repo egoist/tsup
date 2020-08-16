@@ -23,11 +23,13 @@
     "chokidar": "^3.4.2",
     "esbuild": "^0.6.19",
     "joycon": "^2.2.5",
+    "resolve-from": "^5.0.0",
     "rollup": "^2.23.1",
     "rollup-plugin-dts": "^1.4.10",
     "sucrase": "^3.15.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.1",
     "@rollup/plugin-json": "^4.1.0",
     "@types/buble": "^0.19.2",
     "@types/fs-extra": "^9.0.1",

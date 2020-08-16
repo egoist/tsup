@@ -1,6 +1,7 @@
 import fs from 'fs'
 import JoyCon from 'joycon'
 import stripJsonComments from 'strip-json-comments'
+import resovleFrom from 'resolve-from'
 
 const joycon = new JoyCon()
 
@@ -72,4 +73,9 @@ export async function getDeps(cwd: string) {
 export async function loadPkg(cwd: string) {
   const { data } = await joycon.load(['package.json'], cwd)
   return data || {}
+}
+
+export function getBabel(): null | typeof import('@babel/core') {
+  const p = resovleFrom.silent(process.cwd(), '@babel/core')
+  return p && require(p)
 }

@@ -4,7 +4,7 @@ import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import { transform as transformToEs5 } from 'buble'
 import { Service, startService, BuildResult } from 'esbuild'
-import { getDeps, loadTsConfig, loadPkg } from './utils'
+import { getDeps, loadTsConfig, loadPkg, getBabel } from './utils'
 import { FSWatcher } from 'chokidar'
 import glob from 'fast-glob'
 import { PrettyError } from './errors'
@@ -39,6 +39,8 @@ export type Options = {
   dts?: boolean
   /** Don't bundle these packages */
   external?: string[]
+  /** Transform the result with `@babel/core` */
+  babel?: boolean
 }
 
 const services: Map<string, Service> = new Map()
@@ -141,6 +143,20 @@ export async function runEsbuild(
           mode = 0o755
         }
         let contents = textDecoder.decode(file.contents)
+        if (options.babel) {
+          const babel = getBabel()
+          if (babel) {
+            contents = await babel
+              .transformAsync(contents, {
+                filename: file.path,
+              })
+              .then((res) => res?.code || contents)
+          } else {
+            throw new PrettyError(
+              `@babel/core is not found in ${process.cwd()}`
+            )
+          }
+        }
         if (options.target === 'es5') {
           try {
             contents = transformToEs5(contents, {
