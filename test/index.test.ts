@@ -131,3 +131,15 @@ runTest(
     flags: ['--minify'],
   }
 )
+
+runTest(
+  '--env flag',
+  {
+    'input.ts': `
+  export const env = process.env.NODE_ENV
+  `,
+  },
+  {
+    flags: ['--env.NODE_ENV', 'production'],
+  }
+)

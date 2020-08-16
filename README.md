@@ -107,6 +107,14 @@ dist
 
 You can use `--target es5` or `"target": "es5"` in `tsconfig.json` to compile the code down to es5, it's processed by [buble](http://buble.surge.sh/). Some features are NOT supported by this target, namely: `for .. of`.
 
+### Compile-time environment variables
+
+You can use `--env` flag to define compile-time environment variables:
+
+```bash
+tsup src/index.ts --env.NODE_ENV production
+```
+
 ### Building CLI app
 
 When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the outout file executable, so you don't have to run `chmod +x dist/cli.js`.

@@ -113,7 +113,7 @@ export async function runEsbuild(
           ...Object.keys(env).reduce((res, key) => {
             return {
               ...res,
-              [key]: JSON.stringify(env[key]),
+              [`process.env.${key}`]: JSON.stringify(env[key]),
             }
           }, {}),
         },

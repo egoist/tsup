@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`--env flag: output file 1`] = `
+"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+const env = \\"production\\";
+
+
+exports.env = env;
+"
+`;
+
+exports[`--env flag: output file list 1`] = `
+Array [
+  "input.js",
+]
+`;
+
 exports[`es5 target: output file 1`] = `
 "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
 var Foo = function Foo () {};
