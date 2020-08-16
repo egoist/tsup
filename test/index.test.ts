@@ -117,3 +117,17 @@ runTest(
     flags: ['--format', 'esm,cjs,iife', '--legacy-output'],
   }
 )
+
+runTest(
+  'minify',
+  {
+    'input.ts': `
+  export function foo() {
+    return 'foo'
+  }
+  `,
+  },
+  {
+    flags: ['--minify'],
+  }
+)

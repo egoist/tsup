@@ -20,6 +20,17 @@ Array [
 ]
 `;
 
+exports[`minify: output file 1`] = `
+"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});function a(){return\\"foo\\"}exports.foo = a;
+"
+`;
+
+exports[`minify: output file list 1`] = `
+Array [
+  "input.js",
+]
+`;
+
 exports[`multiple formats and pkg.type is module: output file 1`] = `
 "// input.ts
 const a = 1;
