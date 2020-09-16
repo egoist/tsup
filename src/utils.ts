@@ -65,7 +65,10 @@ export function loadTsConfig(cwd: string) {
 export async function getDeps(cwd: string) {
   const data = await loadPkg(cwd)
 
-  const deps = Object.keys(data.dependencies || {})
+  const deps = Array.from(new Set([
+    ...Object.keys(data.dependencies || {}),
+    ...Object.keys(data.peerDependencies || {})
+  ]))
 
   return deps
 }
