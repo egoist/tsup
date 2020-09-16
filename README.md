@@ -44,7 +44,7 @@ Code splitting is enabled by default and supported in `cjs` and `esm` format.
 
 ### Excluding packages
 
-By default tsup bundles all `import`-ed modules but `dependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark other packages as external.
+By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark other packages as external.
 
 ### Generate declaration file
 
