@@ -63,6 +63,17 @@ runTest(
 )
 
 runTest(
+  'bundle graphql-tools with --sourcemap flag',
+  {
+    'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
+  },
+  {
+    snapshot: false,
+    flags: ['--sourcemap'],
+  }
+)
+
+runTest(
   'es5 target',
   {
     'input.ts': `

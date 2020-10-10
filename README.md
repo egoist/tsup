@@ -56,6 +56,16 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`.
 
 If you set multiple entry files, each entry will get a corresponding `.d.ts` file.
 
+### Generate sourcemap file
+
+```bash
+tsup index.ts --sourcemap
+```
+
+This will emit `./dist/index.js` and `./dist/index.js.map`.
+
+If you set multiple entry files, each entry will get a corresponding `.map` file.
+
 ### Bundle formats
 
 Supported format: `esm`, `cjs`, (default) and `iife`.
