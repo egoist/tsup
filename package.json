@@ -24,7 +24,7 @@
     "esbuild": "^0.6.19",
     "joycon": "^2.2.5",
     "resolve-from": "^5.0.0",
-    "rollup": "^2.28.2",
+    "rollup": "^2.29.0",
     "rollup-plugin-dts": "^1.4.10",
     "sucrase": "^3.15.0"
   },
