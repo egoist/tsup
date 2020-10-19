@@ -26,7 +26,7 @@
     "resolve-from": "^5.0.0",
     "rollup": "^2.32.0",
     "rollup-plugin-dts": "^1.4.10",
-    "sucrase": "^3.15.0"
+    "sucrase": "^3.16.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
