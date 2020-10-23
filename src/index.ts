@@ -6,7 +6,7 @@ import { transform as transformToEs5 } from 'buble'
 import { Service, startService, BuildResult } from 'esbuild'
 import { getDeps, loadTsConfig, loadPkg, getBabel } from './utils'
 import { FSWatcher } from 'chokidar'
-import glob from 'fast-glob'
+import glob from 'globby'
 import { PrettyError } from './errors'
 
 const textDecoder = new TextDecoder('utf-8')
