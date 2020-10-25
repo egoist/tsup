@@ -1,7 +1,7 @@
 import { join } from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
-import glob from 'fast-glob'
+import glob from 'globby'
 
 jest.setTimeout(60000)
 
