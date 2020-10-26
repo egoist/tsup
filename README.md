@@ -125,6 +125,14 @@ When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` ts
 tsup src/index.ts --watch
 ```
 
+### Minify output
+
+You can also minify the output, resulting into lower bundle sizes by using the `--minify` flag.
+
+```bash
+tsup src/index.ts --minify
+```
+
 ### What about type checking?
 
 esbuild is fast because it doesn't perform any type checking, you already get type checking from your IDE like VS Code or WebStorm.
