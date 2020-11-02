@@ -38,7 +38,7 @@
     "@types/node": "^14.14.3",
     "@types/resolve": "^1.17.1",
     "buble": "^0.20.0",
-    "execa": "^4.0.3",
+    "execa": "^4.1.0",
     "fs-extra": "^9.0.1",
     "jest": "^26.6.1",
     "prettier": "^2.1.2",
