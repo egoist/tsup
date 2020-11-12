@@ -40,6 +40,7 @@ export type Options = {
     [k: string]: string
   }
   dts?: boolean
+  sourcemap?: boolean;
   /** Don't bundle these packages */
   external?: string[]
   /** Transform the result with `@babel/core` */
@@ -107,6 +108,7 @@ export async function runEsbuild(
         globalName: options.globalName,
         jsxFactory: options.jsxFactory,
         jsxFragment: options.jsxFragment,
+        sourcemap: options.sourcemap,
         target: options.target === 'es5' ? 'es2016' : options.target,
         define: {
           ...options.define,
@@ -152,50 +154,52 @@ export async function runEsbuild(
         const dir = dirname(file.path)
         const outPath = file.path
         const ext = extname(outPath)
-        if (ext !== '.js' && ext !== outExtension['.js']) return
+        const comeFromSource = ext === '.js' || ext === outExtension['.js']
         await fs.promises.mkdir(dir, { recursive: true })
         let mode: number | undefined
         if (file.contents[0] === 35 && file.contents[1] === 33) {
           mode = 0o755
         }
         let contents = textDecoder.decode(file.contents)
-        if (options.babel) {
-          const babel = getBabel()
-          if (babel) {
-            contents = await babel
-              .transformAsync(contents, {
-                filename: file.path,
-              })
-              .then((res) => res?.code || contents)
-          } else {
-            throw new PrettyError(
-              `@babel/core is not found in ${process.cwd()}`
-            )
+        if (comeFromSource) {
+          if (options.babel) {
+            const babel = getBabel()
+            if (babel) {
+              contents = await babel
+                .transformAsync(contents, {
+                  filename: file.path,
+                })
+                .then((res) => res?.code || contents)
+            } else {
+              throw new PrettyError(
+                `@babel/core is not found in ${process.cwd()}`
+              )
+            }
           }
-        }
-        if (options.target === 'es5') {
-          try {
-            contents = transformToEs5(contents, {
-              source: file.path,
-              file: file.path,
-              transforms: {
-                modules: false,
-                arrow: true,
-                dangerousTaggedTemplateString: true,
-                spreadRest: true,
-              },
+          if (options.target === 'es5') {
+            try {
+              contents = transformToEs5(contents, {
+                source: file.path,
+                file: file.path,
+                transforms: {
+                  modules: false,
+                  arrow: true,
+                  dangerousTaggedTemplateString: true,
+                  spreadRest: true,
+                },
+              }).code
+            } catch (error) {
+              throw new PrettyError(
+                `Error compiling to es5 target:\n${error.snippet}`
+              )
+            }
+          }
+          // Cause we need to transform to code from esm to cjs first
+          if (format === 'cjs') {
+            contents = transform(contents, {
+              transforms: ['imports'],
             }).code
-          } catch (error) {
-            throw new PrettyError(
-              `Error compiling to es5 target:\n${error.snippet}`
-            )
           }
-        }
-        // Cause we need to transform to code from esm to cjs first
-        if (format === 'cjs') {
-          contents = transform(contents, {
-            transforms: ['imports'],
-          }).code
         }
         await fs.promises.writeFile(outPath, contents, {
           encoding: 'utf8',
