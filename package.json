@@ -25,7 +25,7 @@
     "globby": "^11.0.1",
     "joycon": "^2.2.5",
     "resolve-from": "^5.0.0",
-    "rollup": "^2.33.1",
+    "rollup": "^2.33.3",
     "rollup-plugin-dts": "^1.4.10",
     "sucrase": "^3.16.0"
   },
