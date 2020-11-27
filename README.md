@@ -7,7 +7,7 @@ Bundle your TypeScript library with no config, powered by [esbuild](https://gith
 ## Quick Start
 
 ```bash
-tsup
+tsup src/index.ts
 ```
 
 This will bundle `src/index.ts` to `dist/index.js`.
