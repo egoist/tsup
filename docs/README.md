@@ -2,7 +2,7 @@ Bundle your TypeScript library with no config, powered by [esbuild](https://gith
 
 ## What can it bundle?
 
-Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. And TypeScript `.ts`, `.tsx`.
+Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. And TypeScript `.ts`, `.tsx`. [CSS support is experimental](#css-support).
 
 This project is designed for bundling Node.js libraries.
 
