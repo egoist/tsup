@@ -149,6 +149,27 @@ esbuild is fast because it doesn't perform any type checking, you already get ty
 
 Additionally, if you want type checking at build time, you can enable `--dts`, which will run a real TypeScript compiler to generate declaration file so you get type checking as well.
 
+### CSS support
+
+esbuild has [experimental CSS support](https://esbuild.github.io/content-types/#css), and tsup allows you to use PostCSS plugins on top of native CSS support.
+
+To use PostCSS, you need to install PostCSS:
+
+```bash
+yarn add postcss --dev
+```
+
+..and populate a `postcss.config.js` in your project
+
+```js
+module.exports = {
+  plugins: [
+    require('tailwindcss')(),
+    require('autoprefixer')()
+  ]
+}
+```
+
 ---
 
 For more details:

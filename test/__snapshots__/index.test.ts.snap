@@ -39,6 +39,15 @@ Array [
 ]
 `;
 
+exports[`import css: output file 1`] = `"\\"use strict\\";"`;
+
+exports[`import css: output file list 1`] = `
+Array [
+  "input.css",
+  "input.js",
+]
+`;
+
 exports[`minify: output file 1`] = `
 "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});function o(){return\\"foo\\"}exports.foo = o;
 "

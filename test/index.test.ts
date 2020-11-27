@@ -154,3 +154,21 @@ runTest(
     flags: ['--env.NODE_ENV', 'production'],
   }
 )
+
+runTest('import css', {
+  'input.ts': `
+  import './foo.css'
+  `,
+  'postcss.config.js': `
+  module.exports = {
+    plugins: [require('postcss-simple-vars')()]
+  }
+  `,
+  'foo.css': `
+$color: blue;
+
+.foo {
+  color: $color;
+}
+  `
+})

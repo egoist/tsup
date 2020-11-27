@@ -8,6 +8,7 @@ import { getDeps, loadTsConfig, loadPkg, getBabel } from './utils'
 import { FSWatcher } from 'chokidar'
 import glob from 'globby'
 import { PrettyError } from './errors'
+import { postcssPlugin } from './plugins/postcss'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -110,6 +111,7 @@ export async function runEsbuild(
         jsxFragment: options.jsxFragment,
         sourcemap: options.sourcemap,
         target: options.target === 'es5' ? 'es2016' : options.target,
+        plugins: [postcssPlugin],
         define: {
           ...options.define,
           ...Object.keys(env).reduce((res, key) => {

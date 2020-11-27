@@ -82,3 +82,8 @@ export function getBabel(): null | typeof import('@babel/core') {
   const p = resovleFrom.silent(process.cwd(), '@babel/core')
   return p && require(p)
 }
+
+export function getPostcss(): null | typeof import('postcss') {
+  const p = resovleFrom.silent(process.cwd(), 'postcss')
+  return p && require(p)
+}
