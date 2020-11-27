@@ -21,7 +21,7 @@
     "cac": "^6.6.1",
     "chalk": "^4.1.0",
     "chokidar": "^3.4.3",
-    "esbuild": "^0.6.19",
+    "esbuild": "^0.8.16",
     "globby": "^11.0.1",
     "joycon": "^2.2.5",
     "resolve-from": "^5.0.0",
