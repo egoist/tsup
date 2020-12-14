@@ -27,6 +27,10 @@ async function main() {
     .option('--minify-whitespace', 'Minify whitespace')
     .option('--minify-identifiers', 'Minify identifiers')
     .option('--minify-syntax', 'Minify syntax')
+    .option(
+      '--keep-names',
+      'Keep original function and class names in minified code'
+    )
     .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
       default: 'es2017',
     })

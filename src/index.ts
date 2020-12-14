@@ -28,6 +28,7 @@ export type Options = {
   minifyWhitespace?: boolean
   minifyIdentifiers?: boolean
   minifySyntax?: boolean
+  keepNames?: boolean
   watch?: boolean
   jsxFactory?: string
   jsxFragment?: string
@@ -41,7 +42,7 @@ export type Options = {
     [k: string]: string
   }
   dts?: boolean
-  sourcemap?: boolean;
+  sourcemap?: boolean
   /** Don't bundle these packages */
   external?: string[]
   /** Transform the result with `@babel/core` */
@@ -134,6 +135,7 @@ export async function runEsbuild(
         minifyWhitespace: options.minifyWhitespace,
         minifyIdentifiers: options.minifyIdentifiers,
         minifySyntax: options.minifySyntax,
+        keepNames: options.keepNames,
       })
     } catch (error) {
       console.error(`${makeLabel(format, 'error')} Build failed`)
