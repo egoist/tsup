@@ -65,10 +65,12 @@ export function loadTsConfig(cwd: string) {
 export async function getDeps(cwd: string) {
   const data = await loadPkg(cwd)
 
-  const deps = Array.from(new Set([
-    ...Object.keys(data.dependencies || {}),
-    ...Object.keys(data.peerDependencies || {})
-  ]))
+  const deps = Array.from(
+    new Set([
+      ...Object.keys(data.dependencies || {}),
+      ...Object.keys(data.peerDependencies || {}),
+    ])
+  )
 
   return deps
 }
@@ -86,4 +88,11 @@ export function getBabel(): null | typeof import('@babel/core') {
 export function getPostcss(): null | typeof import('postcss') {
   const p = resovleFrom.silent(process.cwd(), 'postcss')
   return p && require(p)
+}
+export function pathExists(p: string) {
+  return new Promise((resolve) => {
+    fs.access(p, (err) => {
+      resolve(!err)
+    })
+  })
 }

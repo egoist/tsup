@@ -41,7 +41,7 @@ export type Options = {
   define?: {
     [k: string]: string
   }
-  dts?: boolean
+  dts?: boolean | 'bundle'
   sourcemap?: boolean
   /** Don't bundle these packages */
   external?: string[]

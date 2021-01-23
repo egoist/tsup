@@ -39,7 +39,7 @@ async function main() {
       '--legacy-output',
       'Output different formats to different folder instead of using different extensions'
     )
-    .option('--dts', 'Generate declaration file')
+    .option('--dts [type]', 'Generate declaration file')
     .option('--sourcemap', 'Generate sourcemap file')
     .option('--watch', 'Watch mode')
     .option('--env.* <value>', 'Define compile-time env variables')

@@ -63,6 +63,25 @@ runTest(
 )
 
 runTest(
+  'bundle vue and type-fest with --dts=bundle flag',
+  {
+    'input.ts': `export * from 'vue'
+    export * as TypeFest from 'type-fest'
+    `,
+  },
+  {
+    snapshot: false,
+    flags: [
+      '--dts',
+      'bundle',
+      // For type-only modules you need to externalize it, `--dts bundle` will ignore this option
+      '--external',
+      'type-fest',
+    ],
+  }
+)
+
+runTest(
   'bundle graphql-tools with --sourcemap flag',
   {
     'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
@@ -170,5 +189,5 @@ $color: blue;
 .foo {
   color: $color;
 }
-  `
+  `,
 })

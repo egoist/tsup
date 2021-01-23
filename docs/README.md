@@ -52,6 +52,8 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`.
 
 If you set multiple entry files, each entry will get a corresponding `.d.ts` file.
 
+If you want to bundle all `.d.ts` files and imported type dependencies into a single `.d.ts` file, you can try the experimental `--dts bundle` flag.
+
 ### Generate sourcemap file
 
 ```bash
@@ -159,10 +161,7 @@ yarn add postcss --dev
 
 ```js
 module.exports = {
-  plugins: [
-    require('tailwindcss')(),
-    require('autoprefixer')()
-  ]
+  plugins: [require('tailwindcss')(), require('autoprefixer')()],
 }
 ```
 

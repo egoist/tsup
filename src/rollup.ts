@@ -3,6 +3,7 @@ import { InputOptions, OutputOptions } from 'rollup'
 import { Options, makeLabel } from './'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
+import nodeResolvePlugin from '@rollup/plugin-node-resolve'
 import { handlError } from './errors'
 
 type RollupConfig = {
@@ -26,6 +27,12 @@ const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
         return handler(warning)
       },
       plugins: [
+        options.dts === 'bundle' &&
+          nodeResolvePlugin({
+            extensions: ['.d.ts', '.ts'],
+            mainFields: ['types'],
+            moduleDirectories: ['node_modules/@types', 'node_modules'],
+          }),
         hashbangPlugin(),
         jsonPlugin(),
         await import('rollup-plugin-dts').then((res) => res.default()),
