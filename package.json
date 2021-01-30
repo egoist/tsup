@@ -15,7 +15,8 @@
   "scripts": {
     "build": "rm -rf dist && tsup src/cli.ts src/index.ts src/rollup.ts --dts",
     "prepublishOnly": "npm run build",
-    "test": "npm run build && jest"
+    "test": "npm run build && jest",
+    "tsup": "node -r sucrase/register src/cli"
   },
   "dependencies": {
     "@rollup/plugin-node-resolve": "^11.1.0",
@@ -43,6 +44,7 @@
     "execa": "^4.1.0",
     "fs-extra": "^9.1.0",
     "jest": "^26.6.3",
+    "jju": "^1.4.0",
     "postcss": "^8.2.4",
     "postcss-simple-vars": "^6.0.2",
     "prettier": "^2.2.1",
