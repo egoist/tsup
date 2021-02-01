@@ -30,7 +30,7 @@
     "resolve-from": "^5.0.0",
     "rollup": "^2.38.0",
     "rollup-plugin-dts": "^2.0.1",
-    "sucrase": "^3.17.0"
+    "sucrase": "^3.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
