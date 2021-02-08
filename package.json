@@ -46,7 +46,7 @@
     "jest": "^26.6.3",
     "jju": "^1.4.0",
     "postcss": "^8.2.4",
-    "postcss-simple-vars": "^6.0.2",
+    "postcss-simple-vars": "^6.0.3",
     "prettier": "^2.2.1",
     "rollup-plugin-hashbang": "^2.2.2",
     "strip-json-comments": "^3.1.1",
