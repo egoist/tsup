@@ -47,6 +47,11 @@ export type Options = {
   external?: string[]
   /** Transform the result with `@babel/core` */
   babel?: boolean
+  /**
+   * Replace `process.env.NODE_ENV` with `production` or `development`
+   * `production` when the bundled is minified, `development` otherwise
+   */
+  replaceNodeEnv?: boolean
 }
 
 const services: Map<string, Service> = new Map()
@@ -90,9 +95,12 @@ export async function runEsbuild(
 
   const outExtension = getOutputExtensionMap(pkg.type, format)
   const env: { [k: string]: string } = {
-    NODE_ENV:
-      options.minify || options.minifyWhitespace ? 'production' : 'development',
     ...options.env,
+  }
+
+  if (options.replaceNodeEnv) {
+    env.NODE_ENV =
+      options.minify || options.minifyWhitespace ? 'production' : 'development'
   }
 
   console.log(`${makeLabel(format, 'info')} Build start`)

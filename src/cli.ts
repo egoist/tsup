@@ -56,6 +56,7 @@ async function main() {
       '--inlineDynamicImports',
       'Create a single bundle that inlines dynamic imports'
     )
+    .option('--replaceNodeEnv', 'Replace process.env.NODE_ENV')
     .action(async (files: string[], options) => {
       if (files.length === 0) {
         throw new PrettyError(`Missing input files, e.g. tsup src/index.ts`)
