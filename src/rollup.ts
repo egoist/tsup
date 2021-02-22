@@ -15,7 +15,6 @@ const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
   return {
     inputConfig: {
       input: options.entryPoints,
-      preserveEntrySignatures: 'strict',
       onwarn(warning, handler) {
         if (
           warning.code === 'UNRESOLVED_IMPORT' ||
