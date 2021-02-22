@@ -18,4 +18,4 @@ https://tsup.egoist.sh
 
 ## License
 
-MIT &copy; [EGOIST (Kevin Titor)](https://github.com/sponsors/egoist)
+MIT &copy; [EGOIST](https://github.com/sponsors/egoist)
