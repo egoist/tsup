@@ -14,7 +14,11 @@ type RollupConfig = {
 const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
   return {
     inputConfig: {
-      input: options.entryPoints,
+      input:
+        typeof options.dts === 'string' &&
+        /** For backwards compat */ options.dts !== 'bundle'
+          ? options.dts
+          : options.entryPoints,
       onwarn(warning, handler) {
         if (
           warning.code === 'UNRESOLVED_IMPORT' ||
@@ -26,7 +30,8 @@ const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
         return handler(warning)
       },
       plugins: [
-        options.dts === 'bundle' &&
+        (options.dtsResolve ||
+          /** For backwards compat */ options.dts === 'bundle') &&
           nodeResolvePlugin({
             extensions: ['.d.ts', '.ts'],
             mainFields: ['types'],

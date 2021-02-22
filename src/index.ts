@@ -41,7 +41,9 @@ export type Options = {
   define?: {
     [k: string]: string
   }
-  dts?: boolean | 'bundle'
+  dts?: boolean | string
+  /** Resolve external types used in dts files from node_modules */
+  dtsResolve?: boolean
   sourcemap?: boolean
   /** Don't bundle these packages */
   external?: string[]

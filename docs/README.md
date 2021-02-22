@@ -50,9 +50,9 @@ tsup index.ts --dts
 
 This will emit `./dist/index.js` and `./dist/index.d.ts`.
 
-If you set multiple entry files, each entry will get a corresponding `.d.ts` file.
+If you have multiple entry files, each entry will get a corresponding `.d.ts` file. So when you only want to generate declaration file for a single entry, use `--dts <entry>` format, e.g. `--dts src/index.ts`.
 
-If you want to bundle all `.d.ts` files and imported type dependencies into a single `.d.ts` file, you can try the experimental `--dts bundle` flag.
+Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file, if that's somehow a requirement, try the experimental `--dts-resolve` flag.
 
 ### Generate sourcemap file
 

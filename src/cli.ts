@@ -39,7 +39,8 @@ async function main() {
       '--legacy-output',
       'Output different formats to different folder instead of using different extensions'
     )
-    .option('--dts [type]', 'Generate declaration file')
+    .option('--dts [entry]', 'Generate declaration file')
+    .option('--dts-resolve', 'Resolve externals types used for d.ts files')
     .option('--sourcemap', 'Generate sourcemap file')
     .option('--watch', 'Watch mode')
     .option('--env.* <value>', 'Define compile-time env variables')
