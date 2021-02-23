@@ -16,6 +16,7 @@ import { FSWatcher } from 'chokidar'
 import glob from 'globby'
 import { PrettyError } from './errors'
 import { postcssPlugin } from './plugins/postcss'
+import { externalPlugin } from './plugins/external'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -58,7 +59,7 @@ export type Options = {
       }
   sourcemap?: boolean
   /** Don't bundle these packages */
-  external?: string[]
+  external?: (string | RegExp)[]
   /** Transform the result with `@babel/core` */
   babel?: boolean
   /**
@@ -136,7 +137,12 @@ export async function runEsbuild(
         jsxFragment: options.jsxFragment,
         sourcemap: options.sourcemap,
         target: options.target === 'es5' ? 'es2016' : options.target,
-        plugins: [postcssPlugin],
+        plugins: [
+          // esbuild's `external` option doesn't support RegExp
+          // So here we use a custom plugin to implement it
+          externalPlugin(external),
+          postcssPlugin,
+        ],
         define: {
           ...options.define,
           ...Object.keys(env).reduce((res, key) => {
@@ -146,7 +152,6 @@ export async function runEsbuild(
             }
           }, {}),
         },
-        external,
         outdir:
           options.legacyOutput && format !== 'cjs'
             ? join(outDir, format)

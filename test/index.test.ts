@@ -363,3 +363,37 @@ test('import css', async () => {
     ]
   `)
 })
+
+test('external', async () => {
+  const { output } = await run(getTestName(), {
+    'input.ts': `export {foo} from 'foo'
+    export {bar} from 'bar'
+    export {baz} from 'baz'
+    `,
+    'node_modules/foo/index.ts': `export const foo = 'foo'`,
+    'node_modules/foo/package.json': `{"name":"foo","version":"0.0.0"}`,
+    'node_modules/bar/index.ts': `export const bar = 'bar'`,
+    'node_modules/bar/package.json': `{"name":"bar","version":"0.0.0"}`,
+    'node_modules/baz/index.ts': `export const baz = 'baz'`,
+    'node_modules/baz/package.json': `{"name":"baz","version":"0.0.0"}`,
+    'tsup.config.ts': `
+    export default {
+      external: [/f/, 'bar']
+    }
+    `,
+  })
+  expect(output).toMatchInlineSnapshot(`
+    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+    var _foo = require('foo');
+    var _bar = require('bar');
+
+    // node_modules/baz/index.ts
+    var baz = \\"baz\\";
+
+
+
+
+    exports.bar = _bar.bar; exports.baz = baz; exports.foo = _foo.foo;
+    "
+  `)
+})
