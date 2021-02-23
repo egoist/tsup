@@ -17,8 +17,7 @@
     "prepublishOnly": "npm run build",
     "test": "npm run build:simple && jest",
     "//": "Building without dts for speed",
-    "build:simple": "rm -rf dist && node -r sucrase/register src/cli src/cli.ts src/index.ts src/rollup.ts",
-    "tsup": "node dist/cli.js"
+    "build:simple": "rm -rf dist && tsup src/cli.ts src/index.ts src/rollup.ts"
   },
   "dependencies": {
     "@rollup/plugin-node-resolve": "^11.2.0",
@@ -54,7 +53,7 @@
     "strip-json-comments": "^3.1.1",
     "ts-essentials": "^7.0.1",
     "ts-jest": "^26.5.1",
-    "tsup": "^4.1.0",
+    "tsup": "^4.2.0",
     "typescript": "^4.1.5"
   }
 }

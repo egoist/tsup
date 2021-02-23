@@ -1024,7 +1024,7 @@ builtin-modules@^3.1.0:
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-3.2.0.tgz#45d5db99e7ee5e6bc4f362e008bf917ab5049887"
   integrity sha512-lGzLKcioL90C7wMczpkY0n/oART3MbBa8R9OFGE1rJxoVI86u4WAGfEk8Wjv10eKSyTHVGkSo3bvBylCEtk7LA==
 
-cac@^6.7.1, cac@^6.7.2:
+cac@^6.7.2:
   version "6.7.2"
   resolved "https://registry.yarnpkg.com/cac/-/cac-6.7.2.tgz#e7f0d21f4776c46c7d0de7976e56fa5562e17597"
   integrity sha512-w0bH1IF9rEjdi0a6lTtlXYT+vBZEJL9oytaXXRdsD68MH6+SrZGOGsu7s2saHQvYXqwo/wBdkW75tt8wFpj+mw==
@@ -1416,11 +1416,6 @@ error-ex@^1.3.1:
   integrity sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==
   dependencies:
     is-arrayish "^0.2.1"
-
-esbuild@^0.8.46:
-  version "0.8.46"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.8.46.tgz#8fc7230ce3019b12e2553399f0c03875a729c26b"
-  integrity sha512-xck9sXNCNmjDHCCfxTCyhKTiFuEBweh+IDAhMLOJI990v1Fzii6MyIkT1LbkvjgoVgPX2SK1kpi5eZVGNrl8yg==
 
 esbuild@^0.8.50:
   version "0.8.50"
@@ -3961,16 +3956,16 @@ ts-jest@^26.5.1:
     semver "7.x"
     yargs-parser "20.x"
 
-tsup@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/tsup/-/tsup-4.1.0.tgz#a14224922f7e3021bcc487ec881ae5f1b652a4f0"
-  integrity sha512-qNz28t17hyT9LEHhUY4gz/t01ibOQPc7YQoD2/PmaqxIXd0mGFGo8/GRgOM5hVOypR3mT59UTfcZTdcB6bIieg==
+tsup@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/tsup/-/tsup-4.2.0.tgz#ef34c0162bc76eb289ba4e21a41269825e287190"
+  integrity sha512-auPJW79gyJ6FcJXFaCZKixn2F3WyyuApSrMswtHzAH60pHuedQs2XETCKlzevwm4CusAYm+CGmbv5/0WWTomIg==
   dependencies:
     "@rollup/plugin-node-resolve" "^11.2.0"
-    cac "^6.7.1"
+    cac "^6.7.2"
     chalk "^4.1.0"
     chokidar "^3.5.1"
-    esbuild "^0.8.46"
+    esbuild "^0.8.50"
     globby "^11.0.2"
     joycon "^2.2.5"
     postcss-load-config "^3.0.1"
