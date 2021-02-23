@@ -282,6 +282,27 @@ const normalizeOptions = async (
     options.format = ['cjs']
   }
 
+  const tsconfig = await loadTsConfig(process.cwd())
+  if (tsconfig.path && tsconfig.data) {
+    console.log(makeLabel('CLI', 'info'), `Using tsconfig: ${tsconfig.path}`)
+    if (!options.target) {
+      options.target = tsconfig.data.compilerOptions?.target
+    }
+    if (options.target) {
+      options.target = options.target.toLowerCase()
+    }
+    if (!options.jsxFactory) {
+      options.jsxFactory = tsconfig.data.compilerOptions?.jsxFactory
+    }
+    if (!options.jsxFragment) {
+      options.jsxFragment = tsconfig.data.compilerOptions?.jsxFragmentFactory
+    }
+  }
+
+  if (!options.target) {
+    options.target = 'es2018'
+  }
+
   return options as NormalizedOptions
 }
 
@@ -322,26 +343,6 @@ export async function build(_options: Options) {
     ])
 
   try {
-    const tsconfig = await loadTsConfig(process.cwd())
-    if (tsconfig.path && tsconfig.data) {
-      console.log(makeLabel('CLI', 'info'), `Using tsconfig: ${tsconfig.path}`)
-      if (!options.target) {
-        options.target = tsconfig.data.compilerOptions?.target
-      }
-      if (options.target) {
-        options.target = options.target.toLowerCase()
-      }
-      if (!options.jsxFactory) {
-        options.jsxFactory = tsconfig.data.compilerOptions?.jsxFactory
-      }
-      if (!options.jsxFragment) {
-        options.jsxFragment = tsconfig.data.compilerOptions?.jsxFragmentFactory
-      }
-    }
-
-    if (!options.target) {
-      options.target = 'es2018'
-    }
     console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
 
     if (options.dts) {
