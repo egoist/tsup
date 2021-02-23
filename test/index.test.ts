@@ -47,7 +47,13 @@ async function run(
     cwd: resolve(testDir, 'dist'),
   })
 
-  return { output, outFiles }
+  return {
+    output,
+    outFiles,
+    getFileContent(filename: string) {
+      return fs.readFile(resolve(testDir, filename), 'utf8')
+    },
+  }
 }
 
 // https://stackoverflow.com/questions/52788380/get-the-current-test-spec-name-in-jest
@@ -88,24 +94,46 @@ test('bundle graphql-tools with --dts flag', async () => {
   )
 })
 
-test('bundle vue and type-fest with --dts=bundle flag', async () => {
+test('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
   await run(
     getTestName(),
     {
       'input.ts': `export * from 'vue'
-      export * as TypeFest from 'type-fest'
+      export type { MarkRequired } from 'ts-essentials'
       `,
     },
     {
-      flags: [
-        '--dts',
-        'bundle',
-        // For type-only modules you need to externalize it, `--dts bundle` will ignore this option
-        '--external',
-        'type-fest',
-      ],
+      flags: ['--dts', '--dts-resolve'],
     }
   )
+})
+
+test('enable --dts-resolve for specific module', async () => {
+  const { getFileContent } = await run(getTestName(), {
+    'input.ts': `export * from 'vue'
+      export type {MarkRequired} from 'foo'
+      `,
+    'node_modules/foo/index.d.ts': `
+      export type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> & Required<Pick<T, RK>>
+      `,
+    'node_modules/foo/package.json': `{ "name": "foo", "version": "0.0.0" }`,
+    'tsup.config.ts': `
+      export default {
+        dts: {
+          resolve: ['foo']
+        },
+      }
+      `,
+  })
+  const content = await getFileContent('dist/input.d.ts')
+  expect(content).toMatchInlineSnapshot(`
+    "export * from 'vue';
+
+    type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> & Required<Pick<T, RK>>
+
+    export { MarkRequired };
+    "
+  `)
 })
 
 test('bundle graphql-tools with --sourcemap flag', async () => {

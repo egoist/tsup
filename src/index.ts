@@ -4,7 +4,14 @@ import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import { transform as transformToEs5 } from 'buble'
 import { Service, startService, BuildResult } from 'esbuild'
-import { getDeps, loadTsConfig, loadPkg, getBabel } from './utils'
+import type { MarkRequired, Buildable } from 'ts-essentials'
+import {
+  getDeps,
+  loadTsConfig,
+  loadPkg,
+  getBabel,
+  loadTsupConfig,
+} from './utils'
 import { FSWatcher } from 'chokidar'
 import glob from 'globby'
 import { PrettyError } from './errors'
@@ -15,7 +22,7 @@ const textDecoder = new TextDecoder('utf-8')
 export type Format = 'cjs' | 'esm' | 'iife'
 
 export type Options = {
-  entryPoints: string[]
+  entryPoints?: string[]
   /**
    * Output different formats to differen folder instead of using different extensions
    */
@@ -33,7 +40,7 @@ export type Options = {
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string
-  format: Format[]
+  format?: Format[]
   globalName?: string
   env?: {
     [k: string]: string
@@ -41,9 +48,14 @@ export type Options = {
   define?: {
     [k: string]: string
   }
-  dts?: boolean | string
-  /** Resolve external types used in dts files from node_modules */
-  dtsResolve?: boolean
+  dts?:
+    | boolean
+    | string
+    | {
+        entry?: string
+        /** Resolve external types used in dts files from node_modules */
+        resolve?: boolean | (string | RegExp)[]
+      }
   sourcemap?: boolean
   /** Don't bundle these packages */
   external?: string[]
@@ -55,6 +67,8 @@ export type Options = {
    */
   replaceNodeEnv?: boolean
 }
+
+export type NormalizedOptions = MarkRequired<Options, 'entryPoints' | 'format'>
 
 const services: Map<string, Service> = new Map()
 
@@ -211,6 +225,7 @@ export async function runEsbuild(
           // Cause we need to transform to code from esm to cjs first
           if (format === 'cjs') {
             contents = transform(contents, {
+              filePath: file.path,
               transforms: ['imports'],
             }).code
           }
@@ -233,15 +248,46 @@ function stopServices() {
   }
 }
 
-export async function build(options: Options) {
-  options = { ...options }
+const normalizeOptions = async (
+  optionsFromConfigFile: Options,
+  optionsOverride: Options
+) => {
+  const options: Buildable<NormalizedOptions> = {
+    ...optionsFromConfigFile,
+    ...optionsOverride,
+  }
 
   const input = options.entryPoints
-  options.entryPoints = await glob(input)
-
-  if (options.entryPoints.length === 0) {
-    throw new PrettyError(`Cannot find ${input}`)
+  if (input) {
+    options.entryPoints = await glob(input)
   }
+
+  // Ensure entry exists
+  if (!options.entryPoints || options.entryPoints.length === 0) {
+    throw new PrettyError(`Cannot find ${input}`)
+  } else {
+    console.log(
+      makeLabel('CLI', 'info'),
+      `Building entry: ${options.entryPoints.join(', ')}`
+    )
+  }
+
+  // Build in cjs format by default
+  if (!options.format) {
+    options.format = ['cjs']
+  }
+
+  return options as NormalizedOptions
+}
+
+export async function build(_options: Options) {
+  const config = await loadTsupConfig(process.cwd())
+
+  if (config.path) {
+    console.log(makeLabel('CLI', 'info'), `Using tsup config: ${config.path}`)
+  }
+
+  const options = await normalizeOptions(config.data, _options)
 
   let watcher: FSWatcher | undefined
 

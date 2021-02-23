@@ -3,8 +3,11 @@ import { InputOptions, OutputOptions } from 'rollup'
 import { Options, makeLabel } from './'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
-import nodeResolvePlugin from '@rollup/plugin-node-resolve'
+import nodeResolvePlugin, {
+  RollupNodeResolveOptions,
+} from '@rollup/plugin-node-resolve'
 import { handlError } from './errors'
+import { getDeps } from './utils'
 
 type RollupConfig = {
   inputConfig: InputOptions
@@ -12,13 +15,32 @@ type RollupConfig = {
 }
 
 const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
+  const dtsOptions =
+    typeof options.dts === 'string'
+      ? { entry: options.dts }
+      : options.dts === true
+      ? { entry: options.entryPoints }
+      : { entry: options.entryPoints, ...options.dts }
+
+  let nodeResolveOptions: RollupNodeResolveOptions | undefined
+
+  if (dtsOptions.resolve) {
+    nodeResolveOptions = {
+      extensions: ['.d.ts', '.ts'],
+      mainFields: ['typings', 'types'],
+      moduleDirectories: ['node_modules/@types', 'node_modules'],
+    }
+    // Only resolve speicifc types when `dts.resolve` is an array
+    if (Array.isArray(dtsOptions.resolve)) {
+      nodeResolveOptions.resolveOnly = dtsOptions.resolve
+    }
+  }
+
+  const deps = await getDeps(process.cwd())
+
   return {
     inputConfig: {
-      input:
-        typeof options.dts === 'string' &&
-        /** For backwards compat */ options.dts !== 'bundle'
-          ? options.dts
-          : options.entryPoints,
+      input: dtsOptions.entry,
       onwarn(warning, handler) {
         if (
           warning.code === 'UNRESOLVED_IMPORT' ||
@@ -30,23 +52,17 @@ const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
         return handler(warning)
       },
       plugins: [
-        (options.dtsResolve ||
-          /** For backwards compat */ options.dts === 'bundle') &&
-          nodeResolvePlugin({
-            extensions: ['.d.ts', '.ts'],
-            mainFields: ['types'],
-            moduleDirectories: ['node_modules/@types', 'node_modules'],
-          }),
+        nodeResolveOptions && nodeResolvePlugin(nodeResolveOptions),
         hashbangPlugin(),
         jsonPlugin(),
         await import('rollup-plugin-dts').then((res) => res.default()),
       ].filter(Boolean),
+      external: [...deps, ...(options.external || [])],
     },
     outputConfig: {
       dir: options.outDir || 'dist',
       format: 'esm',
       exports: 'named',
-      name: options.globalName,
     },
   }
 }

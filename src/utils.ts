@@ -4,6 +4,8 @@ import JoyCon from 'joycon'
 import stripJsonComments from 'strip-json-comments'
 import resovleFrom from 'resolve-from'
 import { parse as parseJson } from 'jju/lib/parse'
+import { transform } from 'sucrase'
+import { requireFromString } from './require-from-string'
 
 const joycon = new JoyCon()
 
@@ -22,6 +24,19 @@ joycon.addLoader({
         }`
       )
     }
+  },
+})
+
+joycon.addLoader({
+  test: /\.ts$/,
+  async load(filepath) {
+    const content = await fs.promises.readFile(filepath, 'utf8')
+    const { code } = transform(content, {
+      filePath: filepath,
+      transforms: ['imports', 'typescript'],
+    })
+    const mod = requireFromString(code, filepath)
+    return mod.default || mod
   },
 })
 
@@ -69,7 +84,11 @@ export function isExternal(
 }
 
 export function loadTsConfig(cwd: string) {
-  return joycon.load(['tsconfig.build.json', 'tsconfig.json'], cwd)
+  return joycon.load(
+    ['tsconfig.build.json', 'tsconfig.json'],
+    cwd,
+    path.dirname(cwd)
+  )
 }
 
 export async function getDeps(cwd: string) {
@@ -86,7 +105,7 @@ export async function getDeps(cwd: string) {
 }
 
 export async function loadPkg(cwd: string) {
-  const { data } = await joycon.load(['package.json'], cwd)
+  const { data } = await joycon.load(['package.json'], cwd, path.dirname(cwd))
   return data || {}
 }
 
@@ -99,10 +118,19 @@ export function getPostcss(): null | typeof import('postcss') {
   const p = resovleFrom.silent(process.cwd(), 'postcss')
   return p && require(p)
 }
+
 export function pathExists(p: string) {
   return new Promise((resolve) => {
     fs.access(p, (err) => {
       resolve(!err)
     })
   })
+}
+
+export function loadTsupConfig(cwd: string) {
+  return joycon.load(
+    ['tsup.config.ts', 'tsup.config.js', 'tsup.config.json'],
+    cwd,
+    path.dirname(cwd)
+  )
 }

@@ -2,13 +2,10 @@
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
-import { handlError, PrettyError } from './errors'
-import { Format } from './'
+import { handlError } from './errors'
+import { Format, Options } from './'
 
-function stringyOrArray(input: string, defaultValue: string[]): string[] {
-  if (!input) {
-    return defaultValue
-  }
+function ensureArray(input: string): string[] {
   return Array.isArray(input) ? input : input.split(',')
 }
 
@@ -58,18 +55,32 @@ async function main() {
       'Create a single bundle that inlines dynamic imports'
     )
     .option('--replaceNodeEnv', 'Replace process.env.NODE_ENV')
-    .action(async (files: string[], options) => {
-      if (files.length === 0) {
-        throw new PrettyError(`Missing input files, e.g. tsup src/index.ts`)
-      }
-
+    .action(async (files: string[], flags) => {
       const { build } = await import('./')
-      await build({
-        ...options,
-        entryPoints: files,
-        format: stringyOrArray(options.format, ['cjs']) as Format[],
-        external: stringyOrArray(options.external, []),
-      })
+      const options: Options = {
+        ...flags,
+      }
+      if (files.length > 0) {
+        options.entryPoints = files
+      }
+      if (flags.format) {
+        const format = ensureArray(flags.format) as Format[]
+        options.format = format
+      }
+      if (flags.external) {
+        const external = ensureArray(flags.external)
+        options.external = external
+      }
+      if (flags.dts || flags.dtsResolve) {
+        options.dts = {}
+        if (typeof flags.dts === 'string') {
+          options.dts.entry = flags.dts
+        }
+        if (flags.dtsResolve) {
+          options.dts.resolve = flags.dtsResolve
+        }
+      }
+      await build(options)
     })
 
   cli.help()
