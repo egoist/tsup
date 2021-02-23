@@ -13,7 +13,7 @@
     "url": "https://github.com/egoist/tsup.git"
   },
   "scripts": {
-    "build": "rm -rf dist && tsup src/cli.ts src/index.ts src/rollup.ts --dts --dts-resolve",
+    "build": "rm -rf dist && tsup src/cli.ts src/index.ts src/rollup.ts --dts-resolve",
     "prepublishOnly": "npm run build",
     "test": "npm run build:simple && jest",
     "//": "Building without dts for speed",
