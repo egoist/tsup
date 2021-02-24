@@ -67,6 +67,12 @@ export type Options = {
    * `production` when the bundled is minified, `development` otherwise
    */
   replaceNodeEnv?: boolean
+  /**
+   * Code splitting
+   * Default to `true`
+   * You may want to disable code splitting sometimes: #255
+   */
+  splitting?: boolean
 }
 
 export type NormalizedOptions = MarkRequired<Options, 'entryPoints' | 'format'>
@@ -125,11 +131,13 @@ export async function runEsbuild(
 
   let result: BuildResult | undefined
 
+  const splitting = options.splitting !== false
+
   if (service) {
     try {
       result = await service.build({
         entryPoints: options.entryPoints,
-        format: format === 'cjs' ? 'esm' : format,
+        format: splitting && format === 'cjs' ? 'esm' : format,
         bundle: true,
         platform: 'node',
         globalName: options.globalName,
@@ -158,7 +166,7 @@ export async function runEsbuild(
             : outDir,
         outExtension: options.legacyOutput ? undefined : outExtension,
         write: false,
-        splitting: format === 'cjs' || format === 'esm',
+        splitting: splitting && (format === 'cjs' || format === 'esm'),
         logLevel: 'error',
         minify: options.minify,
         minifyWhitespace: options.minifyWhitespace,
@@ -227,8 +235,9 @@ export async function runEsbuild(
               )
             }
           }
-          // Cause we need to transform to code from esm to cjs first
-          if (format === 'cjs') {
+          // When code splitting is enable the code is transpiled to esm format
+          // So we add an extra step to get cjs code here
+          if (splitting && format === 'cjs') {
             contents = transform(contents, {
               filePath: file.path,
               transforms: ['imports'],

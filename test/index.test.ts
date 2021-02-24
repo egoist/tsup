@@ -37,8 +37,9 @@ async function run(
       cwd: testDir,
     }
   )
+  const logs = stdout + stderr
   if (exitCode !== 0) {
-    throw new Error(stdout + stderr)
+    throw new Error(logs)
   }
 
   // Get output
@@ -50,6 +51,7 @@ async function run(
   return {
     output,
     outFiles,
+    logs,
     getFileContent(filename: string) {
       return fs.readFile(resolve(testDir, filename), 'utf8')
     },
@@ -394,6 +396,23 @@ test('external', async () => {
 
 
     exports.bar = _bar.bar; exports.baz = baz; exports.foo = _foo.foo;
+    "
+  `)
+})
+
+test('disable code splitting to get proper module.exports =', async () => {
+  const { output } = await run(
+    getTestName(),
+    {
+      'input.ts': `export = 123`,
+    },
+    {
+      flags: ['--no-splitting'],
+    }
+  )
+  expect(output).toMatchInlineSnapshot(`
+    "// input.ts
+    module.exports = 123;
     "
   `)
 })

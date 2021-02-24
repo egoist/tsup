@@ -55,6 +55,7 @@ async function main() {
       'Create a single bundle that inlines dynamic imports'
     )
     .option('--replaceNodeEnv', 'Replace process.env.NODE_ENV')
+    .option('--no-splitting', 'Disable code splitting')
     .action(async (files: string[], flags) => {
       const { build } = await import('./')
       const options: Options = {
