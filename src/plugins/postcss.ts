@@ -3,7 +3,11 @@ import path from 'path'
 import { Plugin } from 'esbuild'
 import { getPostcss } from '../utils'
 
-export const postcssPlugin = (): Plugin => {
+export const postcssPlugin = ({
+  css,
+}: {
+  css?: Map<string, string>
+}): Plugin => {
   return {
     name: 'postcss',
 
@@ -31,7 +35,13 @@ export const postcssPlugin = (): Plugin => {
       }
 
       build.onLoad({ filter: /\.css$/ }, async (args) => {
-        const contents = await fs.promises.readFile(args.path, 'utf8')
+        let contents: string
+
+        if (css && args.path.endsWith('.svelte.css')) {
+          contents = css.get(args.path) as string
+        } else {
+          contents = await fs.promises.readFile(args.path, 'utf8')
+        }
 
         // Load postcss config
         const { plugins, options } = await getPostcssConfig(args.path)

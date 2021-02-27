@@ -14,11 +14,10 @@ export const externalPlugin = (patterns?: (string | RegExp)[]): Plugin => {
           }
           return args.path === p
         })
+
         if (external) {
           return { path: args.path, external }
         }
-        // return without `path` to use default path resolution logic
-        return {}
       })
     },
   }

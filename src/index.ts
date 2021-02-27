@@ -108,7 +108,7 @@ const getOutputExtensionMap = (
 
 export async function runEsbuild(
   options: NormalizedOptions,
-  { format, css }: { format: Format; css?: Set<string> }
+  { format, css }: { format: Format; css?: Map<string, string> }
 ): Promise<BuildResult | undefined> {
   let service = services.get(format)
   if (!service) {
@@ -153,7 +153,7 @@ export async function runEsbuild(
           // esbuild's `external` option doesn't support RegExp
           // So here we use a custom plugin to implement it
           externalPlugin(external),
-          postcssPlugin(),
+          postcssPlugin({ css }),
           sveltePlugin({ css }),
         ],
         define: {
@@ -354,23 +354,12 @@ export async function build(_options: Options) {
   }
 
   const buildAll = async () => {
-    const css: Set<string> = new Set()
+    const css: Map<string, string> = new Map()
     await Promise.all([
       ...options.format.map((format, index) =>
         runEsbuild(options, { format, css: index === 0 ? css : undefined })
       ),
     ])
-    if (css.size > 0) {
-      let cssCode = ''
-      for (const cssPart of css) {
-        cssCode += cssPart
-      }
-      await fs.promises.writeFile(
-        join(options.outDir, 'styles.css'),
-        cssCode,
-        'utf8'
-      )
-    }
   }
 
   try {

@@ -3,12 +3,29 @@ import path from 'path'
 import { Plugin } from 'esbuild'
 import { localRequire } from '../utils'
 
-export const sveltePlugin = ({ css }: { css?: Set<string> }): Plugin => {
+const useSvelteCssExtension = (p: string) =>
+  p.replace(/\.svelte$/, '.svelte.css')
+
+export const sveltePlugin = ({
+  css,
+}: {
+  css?: Map<string, string>
+}): Plugin => {
   return {
     name: 'svelte',
 
     setup(build) {
       let svelte: typeof import('svelte/compiler')
+
+      build.onResolve({ filter: /\.svelte\.css$/ }, (args) => {
+        return {
+          path: path.relative(
+            process.cwd(),
+            path.join(args.resolveDir, args.path)
+          ),
+          namespace: 'svelte-css',
+        }
+      })
 
       build.onLoad({ filter: /\.svelte$/ }, async (args) => {
         svelte = svelte || localRequire('svelte/compiler')
@@ -46,11 +63,17 @@ export const sveltePlugin = ({ css }: { css?: Set<string> }): Plugin => {
             filename,
             css: false,
           })
+
+          let contents = result.js.code
           if (css && result.css) {
-            css.add(result.css.code)
+            const cssPath = useSvelteCssExtension(filename)
+            css.set(cssPath, result.css.code)
+            // Directly prepend the `import` statement as sourcemap doesn't matter for now
+            // If that's need we should use `magic-string`
+            contents = `import '${useSvelteCssExtension(
+              path.basename(args.path)
+            )}'`
           }
-          let contents =
-            result.js.code + `//# sourceMappingURL=` + result.js.map.toUrl()
           return { contents, warnings: result.warnings.map(convertMessage) }
         } catch (e) {
           return { errors: [convertMessage(e)] }
