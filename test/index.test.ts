@@ -416,3 +416,78 @@ test('disable code splitting to get proper module.exports =', async () => {
     "
   `)
 })
+
+test('bundle svelte', async () => {
+  const { output, getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `import App from './App.svelte'
+      export { App }
+      `,
+      'App.svelte': `
+      <script>
+      let msg = 'hello svelte'
+      </script>
+
+      <span>{msg}</span>
+
+      <style>
+      span {color: red}
+      </style>
+      `,
+    },
+    {
+      // To make the snapshot leaner
+      flags: ['--external', 'svelte/internal'],
+    }
+  )
+  expect(output).toMatchInlineSnapshot(`
+    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// App.svelte
+
+
+
+
+
+
+
+
+
+    var _internal = require('svelte/internal');
+    function create_fragment(ctx) {
+      let span;
+      return {
+        c() {
+          span = _internal.element.call(void 0, \\"span\\");
+          span.textContent = \`\${msg}\`;
+          _internal.attr.call(void 0, span, \\"class\\", \\"svelte-1jo4k3z\\");
+        },
+        m(target, anchor) {
+          _internal.insert.call(void 0, target, span, anchor);
+        },
+        p: _internal.noop,
+        i: _internal.noop,
+        o: _internal.noop,
+        d(detaching) {
+          if (detaching)
+            _internal.detach.call(void 0, span);
+        }
+      };
+    }
+    var msg = \\"hello svelte\\";
+    var App = class extends _internal.SvelteComponent {
+      constructor(options) {
+        super();
+        _internal.init.call(void 0, this, options, null, create_fragment, _internal.safe_not_equal, {});
+      }
+    };
+    var App_default = App;
+
+
+    exports.App = App_default;
+    "
+  `)
+
+  expect(await getFileContent('dist/styles.css')).toMatchInlineSnapshot(
+    `"span.svelte-1jo4k3z{color:red}"`
+  )
+})

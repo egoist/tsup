@@ -119,6 +119,11 @@ export function getPostcss(): null | typeof import('postcss') {
   return p && require(p)
 }
 
+export function localRequire(moduleName: string) {
+  const p = resovleFrom.silent(process.cwd(), moduleName)
+  return p && require(p)
+}
+
 export function pathExists(p: string) {
   return new Promise((resolve) => {
     fs.access(p, (err) => {

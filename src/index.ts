@@ -17,6 +17,7 @@ import glob from 'globby'
 import { PrettyError } from './errors'
 import { postcssPlugin } from './plugins/postcss'
 import { externalPlugin } from './plugins/external'
+import { sveltePlugin } from './plugins/svelte'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -75,7 +76,10 @@ export type Options = {
   splitting?: boolean
 }
 
-export type NormalizedOptions = MarkRequired<Options, 'entryPoints' | 'format'>
+export type NormalizedOptions = MarkRequired<
+  Options,
+  'entryPoints' | 'format' | 'outDir'
+>
 
 const services: Map<string, Service> = new Map()
 
@@ -103,8 +107,8 @@ const getOutputExtensionMap = (
 }
 
 export async function runEsbuild(
-  options: Options,
-  { format }: { format: Format }
+  options: NormalizedOptions,
+  { format, css }: { format: Format; css?: Set<string> }
 ): Promise<BuildResult | undefined> {
   let service = services.get(format)
   if (!service) {
@@ -114,7 +118,7 @@ export async function runEsbuild(
   const pkg = await loadPkg(process.cwd())
   const deps = await getDeps(process.cwd())
   const external = [...deps, ...(options.external || [])]
-  const outDir = options.outDir || 'dist'
+  const outDir = options.outDir
 
   const outExtension = getOutputExtensionMap(pkg.type, format)
   const env: { [k: string]: string } = {
@@ -149,7 +153,8 @@ export async function runEsbuild(
           // esbuild's `external` option doesn't support RegExp
           // So here we use a custom plugin to implement it
           externalPlugin(external),
-          postcssPlugin,
+          postcssPlugin(),
+          sveltePlugin({ css }),
         ],
         define: {
           ...options.define,
@@ -286,6 +291,8 @@ const normalizeOptions = async (
     )
   }
 
+  options.outDir = options.outDir || 'dist'
+
   // Build in cjs format by default
   if (!options.format) {
     options.format = ['cjs']
@@ -346,10 +353,25 @@ export async function build(_options: Options) {
       })
   }
 
-  const buildAll = () =>
-    Promise.all([
-      ...options.format.map((format) => runEsbuild(options, { format })),
+  const buildAll = async () => {
+    const css: Set<string> = new Set()
+    await Promise.all([
+      ...options.format.map((format, index) =>
+        runEsbuild(options, { format, css: index === 0 ? css : undefined })
+      ),
     ])
+    if (css.size > 0) {
+      let cssCode = ''
+      for (const cssPart of css) {
+        cssCode += cssPart
+      }
+      await fs.promises.writeFile(
+        join(options.outDir, 'styles.css'),
+        cssCode,
+        'utf8'
+      )
+    }
+  }
 
   try {
     console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
