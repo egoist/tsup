@@ -443,7 +443,7 @@ test('bundle svelte', async () => {
   )
   expect(output).toMatchInlineSnapshot(`"\\"use strict\\";"`)
 
-  expect(await getFileContent('dist/Input.css')).toMatchInlineSnapshot(`
+  expect(await getFileContent('dist/input.css')).toMatchInlineSnapshot(`
     "/* svelte-css:App.svelte.css */
     span.svelte-1jo4k3z {
       color: red;
