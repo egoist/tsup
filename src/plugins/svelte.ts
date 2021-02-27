@@ -70,9 +70,9 @@ export const sveltePlugin = ({
             css.set(cssPath, result.css.code)
             // Directly prepend the `import` statement as sourcemap doesn't matter for now
             // If that's need we should use `magic-string`
-            contents = `import '${useSvelteCssExtension(
-              path.basename(args.path)
-            )}'`
+            contents =
+              `import '${useSvelteCssExtension(path.basename(args.path))}';` +
+              contents
           }
           return { contents, warnings: result.warnings.map(convertMessage) }
         } catch (e) {
