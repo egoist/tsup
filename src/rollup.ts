@@ -1,20 +1,22 @@
 import { parentPort } from 'worker_threads'
-import { InputOptions, OutputOptions } from 'rollup'
-import { Options, makeLabel } from './'
+import { InputOptions, OutputOptions, Plugin } from 'rollup'
+import { makeLabel, NormalizedOptions } from './'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import nodeResolvePlugin, {
   RollupNodeResolveOptions,
 } from '@rollup/plugin-node-resolve'
 import { handlError } from './errors'
-import { getDeps } from './utils'
+import { getDeps, removeFiles } from './utils'
 
 type RollupConfig = {
   inputConfig: InputOptions
   outputConfig: OutputOptions
 }
 
-const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
+const getRollupConfig = async (
+  options: NormalizedOptions
+): Promise<RollupConfig> => {
   const dtsOptions =
     typeof options.dts === 'string'
       ? { entry: options.dts }
@@ -38,6 +40,15 @@ const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
 
   const deps = await getDeps(process.cwd())
 
+  const tsupCleanPlugin: Plugin = {
+    name: 'tsup:clean',
+    async buildStart() {
+      if (options.clean) {
+        await removeFiles(['**/*.d.ts'], options.outDir)
+      }
+    },
+  }
+
   return {
     inputConfig: {
       input: dtsOptions.entry,
@@ -52,6 +63,7 @@ const getRollupConfig = async (options: Options): Promise<RollupConfig> => {
         return handler(warning)
       },
       plugins: [
+        tsupCleanPlugin,
         nodeResolveOptions && nodeResolvePlugin(nodeResolveOptions),
         hashbangPlugin(),
         jsonPlugin(),
@@ -113,7 +125,7 @@ async function watchRollup(options: {
   })
 }
 
-parentPort?.on('message', async (data: { options: Options }) => {
+parentPort?.on('message', async (data: { options: NormalizedOptions }) => {
   const config = await getRollupConfig(data.options)
   if (data.options.watch) {
     watchRollup(config)

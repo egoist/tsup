@@ -5,6 +5,7 @@ import stripJsonComments from 'strip-json-comments'
 import resovleFrom from 'resolve-from'
 import { parse as parseJson } from 'jju/lib/parse'
 import { transform } from 'sucrase'
+import glob from 'globby'
 import { requireFromString } from './require-from-string'
 
 const joycon = new JoyCon()
@@ -138,4 +139,12 @@ export function loadTsupConfig(cwd: string) {
     cwd,
     path.dirname(cwd)
   )
+}
+
+export async function removeFiles(patterns: string[], dir: string) {
+  const files = await glob(patterns, {
+    cwd: dir,
+    absolute: true,
+  })
+  await Promise.all(files.map((file) => fs.promises.unlink(file)))
 }

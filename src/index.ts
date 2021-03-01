@@ -11,6 +11,7 @@ import {
   loadPkg,
   getBabel,
   loadTsupConfig,
+  removeFiles,
 } from './utils'
 import { FSWatcher } from 'chokidar'
 import glob from 'globby'
@@ -74,6 +75,10 @@ export type Options = {
    * You may want to disable code splitting sometimes: #255
    */
   splitting?: boolean
+  /**
+   * Clean output directory before each build
+   */
+  clean?: boolean
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -354,6 +359,10 @@ export async function build(_options: Options) {
   }
 
   const buildAll = async () => {
+    if (options.clean) {
+      await removeFiles(['**/*', '!**/*.d.ts'], options.outDir)
+    }
+
     const css: Map<string, string> = new Map()
     await Promise.all([
       ...options.format.map((format, index) =>
