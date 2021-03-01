@@ -37,7 +37,7 @@
     "@babel/core": "^7.12.17",
     "@rollup/plugin-json": "^4.1.0",
     "@types/buble": "^0.19.2",
-    "@types/fs-extra": "^9.0.7",
+    "@types/fs-extra": "^9.0.8",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.31",
     "@types/resolve": "^1.20.0",
