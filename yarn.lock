@@ -1417,11 +1417,6 @@ error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
-esbuild@^0.8.50:
-  version "0.8.50"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.8.50.tgz#ebf24fde0cdad1a369789dd6fd7a820b0a01e46c"
-  integrity sha512-oidFLXssA7IccYzkqLVZSqNJDwDq8Mh/vqvrW+3fPWM7iUiC5O2bCllhnO8+K9LlyL/2Z6n+WwRJAz9fqSIVRg==
-
 esbuild@^0.8.53:
   version "0.8.53"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.8.53.tgz#b408bb0ca1b29dab13d8bbf7d59f59afe6776e86"
@@ -3966,16 +3961,16 @@ ts-jest@^26.5.1:
     semver "7.x"
     yargs-parser "20.x"
 
-tsup@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/tsup/-/tsup-4.2.0.tgz#ef34c0162bc76eb289ba4e21a41269825e287190"
-  integrity sha512-auPJW79gyJ6FcJXFaCZKixn2F3WyyuApSrMswtHzAH60pHuedQs2XETCKlzevwm4CusAYm+CGmbv5/0WWTomIg==
+tsup@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/tsup/-/tsup-4.6.0.tgz#cfa1cbdf283254730045a96dfbef624705cd53d1"
+  integrity sha512-euXDY7FZE/PY6CFvWYOI2gyk1nXXYdK2mtOUfjHOncIZkJDdEyTb+DBnOEXPl85TNm0lFPZvCzzoYmDMKTqeIQ==
   dependencies:
     "@rollup/plugin-node-resolve" "^11.2.0"
     cac "^6.7.2"
     chalk "^4.1.0"
     chokidar "^3.5.1"
-    esbuild "^0.8.50"
+    esbuild "^0.8.53"
     globby "^11.0.2"
     joycon "^2.2.5"
     postcss-load-config "^3.0.1"

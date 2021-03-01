@@ -13,11 +13,11 @@
     "url": "https://github.com/egoist/tsup.git"
   },
   "scripts": {
-    "build": "rm -rf dist && tsup src/cli.ts src/index.ts src/rollup.ts --dts-resolve",
+    "build": "tsup src/cli.ts src/index.ts src/rollup.ts --clean --dts-resolve",
     "prepublishOnly": "npm run build",
     "test": "npm run build:simple && jest",
     "//": "Building without dts for speed",
-    "build:simple": "rm -rf dist && tsup src/cli.ts src/index.ts src/rollup.ts"
+    "build:simple": "tsup src/cli.ts src/index.ts src/rollup.ts --clean"
   },
   "dependencies": {
     "@rollup/plugin-node-resolve": "^11.2.0",
@@ -54,7 +54,7 @@
     "svelte": "3.34.0",
     "ts-essentials": "^7.0.1",
     "ts-jest": "^26.5.1",
-    "tsup": "^4.2.0",
+    "tsup": "^4.6.0",
     "typescript": "^4.1.5"
   }
 }
