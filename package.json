@@ -29,7 +29,7 @@
     "joycon": "^2.2.5",
     "postcss-load-config": "^3.0.1",
     "resolve-from": "^5.0.0",
-    "rollup": "^2.39.0",
+    "rollup": "^2.40.0",
     "rollup-plugin-dts": "^2.0.1",
     "sucrase": "^3.17.1"
   },
