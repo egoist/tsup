@@ -34,7 +34,7 @@
     "sucrase": "^3.17.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.17",
+    "@babel/core": "^7.13.8",
     "@rollup/plugin-json": "^4.1.0",
     "@types/buble": "^0.19.2",
     "@types/fs-extra": "^9.0.7",
