@@ -361,6 +361,7 @@ export async function build(_options: Options) {
   const buildAll = async () => {
     if (options.clean) {
       await removeFiles(['**/*', '!**/*.d.ts'], options.outDir)
+      console.log(makeLabel('CLI', 'info'), `Cleaning output folder`)
     }
 
     const css: Map<string, string> = new Map()
