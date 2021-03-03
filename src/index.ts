@@ -19,6 +19,7 @@ import { PrettyError } from './errors'
 import { postcssPlugin } from './plugins/postcss'
 import { externalPlugin } from './plugins/external'
 import { sveltePlugin } from './plugins/svelte'
+import resolveFrom from 'resolve-from'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -376,6 +377,10 @@ export async function build(_options: Options) {
     console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
 
     if (options.dts) {
+      const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')
+      if (!hasTypescript) {
+        throw new Error(`You need to install "typescript" in your project`)
+      }
       // Run rollup in a worker so it doesn't block the event loop
       const worker = new Worker(join(__dirname, 'rollup.js'))
       worker.postMessage({

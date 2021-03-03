@@ -1,6 +1,7 @@
 import { parentPort } from 'worker_threads'
 import { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { makeLabel, NormalizedOptions } from './'
+import dtsPlugin from 'rollup-plugin-dts'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import nodeResolvePlugin, {
@@ -67,7 +68,7 @@ const getRollupConfig = async (
         nodeResolveOptions && nodeResolvePlugin(nodeResolveOptions),
         hashbangPlugin(),
         jsonPlugin(),
-        await import('rollup-plugin-dts').then((res) => res.default()),
+        dtsPlugin(),
       ].filter(Boolean),
       external: [...deps, ...(options.external || [])],
     },
