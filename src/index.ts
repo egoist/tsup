@@ -3,7 +3,7 @@ import { dirname, join, extname } from 'path'
 import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import { transform as transformToEs5 } from 'buble'
-import { Service, startService, BuildResult } from 'esbuild'
+import { build as esbuild, BuildResult } from 'esbuild'
 import type { MarkRequired, Buildable } from 'ts-essentials'
 import {
   getDeps,
@@ -87,8 +87,6 @@ export type NormalizedOptions = MarkRequired<
   'entryPoints' | 'format' | 'outDir'
 >
 
-const services: Map<string, Service> = new Map()
-
 export const makeLabel = (input: string, type: 'info' | 'success' | 'error') =>
   colors[type === 'info' ? 'bgBlue' : type === 'error' ? 'bgRed' : 'bgGreen'](
     colors.black(` ${input.toUpperCase()} `)
@@ -116,11 +114,6 @@ export async function runEsbuild(
   options: NormalizedOptions,
   { format, css }: { format: Format; css?: Map<string, string> }
 ): Promise<BuildResult | undefined> {
-  let service = services.get(format)
-  if (!service) {
-    service = await startService()
-    services.set(format, service)
-  }
   const pkg = await loadPkg(process.cwd())
   const deps = await getDeps(process.cwd())
   const external = [...deps, ...(options.external || [])]
@@ -143,52 +136,50 @@ export async function runEsbuild(
 
   const splitting = options.splitting !== false
 
-  if (service) {
-    try {
-      result = await service.build({
-        entryPoints: options.entryPoints,
-        format: splitting && format === 'cjs' ? 'esm' : format,
-        bundle: true,
-        platform: 'node',
-        globalName: options.globalName,
-        jsxFactory: options.jsxFactory,
-        jsxFragment: options.jsxFragment,
-        sourcemap: options.sourcemap,
-        target: options.target === 'es5' ? 'es2016' : options.target,
-        plugins: [
-          // esbuild's `external` option doesn't support RegExp
-          // So here we use a custom plugin to implement it
-          externalPlugin(external),
-          postcssPlugin({ css }),
-          sveltePlugin({ css }),
-        ],
-        define: {
-          ...options.define,
-          ...Object.keys(env).reduce((res, key) => {
-            return {
-              ...res,
-              [`process.env.${key}`]: JSON.stringify(env[key]),
-            }
-          }, {}),
-        },
-        outdir:
-          options.legacyOutput && format !== 'cjs'
-            ? join(outDir, format)
-            : outDir,
-        outExtension: options.legacyOutput ? undefined : outExtension,
-        write: false,
-        splitting: splitting && (format === 'cjs' || format === 'esm'),
-        logLevel: 'error',
-        minify: options.minify,
-        minifyWhitespace: options.minifyWhitespace,
-        minifyIdentifiers: options.minifyIdentifiers,
-        minifySyntax: options.minifySyntax,
-        keepNames: options.keepNames,
-      })
-    } catch (error) {
-      console.error(`${makeLabel(format, 'error')} Build failed`)
-      throw error
-    }
+  try {
+    result = await esbuild({
+      entryPoints: options.entryPoints,
+      format: splitting && format === 'cjs' ? 'esm' : format,
+      bundle: true,
+      platform: 'node',
+      globalName: options.globalName,
+      jsxFactory: options.jsxFactory,
+      jsxFragment: options.jsxFragment,
+      sourcemap: options.sourcemap,
+      target: options.target === 'es5' ? 'es2016' : options.target,
+      plugins: [
+        // esbuild's `external` option doesn't support RegExp
+        // So here we use a custom plugin to implement it
+        externalPlugin(external),
+        postcssPlugin({ css }),
+        sveltePlugin({ css }),
+      ],
+      define: {
+        ...options.define,
+        ...Object.keys(env).reduce((res, key) => {
+          return {
+            ...res,
+            [`process.env.${key}`]: JSON.stringify(env[key]),
+          }
+        }, {}),
+      },
+      outdir:
+        options.legacyOutput && format !== 'cjs'
+          ? join(outDir, format)
+          : outDir,
+      outExtension: options.legacyOutput ? undefined : outExtension,
+      write: false,
+      splitting: splitting && (format === 'cjs' || format === 'esm'),
+      logLevel: 'error',
+      minify: options.minify,
+      minifyWhitespace: options.minifyWhitespace,
+      minifyIdentifiers: options.minifyIdentifiers,
+      minifySyntax: options.minifySyntax,
+      keepNames: options.keepNames,
+    })
+  } catch (error) {
+    console.error(`${makeLabel(format, 'error')} Build failed`)
+    throw error
   }
 
   // Manually write files
@@ -264,13 +255,6 @@ export async function runEsbuild(
   }
 
   return result
-}
-
-function stopServices() {
-  for (const [name, service] of services.entries()) {
-    service.stop()
-    services.delete(name)
-  }
 }
 
 const normalizeOptions = async (
@@ -397,13 +381,9 @@ export async function build(_options: Options) {
 
     if (options.watch) {
       await startWatcher()
-    } else {
-      stopServices()
     }
   } catch (error) {
-    if (!options.watch) {
-      stopServices()
-    } else {
+    if (options.watch) {
       startWatcher()
     }
     throw error

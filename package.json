@@ -24,7 +24,7 @@
     "cac": "^6.7.2",
     "chalk": "^4.1.0",
     "chokidar": "^3.5.1",
-    "esbuild": "^0.8.54",
+    "esbuild": "^0.9.2",
     "globby": "^11.0.2",
     "joycon": "^2.2.5",
     "postcss-load-config": "^3.0.1",
