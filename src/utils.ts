@@ -41,6 +41,14 @@ joycon.addLoader({
   },
 })
 
+joycon.addLoader({
+  test: /\.cjs$/,
+  load(filepath) {
+    delete require.cache[filepath]
+    return require(filepath)
+  },
+})
+
 // No backslash in path
 function slash(input: string) {
   return input.replace(/\\/g, '/')
@@ -135,7 +143,7 @@ export function pathExists(p: string) {
 
 export function loadTsupConfig(cwd: string) {
   return joycon.load(
-    ['tsup.config.ts', 'tsup.config.js', 'tsup.config.json'],
+    ['tsup.config.ts', 'tsup.config.js', 'tsup.config.cjs', 'tsup.config.json'],
     cwd,
     path.dirname(cwd)
   )
