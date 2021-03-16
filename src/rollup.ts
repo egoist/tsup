@@ -4,11 +4,9 @@ import { makeLabel, NormalizedOptions } from './'
 import dtsPlugin from 'rollup-plugin-dts'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
-import nodeResolvePlugin, {
-  RollupNodeResolveOptions,
-} from '@rollup/plugin-node-resolve'
 import { handlError } from './errors'
 import { getDeps, removeFiles } from './utils'
+import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 
 type RollupConfig = {
   inputConfig: InputOptions
@@ -25,17 +23,13 @@ const getRollupConfig = async (
       ? { entry: options.entryPoints }
       : { entry: options.entryPoints, ...options.dts }
 
-  let nodeResolveOptions: RollupNodeResolveOptions | undefined
+  let tsResolveOptions: TsResolveOptions | undefined
 
   if (dtsOptions.resolve) {
-    nodeResolveOptions = {
-      extensions: ['.d.ts', '.ts'],
-      mainFields: ['typings', 'types'],
-      moduleDirectories: ['node_modules/@types', 'node_modules'],
-    }
+    tsResolveOptions = {}
     // Only resolve speicifc types when `dts.resolve` is an array
     if (Array.isArray(dtsOptions.resolve)) {
-      nodeResolveOptions.resolveOnly = dtsOptions.resolve
+      tsResolveOptions.resolveOnly = dtsOptions.resolve
     }
   }
 
@@ -65,7 +59,7 @@ const getRollupConfig = async (
       },
       plugins: [
         tsupCleanPlugin,
-        nodeResolveOptions && nodeResolvePlugin(nodeResolveOptions),
+        tsResolveOptions && tsResolvePlugin(tsResolveOptions),
         hashbangPlugin(),
         jsonPlugin(),
         dtsPlugin(),

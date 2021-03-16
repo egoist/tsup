@@ -28,6 +28,11 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@egoist/path-parser@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@egoist/path-parser/-/path-parser-1.0.4.tgz#021a66a06085b065a41860419e1e82c3aba47f44"
+  integrity sha512-i8xuxw4j9kt4imWDH5DPfz/4YVNkbaWqQ3ox18AdPPfmmAVEOvJr1MR9sSuhrlORrf3ZJqDbO+5WMD6NT7V83g==
+
 "@vue/compiler-core@3.0.5":
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@vue/compiler-core/-/compiler-core-3.0.5.tgz#a6e54cabe9536e74c6513acd2649f311af1d43ac"

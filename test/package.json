@@ -3,6 +3,7 @@
   "devDependencies": {
     "graphql-tools": "^5.0.0",
     "graphql": "^15.3.0",
-    "vue": "3.0.5"
+    "vue": "3.0.5",
+    "@egoist/path-parser": "1.0.4"
   }
 }
