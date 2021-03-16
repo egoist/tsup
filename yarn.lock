@@ -2645,6 +2645,11 @@ joycon@^2.2.5:
   resolved "https://registry.yarnpkg.com/joycon/-/joycon-2.2.5.tgz#8d4cf4cbb2544d7b7583c216fcdfec19f6be1615"
   integrity sha512-YqvUxoOcVPnCp0VU1/56f+iKSdvIRJYPznH22BdXV3xMk75SFXhWeJkZ8C9XxUWt1b5x2X1SxuFygW1U0FmkEQ==
 
+joycon@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/joycon/-/joycon-3.0.0.tgz#0f8f7d94d86c75e6865e9afeee0964bffb1e3506"
+  integrity sha512-liltsn9SO+IuOHnVb1EgW6HBaHb6rUsMzkLKnGV7izz8UrXBpa3bsMSa2J8pbXo3B4Ebk6Wm2Izs4Dgbl2EGPw==
+
 js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
