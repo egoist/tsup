@@ -2,6 +2,7 @@ import fs from 'fs'
 import { dirname, join, extname } from 'path'
 import { Worker } from 'worker_threads'
 import colors from 'chalk'
+import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
 import { build as esbuild, BuildResult } from 'esbuild'
 import type { MarkRequired, Buildable } from 'ts-essentials'
@@ -56,7 +57,7 @@ export type Options = {
     | boolean
     | string
     | {
-        entry?: string
+        entry?: InputOption
         /** Resolve external types used in dts files from node_modules */
         resolve?: boolean | (string | RegExp)[]
       }
