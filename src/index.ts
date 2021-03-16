@@ -25,8 +25,6 @@ import { parseArgsStringToArgv } from 'string-argv'
 import type { ChildProcess } from 'child_process'
 import execa from 'execa'
 
-const textDecoder = new TextDecoder('utf-8')
-
 export type Format = 'cjs' | 'esm' | 'iife'
 
 export type Options = {
@@ -204,11 +202,11 @@ export async function runEsbuild(
         const ext = extname(outPath)
         const comeFromSource = ext === '.js' || ext === outExtension['.js']
         await fs.promises.mkdir(dir, { recursive: true })
+        let contents = file.text
         let mode: number | undefined
-        if (file.contents[0] === 35 && file.contents[1] === 33) {
+        if (contents[0] === '#' && contents[1] === '!') {
           mode = 0o755
         }
-        let contents = textDecoder.decode(file.contents)
         if (comeFromSource) {
           if (options.babel) {
             const babel = getBabel()
