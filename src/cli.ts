@@ -40,6 +40,10 @@ async function main() {
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
     .option('--sourcemap', 'Generate sourcemap file')
     .option('--watch', 'Watch mode')
+    .option(
+      '--onSuccess <command>',
+      'Execute command after successful build, specially useful for watch mode'
+    )
     .option('--env.* <value>', 'Define compile-time env variables')
     .option('--define.* <value>', 'Define compile-time constants')
     .option('--external <name>', 'Mark specific packages as external')
