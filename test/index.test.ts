@@ -495,3 +495,18 @@ test('bundle svelte', async () => {
     "
   `)
 })
+
+test('onSuccess', async () => {
+  const randomNumber = Math.random() + ''
+  const { logs } = await run(
+    getTestName(),
+    {
+      'input.ts': "console.log('test');",
+    },
+    {
+      flags: ['--onSuccess', 'echo ' + randomNumber],
+    }
+  )
+
+  expect(logs.includes(randomNumber)).toBe(true)
+})

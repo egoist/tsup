@@ -21,6 +21,9 @@ import { postcssPlugin } from './plugins/postcss'
 import { externalPlugin } from './plugins/external'
 import { sveltePlugin } from './plugins/svelte'
 import resolveFrom from 'resolve-from'
+import { parseArgsStringToArgv } from 'string-argv'
+import type { ChildProcess } from 'child_process'
+import execa from 'execa'
 
 const textDecoder = new TextDecoder('utf-8')
 
@@ -42,6 +45,7 @@ export type Options = {
   minifySyntax?: boolean
   keepNames?: boolean
   watch?: boolean
+  onSuccess?: string
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string
@@ -344,6 +348,8 @@ export async function build(_options: Options) {
       })
   }
 
+  let existingOnSuccess: ChildProcess | undefined
+
   const buildAll = async () => {
     if (options.clean) {
       await removeFiles(['**/*', '!**/*.d.ts'], options.outDir)
@@ -356,6 +362,16 @@ export async function build(_options: Options) {
         runEsbuild(options, { format, css: index === 0 ? css : undefined })
       ),
     ])
+    if (options.onSuccess) {
+      if (existingOnSuccess) existingOnSuccess.kill()
+
+      const parts = parseArgsStringToArgv(options.onSuccess)
+      const exec = parts[0]
+      const args = parts.splice(1)
+      existingOnSuccess = execa(exec, args, {
+        stdio: 'inherit',
+      })
+    }
   }
 
   try {
