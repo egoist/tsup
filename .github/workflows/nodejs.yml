@@ -36,6 +36,7 @@ jobs:
             ${{ runner.os }}-
       - name: Install pnpm
         run: npm i -g pnpm
+      - run: pnpm i
       - run: npm run test --if-present
       - run: pnpx semantic-release
         env:
