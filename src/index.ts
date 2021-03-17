@@ -344,13 +344,15 @@ export async function build(_options: Options) {
           ignoreInitial: true,
         }
       ).on('all', async () => {
-        await buildAll()
+        await buildAll().catch(console.error)
       })
   }
 
   let existingOnSuccess: ChildProcess | undefined
 
   const buildAll = async () => {
+    if (existingOnSuccess) existingOnSuccess.kill()
+
     if (options.clean) {
       await removeFiles(['**/*', '!**/*.d.ts'], options.outDir)
       console.log(makeLabel('CLI', 'info'), `Cleaning output folder`)
@@ -363,8 +365,6 @@ export async function build(_options: Options) {
       ),
     ])
     if (options.onSuccess) {
-      if (existingOnSuccess) existingOnSuccess.kill()
-
       const parts = parseArgsStringToArgv(options.onSuccess)
       const exec = parts[0]
       const args = parts.splice(1)
