@@ -16,7 +16,7 @@ import {
 } from './utils'
 import { FSWatcher } from 'chokidar'
 import glob from 'globby'
-import { PrettyError } from './errors'
+import { PrettyError, handleError } from './errors'
 import { postcssPlugin } from './esbuild/postcss'
 import { externalPlugin } from './esbuild/external'
 import { sveltePlugin } from './esbuild/svelte'
@@ -344,7 +344,7 @@ export async function build(_options: Options) {
           ignoreInitial: true,
         }
       ).on('all', async () => {
-        await buildAll().catch(console.error)
+        await buildAll().catch(handleError)
       })
   }
 
