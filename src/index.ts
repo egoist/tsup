@@ -272,6 +272,8 @@ const normalizeOptions = async (
   const input = options.entryPoints
   if (input) {
     options.entryPoints = await glob(input)
+  } else {
+    throw new PrettyError(`No input files, try "tsup <your-file>" instead`)
   }
 
   // Ensure entry exists
