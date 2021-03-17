@@ -44,7 +44,9 @@ const getRollupConfig = async (
     },
   }
 
-  const tsconfig = await loadTsConfig(process.cwd())
+  const compilerOptions = await loadTsConfig(process.cwd()).then(
+    (res) => res.data?.compilerOptions || {}
+  )
 
   return {
     inputConfig: {
@@ -65,7 +67,11 @@ const getRollupConfig = async (
         hashbangPlugin(),
         jsonPlugin(),
         dtsPlugin({
-          compilerOptions: tsconfig.data?.compilerOptions,
+          compilerOptions: compilerOptions.baseUrl &&
+            compilerOptions.paths && {
+              baseUrl: compilerOptions.baseUrl,
+              paths: compilerOptions.paths,
+            },
         }),
       ].filter(Boolean),
       external: [...deps, ...(options.external || [])],
