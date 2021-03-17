@@ -13,7 +13,7 @@ export class PrettyError extends Error {
   }
 }
 
-export function handlError(error: any) {
+export function handleError(error: any) {
   if (error.loc) {
     console.error(
       colors.bold(
