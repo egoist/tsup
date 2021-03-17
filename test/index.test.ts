@@ -11,7 +11,7 @@ const bin = resolve(__dirname, '../dist/cli.js')
 beforeAll(async () => {
   await fs.remove(cacheDir)
   console.log(`Installing dependencies in ./test folder`)
-  await execa('pnpm', ['i'], { cwd: __dirname })
+  await execa('pnpm', ['i', '--shamefully-hoist'], { cwd: __dirname })
   console.log(`Done... start testing..`)
 })
 
