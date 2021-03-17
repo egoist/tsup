@@ -10,7 +10,9 @@ const bin = resolve(__dirname, '../dist/cli.js')
 
 beforeAll(async () => {
   await fs.remove(cacheDir)
-  await execa('yarn', { cwd: __dirname })
+  console.log(`Installing dependencies in ./test folder`)
+  await execa('pnpm', ['i'], { cwd: __dirname })
+  console.log(`Done... start testing..`)
 })
 
 async function run(
