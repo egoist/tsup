@@ -5,7 +5,7 @@ import dtsPlugin from 'rollup-plugin-dts'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { handleError } from './errors'
-import { getDeps, removeFiles } from './utils'
+import { getDeps, removeFiles, loadTsConfig } from './utils'
 import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 
 type RollupConfig = {
@@ -44,6 +44,8 @@ const getRollupConfig = async (
     },
   }
 
+  const tsconfig = await loadTsConfig(process.cwd())
+
   return {
     inputConfig: {
       input: dtsOptions.entry,
@@ -62,7 +64,9 @@ const getRollupConfig = async (
         tsResolveOptions && tsResolvePlugin(tsResolveOptions),
         hashbangPlugin(),
         jsonPlugin(),
-        dtsPlugin(),
+        dtsPlugin({
+          compilerOptions: tsconfig.data?.compilerOptions,
+        }),
       ].filter(Boolean),
       external: [...deps, ...(options.external || [])],
     },
