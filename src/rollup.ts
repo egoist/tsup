@@ -4,7 +4,7 @@ import { makeLabel, NormalizedOptions } from './'
 import dtsPlugin from 'rollup-plugin-dts'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
-import { handlError } from './errors'
+import { handleError } from './errors'
 import { getDeps, removeFiles } from './utils'
 import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 
@@ -89,7 +89,7 @@ async function runRollup(options: RollupConfig) {
     )
   } catch (error) {
     console.log(`${makeLabel('dts', 'error')} Build error`)
-    handlError(error)
+    handleError(error)
   }
 }
 
@@ -115,7 +115,7 @@ async function watchRollup(options: {
       )
     } else if (event.code === 'ERROR') {
       console.log(`${makeLabel('dts', 'error')} Build error`)
-      handlError(event.error)
+      handleError(event.error)
     }
   })
 }

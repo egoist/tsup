@@ -2,7 +2,7 @@
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
-import { handlError } from './errors'
+import { handleError } from './errors'
 import { Format, Options } from './'
 
 function ensureArray(input: string): string[] {
@@ -98,4 +98,4 @@ async function main() {
   await cli.runMatchedCommand()
 }
 
-main().catch(handlError)
+main().catch(handleError)
