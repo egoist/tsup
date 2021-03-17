@@ -16,6 +16,13 @@ type RollupConfig = {
 const getRollupConfig = async (
   options: NormalizedOptions
 ): Promise<RollupConfig> => {
+  const compilerOptions: {
+    baseUrl?: string
+    paths?: Record<string, string[]>
+  } = await loadTsConfig(process.cwd()).then(
+    (res) => res.data?.compilerOptions || {}
+  )
+
   const dtsOptions =
     typeof options.dts === 'string'
       ? { entry: options.dts }
@@ -31,6 +38,16 @@ const getRollupConfig = async (
     if (Array.isArray(dtsOptions.resolve)) {
       tsResolveOptions.resolveOnly = dtsOptions.resolve
     }
+
+    // `paths` should be handled by rollup-plugin-dts
+    if (compilerOptions.paths) {
+      const res = Object.keys(compilerOptions.paths).map(
+        (p) => new RegExp(`^${p.replace('*', '.+')}$`)
+      )
+      tsResolveOptions.ignore = (source) => {
+        return res.some((re) => re.test(source))
+      }
+    }
   }
 
   const deps = await getDeps(process.cwd())
@@ -43,10 +60,6 @@ const getRollupConfig = async (
       }
     },
   }
-
-  const compilerOptions = await loadTsConfig(process.cwd()).then(
-    (res) => res.data?.compilerOptions || {}
-  )
 
   return {
     inputConfig: {
@@ -67,11 +80,13 @@ const getRollupConfig = async (
         hashbangPlugin(),
         jsonPlugin(),
         dtsPlugin({
-          compilerOptions: compilerOptions.baseUrl &&
-            compilerOptions.paths && {
-              baseUrl: compilerOptions.baseUrl,
-              paths: compilerOptions.paths,
-            },
+          compilerOptions:
+            compilerOptions.baseUrl && compilerOptions.paths
+              ? {
+                  baseUrl: compilerOptions.baseUrl,
+                  paths: compilerOptions.paths,
+                }
+              : undefined,
         }),
       ].filter(Boolean),
       external: [...deps, ...(options.external || [])],

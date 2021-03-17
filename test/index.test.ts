@@ -622,3 +622,26 @@ test('support baseUrl and paths in tsconfig.json in --dts build', async () => {
     "
   `)
 })
+
+test('support baseUrl and paths in tsconfig.json in --dts-resolve build', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `export * from '@/foo'`,
+      'src/foo.ts': `export const foo = 'foo'`,
+      'tsconfig.json': `{
+      "compilerOptions": {
+        "baseUrl":".",
+        "paths":{"@/*": ["./src/*"]}
+      }
+    }`,
+    },
+    { flags: ['--dts-resolve'] }
+  )
+  expect(await getFileContent('dist/input.d.ts')).toMatchInlineSnapshot(`
+    "declare const foo = \\"foo\\";
+
+    export { foo };
+    "
+  `)
+})

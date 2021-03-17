@@ -16,10 +16,12 @@ const resolveModule = (
 
 export type TsResolveOptions = {
   resolveOnly?: Array<string | RegExp>
+  ignore?: (source: string, importer?: string) => boolean
 }
 
 export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
   resolveOnly,
+  ignore,
 } = {}) => {
   return {
     name: `ts-resolve`,
@@ -27,6 +29,10 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
     async resolveId(source, importer) {
       // ignore IDs with null character, these belong to other plugins
       if (/\0/.test(source)) return null
+
+      if (ignore && ignore(source, importer)) {
+        return null
+      }
 
       if (source[0] !== '.' && !path.isAbsolute(source)) {
         if (resolveOnly) {
