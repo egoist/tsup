@@ -20,6 +20,7 @@ async function run(
   files: { [name: string]: string },
   options: {
     flags?: string[]
+    env?: Record<string, string>
   } = {}
 ) {
   testDir = resolve(cacheDir, testDir)
@@ -37,6 +38,7 @@ async function run(
     ['input.ts', ...(options.flags || [])],
     {
       cwd: testDir,
+      env: { ...process.env, ...options.env },
     }
   )
   const logs = stdout + stderr
@@ -94,6 +96,18 @@ test('bundle graphql-tools with --dts flag', async () => {
     },
     {
       flags: ['--dts'],
+    }
+  )
+})
+
+test('bundle graphql-tools with --dts-resolve flag', async () => {
+  await run(
+    getTestName(),
+    {
+      'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
+    },
+    {
+      flags: ['--dts-resolve'],
     }
   )
 })
