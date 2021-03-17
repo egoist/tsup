@@ -55,11 +55,19 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
 
       const basedir = importer ? path.dirname(importer) : process.cwd()
 
+      // A relative path
+      if (source[0] === '.') {
+        return resolveModule(source, {
+          basedir,
+          extensions: resolveExtensions,
+        })
+      }
+
       let id: string | null = null
 
-      // Try resolving as relative files
-      if (source[0] === '.' || !importer) {
-        id = await resolveModule(source[0] === '.' ? source : `./${source}`, {
+      // Try resolving as relative path if `importer` is not present
+      if (!importer) {
+        id = await resolveModule(`./${source}`, {
           basedir,
           extensions: resolveExtensions,
         })
