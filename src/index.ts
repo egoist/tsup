@@ -4,7 +4,7 @@ import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
-import { build as esbuild, BuildResult } from 'esbuild'
+import { build as esbuild, BuildResult, Plugin as EsbuildPlugin } from 'esbuild'
 import type { MarkRequired, Buildable } from 'ts-essentials'
 import {
   getDeps,
@@ -83,6 +83,7 @@ export type Options = {
    * Clean output directory before each build
    */
   clean?: boolean
+  esbuildPlugins?: EsbuildPlugin[]
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -156,6 +157,7 @@ export async function runEsbuild(
         externalPlugin(external),
         postcssPlugin({ css }),
         sveltePlugin({ css }),
+        ...(options.esbuildPlugins || []),
       ],
       define: {
         ...options.define,
