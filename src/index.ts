@@ -14,7 +14,7 @@ import {
   removeFiles,
 } from './utils'
 import glob from 'globby'
-import { PrettyError } from './errors'
+import { handleError, PrettyError } from './errors'
 import { postcssPlugin } from './esbuild/postcss'
 import { externalPlugin } from './esbuild/external'
 import { sveltePlugin } from './esbuild/svelte'
@@ -182,7 +182,7 @@ export async function runEsbuild(
       minifyIdentifiers: options.minifyIdentifiers,
       minifySyntax: options.minifySyntax,
       keepNames: options.keepNames,
-      watch: options.watch,
+      incremental: options.watch,
     })
   } catch (error) {
     console.error(`${makeLabel(format, 'error')} Build failed`)
@@ -362,9 +362,26 @@ export async function build(_options: Options) {
     }
   }
 
+  const startWatcher = async () => {
+    if (!options.watch) return
+
+    const { watch } = await import('chokidar')
+    const watcher = watch('.', {
+      ignoreInitial: true,
+      ignorePermissionErrors: true,
+      ignored: ['**/{.git,node_modules}/**', options.outDir],
+    })
+    watcher.on('all', async (type, file) => {
+      console.log(makeLabel('CLI', 'info'), `Change detected: ${type} ${file}`)
+      await buildAll().catch(handleError)
+    })
+  }
+
   console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
 
   await buildAll()
+
+  startWatcher()
 
   if (options.dts) {
     const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')
