@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { dirname, join, extname } from 'path'
+import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
@@ -338,8 +339,6 @@ export async function build(_options: Options) {
 
   let existingOnSuccess: ChildProcess | undefined
 
-  let esbuildRunning: Promise<void> | undefined
-
   const buildAll = async () => {
     if (existingOnSuccess) existingOnSuccess.kill()
 
@@ -375,7 +374,7 @@ export async function build(_options: Options) {
     })
     watcher.on('all', async (type, file) => {
       console.log(makeLabel('CLI', 'info'), `Change detected: ${type} ${file}`)
-      esbuildRunning = buildAll().catch(handleError)
+      await buildAll().catch(handleError)
     })
   }
 
@@ -391,7 +390,20 @@ export async function build(_options: Options) {
       throw new Error(`You need to install "typescript" in your project`)
     }
 
-    const { startRollup } = await import('./rollup')
-    await startRollup(options, () => esbuildRunning)
+    const isDev = __filename.endsWith('index.ts')
+    const worker = new Worker(
+      join(__dirname, isDev ? './rollup.dev.js' : './rollup.js')
+    )
+    worker.postMessage({
+      options: {
+        ...options, // functions cannot be cloned
+        esbuildPlugins: undefined,
+      },
+    })
+    worker.on('message', (data) => {
+      if (data === 'has-error') {
+        process.exitCode = 1
+      }
+    })
   }
 }

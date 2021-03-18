@@ -1,3 +1,4 @@
+import { parentPort } from 'worker_threads'
 import { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { makeLabel, NormalizedOptions } from './'
 import dtsPlugin from 'rollup-plugin-dts'
@@ -117,26 +118,15 @@ async function runRollup(options: RollupConfig) {
   }
 }
 
-async function watchRollup(
-  options: {
-    inputConfig: InputOptions
-    outputConfig: OutputOptions
-  },
-  waitForEsbuild: WaitForEsbuild
-) {
+async function watchRollup(options: {
+  inputConfig: InputOptions
+  outputConfig: OutputOptions
+}) {
   const { watch } = await import('rollup')
 
   watch({
     ...options.inputConfig,
-    plugins: [
-      {
-        name: 'wait-for-esbuild',
-        async buildStart() {
-          await waitForEsbuild()
-        },
-      },
-      ...(options.inputConfig.plugins || []),
-    ],
+    plugins: options.inputConfig.plugins,
     output: options.outputConfig,
   }).on('event', async (event) => {
     if (event.code === 'START') {
@@ -153,16 +143,16 @@ async function watchRollup(
   })
 }
 
-type WaitForEsbuild = () => undefined | Promise<void>
-
-export const startRollup = async (
-  options: NormalizedOptions,
-  waitForEsbuild: WaitForEsbuild
-) => {
+const startRollup = async (options: NormalizedOptions) => {
   const config = await getRollupConfig(options)
   if (options.watch) {
-    watchRollup(config, waitForEsbuild)
+    watchRollup(config)
   } else {
     await runRollup(config)
+    parentPort?.close()
   }
 }
+
+parentPort?.on('message', (data) => {
+  startRollup(data.options)
+})
