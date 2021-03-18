@@ -114,6 +114,7 @@ async function runRollup(options: RollupConfig) {
     )
   } catch (error) {
     console.log(`${makeLabel('dts', 'error')} Build error`)
+    parentPort?.postMessage('error')
     handleError(error)
   }
 }
@@ -135,9 +136,10 @@ async function watchRollup(options: {
       console.log(
         `${makeLabel('dts', 'success')} Build success in ${event.duration}ms`
       )
+      parentPort?.postMessage('success')
     } else if (event.code === 'ERROR') {
       console.log(`${makeLabel('dts', 'error')} Build failed`)
-      console.log(event.error)
+      parentPort?.postMessage('error')
       handleError(event.error)
     }
   })

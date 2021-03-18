@@ -401,8 +401,10 @@ export async function build(_options: Options) {
       },
     })
     worker.on('message', (data) => {
-      if (data === 'has-error') {
+      if (data === 'error') {
         process.exitCode = 1
+      } else if (data === 'success') {
+        process.exitCode = 0
       }
     })
   }
