@@ -114,6 +114,8 @@ const getOutputExtensionMap = (
   return map
 }
 
+export const defineConfig = (options: Options) => options
+
 export async function runEsbuild(
   options: NormalizedOptions,
   { format, css }: { format: Format; css?: Map<string, string> }
@@ -385,9 +387,16 @@ export async function build(_options: Options) {
         throw new Error(`You need to install "typescript" in your project`)
       }
       // Run rollup in a worker so it doesn't block the event loop
-      const worker = new Worker(join(__dirname, 'rollup.js'))
+      const isDev = __filename.endsWith('/src/index.ts')
+      const worker = new Worker(
+        join(__dirname, isDev ? 'rollup-dev.js' : 'rollup.js')
+      )
       worker.postMessage({
-        options,
+        options: {
+          ...options,
+          // functions cannot be cloned
+          esbuildPlugins: undefined,
+        },
       })
       worker.on('message', (data) => {
         if (data === 'has-error') {
