@@ -338,6 +338,8 @@ export async function build(_options: Options) {
 
   let existingOnSuccess: ChildProcess | undefined
 
+  let esbuildRunning: Promise<void> | undefined
+
   const buildAll = async () => {
     if (existingOnSuccess) existingOnSuccess.kill()
 
@@ -373,7 +375,7 @@ export async function build(_options: Options) {
     })
     watcher.on('all', async (type, file) => {
       console.log(makeLabel('CLI', 'info'), `Change detected: ${type} ${file}`)
-      await buildAll().catch(handleError)
+      esbuildRunning = buildAll().catch(handleError)
     })
   }
 
@@ -390,6 +392,6 @@ export async function build(_options: Options) {
     }
 
     const { startRollup } = await import('./rollup')
-    await startRollup(options)
+    await startRollup(options, () => esbuildRunning)
   }
 }

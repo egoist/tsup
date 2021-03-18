@@ -2,7 +2,7 @@ import path from 'path'
 import { PluginImpl } from 'rollup'
 import _resolve from 'resolve'
 import createDebug from 'debug'
-import { pathExists } from '../utils'
+import { builtinModules } from 'module'
 
 const debug = createDebug('tsup:ts-resolve')
 
@@ -36,6 +36,8 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
       debug('resolveId importer: %s ', importer)
       // ignore IDs with null character, these belong to other plugins
       if (/\0/.test(source)) return null
+
+      if (builtinModules.includes(source)) return false
 
       if (ignore && ignore(source, importer)) {
         debug('ignored %s', source)

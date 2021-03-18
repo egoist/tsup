@@ -117,38 +117,51 @@ async function runRollup(options: RollupConfig) {
   }
 }
 
-async function watchRollup(options: {
-  inputConfig: InputOptions
-  outputConfig: OutputOptions
-}) {
+async function watchRollup(
+  options: {
+    inputConfig: InputOptions
+    outputConfig: OutputOptions
+  },
+  waitForEsbuild: WaitForEsbuild
+) {
   const { watch } = await import('rollup')
 
-  let start: number = Date.now()
-  const getDuration = () => {
-    return `${Math.floor(Date.now() - start)}ms`
-  }
   watch({
     ...options.inputConfig,
+    plugins: [
+      {
+        name: 'wait-for-esbuild',
+        async buildStart() {
+          await waitForEsbuild()
+        },
+      },
+      ...(options.inputConfig.plugins || []),
+    ],
     output: options.outputConfig,
-  }).on('event', (event) => {
+  }).on('event', async (event) => {
     if (event.code === 'START') {
-      start = Date.now()
       console.log(`${makeLabel('dts', 'info')} Build start`)
-    } else if (event.code === 'END') {
+    } else if (event.code === 'BUNDLE_END') {
       console.log(
-        `${makeLabel('dts', 'success')} Build success in ${getDuration()}`
+        `${makeLabel('dts', 'success')} Build success in ${event.duration}ms`
       )
     } else if (event.code === 'ERROR') {
-      console.log(`${makeLabel('dts', 'error')} Build error`)
+      console.log(`${makeLabel('dts', 'error')} Build failed`)
+      console.log(event.error)
       handleError(event.error)
     }
   })
 }
 
-export const startRollup = async (options: NormalizedOptions) => {
+type WaitForEsbuild = () => undefined | Promise<void>
+
+export const startRollup = async (
+  options: NormalizedOptions,
+  waitForEsbuild: WaitForEsbuild
+) => {
   const config = await getRollupConfig(options)
   if (options.watch) {
-    watchRollup(config)
+    watchRollup(config, waitForEsbuild)
   } else {
     await runRollup(config)
   }
