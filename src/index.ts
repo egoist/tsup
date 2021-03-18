@@ -1,6 +1,5 @@
 import fs from 'fs'
 import { dirname, join, extname } from 'path'
-import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
@@ -14,9 +13,8 @@ import {
   loadTsupConfig,
   removeFiles,
 } from './utils'
-import { FSWatcher } from 'chokidar'
 import glob from 'globby'
-import { PrettyError, handleError } from './errors'
+import { PrettyError } from './errors'
 import { postcssPlugin } from './esbuild/postcss'
 import { externalPlugin } from './esbuild/external'
 import { sveltePlugin } from './esbuild/svelte'
@@ -24,6 +22,7 @@ import resolveFrom from 'resolve-from'
 import { parseArgsStringToArgv } from 'string-argv'
 import type { ChildProcess } from 'child_process'
 import execa from 'execa'
+import { version } from '../package.json'
 
 export type Format = 'cjs' | 'esm' | 'iife'
 
@@ -183,6 +182,7 @@ export async function runEsbuild(
       minifyIdentifiers: options.minifyIdentifiers,
       minifySyntax: options.minifySyntax,
       keepNames: options.keepNames,
+      watch: options.watch,
     })
   } catch (error) {
     console.error(`${makeLabel(format, 'error')} Build failed`)
@@ -322,6 +322,8 @@ const normalizeOptions = async (
 }
 
 export async function build(_options: Options) {
+  console.log(makeLabel('CLI', 'info'), `tsup v${version}`)
+
   const config = await loadTsupConfig(process.cwd())
 
   if (config.path) {
@@ -330,26 +332,8 @@ export async function build(_options: Options) {
 
   const options = await normalizeOptions(config.data, _options)
 
-  let watcher: FSWatcher | undefined
-
-  const startWatcher = async () => {
-    const { watch } = await import('chokidar')
-    watcher =
-      watcher ||
-      watch(
-        [
-          ...options.entryPoints.map((entry) =>
-            join(dirname(entry), '**/*.{ts,tsx,js,jsx,mjs,json}')
-          ),
-          '!**/{dist,node_modules}/**',
-          options.outDir ? `!${join(options.outDir, '**')}` : '',
-        ].filter(Boolean),
-        {
-          ignoreInitial: true,
-        }
-      ).on('all', async () => {
-        await buildAll().catch(handleError)
-      })
+  if (_options.watch) {
+    console.log(makeLabel('CLI', 'info'), 'Running in watch mode')
   }
 
   let existingOnSuccess: ChildProcess | undefined
@@ -378,42 +362,17 @@ export async function build(_options: Options) {
     }
   }
 
-  try {
-    console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
+  console.log(makeLabel('CLI', 'info'), `Target: ${options.target}`)
 
-    if (options.dts) {
-      const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')
-      if (!hasTypescript) {
-        throw new Error(`You need to install "typescript" in your project`)
-      }
-      // Run rollup in a worker so it doesn't block the event loop
-      const isDev = __filename.endsWith('/src/index.ts')
-      const worker = new Worker(
-        join(__dirname, isDev ? 'rollup-dev.js' : 'rollup.js')
-      )
-      worker.postMessage({
-        options: {
-          ...options,
-          // functions cannot be cloned
-          esbuildPlugins: undefined,
-        },
-      })
-      worker.on('message', (data) => {
-        if (data === 'has-error') {
-          process.exitCode = 1
-        }
-      })
+  await buildAll()
+
+  if (options.dts) {
+    const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')
+    if (!hasTypescript) {
+      throw new Error(`You need to install "typescript" in your project`)
     }
 
-    await buildAll()
-
-    if (options.watch) {
-      await startWatcher()
-    }
-  } catch (error) {
-    if (options.watch) {
-      startWatcher()
-    }
-    throw error
+    const { startRollup } = await import('./rollup')
+    await startRollup(options)
   }
 }

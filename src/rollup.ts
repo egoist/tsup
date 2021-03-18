@@ -1,4 +1,3 @@
-import { parentPort } from 'worker_threads'
 import { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { makeLabel, NormalizedOptions } from './'
 import dtsPlugin from 'rollup-plugin-dts'
@@ -123,6 +122,7 @@ async function watchRollup(options: {
   outputConfig: OutputOptions
 }) {
   const { watch } = await import('rollup')
+
   let start: number = Date.now()
   const getDuration = () => {
     return `${Math.floor(Date.now() - start)}ms`
@@ -145,12 +145,11 @@ async function watchRollup(options: {
   })
 }
 
-parentPort?.on('message', async (data: { options: NormalizedOptions }) => {
-  const config = await getRollupConfig(data.options)
-  if (data.options.watch) {
+export const startRollup = async (options: NormalizedOptions) => {
+  const config = await getRollupConfig(options)
+  if (options.watch) {
     watchRollup(config)
   } else {
     await runRollup(config)
-    parentPort?.close()
   }
-})
+}
