@@ -40,6 +40,7 @@ async function main() {
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
     .option('--sourcemap', 'Generate sourcemap file')
     .option('--watch', 'Watch mode')
+    .option('--ignore-watch <path>', 'Ignore custom paths in watch mode')
     .option(
       '--onSuccess <command>',
       'Execute command after successful build, specially useful for watch mode'

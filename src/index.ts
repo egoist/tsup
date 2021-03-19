@@ -43,6 +43,7 @@ export type Options = {
   minifySyntax?: boolean
   keepNames?: boolean
   watch?: boolean
+  ignoreWatch?: string[] | string
   onSuccess?: string
   jsxFactory?: string
   jsxFragment?: string
@@ -367,10 +368,17 @@ export async function build(_options: Options) {
     if (!options.watch) return
 
     const { watch } = await import('chokidar')
+
+    const customIgnores = options.ignoreWatch
+      ? Array.isArray(options.ignoreWatch)
+        ? options.ignoreWatch
+        : [options.ignoreWatch]
+      : []
+
     const watcher = watch('.', {
       ignoreInitial: true,
       ignorePermissionErrors: true,
-      ignored: ['**/{.git,node_modules}/**', options.outDir],
+      ignored: ['**/{.git,node_modules}/**', options.outDir, ...customIgnores],
     })
     watcher.on('all', async (type, file) => {
       console.log(makeLabel('CLI', 'info'), `Change detected: ${type} ${file}`)
