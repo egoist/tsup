@@ -131,6 +131,24 @@ When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` ts
 tsup src/index.ts --watch
 ```
 
+You can specify one or more extra folders to ignore watching changes
+
+> By default it always ignores `dist`, `node_modules` & `.git`
+
+```bash
+tsup src/index.ts --watch --ignore-watch ignore-this-folder
+```
+
+> You can specify more than a folder repeating "--ignore-watch", for example: `tsup src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2`
+
+### onSuccess
+
+You can specify command to be executed after a successful build, specially useful for **Watch mode**
+
+```
+tsup src/index.ts --watch --onSuccess "node dist/index.js"
+```
+
 ### Minify output
 
 You can also minify the output, resulting into lower bundle sizes by using the `--minify` flag.
