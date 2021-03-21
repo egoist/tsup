@@ -23,6 +23,7 @@ import resolveFrom from 'resolve-from'
 import { parseArgsStringToArgv } from 'string-argv'
 import type { ChildProcess } from 'child_process'
 import execa from 'execa'
+import consola from 'consola'
 import { version } from '../package.json'
 
 export type Format = 'cjs' | 'esm' | 'iife'
@@ -189,6 +190,34 @@ export async function runEsbuild(
   } catch (error) {
     console.error(`${makeLabel(format, 'error')} Build failed`)
     throw error
+  }
+
+  if (result && result.warnings) {
+    for (const warning of result.warnings) {
+      if (
+        warning.text.includes(
+          `This call to "require" will not be bundled because`
+        ) ||
+        warning.text.includes(`Indirect calls to "require" will not be bundled`)
+      )
+        continue
+
+      consola.warn(colors.yellow(warning.text))
+      if (warning.location) {
+        console.log(
+          colors.underline(
+            warning.location.file +
+              ':' +
+              warning.location.line +
+              ':' +
+              warning.location.column
+          )
+        )
+        if (warning.location.lineText.length < 500) {
+          console.log(colors.bold(warning.location.lineText))
+        }
+      }
+    }
   }
 
   // Manually write files
