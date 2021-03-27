@@ -661,3 +661,17 @@ test('support baseUrl and paths in tsconfig.json in --dts-resolve build', async 
     "
   `)
 })
+
+test(`transform import.meta.url in cjs format`, async () => {
+  const { getFileContent } = await run(getTestName(), {
+    'input.ts': `export default import.meta.url`,
+  })
+  expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
+    "\\"use strict\\";var __import_meta_url = typeof document === 'undefined' ? 'file://' + __filename : new URL('input.js', document.baseURI).href;Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+    var input_default = __import_meta_url;
+
+
+    exports.default = input_default;
+    "
+  `)
+})

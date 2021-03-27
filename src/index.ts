@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { dirname, join, extname } from 'path'
+import { dirname, join, extname, basename } from 'path'
 import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import type { InputOption } from 'rollup'
@@ -18,6 +18,7 @@ import {
   getBabel,
   loadTsupConfig,
   removeFiles,
+  rewriteImportMetaUrl,
 } from './utils'
 import glob from 'globby'
 import { handleError, PrettyError } from './errors'
@@ -282,6 +283,7 @@ export async function runEsbuild(
               filePath: file.path,
               transforms: ['imports'],
             }).code
+            contents = rewriteImportMetaUrl(contents, basename(file.path))
           }
         }
         await fs.promises.writeFile(outPath, contents, {
