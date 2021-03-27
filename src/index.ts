@@ -4,7 +4,12 @@ import { Worker } from 'worker_threads'
 import colors from 'chalk'
 import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
-import { build as esbuild, BuildResult, Plugin as EsbuildPlugin } from 'esbuild'
+import {
+  build as esbuild,
+  BuildResult,
+  Plugin as EsbuildPlugin,
+  formatMessages,
+} from 'esbuild'
 import type { MarkRequired, Buildable } from 'ts-essentials'
 import {
   getDeps,
@@ -193,31 +198,24 @@ export async function runEsbuild(
   }
 
   if (result && result.warnings) {
-    for (const warning of result.warnings) {
+    const messages = result.warnings.filter((warning) => {
       if (
         warning.text.includes(
           `This call to "require" will not be bundled because`
         ) ||
         warning.text.includes(`Indirect calls to "require" will not be bundled`)
       )
-        continue
+        return false
 
-      consola.warn(colors.yellow(warning.text))
-      if (warning.location) {
-        console.log(
-          colors.underline(
-            warning.location.file +
-              ':' +
-              warning.location.line +
-              ':' +
-              warning.location.column
-          )
-        )
-        if (warning.location.lineText.length < 500) {
-          console.log(colors.bold(warning.location.lineText))
-        }
-      }
-    }
+      return true
+    })
+    const formatted = await formatMessages(messages, {
+      kind: 'warning',
+      color: true,
+    })
+    formatted.forEach((message) => {
+      consola.warn(message)
+    })
   }
 
   // Manually write files

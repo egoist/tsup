@@ -3,7 +3,7 @@ dependencies:
   chalk: 4.1.0
   chokidar: 3.5.1
   debug: 4.3.1
-  esbuild: 0.9.3
+  esbuild: 0.10.2
   execa: 5.0.0
   globby: 11.0.2
   joycon: 3.0.1
@@ -1488,12 +1488,12 @@ packages:
       is-arrayish: 0.2.1
     resolution:
       integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==
-  /esbuild/0.9.3:
+  /esbuild/0.10.2:
     dev: false
     hasBin: true
     requiresBuild: true
     resolution:
-      integrity: sha512-G8k0olucZp3LJ7I/p8y388t+IEyb2Y78nHrLeIxuqZqh6TYqDYP/B/7drAvYKfh83CGwKal9txVP+FTypsPJug==
+      integrity: sha512-/5vsZD7wTJJHC3yNXLUjXNvUDwqwNoIMvFvLd9tcDQ9el5l13pspYm3yufavjIeYvNtAbo+6N/6uoWx9dGA6ug==
   /escalade/3.1.1:
     dev: true
     engines:
@@ -4563,7 +4563,7 @@ specifiers:
   chokidar: ^3.5.1
   consola: ^2.15.3
   debug: ^4.3.1
-  esbuild: ^0.9.3
+  esbuild: ^0.10.2
   execa: ^5.0.0
   fs-extra: ^9.1.0
   globby: ^11.0.2
