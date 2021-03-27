@@ -111,7 +111,7 @@ dist
 
 ### ES5 support
 
-You can use `--target es5` or `"target": "es5"` in `tsconfig.json` to compile the code down to es5, it's processed by [buble](http://buble.surge.sh/). Some features are NOT supported by this target, namely: `for .. of`.
+You can use `--target es5` to compile the code down to es5, it's processed by [buble](http://buble.surge.sh/). Some features are NOT supported by this target, namely: `for .. of`.
 
 ### Compile-time environment variables
 

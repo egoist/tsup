@@ -40,7 +40,9 @@ export type Options = {
    */
   legacyOutput?: boolean
   /**
-   * Compile target, like `es2018`
+   * Compile target
+   *
+   * default to `node12`
    */
   target?: string
   minify?: boolean
@@ -329,12 +331,6 @@ const normalizeOptions = async (
   const tsconfig = await loadTsConfig(process.cwd())
   if (tsconfig.path && tsconfig.data) {
     console.log(makeLabel('CLI', 'info'), `Using tsconfig: ${tsconfig.path}`)
-    if (!options.target) {
-      options.target = tsconfig.data.compilerOptions?.target
-    }
-    if (options.target) {
-      options.target = options.target.toLowerCase()
-    }
     if (!options.jsxFactory) {
       options.jsxFactory = tsconfig.data.compilerOptions?.jsxFactory
     }
@@ -344,7 +340,7 @@ const normalizeOptions = async (
   }
 
   if (!options.target) {
-    options.target = 'es2018'
+    options.target = 'node12'
   }
 
   return options as NormalizedOptions
