@@ -1,9 +1,9 @@
 {
   "private": true,
   "devDependencies": {
-    "graphql-tools": "^5.0.0",
+    "@egoist/path-parser": "1.0.4",
     "graphql": "^15.3.0",
-    "vue": "3.0.5",
-    "@egoist/path-parser": "1.0.4"
+    "graphql-tools": "^5.0.0",
+    "vue": "3.0.5"
   }
 }
