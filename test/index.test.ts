@@ -678,6 +678,114 @@ test(`transform import.meta.url in cjs format`, async () => {
   `)
 })
 
+test.only('transform dynamic imports in cjs', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `
+    export async function foo() {
+      return {
+        async other() {
+          await import("./other");
+        }
+      }
+     
+    }
+    `,
+      'other.ts': `
+    export async function Hello() {
+      return {
+        other() {
+          return {
+            async asd() {
+              const foo = await import("bar");
+
+              return foo
+            }
+          }
+        }
+      }
+    };
+    `,
+    },
+    {
+      flags: [
+        '--no-splitting',
+        '--external',
+        'bar',
+        '--target',
+        'es2020',
+        '--format',
+        'cjs',
+      ],
+    }
+  )
+
+  expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
+    "var __create = Object.create;
+    var __defProp = Object.defineProperty;
+    var __getProtoOf = Object.getPrototypeOf;
+    var __hasOwnProp = Object.prototype.hasOwnProperty;
+    var __getOwnPropNames = Object.getOwnPropertyNames;
+    var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", {value: true});
+    var __esm = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
+    var __export = (target, all) => {
+      for (var name in all)
+        __defProp(target, name, {get: all[name], enumerable: true});
+    };
+    var __reExport = (target, module2, desc) => {
+      if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
+        for (let key of __getOwnPropNames(module2))
+          if (!__hasOwnProp.call(target, key) && key !== \\"default\\")
+            __defProp(target, key, {get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable});
+      }
+      return target;
+    };
+    var __toModule = (module2) => {
+      return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, \\"default\\", module2 && module2.__esModule && \\"default\\" in module2 ? {get: () => module2.default, enumerable: true} : {value: module2, enumerable: true})), module2);
+    };
+
+    // other.ts
+    var other_exports = {};
+    __export(other_exports, {
+      Hello: () => Hello
+    });
+    async function Hello() {
+      return {
+        other() {
+          return {
+            async asd() {
+              const foo2 = await import(\\"bar\\");
+              return foo2;
+            }
+          };
+        }
+      };
+    }
+    var init_other = __esm(() => {
+    });
+
+    // input.ts
+    __markAsModule(exports);
+    __export(exports, {
+      foo: () => foo
+    });
+    async function foo() {
+      return {
+        async other() {
+          await Promise.resolve().then(() => (init_other(), other_exports));
+        }
+      };
+    }
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      foo
+    });
+    "
+  `)
+})
+
 test('debounce promise', async (t) => {
   try {
     const sleep = (n: number = ~~(Math.random() * 50) + 20) =>
