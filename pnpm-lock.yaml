@@ -35,6 +35,7 @@ specifiers:
   strip-json-comments: ^3.1.1
   sucrase: ^3.18.1
   svelte: 3.37.0
+  tree-kill: ^1.2.2
   ts-essentials: ^7.0.1
   ts-jest: ^26.5.5
   typescript: ^4.2.4
@@ -53,6 +54,7 @@ dependencies:
   resolve-from: 5.0.0
   rollup: 2.45.2
   sucrase: 3.18.1
+  tree-kill: 1.2.2
 
 devDependencies:
   '@babel/core': 7.13.15
@@ -3956,6 +3958,11 @@ packages:
     dependencies:
       punycode: 2.1.1
     dev: true
+
+  /tree-kill/1.2.2:
+    resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
+    hasBin: true
+    dev: false
 
   /ts-essentials/7.0.1_typescript@4.2.4:
     resolution: {integrity: sha512-8lwh3QJtIc1UWhkQtr9XuksXu3O0YQdEE5g79guDfhCaU1FWTDIEDZ1ZSx4HTHUmlJZ8L812j3BZQ4a0aOUkSA==}

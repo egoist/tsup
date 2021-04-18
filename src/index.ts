@@ -30,6 +30,7 @@ import { parseArgsStringToArgv } from 'string-argv'
 import type { ChildProcess } from 'child_process'
 import execa from 'execa'
 import consola from 'consola'
+import kill from 'tree-kill'
 import { version } from '../package.json'
 import { log, setSilent } from './log'
 
@@ -297,30 +298,12 @@ export async function runEsbuild(
 const killProcess = ({
   pid,
   signal = 'SIGTERM',
-  timeout = 5000,
 }: {
   pid: number
   signal?: string | number
-  timeout?: number
 }) =>
-  new Promise<void>((resolve, reject) => {
-    try {
-      process.kill(pid, signal)
-    } catch (err) {
-      return resolve()
-    }
-    let count = 0
-    setInterval(() => {
-      try {
-        process.kill(pid, 0)
-      } catch (err) {
-        // the process does not exists anymore
-        resolve()
-      }
-      if ((count += 50) > timeout) {
-        reject(new Error('Timeout process kill'))
-      }
-    }, 50)
+  new Promise<unknown>((resolve) => {
+    kill(pid, signal, resolve)
   })
 
 const normalizeOptions = async (
