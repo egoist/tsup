@@ -39,7 +39,10 @@ async function main() {
     .option('--dts [entry]', 'Generate declaration file')
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
     .option('--sourcemap', 'Generate sourcemap file')
-    .option('--watch', 'Watch mode')
+    .option(
+      '--watch [path]',
+      'Watch mode, if path is not specified, it watches the current folder ".". Repeat "--watch" for more than one path'
+    )
     .option('--ignore-watch <path>', 'Ignore custom paths in watch mode')
     .option(
       '--onSuccess <command>',
@@ -62,6 +65,10 @@ async function main() {
     .option('--replaceNodeEnv', 'Replace process.env.NODE_ENV')
     .option('--no-splitting', 'Disable code splitting')
     .option('--clean', 'Clean output directory')
+    .option(
+      '--silent',
+      'Supress non-error logs (excluding "onSuccess" process output)'
+    )
     .action(async (files: string[], flags) => {
       const { build } = await import('./')
       const options: Options = {

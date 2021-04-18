@@ -2,6 +2,8 @@ import { resolve } from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
 import glob from 'globby'
+import waitForExpect from 'wait-for-expect'
+import { debouncePromise } from '../src/utils'
 
 jest.setTimeout(60000)
 
@@ -674,4 +676,48 @@ test(`transform import.meta.url in cjs format`, async () => {
     exports.default = input_default;
     "
   `)
+})
+
+test('debounce promise', async (t) => {
+  try {
+    const sleep = (n: number = ~~(Math.random() * 50) + 20) =>
+      new Promise<void>((resolve) => setTimeout(resolve, n))
+
+    let n = 0
+
+    const debounceFunction = debouncePromise(
+      async () => {
+        await sleep()
+        ++n
+      },
+      100,
+      (err: any) => {
+        t.fail(err)
+      }
+    )
+
+    expect(n).toEqual(0)
+
+    debounceFunction()
+    debounceFunction()
+    debounceFunction()
+    debounceFunction()
+
+    await waitForExpect(() => {
+      expect(n).toBe(1)
+    })
+    await sleep(100)
+
+    expect(n).toBe(1)
+
+    debounceFunction()
+
+    await waitForExpect(() => {
+      expect(n).toBe(2)
+    })
+  } catch (err) {
+    return t.fail(err)
+  }
+
+  t()
 })

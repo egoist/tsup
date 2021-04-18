@@ -131,7 +131,19 @@ When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` ts
 tsup src/index.ts --watch
 ```
 
-You can specify one or more extra folders to ignore watching changes
+You can also specify the directories to be watched. By default, if no path is specified, it watches the current directory.
+
+```bash
+tsup src/index.ts --watch src
+```
+
+You can specify more than a single directory
+
+```bash
+tsup src/index.ts --watch src --watch lib
+```
+
+You can specify one or more extra folders to be ignored while watching changes
 
 > By default it always ignores `dist`, `node_modules` & `.git`
 
@@ -144,6 +156,8 @@ tsup src/index.ts --watch --ignore-watch ignore-this-folder
 ### onSuccess
 
 You can specify command to be executed after a successful build, specially useful for **Watch mode**
+
+> You should not use shell scripts, if you need to specify shell scripts you can add it in your "scripts" field and set for example `tsup src/index.ts --watch --onSuccess \"npm run dev\"`
 
 ```
 tsup src/index.ts --watch --onSuccess "node dist/index.js"

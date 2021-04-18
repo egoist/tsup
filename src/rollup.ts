@@ -1,11 +1,12 @@
 import { parentPort } from 'worker_threads'
 import { InputOptions, OutputOptions, Plugin } from 'rollup'
-import { makeLabel, NormalizedOptions } from './'
+import { NormalizedOptions } from './'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { handleError } from './errors'
 import { getDeps, removeFiles, loadTsConfig } from './utils'
 import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
+import { log, setSilent } from './log'
 
 // Use `require` to esbuild use the cjs build of rollup-plugin-dts
 // the mjs build of rollup-plugin-dts uses `import.meta.url` which makes Node throws syntax error
@@ -20,6 +21,7 @@ type RollupConfig = {
 const getRollupConfig = async (
   options: NormalizedOptions
 ): Promise<RollupConfig> => {
+  setSilent(options.silent)
   const compilerOptions: {
     baseUrl?: string
     paths?: Record<string, string[]>
@@ -110,14 +112,12 @@ async function runRollup(options: RollupConfig) {
     const getDuration = () => {
       return `${Math.floor(Date.now() - start)}ms`
     }
-    console.log(`${makeLabel('dts', 'info')} Build start`)
+    log('dts', 'info', 'Build start')
     const bundle = await rollup(options.inputConfig)
     await bundle.write(options.outputConfig)
-    console.log(
-      `${makeLabel('dts', 'success')} Build success in ${getDuration()}`
-    )
+    log('dts', 'success', `Build success in ${getDuration()}`)
   } catch (error) {
-    console.log(`${makeLabel('dts', 'error')} Build error`)
+    log('dts', 'error', 'Build error')
     parentPort?.postMessage('error')
     handleError(error)
   }
@@ -135,14 +135,12 @@ async function watchRollup(options: {
     output: options.outputConfig,
   }).on('event', async (event) => {
     if (event.code === 'START') {
-      console.log(`${makeLabel('dts', 'info')} Build start`)
+      log('dts', 'info', 'Build start')
     } else if (event.code === 'BUNDLE_END') {
-      console.log(
-        `${makeLabel('dts', 'success')} Build success in ${event.duration}ms`
-      )
+      log('dts', 'success', `Build success in ${event.duration}ms`)
       parentPort?.postMessage('success')
     } else if (event.code === 'ERROR') {
-      console.log(`${makeLabel('dts', 'error')} Build failed`)
+      log('dts', 'error', 'Build failed')
       parentPort?.postMessage('error')
       handleError(event.error)
     }
