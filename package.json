@@ -32,7 +32,8 @@
     "postcss-load-config": "^3.0.1",
     "resolve-from": "^5.0.0",
     "rollup": "^2.45.2",
-    "sucrase": "^3.18.1"
+    "sucrase": "^3.18.1",
+    "tree-kill": "^1.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",
