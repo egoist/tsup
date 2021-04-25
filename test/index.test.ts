@@ -52,7 +52,7 @@ async function run(
   const output = await fs.readFile(resolve(testDir, 'dist/input.js'), 'utf8')
   const outFiles = await glob('**/*', {
     cwd: resolve(testDir, 'dist'),
-  })
+  }).then((res) => res.sort())
 
   return {
     output,
@@ -363,9 +363,9 @@ test('multiple formats with legacy output', async () => {
   `)
   expect(outFiles).toMatchInlineSnapshot(`
     Array [
-      "input.js",
-      "iife/input.js",
       "esm/input.js",
+      "iife/input.js",
+      "input.js",
     ]
   `)
 })
