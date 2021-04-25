@@ -133,7 +133,11 @@ export async function runEsbuild(
 ): Promise<BuildResult | undefined> {
   const pkg = await loadPkg(process.cwd())
   const deps = await getDeps(process.cwd())
-  const external = [...deps, ...(options.external || [])]
+  const external = [
+    // Exclude dependencies, e.g. `lodash`, `lodash/get`
+    ...deps.map((dep) => new RegExp(`^${dep}($|\\/|\\\\)`)),
+    ...(options.external || []),
+  ]
   const outDir = options.outDir
 
   const outExtension = getOutputExtensionMap(pkg.type, format)

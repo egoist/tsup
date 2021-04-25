@@ -364,8 +364,8 @@ test('multiple formats with legacy output', async () => {
   expect(outFiles).toMatchInlineSnapshot(`
     Array [
       "input.js",
-      "esm/input.js",
       "iife/input.js",
+      "esm/input.js",
     ]
   `)
 })
@@ -720,4 +720,23 @@ test('debounce promise', async (t) => {
   }
 
   t()
+})
+
+test('exclude dependencies', async () => {
+  const { getFileContent } = await run(getTestName(), {
+    'input.ts': `export {foo} from 'foo';export {nested} from 'foo/nested'`,
+    'package.json': `{"dependencies":{"foo":"0.0.0"}}`,
+    'node_modules/foo/index.js': `export const foo = 'foo'`,
+    'node_modules/foo/package.json': `{"name":"foo"}`,
+  })
+  expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
+    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+    var _foo = require('foo');
+    var _nested = require('foo/nested');
+
+
+
+    exports.foo = _foo.foo; exports.nested = _nested.nested;
+    "
+  `)
 })
