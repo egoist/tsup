@@ -1,15 +1,13 @@
-#!/usr/bin/env node
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
-import { handleError } from './errors'
-import { Format, Options } from './'
+import { Format, Options } from '.'
 
 function ensureArray(input: string): string[] {
   return Array.isArray(input) ? input : input.split(',')
 }
 
-async function main() {
+export async function main(options: Options = {}) {
   const cli = cac('tsup')
 
   cli
@@ -70,10 +68,10 @@ async function main() {
       'Supress non-error logs (excluding "onSuccess" process output)'
     )
     .action(async (files: string[], flags) => {
-      const { build } = await import('./')
-      const options: Options = {
+      const { build } = await import('.')
+      Object.assign(options, {
         ...flags,
-      }
+      })
       if (files.length > 0) {
         options.entryPoints = files
       }
@@ -105,5 +103,3 @@ async function main() {
   cli.parse(process.argv, { run: false })
   await cli.runMatchedCommand()
 }
-
-main().catch(handleError)

@@ -22,3 +22,14 @@ export const externalPlugin = (patterns?: (string | RegExp)[]): Plugin => {
     },
   }
 }
+
+export const makeAllPackagesExternalPlugin: Plugin = {
+  name: 'make-all-packages-external',
+  setup(build) {
+    let filter = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/ // Must not start with "/" or "./" or "../"
+    build.onResolve({ filter }, (args) => ({
+      path: args.path,
+      external: true,
+    }))
+  },
+}
