@@ -8,7 +8,7 @@ import { debouncePromise } from '../src/utils'
 jest.setTimeout(60000)
 
 const cacheDir = resolve(__dirname, '.cache')
-const bin = resolve(__dirname, '../dist/cli.js')
+const bin = resolve(__dirname, '../dist/cli-default.js')
 
 beforeAll(async () => {
   await fs.remove(cacheDir)
