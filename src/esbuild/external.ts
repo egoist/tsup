@@ -1,10 +1,26 @@
 import { Plugin } from 'esbuild'
 
-export const externalPlugin = (patterns?: (string | RegExp)[]): Plugin => {
+// Must not start with "/" or "./" or "../"
+const NON_NODE_MODULE_RE = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/
+
+export const externalPlugin = ({
+  patterns,
+  skipNodeModulesBundle,
+}: {
+  patterns?: (string | RegExp)[]
+  skipNodeModulesBundle?: boolean
+}): Plugin => {
   return {
     name: `external`,
 
     setup(build) {
+      if (skipNodeModulesBundle) {
+        build.onResolve({ filter: NON_NODE_MODULE_RE }, (args) => ({
+          path: args.path,
+          external: true,
+        }))
+      }
+
       if (!patterns || patterns.length === 0) return
 
       build.onResolve({ filter: /.*/ }, (args) => {
@@ -21,15 +37,4 @@ export const externalPlugin = (patterns?: (string | RegExp)[]): Plugin => {
       })
     },
   }
-}
-
-export const makeAllPackagesExternalPlugin: Plugin = {
-  name: 'make-all-packages-external',
-  setup(build) {
-    let filter = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/ // Must not start with "/" or "./" or "../"
-    build.onResolve({ filter }, (args) => ({
-      path: args.path,
-      external: true,
-    }))
-  },
 }
