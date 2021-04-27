@@ -100,6 +100,10 @@ export type Options = {
    * Supress non-error logs (excluding "onSuccess" process output)
    */
   silent?: boolean
+  /**
+   * Skip node_modules bundling
+   */
+  skipNodeModulesBundle?: boolean
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -172,7 +176,10 @@ export async function runEsbuild(
       plugins: [
         // esbuild's `external` option doesn't support RegExp
         // So here we use a custom plugin to implement it
-        externalPlugin(external),
+        externalPlugin({
+          patterns: external,
+          skipNodeModulesBundle: options.skipNodeModulesBundle,
+        }),
         postcssPlugin({ css }),
         sveltePlugin({ css }),
         ...(options.esbuildPlugins || []),

@@ -2,7 +2,10 @@
   "name": "tsup",
   "version": "0.0.0-semantic-release",
   "main": "dist/index.js",
-  "bin": "dist/cli.js",
+  "bin": {
+    "tsup": "dist/cli-default.js",
+    "tsup-node": "dist/cli-node.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -13,12 +16,12 @@
     "url": "https://github.com/egoist/tsup.git"
   },
   "scripts": {
-    "build": "npm run tsup -- src/cli.ts src/index.ts src/rollup.ts --clean --dts-resolve",
+    "build": "npm run tsup -- src/cli-*.ts src/index.ts src/rollup.ts --clean --dts-resolve",
     "prepublishOnly": "npm run build",
     "test": "npm run build:simple && jest",
     "//": "Building without dts for speed",
-    "build:simple": "npm run tsup -- src/cli.ts src/index.ts src/rollup.ts --clean",
-    "tsup": "node -r sucrase/register src/cli.ts"
+    "build:simple": "npm run tsup -- src/cli-*.ts src/index.ts src/rollup.ts --clean",
+    "tsup": "node -r sucrase/register src/cli-default.ts"
   },
   "dependencies": {
     "cac": "^6.7.2",

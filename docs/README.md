@@ -40,6 +40,18 @@ Code splitting is enabled by default and supported in `cjs` and `esm` format.
 
 By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark other packages as external.
 
+### Excluding all packages
+
+If you are using **tsup** to build for **Node.js** applications/APIs, usually bundling dependencies is not needed, and it can even break things, for instance, while outputting to [ESM](https://nodejs.org/api/esm.html).
+
+tsup automatically excludes packages specified in the `dependencies` and `peerDependencies` fields in the `packages.json`, but if it somehow doesn't exclude some packages, this library also has a special executable `tsup-node` that automatically skips bundling any Node.js package.
+
+```bash
+tsup-node src/index.ts
+```
+
+All other CLI flags still apply to this command.
+
 ### Generate declaration file
 
 ```bash
