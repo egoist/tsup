@@ -67,6 +67,15 @@ const getRollupConfig = async (
     },
   }
 
+  const ignoreFiles: Plugin = {
+    name: 'tsup:ignore-files',
+    load(id) {
+      if (/\.(css|vue|svelte)$/.test(id)) {
+        return ''
+      }
+    },
+  }
+
   return {
     inputConfig: {
       input: dtsOptions.entry,
@@ -85,6 +94,7 @@ const getRollupConfig = async (
         tsResolveOptions && tsResolvePlugin(tsResolveOptions),
         hashbangPlugin(),
         jsonPlugin(),
+        ignoreFiles,
         dtsPlugin.default({
           compilerOptions:
             compilerOptions.baseUrl && compilerOptions.paths

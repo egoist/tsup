@@ -452,6 +452,32 @@ test('import css', async () => {
   `)
 })
 
+test('import css in --dts', async () => {
+  const { output, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `
+    import './foo.css'
+    `,
+      'foo.css': `  
+  .foo {
+    color: blue
+  }
+    `,
+    },
+    { flags: ['--dts'] }
+  )
+
+  expect(output).toMatchInlineSnapshot(`"\\"use strict\\";"`)
+  expect(outFiles).toMatchInlineSnapshot(`
+    Array [
+      "input.css",
+      "input.d.ts",
+      "input.js",
+    ]
+  `)
+})
+
 test('external', async () => {
   const { output } = await run(getTestName(), {
     'input.ts': `export {foo} from 'foo'
