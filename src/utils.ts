@@ -1,53 +1,6 @@
 import fs from 'fs'
-import path from 'path'
-import JoyCon from 'joycon'
-import stripJsonComments from 'strip-json-comments'
-import resovleFrom from 'resolve-from'
-import { parse as parseJson } from 'jju/lib/parse'
-import { transform } from 'sucrase'
 import glob from 'globby'
-import { requireFromString } from './require-from-string'
-
-const joycon = new JoyCon()
-
-joycon.addLoader({
-  test: /\.json$/,
-  async load(filepath) {
-    try {
-      const content = stripJsonComments(
-        await fs.promises.readFile(filepath, 'utf8')
-      )
-      return parseJson(content)
-    } catch (error) {
-      throw new Error(
-        `Failed to parse ${path.relative(process.cwd(), filepath)}: ${
-          error.message
-        }`
-      )
-    }
-  },
-})
-
-joycon.addLoader({
-  test: /\.ts$/,
-  async load(filepath) {
-    const content = await fs.promises.readFile(filepath, 'utf8')
-    const { code } = transform(content, {
-      filePath: filepath,
-      transforms: ['imports', 'typescript'],
-    })
-    const mod = requireFromString(code, filepath)
-    return mod.default || mod
-  },
-})
-
-joycon.addLoader({
-  test: /\.cjs$/,
-  load(filepath) {
-    delete require.cache[filepath]
-    return require(filepath)
-  },
-})
+import resolveFrom from 'resolve-from'
 
 // No backslash in path
 function slash(input: string) {
@@ -92,44 +45,18 @@ export function isExternal(
   return false
 }
 
-export function loadTsConfig(cwd: string) {
-  return joycon.load(
-    ['tsconfig.build.json', 'tsconfig.json'],
-    cwd,
-    path.dirname(cwd)
-  )
-}
-
-export async function getDeps(cwd: string) {
-  const data = await loadPkg(cwd)
-
-  const deps = Array.from(
-    new Set([
-      ...Object.keys(data.dependencies || {}),
-      ...Object.keys(data.peerDependencies || {}),
-    ])
-  )
-
-  return deps
-}
-
-export async function loadPkg(cwd: string) {
-  const { data } = await joycon.load(['package.json'], cwd, path.dirname(cwd))
-  return data || {}
-}
-
 export function getBabel(): null | typeof import('@babel/core') {
-  const p = resovleFrom.silent(process.cwd(), '@babel/core')
+  const p = resolveFrom.silent(process.cwd(), '@babel/core')
   return p && require(p)
 }
 
 export function getPostcss(): null | typeof import('postcss') {
-  const p = resovleFrom.silent(process.cwd(), 'postcss')
+  const p = resolveFrom.silent(process.cwd(), 'postcss')
   return p && require(p)
 }
 
 export function localRequire(moduleName: string) {
-  const p = resovleFrom.silent(process.cwd(), moduleName)
+  const p = resolveFrom.silent(process.cwd(), moduleName)
   return p && require(p)
 }
 
@@ -139,14 +66,6 @@ export function pathExists(p: string) {
       resolve(!err)
     })
   })
-}
-
-export function loadTsupConfig(cwd: string) {
-  return joycon.load(
-    ['tsup.config.ts', 'tsup.config.js', 'tsup.config.cjs', 'tsup.config.json'],
-    cwd,
-    path.dirname(cwd)
-  )
 }
 
 export async function removeFiles(patterns: string[], dir: string) {

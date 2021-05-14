@@ -4,9 +4,10 @@ import { NormalizedOptions } from './'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { handleError } from './errors'
-import { getDeps, removeFiles, loadTsConfig } from './utils'
+import { removeFiles } from './utils'
 import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 import { log, setSilent } from './log'
+import { getDeps, loadTsConfig } from './load'
 
 // Use `require` to esbuild use the cjs build of rollup-plugin-dts
 // the mjs build of rollup-plugin-dts uses `import.meta.url` which makes Node throws syntax error

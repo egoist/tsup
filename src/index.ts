@@ -11,15 +11,12 @@ import {
 } from 'esbuild'
 import type { MarkRequired, Buildable } from 'ts-essentials'
 import {
-  getDeps,
-  loadTsConfig,
-  loadPkg,
   getBabel,
-  loadTsupConfig,
   removeFiles,
   rewriteImportMetaUrl,
   debouncePromise,
 } from './utils'
+import { getDeps, loadTsConfig, loadPkg, loadTsupConfig } from './load'
 import glob from 'globby'
 import { handleError, PrettyError } from './errors'
 import { postcssPlugin } from './esbuild/postcss'
