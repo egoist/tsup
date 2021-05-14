@@ -52,6 +52,67 @@ tsup-node src/index.ts
 
 All other CLI flags still apply to this command.
 
+### Using custom configuration
+
+You can also use `tsup` using file configurations or in a property inside your `package.json`, and you can even use `TypeScript` and have type-safety while you are using it.
+
+> Most of these options can be overwritten using the CLI options
+
+You can use any of these files:
+
+- `tsup.config.ts`
+- `tsup.config.js`
+- `tsup.config.cjs`
+- `tsup.config.json`
+- `tsup` property in your `package.json`
+
+> In all the custom files you can export the options either as `tsup`, `default` or `module.exports =` 
+
+#### TypeScript
+
+```ts
+// tsup.config.ts
+import type { Options } from 'tsup'
+export const tsup: Options = {
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+  entryPoints: ['src/index.ts'],
+}
+```
+
+#### JavaScript
+
+```js
+// tsup.config.cjs
+/**
+ * @type {import("tsup").Options}
+ */
+module.exports = {
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+  entryPoints: ['src/index.ts'],
+}
+```
+
+#### package.json
+
+```json
+{
+  "tsup": {
+    "splitting": false,
+    "sourcemap": true,
+    "clean": true,
+    "entryPoints": ["src/index.ts"]
+  },
+  "scripts": {
+    "build": "tsup"
+  }
+}
+```
+
+
 ### Generate declaration file
 
 ```bash
