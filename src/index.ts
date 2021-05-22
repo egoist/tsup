@@ -363,19 +363,19 @@ const normalizeOptions = async (
 }
 
 export async function build(_options: Options) {
-  setSilent(_options.silent)
+  const config = await loadTsupConfig(process.cwd())
+
+  const options = await normalizeOptions(config.data, _options)
+
+  setSilent(options.silent)
 
   log('CLI', 'info', `tsup v${version}`)
-
-  const config = await loadTsupConfig(process.cwd())
 
   if (config.path) {
     log('CLI', 'info', `Using tsup config: ${config.path}`)
   }
 
-  const options = await normalizeOptions(config.data, _options)
-
-  if (_options.watch) {
+  if (options.watch) {
     log('CLI', 'info', 'Running in watch mode')
   }
 
