@@ -323,6 +323,8 @@ const normalizeOptions = async (
     ...optionsOverride,
   }
 
+  setSilent(options.silent)
+
   const input = options.entryPoints
   if (input) {
     options.entryPoints = await glob(input)
@@ -366,8 +368,6 @@ export async function build(_options: Options) {
   const config = await loadTsupConfig(process.cwd())
 
   const options = await normalizeOptions(config.data, _options)
-
-  setSilent(options.silent)
 
   log('CLI', 'info', `tsup v${version}`)
 
