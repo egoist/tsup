@@ -31,7 +31,7 @@ jobs:
             ${{ runner.os }}-node-
       - run: npm ci
       - run: npm run test --if-present
-      - run: npx -y semantic-release
+      - run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
