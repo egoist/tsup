@@ -386,7 +386,7 @@ test('minify', async () => {
   )
 
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});function f(){return\\"foo\\"}exports.foo = f;
+    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});function o(){return\\"foo\\"}exports.foo = o;
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
