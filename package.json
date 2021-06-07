@@ -54,7 +54,7 @@
     "jju": "^1.4.0",
     "postcss": "^8.2.10",
     "postcss-simple-vars": "^6.0.3",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.1",
     "resolve": "^1.20.0",
     "rollup-plugin-dts": "^3.0.1",
     "rollup-plugin-hashbang": "^2.2.2",
