@@ -39,7 +39,7 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.15",
+    "@babel/core": "^7.14.6",
     "@rollup/plugin-json": "^4.1.0",
     "@types/buble": "^0.19.2",
     "@types/debug": "^4.1.5",
