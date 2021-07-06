@@ -86,7 +86,7 @@ async function bundleConfig(configFile: string) {
     delete eval(`require.cache`)[outFile]
     const result = require(outFile)
     removeFile(outFile)
-    return result.default || result
+    return result.tsup || result.default || result
   }
   try {
     await build({
