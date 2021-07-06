@@ -101,6 +101,10 @@ export type Options = {
    * Skip node_modules bundling
    */
   skipNodeModulesBundle?: boolean
+  /**
+   * @see https://esbuild.github.io/api/#pure
+   */
+  pure?: string | string[]
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -204,6 +208,7 @@ export async function runEsbuild(
       minifySyntax: options.minifySyntax,
       keepNames: options.keepNames,
       incremental: !!options.watch,
+      pure: typeof options.pure === 'string' ? [options.pure] : options.pure,
     })
   } catch (error) {
     log(format, 'error', 'Build failed')

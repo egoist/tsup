@@ -67,6 +67,7 @@ export async function main(options: Options = {}) {
       '--silent',
       'Supress non-error logs (excluding "onSuccess" process output)'
     )
+    .option('--pure <express>', 'Mark specific expressions as pure')
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
       Object.assign(options, {
