@@ -81,7 +81,7 @@ function removeFile(filepath: string) {
 
 async function bundleConfig(configFile: string) {
   const { build } = await import('esbuild')
-  const outFile = configFile.replace(/\.[a-z]+$/, '.bundled.js')
+  const outFile = configFile.replace(/\.[a-z]+$/, '.bundled.cjs')
   const readConfig = () => {
     delete eval(`require.cache`)[outFile]
     const result = require(outFile)
