@@ -105,6 +105,10 @@ export type Options = {
    * @see https://esbuild.github.io/api/#pure
    */
   pure?: string | string[]
+  postcssConfig?: {
+    plugins: Array<any>
+    options: any
+  }
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -181,7 +185,7 @@ export async function runEsbuild(
           patterns: external,
           skipNodeModulesBundle: options.skipNodeModulesBundle,
         }),
-        postcssPlugin({ css }),
+        postcssPlugin({ css, postcssConfig: options.postcssConfig }),
         sveltePlugin({ css }),
         ...(options.esbuildPlugins || []),
       ],

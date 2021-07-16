@@ -452,6 +452,36 @@ test('import css', async () => {
   `)
 })
 
+test('import css using config postcss', async () => {
+  const { output, outFiles } = await run(getTestName(), {
+    'input.ts': `
+    import './foo.css'
+    `,
+    'tsup.config.ts': `
+    export default {
+      postcssConfig: {
+        plugins: [require('postcss-simple-vars')()]
+      }
+    }
+    `,
+    'foo.css': `
+  $color: blue;
+  
+  .foo {
+    color: $color;
+  }
+    `,
+  })
+
+  expect(output).toMatchInlineSnapshot(`"\\"use strict\\";"`)
+  expect(outFiles).toMatchInlineSnapshot(`
+    Array [
+      "input.css",
+      "input.js",
+    ]
+  `)
+})
+
 test('import css in --dts', async () => {
   const { output, outFiles } = await run(
     getTestName(),

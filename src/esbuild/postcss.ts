@@ -5,8 +5,10 @@ import { getPostcss } from '../utils'
 
 export const postcssPlugin = ({
   css,
+  postcssConfig,
 }: {
   css?: Map<string, string>
+  postcssConfig?: { plugins: Array<any>; options: any }
 }): Plugin => {
   return {
     name: 'postcss',
@@ -44,7 +46,8 @@ export const postcssPlugin = ({
         }
 
         // Load postcss config
-        const { plugins, options } = await getPostcssConfig(args.path)
+        const { plugins, options } =
+          postcssConfig || (await getPostcssConfig(args.path))
 
         // Return if no postcss plugins are supplied
         if (!plugins || plugins.length === 0) {
