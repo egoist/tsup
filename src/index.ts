@@ -503,6 +503,7 @@ export async function build(_options: Options) {
     worker.postMessage({
       options: {
         ...options, // functions cannot be cloned
+        postcssConfig: undefined,
         esbuildPlugins: undefined,
       },
     })
