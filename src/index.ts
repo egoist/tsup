@@ -105,6 +105,10 @@ export type Options = {
    * @see https://esbuild.github.io/api/#pure
    */
   pure?: string | string[]
+  /**
+   * disable bunlding, default o true
+   */
+  bundle?: boolean
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -167,7 +171,7 @@ export async function runEsbuild(
     result = await esbuild({
       entryPoints: options.entryPoints,
       format: splitting && format === 'cjs' ? 'esm' : format,
-      bundle: true,
+      bundle: typeof options.bundle === 'undefined' ? true : options.bundle,
       platform: 'node',
       globalName: options.globalName,
       jsxFactory: options.jsxFactory,
