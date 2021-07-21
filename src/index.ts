@@ -91,7 +91,7 @@ export type Options = {
   /**
    * Clean output directory before each build
    */
-  clean?: boolean
+  clean?: boolean | string[];
   esbuildPlugins?: EsbuildPlugin[]
   /**
    * Supress non-error logs (excluding "onSuccess" process output)
@@ -411,7 +411,8 @@ export async function build(_options: Options) {
     const killPromise = killPreviousProcess()
 
     if (options.clean) {
-      await removeFiles(['**/*', '!**/*.d.ts'], options.outDir)
+      const extraPatterns = Array.isArray(options.clean) ? options.clean : []
+      await removeFiles(['**/*', '!**/*.d.ts', ...extraPatterns], options.outDir)
       log('CLI', 'info', 'Cleaning output folder')
     }
 
