@@ -91,7 +91,7 @@ export type Options = {
   /**
    * Clean output directory before each build
    */
-  clean?: boolean
+  clean?: boolean | string[];
   esbuildPlugins?: EsbuildPlugin[]
   /**
    * Supress non-error logs (excluding "onSuccess" process output)
@@ -105,6 +105,10 @@ export type Options = {
    * @see https://esbuild.github.io/api/#pure
    */
   pure?: string | string[]
+  /**
+   * Disable bunlding, default to true
+   */
+  bundle?: boolean
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -167,7 +171,7 @@ export async function runEsbuild(
     result = await esbuild({
       entryPoints: options.entryPoints,
       format: splitting && format === 'cjs' ? 'esm' : format,
-      bundle: true,
+      bundle: typeof options.bundle === 'undefined' ? true : options.bundle,
       platform: 'node',
       globalName: options.globalName,
       jsxFactory: options.jsxFactory,
@@ -407,7 +411,8 @@ export async function build(_options: Options) {
     const killPromise = killPreviousProcess()
 
     if (options.clean) {
-      await removeFiles(['**/*', '!**/*.d.ts'], options.outDir)
+      const extraPatterns = Array.isArray(options.clean) ? options.clean : []
+      await removeFiles(['**/*', '!**/*.d.ts', ...extraPatterns], options.outDir)
       log('CLI', 'info', 'Cleaning output folder')
     }
 
