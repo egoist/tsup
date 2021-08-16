@@ -36,7 +36,7 @@ export async function main(options: Options = {}) {
     )
     .option('--dts [entry]', 'Generate declaration file')
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
-    .option('--sourcemap', 'Generate sourcemap file')
+    .option('--sourcemap [option]', 'Generate sourcemap, "external", "inline", "both"')
     .option(
       '--watch [path]',
       'Watch mode, if path is not specified, it watches the current folder ".". Repeat "--watch" for more than one path'

@@ -135,6 +135,12 @@ This will emit `./dist/index.js` and `./dist/index.js.map`.
 
 If you set multiple entry files, each entry will get a corresponding `.map` file.
 
+If you want to inline sourcemap, you can try:
+
+```bash
+tsup index.ts --sourcemap inline
+```
+
 ### Bundle formats
 
 Supported format: `esm`, `cjs`, (default) and `iife`.
