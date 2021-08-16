@@ -236,6 +236,20 @@ test('bundle graphql-tools with --sourcemap flag', async () => {
   )
 })
 
+test('bundle graphql-tools with --sourcemap inline flag', async () => {
+  const { output } = await run(
+    getTestName(),
+    {
+      'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
+    },
+    {
+      flags: ['--sourcemap', 'inline'],
+    }
+  )
+
+  expect(output).toContain('//# sourceMappingURL=')
+})
+
 test('es5 target', async () => {
   const { output, outFiles } = await run(
     getTestName(),

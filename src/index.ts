@@ -5,6 +5,7 @@ import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
 import {
   build as esbuild,
+  BuildOptions,
   BuildResult,
   Plugin as EsbuildPlugin,
   formatMessages,
@@ -72,7 +73,7 @@ export type Options = {
         /** Resolve external types used in dts files from node_modules */
         resolve?: boolean | (string | RegExp)[]
       }
-  sourcemap?: boolean
+  sourcemap?: BuildOptions['sourcemap']
   /** Don't bundle these packages */
   external?: (string | RegExp)[]
   /** Transform the result with `@babel/core` */
