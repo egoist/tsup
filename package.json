@@ -50,7 +50,7 @@
     "buble": "^0.20.0",
     "consola": "^2.15.3",
     "fs-extra": "^9.1.0",
-    "jest": "^26.6.3",
+    "jest": "^27.1.0",
     "jju": "^1.4.0",
     "postcss": "^8.2.10",
     "postcss-simple-vars": "^6.0.3",
