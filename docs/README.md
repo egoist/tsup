@@ -123,7 +123,13 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`.
 
 If you have multiple entry files, each entry will get a corresponding `.d.ts` file. So when you only want to generate declaration file for a single entry, use `--dts <entry>` format, e.g. `--dts src/index.ts`.
 
-Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file, if that's somehow a requirement, try the experimental `--dts-resolve` flag instead.
+
+#### Bundling type dependencies
+By default, `--dts` does not bundle dependency types imported from the `.d.ts` file.
+
+To bundle them, try the experimental [`--dts-resolve` flag](https://dev.to/egoist/rollup-dts-file-using-tsup-2579).
+
+Note, `--dts-resolve` will ignore packages specified in the dependencies field in package.json, meaning they're always externalized.
 
 ### Generate sourcemap file
 
