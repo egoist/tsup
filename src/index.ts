@@ -166,7 +166,7 @@ export async function runEsbuild(
 
   let result: BuildResult | undefined
 
-  const splitting = options.splitting !== false
+  const splitting = options.splitting === true
 
   try {
     result = await esbuild({
@@ -205,7 +205,7 @@ export async function runEsbuild(
           : outDir,
       outExtension: options.legacyOutput ? undefined : outExtension,
       write: false,
-      splitting: splitting && (format === 'cjs' || format === 'esm'),
+      splitting: splitting && format === 'esm',
       logLevel: 'error',
       minify: options.minify,
       minifyWhitespace: options.minifyWhitespace,
