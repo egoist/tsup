@@ -166,6 +166,7 @@ export async function runEsbuild(
 
   let result: BuildResult | undefined
 
+  // The user actively turns on --no-splitting
   const splitting = options.splitting === true
 
   try {
@@ -205,7 +206,8 @@ export async function runEsbuild(
           : outDir,
       outExtension: options.legacyOutput ? undefined : outExtension,
       write: false,
-      splitting: splitting && format === 'esm',
+      // should be enabled by default when format is esm
+      splitting: splitting || format === 'esm',
       logLevel: 'error',
       minify: options.minify,
       minifyWhitespace: options.minifyWhitespace,
