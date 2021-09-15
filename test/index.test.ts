@@ -89,6 +89,9 @@ test('simple', async () => {
       default: () => input_default
     });
 
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
     // foo.ts
     var foo_default = \\"foo\\";
 
@@ -299,6 +302,11 @@ test('es5 target', async () => {
     __export(exports, {
       Foo: function () { return Foo; }
     });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var Foo = /*@__PURE__*/(function () {
       function Foo () {}
 
@@ -351,6 +359,11 @@ test('multiple formats', async () => {
     __export(exports, {
       a: () => a
     });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var a = 1;
     // Annotate the CommonJS export names for ESM import in node:
     0 && (module.exports = {
@@ -428,6 +441,11 @@ test('multiple formats with legacy output', async () => {
     __export(exports, {
       a: () => a
     });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var a = 1;
     // Annotate the CommonJS export names for ESM import in node:
     0 && (module.exports = {
@@ -460,7 +478,7 @@ test('minify', async () => {
   )
 
   expect(output).toMatchInlineSnapshot(`
-    "var r=Object.defineProperty;var t=o=>r(o,\\"__esModule\\",{value:!0});var c=typeof require!=\\"undefined\\"?require:o=>{throw new Error('Dynamic require of \\"'+o+'\\" is not supported')};var e=(o,f)=>{t(o);for(var n in f)r(o,n,{get:f[n],enumerable:!0})};e(exports,{foo:()=>u});function u(){return\\"foo\\"}0&&(module.exports={foo});
+    "var t=Object.defineProperty;var o=e=>t(e,\\"__esModule\\",{value:!0});var f=typeof require!=\\"undefined\\"?require:e=>{throw new Error('Dynamic require of \\"'+e+'\\" is not supported')};var c=(e,r)=>{o(e);for(var n in r)t(e,n,{get:r[n],enumerable:!0})};c(exports,{foo:()=>i});var u=typeof document==\\"undefined\\"?new(require(\\"url\\")).URL(\\"file:\\"+__filename).href:document.currentScript&&document.currentScript.src||new URL(\\"main.js\\",document.baseURI).href;function i(){return\\"foo\\"}0&&(module.exports={foo});
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
@@ -499,6 +517,11 @@ test('--env flag', async () => {
     __export(exports, {
       env: () => env
     });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var env = \\"production\\";
     // Annotate the CommonJS export names for ESM import in node:
     0 && (module.exports = {
@@ -532,7 +555,11 @@ test('import css', async () => {
     `,
   })
 
-  expect(output).toMatchInlineSnapshot(`""`)
+  expect(output).toMatchInlineSnapshot(`
+    "// ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+    "
+  `)
   expect(outFiles).toMatchInlineSnapshot(`
     Array [
       "input.css",
@@ -557,7 +584,11 @@ test('import css in --dts', async () => {
     { flags: ['--dts'] }
   )
 
-  expect(output).toMatchInlineSnapshot(`""`)
+  expect(output).toMatchInlineSnapshot(`
+    "// ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+    "
+  `)
   expect(outFiles).toMatchInlineSnapshot(`
     Array [
       "input.css",
@@ -619,6 +650,11 @@ test('external', async () => {
       baz: () => baz,
       foo: () => import_foo.foo
     });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var import_foo = __toModule(require(\\"foo\\"));
     var import_bar = __toModule(require(\\"bar\\"));
 
@@ -645,7 +681,10 @@ test('disable code splitting to get proper module.exports =', async () => {
     }
   )
   expect(output).toMatchInlineSnapshot(`
-    "// input.ts
+    "// ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     module.exports = 123;
     "
   `)
@@ -707,6 +746,9 @@ test('bundle svelte', async () => {
     __export(exports, {
       App: () => App_default
     });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
 
     // App.svelte
     var import_internal = __toModule(require(\\"svelte/internal\\"));
@@ -797,6 +839,9 @@ test('support baseUrl and paths in tsconfig.json', async () => {
       foo: () => foo
     });
 
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
     // foo.ts
     var foo = \\"foo\\";
     // Annotate the CommonJS export names for ESM import in node:
@@ -873,8 +918,12 @@ test(`transform import.meta.url in cjs format`, async () => {
     __export(exports, {
       default: () => input_default
     });
-    var import_meta = {};
-    var input_default = import_meta.url;
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
+    var input_default = importMetaUrlShim;
     // Annotate the CommonJS export names for ESM import in node:
     0 && (module.exports = {});
     "
@@ -965,6 +1014,11 @@ test('exclude dependencies', async () => {
       foo: () => import_foo.foo,
       nested: () => import_nested.nested
     });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var import_foo = __toModule(require(\\"foo\\"));
     var import_nested = __toModule(require(\\"foo/nested\\"));
     // Annotate the CommonJS export names for ESM import in node:

@@ -184,14 +184,24 @@ export async function runEsbuild(
         ...(options.esbuildPlugins || []),
       ],
       define: {
+        ...(format === 'cjs'
+          ? {
+              'import.meta.url': 'importMetaUrlShim',
+            }
+          : {}),
         ...options.define,
         ...Object.keys(env).reduce((res, key) => {
+          const value = JSON.stringify(env[key])
           return {
             ...res,
-            [`process.env.${key}`]: JSON.stringify(env[key]),
+            [`process.env.${key}`]: value,
+            [`import.meta.env.${key}`]: value,
           }
         }, {}),
       },
+      inject: [
+        format === 'cjs' ? join(__dirname, '../assets/cjs_shims.js') : '',
+      ].filter(Boolean),
       outdir:
         options.legacyOutput && format !== 'cjs'
           ? join(outDir, format)
