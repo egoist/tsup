@@ -34,7 +34,7 @@ tsup src/index.ts src/cli.ts
 
 This will output `dist/index.js` and `dist/cli.js`.
 
-Code splitting is enabled by default and supported in `cjs` and `esm` format.
+Code splitting only works in `esm` format and is enabled by default.
 
 ### Excluding packages
 

@@ -8,7 +8,8 @@
   },
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "/dist",
+    "/assets"
   ],
   "author": "EGOIST",
   "license": "MIT",
@@ -28,14 +29,13 @@
     "chalk": "^4.1.0",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
-    "esbuild": "^0.12.9",
+    "esbuild": "^0.12.28",
     "execa": "^5.0.0",
     "globby": "^11.0.3",
     "joycon": "^3.0.1",
     "postcss-load-config": "^3.0.1",
     "resolve-from": "^5.0.0",
     "rollup": "^2.56.1",
-    "sucrase": "^3.18.1",
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
@@ -60,6 +60,7 @@
     "rollup-plugin-hashbang": "^2.2.2",
     "string-argv": "^0.3.1",
     "strip-json-comments": "^3.1.1",
+    "sucrase": "^3.20.1",
     "svelte": "3.37.0",
     "ts-essentials": "^7.0.1",
     "ts-jest": "^26.5.5",

@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { dirname, join, extname, basename } from 'path'
+import path, { dirname, join, extname, basename } from 'path'
 import { Worker } from 'worker_threads'
 import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
@@ -11,12 +11,7 @@ import {
   formatMessages,
 } from 'esbuild'
 import type { MarkRequired, Buildable } from 'ts-essentials'
-import {
-  getBabel,
-  removeFiles,
-  rewriteImportMetaUrl,
-  debouncePromise,
-} from './utils'
+import { getBabel, removeFiles, debouncePromise } from './utils'
 import { getDeps, loadTsConfig, loadPkg, loadTsupConfig } from './load'
 import glob from 'globby'
 import { handleError, PrettyError } from './errors'
@@ -92,7 +87,7 @@ export type Options = {
   /**
    * Clean output directory before each build
    */
-  clean?: boolean | string[];
+  clean?: boolean | string[]
   esbuildPlugins?: EsbuildPlugin[]
   /**
    * Supress non-error logs (excluding "onSuccess" process output)
@@ -166,12 +161,10 @@ export async function runEsbuild(
 
   let result: BuildResult | undefined
 
-  const splitting = options.splitting !== false
-
   try {
     result = await esbuild({
       entryPoints: options.entryPoints,
-      format: splitting && format === 'cjs' ? 'esm' : format,
+      format,
       bundle: typeof options.bundle === 'undefined' ? true : options.bundle,
       platform: 'node',
       globalName: options.globalName,
@@ -191,21 +184,32 @@ export async function runEsbuild(
         ...(options.esbuildPlugins || []),
       ],
       define: {
+        ...(format === 'cjs'
+          ? {
+              'import.meta.url': 'importMetaUrlShim',
+            }
+          : {}),
         ...options.define,
         ...Object.keys(env).reduce((res, key) => {
+          const value = JSON.stringify(env[key])
           return {
             ...res,
-            [`process.env.${key}`]: JSON.stringify(env[key]),
+            [`process.env.${key}`]: value,
+            [`import.meta.env.${key}`]: value,
           }
         }, {}),
       },
+      inject: [
+        format === 'cjs' ? join(__dirname, '../assets/cjs_shims.js') : '',
+      ].filter(Boolean),
       outdir:
         options.legacyOutput && format !== 'cjs'
           ? join(outDir, format)
           : outDir,
       outExtension: options.legacyOutput ? undefined : outExtension,
       write: false,
-      splitting: splitting && (format === 'cjs' || format === 'esm'),
+      // Enable code splitting for esm format
+      splitting: format === 'esm' && options.splitting !== false,
       logLevel: 'error',
       minify: options.minify,
       minifyWhitespace: options.minifyWhitespace,
@@ -246,7 +250,6 @@ export async function runEsbuild(
     const timeInMs = Date.now() - startTime
     log(format, 'success', `Build success in ${Math.floor(timeInMs)}ms`)
 
-    const { transform } = await import('sucrase')
     await Promise.all(
       result.outputFiles.map(async (file) => {
         const dir = dirname(file.path)
@@ -291,15 +294,6 @@ export async function runEsbuild(
                 `Error compiling to es5 target:\n${error.snippet}`
               )
             }
-          }
-          // When code splitting is enable the code is transpiled to esm format
-          // So we add an extra step to get cjs code here
-          if (splitting && format === 'cjs') {
-            contents = transform(contents, {
-              filePath: file.path,
-              transforms: ['imports'],
-            }).code
-            contents = rewriteImportMetaUrl(contents, basename(file.path))
           }
         }
         await fs.promises.writeFile(outPath, contents, {
@@ -413,7 +407,10 @@ export async function build(_options: Options) {
 
     if (options.clean) {
       const extraPatterns = Array.isArray(options.clean) ? options.clean : []
-      await removeFiles(['**/*', '!**/*.d.ts', ...extraPatterns], options.outDir)
+      await removeFiles(
+        ['**/*', '!**/*.d.ts', ...extraPatterns],
+        options.outDir
+      )
       log('CLI', 'info', 'Cleaning output folder')
     }
 

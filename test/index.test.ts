@@ -73,14 +73,32 @@ test('simple', async () => {
     'foo.ts': `export default 'foo'`,
   })
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// foo.ts
+    "var __defProp = Object.defineProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
+
+    // input.ts
+    __export(exports, {
+      default: () => input_default
+    });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // foo.ts
     var foo_default = \\"foo\\";
 
     // input.ts
     var input_default = foo_default;
-
-
-    exports.default = input_default;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {});
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
@@ -269,7 +287,26 @@ test('es5 target', async () => {
     }
   )
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+    "var __defProp = Object.defineProperty;
+    var __markAsModule = function (target) { return __defProp(target, \\"__esModule\\", { value: true }); };
+    var __require = typeof require !== \\"undefined\\" ? require : function (x) {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = function (target, all) {
+      __markAsModule(target);
+      for (var name in all)
+        { __defProp(target, name, { get: all[name], enumerable: true }); }
+    };
+
+    // input.ts
+    __export(exports, {
+      Foo: function () { return Foo; }
+    });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var Foo = /*@__PURE__*/(function () {
       function Foo () {}
 
@@ -280,9 +317,10 @@ test('es5 target', async () => {
 
       return Foo;
     }());
-
-
-    exports.Foo = Foo;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      Foo: Foo
+    });
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
@@ -306,11 +344,31 @@ test('multiple formats', async () => {
   )
 
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+    "var __defProp = Object.defineProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
+
+    // input.ts
+    __export(exports, {
+      a: () => a
+    });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var a = 1;
-
-
-    exports.a = a;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      a
+    });
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
@@ -368,11 +426,31 @@ test('multiple formats with legacy output', async () => {
   )
 
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+    "var __defProp = Object.defineProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
+
+    // input.ts
+    __export(exports, {
+      a: () => a
+    });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var a = 1;
-
-
-    exports.a = a;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      a
+    });
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
@@ -400,7 +478,7 @@ test('minify', async () => {
   )
 
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});function o(){return\\"foo\\"}exports.foo = o;
+    "var t=Object.defineProperty;var o=e=>t(e,\\"__esModule\\",{value:!0});var f=typeof require!=\\"undefined\\"?require:e=>{throw new Error('Dynamic require of \\"'+e+'\\" is not supported')};var c=(e,r)=>{o(e);for(var n in r)t(e,n,{get:r[n],enumerable:!0})};c(exports,{foo:()=>i});var u=typeof document==\\"undefined\\"?new(require(\\"url\\")).URL(\\"file:\\"+__filename).href:document.currentScript&&document.currentScript.src||new URL(\\"main.js\\",document.baseURI).href;function i(){return\\"foo\\"}0&&(module.exports={foo});
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
@@ -424,11 +502,31 @@ test('--env flag', async () => {
   )
 
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+    "var __defProp = Object.defineProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
+
+    // input.ts
+    __export(exports, {
+      env: () => env
+    });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     var env = \\"production\\";
-
-
-    exports.env = env;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      env
+    });
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
@@ -457,7 +555,11 @@ test('import css', async () => {
     `,
   })
 
-  expect(output).toMatchInlineSnapshot(`"\\"use strict\\";"`)
+  expect(output).toMatchInlineSnapshot(`
+    "// ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+    "
+  `)
   expect(outFiles).toMatchInlineSnapshot(`
     Array [
       "input.css",
@@ -482,7 +584,11 @@ test('import css in --dts', async () => {
     { flags: ['--dts'] }
   )
 
-  expect(output).toMatchInlineSnapshot(`"\\"use strict\\";"`)
+  expect(output).toMatchInlineSnapshot(`
+    "// ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+    "
+  `)
   expect(outFiles).toMatchInlineSnapshot(`
     Array [
       "input.css",
@@ -511,17 +617,55 @@ test('external', async () => {
     `,
   })
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
-    var _foo = require('foo');
-    var _bar = require('bar');
+    "var __create = Object.create;
+    var __defProp = Object.defineProperty;
+    var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames = Object.getOwnPropertyNames;
+    var __getProtoOf = Object.getPrototypeOf;
+    var __hasOwnProp = Object.prototype.hasOwnProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
+    var __reExport = (target, module2, desc) => {
+      if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
+        for (let key of __getOwnPropNames(module2))
+          if (!__hasOwnProp.call(target, key) && key !== \\"default\\")
+            __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+      }
+      return target;
+    };
+    var __toModule = (module2) => {
+      return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, \\"default\\", module2 && module2.__esModule && \\"default\\" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
+    };
+
+    // input.ts
+    __export(exports, {
+      bar: () => import_bar.bar,
+      baz: () => baz,
+      foo: () => import_foo.foo
+    });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
+    var import_foo = __toModule(require(\\"foo\\"));
+    var import_bar = __toModule(require(\\"bar\\"));
 
     // node_modules/baz/index.ts
     var baz = \\"baz\\";
-
-
-
-
-    exports.bar = _bar.bar; exports.baz = baz; exports.foo = _foo.foo;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      bar,
+      baz,
+      foo
+    });
     "
   `)
 })
@@ -537,7 +681,10 @@ test('disable code splitting to get proper module.exports =', async () => {
     }
   )
   expect(output).toMatchInlineSnapshot(`
-    "// input.ts
+    "// ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
     module.exports = 123;
     "
   `)
@@ -568,48 +715,75 @@ test('bundle svelte', async () => {
     }
   )
   expect(output).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// App.svelte
+    "var __create = Object.create;
+    var __defProp = Object.defineProperty;
+    var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames = Object.getOwnPropertyNames;
+    var __getProtoOf = Object.getPrototypeOf;
+    var __hasOwnProp = Object.prototype.hasOwnProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
+    var __reExport = (target, module2, desc) => {
+      if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
+        for (let key of __getOwnPropNames(module2))
+          if (!__hasOwnProp.call(target, key) && key !== \\"default\\")
+            __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+      }
+      return target;
+    };
+    var __toModule = (module2) => {
+      return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, \\"default\\", module2 && module2.__esModule && \\"default\\" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
+    };
 
+    // input.ts
+    __export(exports, {
+      App: () => App_default
+    });
 
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
 
-
-
-
-
-
-
-    var _internal = require('svelte/internal');
+    // App.svelte
+    var import_internal = __toModule(require(\\"svelte/internal\\"));
     function create_fragment(ctx) {
       let span;
       return {
         c() {
-          span = _internal.element.call(void 0, \\"span\\");
+          span = (0, import_internal.element)(\\"span\\");
           span.textContent = \`\${msg}\`;
-          _internal.attr.call(void 0, span, \\"class\\", \\"svelte-1jo4k3z\\");
+          (0, import_internal.attr)(span, \\"class\\", \\"svelte-1jo4k3z\\");
         },
         m(target, anchor) {
-          _internal.insert.call(void 0, target, span, anchor);
+          (0, import_internal.insert)(target, span, anchor);
         },
-        p: _internal.noop,
-        i: _internal.noop,
-        o: _internal.noop,
+        p: import_internal.noop,
+        i: import_internal.noop,
+        o: import_internal.noop,
         d(detaching) {
           if (detaching)
-            _internal.detach.call(void 0, span);
+            (0, import_internal.detach)(span);
         }
       };
     }
     var msg = \\"hello svelte\\";
-    var App = class extends _internal.SvelteComponent {
+    var App = class extends import_internal.SvelteComponent {
       constructor(options) {
         super();
-        _internal.init.call(void 0, this, options, null, create_fragment, _internal.safe_not_equal, {});
+        (0, import_internal.init)(this, options, null, create_fragment, import_internal.safe_not_equal, {});
       }
     };
     var App_default = App;
-
-
-    exports.App = App_default;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      App
+    });
     "
   `)
 
@@ -649,11 +823,31 @@ test('support baseUrl and paths in tsconfig.json', async () => {
     }`,
   })
   expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// foo.ts
+    "var __defProp = Object.defineProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
+
+    // input.ts
+    __export(exports, {
+      foo: () => foo
+    });
+
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // foo.ts
     var foo = \\"foo\\";
-
-
-    exports.foo = foo;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      foo
+    });
     "
   `)
 })
@@ -709,11 +903,29 @@ test(`transform import.meta.url in cjs format`, async () => {
     'input.ts': `export default import.meta.url`,
   })
   expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
-    "\\"use strict\\";var __import_meta_url = typeof document === 'undefined' ? 'file://' + __filename : new URL('input.js', document.baseURI).href;Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
-    var input_default = __import_meta_url;
+    "var __defProp = Object.defineProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
 
+    // input.ts
+    __export(exports, {
+      default: () => input_default
+    });
 
-    exports.default = input_default;
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
+
+    // input.ts
+    var input_default = importMetaUrlShim;
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {});
     "
   `)
 })
@@ -770,13 +982,50 @@ test('exclude dependencies', async () => {
     'node_modules/foo/package.json': `{"name":"foo"}`,
   })
   expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
-    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
-    var _foo = require('foo');
-    var _nested = require('foo/nested');
+    "var __create = Object.create;
+    var __defProp = Object.defineProperty;
+    var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames = Object.getOwnPropertyNames;
+    var __getProtoOf = Object.getPrototypeOf;
+    var __hasOwnProp = Object.prototype.hasOwnProperty;
+    var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
+    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
+      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
+    };
+    var __export = (target, all) => {
+      __markAsModule(target);
+      for (var name in all)
+        __defProp(target, name, { get: all[name], enumerable: true });
+    };
+    var __reExport = (target, module2, desc) => {
+      if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
+        for (let key of __getOwnPropNames(module2))
+          if (!__hasOwnProp.call(target, key) && key !== \\"default\\")
+            __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+      }
+      return target;
+    };
+    var __toModule = (module2) => {
+      return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, \\"default\\", module2 && module2.__esModule && \\"default\\" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
+    };
 
+    // input.ts
+    __export(exports, {
+      foo: () => import_foo.foo,
+      nested: () => import_nested.nested
+    });
 
+    // ../../../assets/cjs_shims.js
+    var importMetaUrlShim = typeof document === \\"undefined\\" ? new (require(\\"url\\")).URL(\\"file:\\" + __filename).href : document.currentScript && document.currentScript.src || new URL(\\"main.js\\", document.baseURI).href;
 
-    exports.foo = _foo.foo; exports.nested = _nested.nested;
+    // input.ts
+    var import_foo = __toModule(require(\\"foo\\"));
+    var import_nested = __toModule(require(\\"foo/nested\\"));
+    // Annotate the CommonJS export names for ESM import in node:
+    0 && (module.exports = {
+      foo,
+      nested
+    });
     "
   `)
 })
