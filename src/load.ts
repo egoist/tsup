@@ -83,7 +83,7 @@ async function bundleConfig(configFile: string) {
   const { build } = await import('esbuild')
   const outFile = configFile.replace(/\.[a-z]+$/, '.bundled.cjs')
   const readConfig = () => {
-    delete eval(`require.cache`)[outFile]
+    delete require.cache[outFile]
     const result = require(outFile)
     removeFile(outFile)
     return result.tsup || result.default || result

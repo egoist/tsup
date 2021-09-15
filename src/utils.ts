@@ -76,19 +76,6 @@ export async function removeFiles(patterns: string[], dir: string) {
   await Promise.all(files.map((file) => fs.promises.unlink(file)))
 }
 
-export function rewriteImportMetaUrl(input: string, filename: string) {
-  const helper = `var __import_meta_url = typeof document === 'undefined' ? 'file://' + __filename : new URL('${filename}', document.baseURI).href;`
-  let injectHelper = false
-  input = input.replace(/\bimport\.meta\.url\b/g, () => {
-    injectHelper = true
-    return '__import_meta_url'
-  })
-  if (injectHelper) {
-    input = input.replace(`"use strict";`, (m) => m + helper)
-  }
-  return input
-}
-
 export function debouncePromise<T extends unknown[]>(
   fn: (...args: T) => Promise<void>,
   delay: number,
