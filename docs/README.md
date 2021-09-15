@@ -282,14 +282,6 @@ For more details:
 tsup --help
 ```
 
-## FAQ
-
-### Why does `export =` get transpiled to `module.exports.default`?
-
-In order to utilize the [code splitting feature in esbuild](https://esbuild.github.io/api/#splitting) we have to transpile the ts code to esm (esbuild's code splitting is only supported by esm format), so `export =` gets transpiled to `export default`, then we transpile the esm code to cjs code when you're bundling in cjs format, which results in `module.exports.default`.
-
-You can fix this by disabling code splitting with the `--no-splitting` flag.
-
 ## License
 
 MIT &copy; [EGOIST](https://github.com/sponsors/egoist)
