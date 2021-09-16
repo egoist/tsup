@@ -37,9 +37,6 @@ tsup src/index.ts src/cli.ts
 ```
 
 This will output `dist/index.js` and `dist/cli.js`.
-
-Code splitting is enabled by default and supported in `cjs` and `esm` format.
-
 ## Documentation
 
 For complete usages, please dive into the [docs](https://tsup.egoist.sh).
