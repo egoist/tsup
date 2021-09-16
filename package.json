@@ -62,7 +62,7 @@
     "string-argv": "^0.3.1",
     "strip-json-comments": "^3.1.1",
     "svelte": "3.37.0",
-    "ts-essentials": "^7.0.1",
+    "ts-essentials": "^8.1.0",
     "ts-jest": "^26.5.5",
     "typescript": "^4.2.4",
     "wait-for-expect": "^3.0.2"
