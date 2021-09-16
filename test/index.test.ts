@@ -1029,3 +1029,41 @@ test('exclude dependencies', async () => {
     "
   `)
 })
+
+test('code splitting in cjs format', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `const foo = () => import('./foo');export {foo}`,
+      'another-input.ts': `const foo = () => import('./foo');export {foo}`,
+      'foo.ts': `export const foo = 'bar'`,
+    },
+    { flags: ['another-input.ts', '--splitting'] }
+  )
+  expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
+    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});
+
+
+    var _chunkB4ZWWPIUjs = require('./chunk-B4ZWWPIU.js');
+
+    // input.ts
+    var foo = () => Promise.resolve().then(() => _chunkB4ZWWPIUjs.__toModule.call(void 0, _chunkB4ZWWPIUjs.__require.call(void 0, \\"./foo-D4Y7X4AA.js\\")));
+
+
+    exports.foo = foo;
+    "
+  `)
+  expect(await getFileContent('dist/another-input.js')).toMatchInlineSnapshot(`
+    "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});
+
+
+    var _chunkB4ZWWPIUjs = require('./chunk-B4ZWWPIU.js');
+
+    // another-input.ts
+    var foo = () => Promise.resolve().then(() => _chunkB4ZWWPIUjs.__toModule.call(void 0, _chunkB4ZWWPIUjs.__require.call(void 0, \\"./foo-D4Y7X4AA.js\\")));
+
+
+    exports.foo = foo;
+    "
+  `)
+})

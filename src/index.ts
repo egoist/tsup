@@ -24,6 +24,7 @@ import type { ChildProcess } from 'child_process'
 import execa from 'execa'
 import consola from 'consola'
 import kill from 'tree-kill'
+import { transform } from 'sucrase'
 import { version } from '../package.json'
 import { log, setSilent } from './log'
 
@@ -161,10 +162,17 @@ export async function runEsbuild(
 
   let result: BuildResult | undefined
 
+  const splitting =
+    format === 'iife'
+      ? false
+      : typeof options.splitting === 'boolean'
+      ? options.splitting
+      : format === 'esm'
+
   try {
     result = await esbuild({
       entryPoints: options.entryPoints,
-      format,
+      format: format === 'cjs' && splitting ? 'esm' : format,
       bundle: typeof options.bundle === 'undefined' ? true : options.bundle,
       platform: 'node',
       globalName: options.globalName,
@@ -208,8 +216,7 @@ export async function runEsbuild(
           : outDir,
       outExtension: options.legacyOutput ? undefined : outExtension,
       write: false,
-      // Enable code splitting for esm format
-      splitting: format === 'esm' && options.splitting !== false,
+      splitting,
       logLevel: 'error',
       minify: options.minify,
       minifyWhitespace: options.minifyWhitespace,
@@ -294,6 +301,15 @@ export async function runEsbuild(
                 `Error compiling to es5 target:\n${error.snippet}`
               )
             }
+          }
+          // Workaound to enable code splitting for cjs format
+          // Manually transform esm to cjs
+          // TODO: remove this once esbuild supports code splitting for cjs natively
+          if (splitting && format === 'cjs') {
+            contents = transform(contents, {
+              filePath: file.path,
+              transforms: ['imports'],
+            }).code
           }
         }
         await fs.promises.writeFile(outPath, contents, {

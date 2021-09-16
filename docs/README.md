@@ -33,9 +33,6 @@ tsup src/index.ts src/cli.ts
 ```
 
 This will output `dist/index.js` and `dist/cli.js`.
-
-Code splitting only works in `esm` format and is enabled by default.
-
 ### Excluding packages
 
 By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark other packages as external.
@@ -187,6 +184,12 @@ dist
 │   └── index.js
 └── index.js
 ```
+
+## Code Splitting
+
+Code splitting currently only works with the `esm` output format, and it's enabled by default. If you want code splitting for `cjs` output format as well, try using `--splitting` flag which is an experimental feature to get rid of [the limitation in esbuild](https://esbuild.github.io/api/#splitting).
+
+To disable code splitting altogether, try the `--no-splitting` flag instead.
 
 ### ES5 support
 
