@@ -17,6 +17,7 @@
     "url": "https://github.com/egoist/tsup.git"
   },
   "scripts": {
+    "dev": "npm run build:simple -- --watch",
     "build": "npm run tsup -- src/cli-*.ts src/index.ts src/rollup.ts --clean --dts-resolve",
     "prepublishOnly": "npm run build",
     "test": "npm run build:simple && jest",
