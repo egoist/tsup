@@ -337,7 +337,7 @@ const normalizeOptions = async (
 
   const input = options.entryPoints
 
-  if (!input) {
+  if (!input || Object.keys(input).length === 0) {
     throw new PrettyError(`No input files, try "tsup <your-file>" instead`)
   }
 
@@ -350,9 +350,12 @@ const normalizeOptions = async (
       log('CLI', 'info', `Building entry: ${options.entryPoints.join(', ')}`)
     }
   } else {
-    if (Object.keys(input).length === 0) {
-      throw new PrettyError(`Cannot find ${JSON.stringify(input)}`)
-    }
+    Object.keys(input).forEach(alias => {
+      const filename = input[alias]!;
+      if (!fs.existsSync(filename)) {
+        throw new PrettyError(`Cannot find ${alias}: ${filename}`)
+      }
+    })
     log('CLI', 'info', `Building entry: ${JSON.stringify(input)}`)
   }
 
