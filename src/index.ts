@@ -31,7 +31,7 @@ import { log, setSilent } from './log'
 export type Format = 'cjs' | 'esm' | 'iife'
 
 export type Options = {
-  entryPoints?: string[]
+  entryPoints?: BuildOptions['entryPoints']
   /**
    * Output different formats to differen folder instead of using different extensions
    */
@@ -346,17 +346,27 @@ const normalizeOptions = async (
   setSilent(options.silent)
 
   const input = options.entryPoints
-  if (input) {
-    options.entryPoints = await glob(input)
-  } else {
+
+  if (!input || Object.keys(input).length === 0) {
     throw new PrettyError(`No input files, try "tsup <your-file>" instead`)
   }
 
-  // Ensure entry exists
-  if (!options.entryPoints || options.entryPoints.length === 0) {
-    throw new PrettyError(`Cannot find ${input}`)
+  if (Array.isArray(input)) {
+    options.entryPoints = await glob(input)
+    // Ensure entry exists
+    if (!options.entryPoints || options.entryPoints.length === 0) {
+      throw new PrettyError(`Cannot find ${input}`)
+    } else {
+      log('CLI', 'info', `Building entry: ${options.entryPoints.join(', ')}`)
+    }
   } else {
-    log('CLI', 'info', `Building entry: ${options.entryPoints.join(', ')}`)
+    Object.keys(input).forEach(alias => {
+      const filename = input[alias]!;
+      if (!fs.existsSync(filename)) {
+        throw new PrettyError(`Cannot find ${alias}: ${filename}`)
+      }
+    })
+    log('CLI', 'info', `Building entry: ${JSON.stringify(input)}`)
   }
 
   options.outDir = options.outDir || 'dist'
