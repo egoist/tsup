@@ -184,6 +184,8 @@ export async function runEsbuild(
         // esbuild's `external` option doesn't support RegExp
         // So here we use a custom plugin to implement it
         externalPlugin({
+          // everything should be bundled for iife format
+          disabled: format === 'iife',
           patterns: external,
           skipNodeModulesBundle: options.skipNodeModulesBundle,
         }),
@@ -360,8 +362,8 @@ const normalizeOptions = async (
       log('CLI', 'info', `Building entry: ${options.entryPoints.join(', ')}`)
     }
   } else {
-    Object.keys(input).forEach(alias => {
-      const filename = input[alias]!;
+    Object.keys(input).forEach((alias) => {
+      const filename = input[alias]!
       if (!fs.existsSync(filename)) {
         throw new PrettyError(`Cannot find ${alias}: ${filename}`)
       }
