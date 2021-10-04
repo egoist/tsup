@@ -106,6 +106,11 @@ export type Options = {
    * Disable bunlding, default to true
    */
   bundle?: boolean
+  /**
+   * This option allows you to automatically replace a global variable with an import from another file.
+   * @see https://esbuild.github.io/api/#inject
+   */
+  inject?: string[]
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -211,6 +216,7 @@ export async function runEsbuild(
       },
       inject: [
         format === 'cjs' ? join(__dirname, '../assets/cjs_shims.js') : '',
+        ...(options.inject || []),
       ].filter(Boolean),
       outdir:
         options.legacyOutput && format !== 'cjs'
@@ -298,7 +304,7 @@ export async function runEsbuild(
                   spreadRest: true,
                 },
               }).code
-            } catch (error) {
+            } catch (error: any) {
               throw new PrettyError(
                 `Error compiling to es5 target:\n${error.snippet}`
               )

@@ -36,7 +36,10 @@ export async function main(options: Options = {}) {
     )
     .option('--dts [entry]', 'Generate declaration file')
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
-    .option('--sourcemap [option]', 'Generate sourcemap, "external", "inline", "both"')
+    .option(
+      '--sourcemap [option]',
+      'Generate sourcemap, "external", "inline", "both"'
+    )
     .option(
       '--watch [path]',
       'Watch mode, if path is not specified, it watches the current folder ".". Repeat "--watch" for more than one path'
@@ -47,6 +50,10 @@ export async function main(options: Options = {}) {
       'Execute command after successful build, specially useful for watch mode'
     )
     .option('--env.* <value>', 'Define compile-time env variables')
+    .option(
+      '--inject <file>',
+      'Replace a global variable with an import from another file'
+    )
     .option('--define.* <value>', 'Define compile-time constants')
     .option('--external <name>', 'Mark specific packages as external')
     .option('--global-name <name>', 'Global variable name for iife format')
@@ -92,6 +99,10 @@ export async function main(options: Options = {}) {
         if (flags.dtsResolve) {
           options.dts.resolve = flags.dtsResolve
         }
+      }
+      if (flags.inject) {
+        const inject = ensureArray(flags.inject)
+        options.inject = inject
       }
       await build(options)
     })

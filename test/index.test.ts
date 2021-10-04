@@ -967,7 +967,7 @@ test('debounce promise', async (t) => {
     await waitForExpect(() => {
       expect(n).toBe(2)
     })
-  } catch (err) {
+  } catch (err: any) {
     return t.fail(err)
   }
 
