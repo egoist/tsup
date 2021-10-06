@@ -75,9 +75,6 @@ test('simple', async () => {
   expect(output).toMatchInlineSnapshot(`
     "var __defProp = Object.defineProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -289,9 +286,6 @@ test('es5 target', async () => {
   expect(output).toMatchInlineSnapshot(`
     "var __defProp = Object.defineProperty;
     var __markAsModule = function (target) { return __defProp(target, \\"__esModule\\", { value: true }); };
-    var __require = typeof require !== \\"undefined\\" ? require : function (x) {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = function (target, all) {
       __markAsModule(target);
       for (var name in all)
@@ -346,9 +340,6 @@ test('multiple formats', async () => {
   expect(output).toMatchInlineSnapshot(`
     "var __defProp = Object.defineProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -428,9 +419,6 @@ test('multiple formats with legacy output', async () => {
   expect(output).toMatchInlineSnapshot(`
     "var __defProp = Object.defineProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -478,7 +466,7 @@ test('minify', async () => {
   )
 
   expect(output).toMatchInlineSnapshot(`
-    "var t=Object.defineProperty;var o=e=>t(e,\\"__esModule\\",{value:!0});var f=typeof require!=\\"undefined\\"?require:e=>{throw new Error('Dynamic require of \\"'+e+'\\" is not supported')};var c=(e,r)=>{o(e);for(var n in r)t(e,n,{get:r[n],enumerable:!0})};c(exports,{foo:()=>i});var u=typeof document==\\"undefined\\"?new(require(\\"url\\")).URL(\\"file:\\"+__filename).href:document.currentScript&&document.currentScript.src||new URL(\\"main.js\\",document.baseURI).href;function i(){return\\"foo\\"}0&&(module.exports={foo});
+    "var t=Object.defineProperty;var o=e=>t(e,\\"__esModule\\",{value:!0});var c=(e,r)=>{o(e);for(var n in r)t(e,n,{get:r[n],enumerable:!0})};c(exports,{foo:()=>i});var u=typeof document==\\"undefined\\"?new(require(\\"url\\")).URL(\\"file:\\"+__filename).href:document.currentScript&&document.currentScript.src||new URL(\\"main.js\\",document.baseURI).href;function i(){return\\"foo\\"}0&&(module.exports={foo});
     "
   `)
   expect(outFiles).toMatchInlineSnapshot(`
@@ -504,9 +492,6 @@ test('--env flag', async () => {
   expect(output).toMatchInlineSnapshot(`
     "var __defProp = Object.defineProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -624,9 +609,6 @@ test('external', async () => {
     var __getProtoOf = Object.getPrototypeOf;
     var __hasOwnProp = Object.prototype.hasOwnProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -722,9 +704,6 @@ test('bundle svelte', async () => {
     var __getProtoOf = Object.getPrototypeOf;
     var __hasOwnProp = Object.prototype.hasOwnProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -825,9 +804,6 @@ test('support baseUrl and paths in tsconfig.json', async () => {
   expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
     "var __defProp = Object.defineProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -905,9 +881,6 @@ test(`transform import.meta.url in cjs format`, async () => {
   expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
     "var __defProp = Object.defineProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -989,9 +962,6 @@ test('exclude dependencies', async () => {
     var __getProtoOf = Object.getPrototypeOf;
     var __hasOwnProp = Object.prototype.hasOwnProperty;
     var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-    var __require = typeof require !== \\"undefined\\" ? require : (x) => {
-      throw new Error('Dynamic require of \\"' + x + '\\" is not supported');
-    };
     var __export = (target, all) => {
       __markAsModule(target);
       for (var name in all)
@@ -1044,10 +1014,10 @@ test('code splitting in cjs format', async () => {
     "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});
 
 
-    var _chunkB4ZWWPIUjs = require('./chunk-B4ZWWPIU.js');
+    var _chunkNPFUVKWZjs = require('./chunk-NPFUVKWZ.js');
 
     // input.ts
-    var foo = () => Promise.resolve().then(() => _chunkB4ZWWPIUjs.__toModule.call(void 0, _chunkB4ZWWPIUjs.__require.call(void 0, \\"./foo-D4Y7X4AA.js\\")));
+    var foo = () => Promise.resolve().then(() => _chunkNPFUVKWZjs.__toModule.call(void 0, _chunkNPFUVKWZjs.__require.call(void 0, \\"./foo-6WE36XGR.js\\")));
 
 
     exports.foo = foo;
@@ -1057,10 +1027,10 @@ test('code splitting in cjs format', async () => {
     "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});
 
 
-    var _chunkB4ZWWPIUjs = require('./chunk-B4ZWWPIU.js');
+    var _chunkNPFUVKWZjs = require('./chunk-NPFUVKWZ.js');
 
     // another-input.ts
-    var foo = () => Promise.resolve().then(() => _chunkB4ZWWPIUjs.__toModule.call(void 0, _chunkB4ZWWPIUjs.__require.call(void 0, \\"./foo-D4Y7X4AA.js\\")));
+    var foo = () => Promise.resolve().then(() => _chunkNPFUVKWZjs.__toModule.call(void 0, _chunkNPFUVKWZjs.__require.call(void 0, \\"./foo-6WE36XGR.js\\")));
 
 
     exports.foo = foo;
