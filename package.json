@@ -18,11 +18,11 @@
   },
   "scripts": {
     "dev": "npm run build:simple -- --watch",
-    "build": "npm run tsup -- src/cli-*.ts src/index.ts src/rollup.ts --clean --dts-resolve",
+    "build": "npm run tsup -- src/cli-*.ts src/index.ts src/rollup.ts --clean --dts-resolve --splitting",
     "prepublishOnly": "npm run build",
     "test": "npm run build:simple && jest",
     "//": "Building without dts for speed",
-    "build:simple": "npm run tsup -- src/cli-*.ts src/index.ts src/rollup.ts --clean",
+    "build:simple": "npm run tsup -- src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
     "tsup": "node -r sucrase/register src/cli-default.ts"
   },
   "dependencies": {
