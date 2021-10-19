@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
+import flat from 'flat'
 import { Format, Options } from '.'
 
 function ensureArray(input: string): string[] {
@@ -103,6 +104,10 @@ export async function main(options: Options = {}) {
       if (flags.inject) {
         const inject = ensureArray(flags.inject)
         options.inject = inject
+      }
+      if (flags.define) {
+        const define: any = flat(flags.define)
+        options.define = define
       }
       await build(options)
     })
