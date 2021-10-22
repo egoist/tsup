@@ -21,6 +21,7 @@ async function run(
   testDir: string,
   files: { [name: string]: string },
   options: {
+    entry?: string[]
     flags?: string[]
     env?: Record<string, string>
   } = {}
@@ -34,10 +35,12 @@ async function run(
     })
   )
 
+  const entry = options.entry || ['input.ts']
+
   // Run tsup cli
   const { exitCode, stdout, stderr } = await execa(
     bin,
-    ['input.ts', ...(options.flags || [])],
+    [...entry, ...(options.flags || [])],
     {
       cwd: testDir,
       env: { ...process.env, ...options.env },
@@ -49,13 +52,14 @@ async function run(
   }
 
   // Get output
-  const output = await fs.readFile(resolve(testDir, 'dist/input.js'), 'utf8')
   const outFiles = await glob('**/*', {
     cwd: resolve(testDir, 'dist'),
   }).then((res) => res.sort())
 
   return {
-    output,
+    get output() {
+      return fs.readFileSync(resolve(testDir, 'dist/input.js'), 'utf8')
+    },
     outFiles,
     logs,
     getFileContent(filename: string) {
@@ -984,6 +988,29 @@ test('code splitting in cjs format', async () => {
 
 
     exports.foo = foo;
+    "
+  `)
+})
+
+test('declaration files with multiple entrypoints #316', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'src/index.ts': `export const foo = 1`,
+      'src/bar/index.ts': `export const bar = 'bar'`,
+    },
+    { flags: ['--dts'], entry: ['src/index.ts', 'src/bar/index.ts'] }
+  )
+  expect(await getFileContent('dist/index.d.ts')).toMatchInlineSnapshot(`
+    "declare const foo = 1;
+
+    export { foo };
+    "
+  `)
+  expect(await getFileContent('dist/bar/index.d.ts')).toMatchInlineSnapshot(`
+    "declare const bar = \\"bar\\";
+
+    export { bar };
     "
   `)
 })

@@ -1,3 +1,4 @@
+import path from 'path'
 import { parentPort } from 'worker_threads'
 import { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { NormalizedOptions } from './'
@@ -19,6 +20,48 @@ type RollupConfig = {
   outputConfig: OutputOptions
 }
 
+const findLowestCommonAncestor = (filepaths: string[]) => {
+  if (filepaths.length <= 1) return ''
+  const [first, ...rest] = filepaths
+  let ancestor = first.split('/')
+  for (const filepath of rest) {
+    const directories = filepath.split('/', ancestor.length)
+    let index = 0
+    for (const directory of directories) {
+      if (directory === ancestor[index]) {
+        index += 1
+      } else {
+        ancestor = ancestor.slice(0, index)
+        break
+      }
+    }
+    ancestor = ancestor.slice(0, index)
+  }
+
+  return ancestor.length <= 1 && ancestor[0] === ''
+    ? '/' + ancestor[0]
+    : ancestor.join('/')
+}
+
+// Make sure the Rollup entry is an object
+// We use the base path (without extension) as the entry name
+// To make declaration files work with multiple entrypoints
+// See #316
+const toObjectEntry = (entry: string[]) => {
+  entry = entry.map((e) => e.replace(/\\/g, '/'))
+  const ancester = findLowestCommonAncestor(entry)
+  return entry.reduce((result, item) => {
+    const key = item
+      .replace(ancester, '')
+      .replace(/^\//, '')
+      .replace(/\.[a-z]+$/, '')
+    return {
+      ...result,
+      [key]: item,
+    }
+  }, {})
+}
+
 const getRollupConfig = async (
   options: NormalizedOptions
 ): Promise<RollupConfig> => {
@@ -36,6 +79,10 @@ const getRollupConfig = async (
       : options.dts === true
       ? { entry: options.entryPoints }
       : { entry: options.entryPoints, ...options.dts }
+
+  if (Array.isArray(dtsOptions.entry)) {
+    dtsOptions.entry = toObjectEntry(dtsOptions.entry)
+  }
 
   let tsResolveOptions: TsResolveOptions | undefined
 
