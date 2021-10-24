@@ -80,7 +80,7 @@ const getRollupConfig = async (
       ? { entry: options.entryPoints }
       : { entry: options.entryPoints, ...options.dts }
 
-  if (Array.isArray(dtsOptions.entry)) {
+  if (Array.isArray(dtsOptions.entry) && dtsOptions.entry.length > 1) {
     dtsOptions.entry = toObjectEntry(dtsOptions.entry)
   }
 
