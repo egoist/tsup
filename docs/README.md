@@ -33,6 +33,7 @@ tsup src/index.ts src/cli.ts
 ```
 
 This will output `dist/index.js` and `dist/cli.js`.
+
 ### Excluding packages
 
 By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `packages.json` are always excluded, you can also use `--external <module>` flag to mark other packages as external.
@@ -63,7 +64,7 @@ You can use any of these files:
 - `tsup.config.json`
 - `tsup` property in your `package.json`
 
-> In all the custom files you can export the options either as `tsup`, `default` or `module.exports =` 
+> In all the custom files you can export the options either as `tsup`, `default` or `module.exports =`
 
 #### TypeScript
 
@@ -108,7 +109,6 @@ module.exports = {
   }
 }
 ```
-
 
 ### Generate declaration file
 
@@ -276,6 +276,12 @@ module.exports = {
   plugins: [require('tailwindcss')(), require('autoprefixer')()],
 }
 ```
+
+### Metafile
+
+Passing `--metafile` flag to tell esbuild to produce some metadata about the build in JSON format. You can feed the output file to analysis tools like [bundle buddy](https://www.bundle-buddy.com/esbuild) to visualize the modules in your bundle and how much space each one takes up.
+
+The file outputs as `metafile-{format}.json`, e.g. `tsup --format cjs,esm` will generate `metafile-cjs.json` and `metafile-esm.json`.
 
 ---
 

@@ -1014,3 +1014,19 @@ test('declaration files with multiple entrypoints #316', async () => {
     "
   `)
 })
+
+test('esbuild metafile', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    { 'input.ts': `export const foo = 1` },
+    {
+      flags: ['--metafile'],
+    }
+  )
+  expect(outFiles).toMatchInlineSnapshot(`
+    Array [
+      "input.js",
+      "metafile-cjs.json",
+    ]
+  `)
+})

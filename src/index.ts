@@ -111,6 +111,11 @@ export type Options = {
    * @see https://esbuild.github.io/api/#inject
    */
   inject?: string[]
+  /**
+   * Emit esbuild metafile
+   * @see https://esbuild.github.io/api/#metafile
+   */
+  metafile?: boolean
 }
 
 export type NormalizedOptions = MarkRequired<
@@ -233,6 +238,7 @@ export async function runEsbuild(
       keepNames: options.keepNames,
       incremental: !!options.watch,
       pure: typeof options.pure === 'string' ? [options.pure] : options.pure,
+      metafile: Boolean(options.metafile),
     })
   } catch (error) {
     log(format, 'error', 'Build failed')
@@ -325,6 +331,16 @@ export async function runEsbuild(
           mode,
         })
       })
+    )
+  }
+
+  if (options.metafile && result?.metafile) {
+    const outPath = path.resolve(outDir, `metafile-${format}.json`)
+    await fs.promises.mkdir(path.dirname(outPath), { recursive: true })
+    await fs.promises.writeFile(
+      outPath,
+      JSON.stringify(result.metafile),
+      'utf8'
     )
   }
 
