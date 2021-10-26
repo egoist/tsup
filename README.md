@@ -37,9 +37,15 @@ tsup src/index.ts src/cli.ts
 ```
 
 This will output `dist/index.js` and `dist/cli.js`.
+
+
 ## Documentation
 
 For complete usages, please dive into the [docs](https://tsup.egoist.sh).
+
+## Sponsors
+
+[![sponsors](https://sponsors-images.egoist.sh/sponsors.svg)](https://github.com/sponsors/egoist)
 
 ## License
 
