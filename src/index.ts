@@ -29,6 +29,8 @@ import { version } from '../package.json'
 import { log, setSilent } from './log'
 import { Format, Options } from './options'
 
+export type { Format, Options }
+
 export type NormalizedOptions = MarkRequired<
   Options,
   'entryPoints' | 'format' | 'outDir'
