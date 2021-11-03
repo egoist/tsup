@@ -283,6 +283,27 @@ Passing `--metafile` flag to tell esbuild to produce some metadata about the bui
 
 The file outputs as `metafile-{format}.json`, e.g. `tsup --format cjs,esm` will generate `metafile-cjs.json` and `metafile-esm.json`.
 
+### Custom esbuild plugin and options
+
+Use `esbuildPlugins` and `esbuildOptions` respectively in `tsup.config.ts`:
+
+```ts
+import { Options } from 'tsup'
+
+export const tsup: Options = {
+  esbuildPlugins: [YourPlugin],
+  esbuildOptions(options, context) {
+    options.define.foo = '"bar"'
+  },
+}
+```
+
+The `context` argument for `esbuildOptions`:
+
+- `context.format`: `cjs`, `esm`, `iife`
+
+See all options [here](https://esbuild.github.io/api/#build-api), and [how to write an esbuild plugin](https://esbuild.github.io/plugins/#using-plugins).
+
 ---
 
 For more details:

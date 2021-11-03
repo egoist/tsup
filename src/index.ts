@@ -1,5 +1,5 @@
 import fs from 'fs'
-import path, { dirname, join, extname, basename } from 'path'
+import path, { dirname, join, extname } from 'path'
 import { Worker } from 'worker_threads'
 import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
@@ -90,6 +90,7 @@ export type Options = {
    */
   clean?: boolean | string[]
   esbuildPlugins?: EsbuildPlugin[]
+  esbuildOptions?: (options: BuildOptions, context: { format: Format }) => void
   /**
    * Supress non-error logs (excluding "onSuccess" process output)
    */
@@ -191,6 +192,14 @@ export async function runEsbuild(
       sourcemap: options.sourcemap,
       target: options.target === 'es5' ? 'es2016' : options.target,
       plugins: [
+        {
+          name: 'modify-options',
+          setup(build) {
+            if (options.esbuildOptions) {
+              options.esbuildOptions(build.initialOptions, { format })
+            }
+          },
+        },
         // esbuild's `external` option doesn't support RegExp
         // So here we use a custom plugin to implement it
         externalPlugin({
