@@ -66,6 +66,8 @@ You can use any of these files:
 
 > In all the custom files you can export the options either as `tsup`, `default` or `module.exports =`
 
+[Check out all available options](https://github.com/egoist/tsup/blob/master/src/options.ts).
+
 #### TypeScript
 
 ```ts
