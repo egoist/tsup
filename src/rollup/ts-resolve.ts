@@ -52,7 +52,7 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
         if (!shouldResolve) return null
       }
 
-      // Skip absolut path
+      // Skip absolute path
       if (path.isAbsolute(source)) return null
 
       const basedir = importer ? path.dirname(importer) : process.cwd()

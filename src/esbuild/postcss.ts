@@ -66,7 +66,7 @@ export const postcssPlugin = ({
           }
         }
 
-        // Tranform CSS
+        // Transform CSS
         const result = await postcss
           ?.default(plugins)
           .process(contents, { ...options, from: args.path })

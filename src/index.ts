@@ -54,7 +54,7 @@ const getOutputExtensionMap = (
   return map
 }
 
-export const defineConfig = (options: Options) => options
+export const defineConfig = (options: Options | ((overrideOptions: Partial<Options>) => Options)) => options
 
 export async function runEsbuild(
   options: NormalizedOptions,
@@ -239,7 +239,7 @@ export async function runEsbuild(
               )
             }
           }
-          // Workaound to enable code splitting for cjs format
+          // Workaround to enable code splitting for cjs format
           // Manually transform esm to cjs
           // TODO: remove this once esbuild supports code splitting for cjs natively
           if (splitting && format === 'cjs') {
@@ -282,7 +282,7 @@ const killProcess = ({
   })
 
 const normalizeOptions = async (
-  optionsFromConfigFile: Options,
+  optionsFromConfigFile: Options | undefined,
   optionsOverride: Options
 ) => {
   const options: Buildable<NormalizedOptions> = {
@@ -344,7 +344,9 @@ const normalizeOptions = async (
 export async function build(_options: Options) {
   const config = await loadTsupConfig(process.cwd())
 
-  const options = await normalizeOptions(config.data, _options)
+  const configData = typeof config.data === 'function' ? config.data(_options) : config.data;
+
+  const options = await normalizeOptions(configData, _options)
 
   log('CLI', 'info', `tsup v${version}`)
 
