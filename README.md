@@ -47,6 +47,10 @@ For complete usages, please dive into the [docs](https://tsup.egoist.sh).
 
 [![sponsors](https://sponsors-images.egoist.sh/sponsors.svg)](https://github.com/sponsors/egoist)
 
+## Project Stats
+
+![Alt](https://repobeats.axiom.co/api/embed/4ef361ec8445b33c2dab451e1d23784015834c72.svg "Repobeats analytics image")
+
 ## License
 
 MIT &copy; [EGOIST](https://github.com/sponsors/egoist)
