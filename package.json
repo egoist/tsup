@@ -23,8 +23,7 @@
     "test": "npm run build:simple && jest",
     "//": "Building without dts for speed",
     "build:simple": "npm run tsup -- src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
-    "tsup": "node -r sucrase/register src/cli-default.ts",
-    "postinstall": "patch-package"
+    "tsup": "node -r sucrase/register src/cli-default.ts"
   },
   "dependencies": {
     "cac": "^6.7.2",
@@ -57,7 +56,6 @@
     "fs-extra": "^9.1.0",
     "jest": "^26.6.3",
     "jju": "^1.4.0",
-    "patch-package": "^6.4.7",
     "postcss": "^8.2.10",
     "postcss-simple-vars": "^6.0.3",
     "prettier": "^2.2.1",
