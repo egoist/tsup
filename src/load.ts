@@ -13,7 +13,7 @@ const loadJson = async (filepath: string) => {
       await fs.promises.readFile(filepath, 'utf8')
     )
     return parseJson(content)
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(
       `Failed to parse ${path.relative(process.cwd(), filepath)}: ${
         error.message
