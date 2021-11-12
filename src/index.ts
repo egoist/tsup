@@ -54,7 +54,14 @@ const getOutputExtensionMap = (
   return map
 }
 
-export const defineConfig = (options: Options | ((overrideOptions: Partial<Options>) => Options)) => options
+export const defineConfig = (
+  options:
+    | Options
+    | ((
+        /** The options derived from CLI flags */
+        overrideOptions: Options
+      ) => Options)
+) => options
 
 export async function runEsbuild(
   options: NormalizedOptions,
@@ -344,7 +351,8 @@ const normalizeOptions = async (
 export async function build(_options: Options) {
   const config = await loadTsupConfig(process.cwd())
 
-  const configData = typeof config.data === 'function' ? config.data(_options) : config.data;
+  const configData =
+    typeof config.data === 'function' ? config.data(_options) : config.data
 
   const options = await normalizeOptions(configData, _options)
 
