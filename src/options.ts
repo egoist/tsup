@@ -69,7 +69,7 @@ export type Options = {
   esbuildPlugins?: EsbuildPlugin[]
   esbuildOptions?: (options: BuildOptions, context: { format: Format }) => void
   /**
-   * Supress non-error logs (excluding "onSuccess" process output)
+   * Suppress non-error logs (excluding "onSuccess" process output)
    */
   silent?: boolean
   /**

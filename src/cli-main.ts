@@ -73,7 +73,7 @@ export async function main(options: Options = {}) {
     .option('--clean', 'Clean output directory')
     .option(
       '--silent',
-      'Supress non-error logs (excluding "onSuccess" process output)'
+      'Suppress non-error logs (excluding "onSuccess" process output)'
     )
     .option('--pure <express>', 'Mark specific expressions as pure')
     .option('--metafile', 'Emit esbuild metafile (a JSON file)')

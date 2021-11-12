@@ -68,33 +68,34 @@ You can use any of these files:
 
 [Check out all available options](https://github.com/egoist/tsup/blob/master/src/options.ts).
 
-#### TypeScript
+#### TypeScript / JavaScript
 
 ```ts
-// tsup.config.ts
-import type { Options } from 'tsup'
-export const tsup: Options = {
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
   entryPoints: ['src/index.ts'],
-}
+})
 ```
 
-#### JavaScript
+#### Conditional config
 
-```js
-// tsup.config.cjs
-/**
- * @type {import("tsup").Options}
- */
-module.exports = {
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-  entryPoints: ['src/index.ts'],
-}
+If the config needs to be conditionally determined based on CLI flags, it can export a function instead:
+
+```ts
+import { defineConfig } from 'tsup'
+
+export default defineConfig((options) => {
+  return {
+    minify: !options.watch,
+  }
+})
 ```
+
+The `options` here is derived from CLI flags.
 
 #### package.json
 
@@ -290,14 +291,14 @@ The file outputs as `metafile-{format}.json`, e.g. `tsup --format cjs,esm` will 
 Use `esbuildPlugins` and `esbuildOptions` respectively in `tsup.config.ts`:
 
 ```ts
-import { Options } from 'tsup'
+import { defineConfig } from 'tsup'
 
-export const tsup: Options = {
+export default defineConfig({
   esbuildPlugins: [YourPlugin],
   esbuildOptions(options, context) {
     options.define.foo = '"bar"'
   },
-}
+})
 ```
 
 The `context` argument for `esbuildOptions`:

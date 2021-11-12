@@ -49,10 +49,10 @@ const findLowestCommonAncestor = (filepaths: string[]) => {
 // See #316
 const toObjectEntry = (entry: string[]) => {
   entry = entry.map((e) => e.replace(/\\/g, '/'))
-  const ancester = findLowestCommonAncestor(entry)
+  const ancestor = findLowestCommonAncestor(entry)
   return entry.reduce((result, item) => {
     const key = item
-      .replace(ancester, '')
+      .replace(ancestor, '')
       .replace(/^\//, '')
       .replace(/\.[a-z]+$/, '')
     return {
