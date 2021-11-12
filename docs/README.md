@@ -81,9 +81,9 @@ export default defineConfig({
 })
 ```
 
-### Conditional config
+#### Conditional config
 
-If the config needs to conditional determined based on CLI flags, it can export a function instead:
+If the config needs to be conditionally determined based on CLI flags, it can export a function instead:
 
 ```ts
 import { defineConfig } from 'tsup'
