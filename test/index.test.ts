@@ -1030,3 +1030,22 @@ test('esbuild metafile', async () => {
     ]
   `)
 })
+
+test('multiple entry with the same base name', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/input.ts': `export const foo = 1`,
+      'src/bar/input.ts': `export const bar = 2`,
+    },
+    {
+      entry: ['src/input.ts', 'src/bar/input.ts'],
+    }
+  )
+  expect(outFiles).toMatchInlineSnapshot(`
+    Array [
+      "bar/input.js",
+      "input.js",
+    ]
+  `)
+})
