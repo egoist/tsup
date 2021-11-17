@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { PluginImpl } from 'rollup'
 import _resolve from 'resolve'
@@ -55,7 +56,9 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
       // Skip absolute path
       if (path.isAbsolute(source)) return null
 
-      const basedir = importer ? path.dirname(importer) : process.cwd()
+      const basedir = importer
+        ? await fs.promises.realpath(path.dirname(importer))
+        : process.cwd()
 
       // A relative path
       if (source[0] === '.') {
@@ -81,7 +84,7 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
           basedir,
           extensions: resolveExtensions,
           packageFilter(pkg) {
-            pkg.main = pkg.types || pkg.typings || pkg.module || pkg.main
+            pkg.main = pkg.types || pkg.typings
             return pkg
           },
           paths: ['node_modules', 'node_modules/@types'],
