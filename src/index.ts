@@ -99,12 +99,14 @@ export async function runEsbuild(
       ? options.splitting
       : format === 'esm'
 
+  const platform = options.platform || 'node'
+
   try {
     result = await esbuild({
       entryPoints: options.entryPoints,
       format: format === 'cjs' && splitting ? 'esm' : format,
       bundle: typeof options.bundle === 'undefined' ? true : options.bundle,
-      platform: 'node',
+      platform,
       globalName: options.globalName,
       jsxFactory: options.jsxFactory,
       jsxFragment: options.jsxFragment,
@@ -112,6 +114,10 @@ export async function runEsbuild(
       target: options.target === 'es5' ? 'es2016' : options.target,
       footer: options.footer,
       banner: options.banner,
+      mainFields:
+        platform === 'node'
+          ? ['module', 'main']
+          : ['browser', 'module', 'main'],
       plugins: [
         {
           name: 'modify-options',

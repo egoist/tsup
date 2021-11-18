@@ -77,6 +77,9 @@ export async function main(options: Options = {}) {
     )
     .option('--pure <express>', 'Mark specific expressions as pure')
     .option('--metafile', 'Emit esbuild metafile (a JSON file)')
+    .option('--platform <platform>', 'Target platform', {
+      default: 'node',
+    })
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
       Object.assign(options, {

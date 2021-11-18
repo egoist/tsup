@@ -96,4 +96,9 @@ export type Options = {
   metafile?: boolean
   footer?: BuildOptions['footer']
   banner?: BuildOptions['banner']
+  /**
+   * Target platform
+   * @default `node`
+   */
+  platform?: 'node' | 'browser'
 }
