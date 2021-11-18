@@ -50,6 +50,8 @@ tsup-node src/index.ts
 
 All other CLI flags still apply to this command.
 
+**If the regular `tsup` command doesn't work for you, please submit an issue with a link to your repo so we can make the default command better.**
+
 ### Using custom configuration
 
 You can also use `tsup` using file configurations or in a property inside your `package.json`, and you can even use `TypeScript` and have type-safety while you are using it.
