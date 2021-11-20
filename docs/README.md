@@ -258,7 +258,7 @@ You can also minify the output, resulting into lower bundle sizes by using the `
 tsup src/index.ts --minify
 ```
 
-### CUstom loader
+### Custom loader
 
 Esbuild loader list:
 
