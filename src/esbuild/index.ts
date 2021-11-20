@@ -1,14 +1,7 @@
 import fs from 'fs'
 import path from 'path'
-import type { InputOption } from 'rollup'
 import { transform as transformToEs5 } from 'buble'
-import {
-  build as esbuild,
-  BuildOptions,
-  BuildResult,
-  Plugin as EsbuildPlugin,
-  formatMessages,
-} from 'esbuild'
+import { build as esbuild, BuildResult, formatMessages } from 'esbuild'
 import { NormalizedOptions, Format } from '..'
 import { getDeps, loadPkg } from '../load'
 import { log } from '../log'
@@ -76,6 +69,7 @@ export async function runEsbuild(
       : format === 'esm'
 
   const platform = options.platform || 'node'
+  const loader = options.loader || {}
 
   try {
     result = await esbuild({
@@ -90,6 +84,28 @@ export async function runEsbuild(
       target: options.target === 'es5' ? 'es2016' : options.target,
       footer: options.footer,
       banner: options.banner,
+      loader: {
+        '.aac': 'file',
+        '.css': 'file',
+        '.eot': 'file',
+        '.flac': 'file',
+        '.gif': 'file',
+        '.jpeg': 'file',
+        '.jpg': 'file',
+        '.mp3': 'file',
+        '.mp4': 'file',
+        '.ogg': 'file',
+        '.otf': 'file',
+        '.png': 'file',
+        '.svg': 'file',
+        '.ttf': 'file',
+        '.wav': 'file',
+        '.webm': 'file',
+        '.webp': 'file',
+        '.woff': 'file',
+        '.woff2': 'file',
+        ...loader,
+      },
       mainFields:
         platform === 'node'
           ? ['module', 'main']
@@ -106,10 +122,14 @@ export async function runEsbuild(
         },
         // esbuild's `external` option doesn't support RegExp
         // So here we use a custom plugin to implement it
-        ...(format !== 'iife' ? [externalPlugin({
-          patterns: external,
-          skipNodeModulesBundle: options.skipNodeModulesBundle,
-        })] : []),
+        ...(format !== 'iife'
+          ? [
+              externalPlugin({
+                patterns: external,
+                skipNodeModulesBundle: options.skipNodeModulesBundle,
+              }),
+            ]
+          : []),
         postcssPlugin({ css }),
         sveltePlugin({ css }),
         ...(options.esbuildPlugins || []),

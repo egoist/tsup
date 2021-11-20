@@ -104,7 +104,8 @@ const normalizeOptions = async (
 }
 
 export async function build(_options: Options) {
-  const config = await loadTsupConfig(process.cwd())
+  const config =
+    _options.config === false ? {} : await loadTsupConfig(process.cwd())
 
   const configData =
     typeof config.data === 'function' ? config.data(_options) : config.data

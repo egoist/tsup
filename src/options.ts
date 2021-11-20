@@ -1,4 +1,4 @@
-import type { BuildOptions, Plugin as EsbuildPlugin } from 'esbuild'
+import type { BuildOptions, Plugin as EsbuildPlugin, Loader } from 'esbuild'
 import type { InputOption } from 'rollup'
 
 export type Format = 'cjs' | 'esm' | 'iife'
@@ -101,4 +101,12 @@ export type Options = {
    * @default `node`
    */
   platform?: 'node' | 'browser'
+  /**
+   * Esbuild loader option
+   */
+  loader?: Record<string, Loader>
+  /**
+   * Disable config file with `false`
+   */
+  config?: boolean
 }

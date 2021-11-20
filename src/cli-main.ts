@@ -80,6 +80,8 @@ export async function main(options: Options = {}) {
     .option('--platform <platform>', 'Target platform', {
       default: 'node',
     })
+    .option('--loader <ext=loader>', 'Specify the loader for a file extension')
+    .option('--no-config', 'Disable config file')
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
       Object.assign(options, {
@@ -112,6 +114,16 @@ export async function main(options: Options = {}) {
       if (flags.define) {
         const define: any = flat(flags.define)
         options.define = define
+      }
+      if (flags.loader) {
+        const loader = ensureArray(flags.loader)
+        options.loader = loader.reduce((result, item) => {
+          const parts = item.split('=')
+          return {
+            ...result,
+            [parts[0]]: parts[1],
+          }
+        }, {})
       }
       await build(options)
     })

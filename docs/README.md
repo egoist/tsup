@@ -258,6 +258,45 @@ You can also minify the output, resulting into lower bundle sizes by using the `
 tsup src/index.ts --minify
 ```
 
+### CUstom loader
+
+Esbuild loader list:
+
+```ts
+type Loader =
+  | 'js'
+  | 'jsx'
+  | 'ts'
+  | 'tsx'
+  | 'css'
+  | 'json'
+  | 'text'
+  | 'base64'
+  | 'file'
+  | 'dataurl'
+  | 'binary'
+  | 'default'
+```
+
+To use a custom loader via CLI flag:
+
+```bash
+tsup --loader ".jpg=base64" --loader ".webp=file"
+```
+
+Or via `tsup.config.ts`:
+
+```ts
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  loader: {
+    '.jpg': 'base64',
+    '.webp': 'file',
+  },
+})
+```
+
 ### What about type checking?
 
 esbuild is fast because it doesn't perform any type checking, you already get type checking from your IDE like VS Code or WebStorm.
