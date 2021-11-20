@@ -12,6 +12,7 @@ import {
 import { NormalizedOptions, Format } from '..'
 import { getDeps, loadPkg } from '../load'
 import { log } from '../log'
+import { nodeProtocolPlugin } from './node-protocol'
 import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
 import { sveltePlugin } from './svelte'
@@ -94,6 +95,7 @@ export async function runEsbuild(
           ? ['module', 'main']
           : ['browser', 'module', 'main'],
       plugins: [
+        ...(format === 'cjs' ? [nodeProtocolPlugin()] : []),
         {
           name: 'modify-options',
           setup(build) {
@@ -104,12 +106,10 @@ export async function runEsbuild(
         },
         // esbuild's `external` option doesn't support RegExp
         // So here we use a custom plugin to implement it
-        externalPlugin({
-          // everything should be bundled for iife format
-          disabled: format === 'iife',
+        ...(format !== 'iife' ? [externalPlugin({
           patterns: external,
           skipNodeModulesBundle: options.skipNodeModulesBundle,
-        }),
+        })] : []),
         postcssPlugin({ css }),
         sveltePlugin({ css }),
         ...(options.esbuildPlugins || []),

@@ -6,18 +6,14 @@ const NON_NODE_MODULE_RE = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/
 export const externalPlugin = ({
   patterns,
   skipNodeModulesBundle,
-  disabled,
 }: {
   patterns?: (string | RegExp)[]
   skipNodeModulesBundle?: boolean
-  disabled?: boolean
 }): Plugin => {
   return {
     name: `external`,
 
     setup(build) {
-      if (disabled) return
-
       if (skipNodeModulesBundle) {
         build.onResolve({ filter: NON_NODE_MODULE_RE }, (args) => ({
           path: args.path,
