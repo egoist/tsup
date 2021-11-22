@@ -13,6 +13,8 @@ const resolveModule = (
 ): Promise<string | null> =>
   new Promise((resolve, reject) => {
     _resolve(id, opts, (err, res) => {
+      // @ts-expect-error
+      if (err?.code === 'MODULE_NOT_FOUND') return resolve(null)
       if (err) return reject(err)
       resolve(res || null)
     })
@@ -35,6 +37,9 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
     async resolveId(source, importer) {
       debug('resolveId source: %s', source)
       debug('resolveId importer: %s ', importer)
+
+      if (!importer) return null
+
       // ignore IDs with null character, these belong to other plugins
       if (/\0/.test(source)) return null
 
@@ -50,11 +55,17 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
           if (typeof v === 'string') return v === source
           return v.test(source)
         })
-        if (!shouldResolve) return null
+        if (!shouldResolve) {
+          debug('skipped by matching resolveOnly: %s', source)
+          return null
+        }
       }
 
       // Skip absolute path
-      if (path.isAbsolute(source)) return null
+      if (path.isAbsolute(source)) {
+        debug(`skipped absolute path: %s`, source)
+        return null
+      }
 
       const basedir = importer
         ? await fs.promises.realpath(path.dirname(importer))
@@ -93,9 +104,12 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
 
       if (id) {
         debug('resolved %s to %s', source, id)
+        return id
       }
 
-      return id
+      debug('mark %s as external', source)
+      // Just make it external if can't be resolved, i.e. tsconfig path alias
+      return false
     },
   }
 }

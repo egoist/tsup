@@ -1,14 +1,28 @@
-import path from 'path'
 import { parentPort } from 'worker_threads'
 import { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { NormalizedOptions } from './'
+import ts from 'typescript'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { handleError } from './errors'
 import { removeFiles } from './utils'
 import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
-import { log, setSilent } from './log'
-import { getDeps, loadTsConfig } from './load'
+import { createLogger, setSilent } from './log'
+import { getDeps } from './load'
+import path from 'path'
+
+const logger = createLogger()
+
+const loadCompilerOptions = (tsconfig?: string) => {
+  if (!tsconfig) return {}
+  const configFile = ts.readConfigFile(tsconfig, ts.sys.readFile)
+  const { options } = ts.parseJsonConfigFileContent(
+    configFile.config,
+    ts.sys,
+    './'
+  )
+  return options
+}
 
 // Use `require` to esbuild use the cjs build of rollup-plugin-dts
 // the mjs build of rollup-plugin-dts uses `import.meta.url` which makes Node throws syntax error
@@ -66,12 +80,8 @@ const getRollupConfig = async (
   options: NormalizedOptions
 ): Promise<RollupConfig> => {
   setSilent(options.silent)
-  const compilerOptions: {
-    baseUrl?: string
-    paths?: Record<string, string[]>
-  } = await loadTsConfig(process.cwd()).then(
-    (res) => res.data?.compilerOptions || {}
-  )
+
+  const compilerOptions = loadCompilerOptions(options.tsconfig)
 
   const dtsOptions =
     typeof options.dts === 'string'
@@ -144,13 +154,10 @@ const getRollupConfig = async (
         jsonPlugin(),
         ignoreFiles,
         dtsPlugin.default({
-          compilerOptions:
-            compilerOptions.baseUrl && compilerOptions.paths
-              ? {
-                  baseUrl: compilerOptions.baseUrl,
-                  paths: compilerOptions.paths,
-                }
-              : undefined,
+          compilerOptions: {
+            ...compilerOptions,
+            baseUrl: path.resolve(compilerOptions.baseUrl || '.'),
+          },
         }),
       ].filter(Boolean),
       external: [...deps, ...(options.external || [])],
@@ -170,12 +177,12 @@ async function runRollup(options: RollupConfig) {
     const getDuration = () => {
       return `${Math.floor(Date.now() - start)}ms`
     }
-    log('dts', 'info', 'Build start')
+    logger.info('dts', 'Build start')
     const bundle = await rollup(options.inputConfig)
     await bundle.write(options.outputConfig)
-    log('dts', 'success', `Build success in ${getDuration()}`)
+    logger.success('dts', `Build success in ${getDuration()}`)
   } catch (error) {
-    log('dts', 'error', 'Build error')
+    logger.error('dts', 'Build error')
     parentPort?.postMessage('error')
     handleError(error)
   }
@@ -193,12 +200,12 @@ async function watchRollup(options: {
     output: options.outputConfig,
   }).on('event', async (event) => {
     if (event.code === 'START') {
-      log('dts', 'info', 'Build start')
+      logger.info('dts', 'Build start')
     } else if (event.code === 'BUNDLE_END') {
-      log('dts', 'success', `Build success in ${event.duration}ms`)
+      logger.success('dts', `Build success in ${event.duration}ms`)
       parentPort?.postMessage('success')
     } else if (event.code === 'ERROR') {
-      log('dts', 'error', 'Build failed')
+      logger.error('dts', 'Build failed')
       parentPort?.postMessage('error')
       handleError(event.error)
     }
@@ -216,5 +223,6 @@ const startRollup = async (options: NormalizedOptions) => {
 }
 
 parentPort?.on('message', (data) => {
+  logger.setName(data.configName)
   startRollup(data.options)
 })

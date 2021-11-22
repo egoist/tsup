@@ -4,7 +4,7 @@ import { transform as transformToEs5 } from 'buble'
 import { build as esbuild, BuildResult, formatMessages } from 'esbuild'
 import { NormalizedOptions, Format } from '..'
 import { getDeps, loadPkg } from '../load'
-import { log } from '../log'
+import { Logger } from '../log'
 import { nodeProtocolPlugin } from './node-protocol'
 import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
@@ -34,7 +34,11 @@ const getOutputExtensionMap = (
 
 export async function runEsbuild(
   options: NormalizedOptions,
-  { format, css }: { format: Format; css?: Map<string, string> }
+  {
+    format,
+    css,
+    logger,
+  }: { format: Format; css?: Map<string, string>; logger: Logger }
 ) {
   const pkg = await loadPkg(process.cwd())
   const deps = await getDeps(process.cwd())
@@ -55,7 +59,7 @@ export async function runEsbuild(
       options.minify || options.minifyWhitespace ? 'production' : 'development'
   }
 
-  log(format, 'info', 'Build start')
+  logger.info(format, 'Build start')
 
   const startTime = Date.now()
 
@@ -84,6 +88,7 @@ export async function runEsbuild(
       target: options.target === 'es5' ? 'es2016' : options.target,
       footer: options.footer,
       banner: options.banner,
+      tsconfig: options.tsconfig,
       loader: {
         '.aac': 'file',
         '.css': 'file',
@@ -172,7 +177,7 @@ export async function runEsbuild(
       metafile: Boolean(options.metafile),
     })
   } catch (error) {
-    log(format, 'error', 'Build failed')
+    logger.error(format, 'Build failed')
     throw error
   }
 
@@ -200,7 +205,7 @@ export async function runEsbuild(
   // Manually write files
   if (result && result.outputFiles) {
     const timeInMs = Date.now() - startTime
-    log(format, 'success', `Build success in ${Math.floor(timeInMs)}ms`)
+    logger.success(format, `Build success in ${Math.floor(timeInMs)}ms`)
 
     await Promise.all(
       result.outputFiles.map(async (file) => {

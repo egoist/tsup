@@ -4,6 +4,7 @@ import JoyCon from 'joycon'
 import path from 'path'
 import { Loader } from 'esbuild'
 import stripJsonComments from 'strip-json-comments'
+import { defineConfig } from './'
 
 const joycon = new JoyCon()
 
@@ -31,15 +32,13 @@ const jsonLoader = {
 
 joycon.addLoader(jsonLoader)
 
-export function loadTsConfig(cwd: string) {
-  return joycon.load(
-    ['tsconfig.build.json', 'tsconfig.json'],
-    cwd,
-    path.dirname(cwd)
-  )
+export function resolveTsConfig(cwd: string, tsconfig = 'tsconfig.json') {
+  return joycon.resolve([tsconfig], cwd, path.dirname(cwd))
 }
 
-export async function loadTsupConfig(cwd: string) {
+export async function loadTsupConfig(
+  cwd: string
+): Promise<{ path?: string; data?: ReturnType<typeof defineConfig> }> {
   const configJoycon = new JoyCon()
   const configPath = await configJoycon.resolve(
     [

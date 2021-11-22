@@ -8,6 +8,8 @@ export type Format = 'cjs' | 'esm' | 'iife'
  * Not all of them are available from CLI flags
  */
 export type Options = {
+  /** Optional config name to show in CLI output */
+  name?: string
   entryPoints?: BuildOptions['entryPoints']
   /**
    * Output different formats to differen folder instead of using different extensions
@@ -109,4 +111,8 @@ export type Options = {
    * Disable config file with `false`
    */
   config?: boolean
+  /**
+   * Use a custom tsconfig
+   */
+  tsconfig?: string
 }

@@ -2,6 +2,7 @@ import fs from 'fs'
 import { defineConfig } from './src'
 
 export default defineConfig({
+  name: 'tsup',
   esbuildPlugins: [
     {
       name: 'patch-rollup-plugin-dts',

@@ -3,7 +3,7 @@ import fs from 'fs'
 import { Worker } from 'worker_threads'
 import type { MarkRequired, Buildable } from 'ts-essentials'
 import { removeFiles, debouncePromise } from './utils'
-import { loadTsConfig, loadTsupConfig } from './load'
+import { loadTsupConfig, resolveTsConfig } from './load'
 import glob from 'globby'
 import { handleError, PrettyError } from './errors'
 import resolveFrom from 'resolve-from'
@@ -12,7 +12,7 @@ import type { ChildProcess } from 'child_process'
 import execa from 'execa'
 import kill from 'tree-kill'
 import { version } from '../package.json'
-import { log, setSilent } from './log'
+import { createLogger, setSilent } from './log'
 import { Format, Options } from './options'
 import { runEsbuild } from './esbuild'
 
@@ -26,10 +26,11 @@ export type NormalizedOptions = MarkRequired<
 export const defineConfig = (
   options:
     | Options
+    | Options[]
     | ((
         /** The options derived from CLI flags */
         overrideOptions: Options
-      ) => Options)
+      ) => Options | Options[])
 ) => options
 
 const killProcess = ({
@@ -44,6 +45,7 @@ const killProcess = ({
   })
 
 const normalizeOptions = async (
+  logger: ReturnType<typeof createLogger>,
   optionsFromConfigFile: Options | undefined,
   optionsOverride: Options
 ) => {
@@ -66,7 +68,7 @@ const normalizeOptions = async (
     if (!options.entryPoints || options.entryPoints.length === 0) {
       throw new PrettyError(`Cannot find ${input}`)
     } else {
-      log('CLI', 'info', `Building entry: ${options.entryPoints.join(', ')}`)
+      logger.info('CLI', `Building entry: ${options.entryPoints.join(', ')}`)
     }
   } else {
     Object.keys(input).forEach((alias) => {
@@ -75,7 +77,7 @@ const normalizeOptions = async (
         throw new PrettyError(`Cannot find ${alias}: ${filename}`)
       }
     })
-    log('CLI', 'info', `Building entry: ${JSON.stringify(input)}`)
+    logger.info('CLI', `Building entry: ${JSON.stringify(input)}`)
   }
 
   options.outDir = options.outDir || 'dist'
@@ -85,15 +87,15 @@ const normalizeOptions = async (
     options.format = ['cjs']
   }
 
-  const tsconfig = await loadTsConfig(process.cwd())
-  if (tsconfig.path && tsconfig.data) {
-    log('CLI', 'info', `Using tsconfig: ${tsconfig.path}`)
-    if (!options.jsxFactory) {
-      options.jsxFactory = tsconfig.data.compilerOptions?.jsxFactory
-    }
-    if (!options.jsxFragment) {
-      options.jsxFragment = tsconfig.data.compilerOptions?.jsxFragmentFactory
-    }
+  const tsconfig = await resolveTsConfig(process.cwd(), options.tsconfig)
+  if (tsconfig) {
+    logger.info(
+      'CLI',
+      `Using tsconfig: ${path.relative(process.cwd(), tsconfig)}`
+    )
+    options.tsconfig = tsconfig
+  } else if (options.tsconfig) {
+    throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
   }
 
   if (!options.target) {
@@ -110,143 +112,158 @@ export async function build(_options: Options) {
   const configData =
     typeof config.data === 'function' ? config.data(_options) : config.data
 
-  const options = await normalizeOptions(configData, _options)
+  await Promise.all(
+    [...(Array.isArray(configData) ? configData : [configData])].map(
+      async (item) => {
+        const logger = createLogger(item?.name)
+        const options = await normalizeOptions(logger, item, _options)
 
-  log('CLI', 'info', `tsup v${version}`)
+        logger.info('CLI', `tsup v${version}`)
 
-  if (config.path) {
-    log('CLI', 'info', `Using tsup config: ${config.path}`)
-  }
+        if (config.path) {
+          logger.info('CLI', `Using tsup config: ${config.path}`)
+        }
 
-  if (options.watch) {
-    log('CLI', 'info', 'Running in watch mode')
-  }
+        if (options.watch) {
+          logger.info('CLI', 'Running in watch mode')
+        }
 
-  let existingOnSuccess: ChildProcess | undefined
+        let existingOnSuccess: ChildProcess | undefined
 
-  async function killPreviousProcess() {
-    if (existingOnSuccess) {
-      await killProcess({
-        pid: existingOnSuccess.pid,
-      })
-      existingOnSuccess = undefined
-    }
-  }
+        async function killPreviousProcess() {
+          if (existingOnSuccess) {
+            await killProcess({
+              pid: existingOnSuccess.pid,
+            })
+            existingOnSuccess = undefined
+          }
+        }
 
-  const debouncedBuildAll = debouncePromise(
-    () => {
-      return buildAll()
-    },
-    100,
-    handleError
-  )
+        const debouncedBuildAll = debouncePromise(
+          () => {
+            return buildAll()
+          },
+          100,
+          handleError
+        )
 
-  const buildAll = async () => {
-    const killPromise = killPreviousProcess()
+        const buildAll = async () => {
+          const killPromise = killPreviousProcess()
 
-    if (options.clean) {
-      const extraPatterns = Array.isArray(options.clean) ? options.clean : []
-      await removeFiles(
-        ['**/*', '!**/*.d.ts', ...extraPatterns],
-        options.outDir
-      )
-      log('CLI', 'info', 'Cleaning output folder')
-    }
+          if (options.clean) {
+            const extraPatterns = Array.isArray(options.clean)
+              ? options.clean
+              : []
+            await removeFiles(
+              ['**/*', '!**/*.d.ts', ...extraPatterns],
+              options.outDir
+            )
+            logger.info('CLI', 'Cleaning output folder')
+          }
 
-    const css: Map<string, string> = new Map()
-    await Promise.all([
-      ...options.format.map((format, index) =>
-        runEsbuild(options, { format, css: index === 0 ? css : undefined })
-      ),
-    ])
-    await killPromise
-    if (options.onSuccess) {
-      const parts = parseArgsStringToArgv(options.onSuccess)
-      const exec = parts[0]
-      const args = parts.splice(1)
-      existingOnSuccess = execa(exec, args, {
-        stdio: 'inherit',
-      })
-    }
-  }
+          const css: Map<string, string> = new Map()
+          await Promise.all([
+            ...options.format.map((format, index) =>
+              runEsbuild(options, {
+                format,
+                css: index === 0 ? css : undefined,
+                logger,
+              })
+            ),
+          ])
+          await killPromise
+          if (options.onSuccess) {
+            const parts = parseArgsStringToArgv(options.onSuccess)
+            const exec = parts[0]
+            const args = parts.splice(1)
+            existingOnSuccess = execa(exec, args, {
+              stdio: 'inherit',
+            })
+          }
+        }
 
-  const startWatcher = async () => {
-    if (!options.watch) return
+        const startWatcher = async () => {
+          if (!options.watch) return
 
-    const { watch } = await import('chokidar')
+          const { watch } = await import('chokidar')
 
-    const customIgnores = options.ignoreWatch
-      ? Array.isArray(options.ignoreWatch)
-        ? options.ignoreWatch
-        : [options.ignoreWatch]
-      : []
+          const customIgnores = options.ignoreWatch
+            ? Array.isArray(options.ignoreWatch)
+              ? options.ignoreWatch
+              : [options.ignoreWatch]
+            : []
 
-    const ignored = [
-      '**/{.git,node_modules}/**',
-      options.outDir,
-      ...customIgnores,
-    ]
+          const ignored = [
+            '**/{.git,node_modules}/**',
+            options.outDir,
+            ...customIgnores,
+          ]
 
-    const watchPaths =
-      typeof options.watch === 'boolean'
-        ? '.'
-        : Array.isArray(options.watch)
-        ? options.watch.filter(
-            (path): path is string => typeof path === 'string'
+          const watchPaths =
+            typeof options.watch === 'boolean'
+              ? '.'
+              : Array.isArray(options.watch)
+              ? options.watch.filter(
+                  (path): path is string => typeof path === 'string'
+                )
+              : options.watch
+
+          logger.info(
+            'CLI',
+            `Watching for changes in ${
+              Array.isArray(watchPaths)
+                ? watchPaths.map((v) => '"' + v + '"').join(' | ')
+                : '"' + watchPaths + '"'
+            }`
           )
-        : options.watch
+          logger.info(
+            'CLI',
+            `Ignoring changes in ${ignored
+              .map((v) => '"' + v + '"')
+              .join(' | ')}`
+          )
 
-    log(
-      'CLI',
-      'info',
-      `Watching for changes in ${
-        Array.isArray(watchPaths)
-          ? watchPaths.map((v) => '"' + v + '"').join(' | ')
-          : '"' + watchPaths + '"'
-      }`
-    )
-    log(
-      'CLI',
-      'info',
-      `Ignoring changes in ${ignored.map((v) => '"' + v + '"').join(' | ')}`
-    )
+          const watcher = watch(watchPaths, {
+            ignoreInitial: true,
+            ignorePermissionErrors: true,
+            ignored,
+          })
+          watcher.on('all', async (type, file) => {
+            logger.info('CLI', `Change detected: ${type} ${file}`)
+            debouncedBuildAll()
+          })
+        }
 
-    const watcher = watch(watchPaths, {
-      ignoreInitial: true,
-      ignorePermissionErrors: true,
-      ignored,
-    })
-    watcher.on('all', async (type, file) => {
-      log('CLI', 'info', `Change detected: ${type} ${file}`)
-      debouncedBuildAll()
-    })
-  }
+        logger.info('CLI', `Target: ${options.target}`)
 
-  log('CLI', 'info', `Target: ${options.target}`)
+        await buildAll()
 
-  await buildAll()
+        startWatcher()
 
-  startWatcher()
+        if (options.dts) {
+          const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')
+          if (!hasTypescript) {
+            throw new Error(`You need to install "typescript" in your project`)
+          }
 
-  if (options.dts) {
-    const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')
-    if (!hasTypescript) {
-      throw new Error(`You need to install "typescript" in your project`)
-    }
-
-    const worker = new Worker(path.join(__dirname, './rollup.js'))
-    worker.postMessage({
-      options: {
-        ...options, // functions cannot be cloned
-        esbuildPlugins: undefined,
-      },
-    })
-    worker.on('message', (data) => {
-      if (data === 'error') {
-        process.exitCode = 1
-      } else if (data === 'success') {
-        process.exitCode = 0
+          const worker = new Worker(path.join(__dirname, './rollup.js'))
+          worker.postMessage({
+            configName: item?.name,
+            options: {
+              ...options, // functions cannot be cloned
+              esbuildPlugins: undefined,
+              esbuildOptions: undefined,
+            },
+          })
+          worker.on('message', (data) => {
+            if (data === 'error') {
+              process.exitCode = 1
+            } else if (data === 'success') {
+              process.exitCode = 0
+            }
+          })
+        }
       }
-    })
-  }
+    )
+  )
 }
