@@ -1080,3 +1080,18 @@ test('multiple entry with the same base name', async () => {
     ]
   `)
 })
+
+test('backslash in entry', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    { 'src/input.ts': `export const foo = 1` },
+    {
+      entry: ['src\\input.ts'],
+    }
+  )
+  expect(outFiles).toMatchInlineSnapshot(`
+    Array [
+      "input.js",
+    ]
+  `)
+})

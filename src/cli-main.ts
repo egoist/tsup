@@ -2,6 +2,7 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
 import flat from 'flat'
+import slash from 'slash'
 import { Format, Options } from '.'
 
 function ensureArray(input: string): string[] {
@@ -88,7 +89,7 @@ export async function main(options: Options = {}) {
         ...flags,
       })
       if (files.length > 0) {
-        options.entryPoints = files
+        options.entryPoints = files.map(slash)
       }
       if (flags.format) {
         const format = ensureArray(flags.format) as Format[]
