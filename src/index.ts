@@ -138,6 +138,8 @@ export async function build(_options: Options) {
 
         if (!options.dts?.only) {
           let existingOnSuccess: ChildProcess | undefined
+          /** Files imported by the entry */
+          const buildDependencies: Set<string> = new Set()
 
           async function killPreviousProcess() {
             if (existingOnSuccess) {
@@ -158,6 +160,7 @@ export async function build(_options: Options) {
 
           const buildAll = async () => {
             const killPromise = killPreviousProcess()
+            buildDependencies.clear()
 
             if (options.clean) {
               const extraPatterns = Array.isArray(options.clean)
@@ -177,6 +180,7 @@ export async function build(_options: Options) {
                   format,
                   css: index === 0 ? css : undefined,
                   logger,
+                  buildDependencies,
                 })
               ),
             ])
@@ -238,6 +242,8 @@ export async function build(_options: Options) {
               ignored,
             })
             watcher.on('all', async (type, file) => {
+              if (!buildDependencies.has(file)) return
+
               logger.info('CLI', `Change detected: ${type} ${file}`)
               debouncedBuildAll()
             })

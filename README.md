@@ -38,7 +38,6 @@ tsup src/index.ts src/cli.ts
 
 This will output `dist/index.js` and `dist/cli.js`.
 
-
 ## Documentation
 
 For complete usages, please dive into the [docs](https://tsup.egoist.sh).
@@ -49,7 +48,7 @@ For complete usages, please dive into the [docs](https://tsup.egoist.sh).
 
 ## Project Stats
 
-![Alt](https://repobeats.axiom.co/api/embed/4ef361ec8445b33c2dab451e1d23784015834c72.svg "Repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/4ef361ec8445b33c2dab451e1d23784015834c72.svg 'Repobeats analytics image')
 
 ## License
 

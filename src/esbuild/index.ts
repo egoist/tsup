@@ -38,7 +38,13 @@ export async function runEsbuild(
     format,
     css,
     logger,
-  }: { format: Format; css?: Map<string, string>; logger: Logger }
+    buildDependencies,
+  }: {
+    format: Format
+    css?: Map<string, string>
+    buildDependencies: Set<string>
+    logger: Logger
+  }
 ) {
   const pkg = await loadPkg(process.cwd())
   const deps = await getDeps(process.cwd())
@@ -174,7 +180,7 @@ export async function runEsbuild(
       keepNames: options.keepNames,
       incremental: !!options.watch,
       pure: typeof options.pure === 'string' ? [options.pure] : options.pure,
-      metafile: Boolean(options.metafile),
+      metafile: true,
     })
   } catch (error) {
     logger.error(format, 'Build failed')
@@ -270,13 +276,19 @@ export async function runEsbuild(
     )
   }
 
-  if (options.metafile && result?.metafile) {
-    const outPath = path.resolve(outDir, `metafile-${format}.json`)
-    await fs.promises.mkdir(path.dirname(outPath), { recursive: true })
-    await fs.promises.writeFile(
-      outPath,
-      JSON.stringify(result.metafile),
-      'utf8'
-    )
+  if (result.metafile) {
+    for (const file of Object.keys(result.metafile.inputs)) {
+      buildDependencies.add(file)
+    }
+
+    if (options.metafile) {
+      const outPath = path.resolve(outDir, `metafile-${format}.json`)
+      await fs.promises.mkdir(path.dirname(outPath), { recursive: true })
+      await fs.promises.writeFile(
+        outPath,
+        JSON.stringify(result.metafile),
+        'utf8'
+      )
+    }
   }
 }
