@@ -127,6 +127,10 @@ If you have multiple entry files, each entry will get a corresponding `.d.ts` fi
 
 Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file, if that's somehow a requirement, try the experimental `--dts-resolve` flag instead.
 
+#### Emit declaration file only
+
+The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `tsc`. Using this flag will only emit the declaration file, without the JavaScript files.
+
 ### Generate sourcemap file
 
 ```bash
