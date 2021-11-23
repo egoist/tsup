@@ -38,6 +38,7 @@ export async function main(options: Options = {}) {
     )
     .option('--dts [entry]', 'Generate declaration file')
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
+    .option('--dts-only', 'Emit declaration files only')
     .option(
       '--sourcemap [option]',
       'Generate sourcemap, "external", "inline", "both"'
@@ -99,13 +100,16 @@ export async function main(options: Options = {}) {
         const external = ensureArray(flags.external)
         options.external = external
       }
-      if (flags.dts || flags.dtsResolve) {
+      if (flags.dts || flags.dtsResolve || flags.dtsOnly) {
         options.dts = {}
         if (typeof flags.dts === 'string') {
           options.dts.entry = flags.dts
         }
         if (flags.dtsResolve) {
           options.dts.resolve = flags.dtsResolve
+        }
+        if (flags.dtsOnly) {
+          options.dts.only = true
         }
       }
       if (flags.inject) {

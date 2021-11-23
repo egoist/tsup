@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
-import type { MarkRequired, Buildable } from 'ts-essentials'
+import type { MarkRequired } from 'ts-essentials'
 import { removeFiles, debouncePromise } from './utils'
 import { loadTsupConfig, resolveTsConfig } from './load'
 import glob from 'globby'
@@ -13,15 +13,17 @@ import execa from 'execa'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { createLogger, setSilent } from './log'
-import { Format, Options } from './options'
+import { DtsConfig, Format, Options } from './options'
 import { runEsbuild } from './esbuild'
 
 export type { Format, Options }
 
-export type NormalizedOptions = MarkRequired<
-  Options,
-  'entryPoints' | 'format' | 'outDir'
->
+export type NormalizedOptions = Omit<
+  MarkRequired<Options, 'entryPoints' | 'format' | 'outDir'>,
+  'dts'
+> & {
+  dts?: DtsConfig
+}
 
 export const defineConfig = (
   options:
@@ -49,7 +51,7 @@ const normalizeOptions = async (
   optionsFromConfigFile: Options | undefined,
   optionsOverride: Options
 ) => {
-  const options: Buildable<NormalizedOptions> = {
+  const options: Options = {
     ...optionsFromConfigFile,
     ...optionsOverride,
   }
@@ -102,6 +104,12 @@ const normalizeOptions = async (
     options.target = 'node12'
   }
 
+  if (options.dts === true) {
+    options.dts = {}
+  } else if (typeof options.dts === 'string') {
+    options.dts = { entry: options.dts }
+  }
+
   return options as NormalizedOptions
 }
 
@@ -128,117 +136,119 @@ export async function build(_options: Options) {
           logger.info('CLI', 'Running in watch mode')
         }
 
-        let existingOnSuccess: ChildProcess | undefined
+        if (!options.dts?.only) {
+          let existingOnSuccess: ChildProcess | undefined
 
-        async function killPreviousProcess() {
-          if (existingOnSuccess) {
-            await killProcess({
-              pid: existingOnSuccess.pid,
-            })
-            existingOnSuccess = undefined
-          }
-        }
-
-        const debouncedBuildAll = debouncePromise(
-          () => {
-            return buildAll()
-          },
-          100,
-          handleError
-        )
-
-        const buildAll = async () => {
-          const killPromise = killPreviousProcess()
-
-          if (options.clean) {
-            const extraPatterns = Array.isArray(options.clean)
-              ? options.clean
-              : []
-            await removeFiles(
-              ['**/*', '!**/*.d.ts', ...extraPatterns],
-              options.outDir
-            )
-            logger.info('CLI', 'Cleaning output folder')
-          }
-
-          const css: Map<string, string> = new Map()
-          await Promise.all([
-            ...options.format.map((format, index) =>
-              runEsbuild(options, {
-                format,
-                css: index === 0 ? css : undefined,
-                logger,
+          async function killPreviousProcess() {
+            if (existingOnSuccess) {
+              await killProcess({
+                pid: existingOnSuccess.pid,
               })
-            ),
-          ])
-          await killPromise
-          if (options.onSuccess) {
-            const parts = parseArgsStringToArgv(options.onSuccess)
-            const exec = parts[0]
-            const args = parts.splice(1)
-            existingOnSuccess = execa(exec, args, {
-              stdio: 'inherit',
+              existingOnSuccess = undefined
+            }
+          }
+
+          const debouncedBuildAll = debouncePromise(
+            () => {
+              return buildAll()
+            },
+            100,
+            handleError
+          )
+
+          const buildAll = async () => {
+            const killPromise = killPreviousProcess()
+
+            if (options.clean) {
+              const extraPatterns = Array.isArray(options.clean)
+                ? options.clean
+                : []
+              await removeFiles(
+                ['**/*', '!**/*.d.ts', ...extraPatterns],
+                options.outDir
+              )
+              logger.info('CLI', 'Cleaning output folder')
+            }
+
+            const css: Map<string, string> = new Map()
+            await Promise.all([
+              ...options.format.map((format, index) =>
+                runEsbuild(options, {
+                  format,
+                  css: index === 0 ? css : undefined,
+                  logger,
+                })
+              ),
+            ])
+            await killPromise
+            if (options.onSuccess) {
+              const parts = parseArgsStringToArgv(options.onSuccess)
+              const exec = parts[0]
+              const args = parts.splice(1)
+              existingOnSuccess = execa(exec, args, {
+                stdio: 'inherit',
+              })
+            }
+          }
+
+          const startWatcher = async () => {
+            if (!options.watch) return
+
+            const { watch } = await import('chokidar')
+
+            const customIgnores = options.ignoreWatch
+              ? Array.isArray(options.ignoreWatch)
+                ? options.ignoreWatch
+                : [options.ignoreWatch]
+              : []
+
+            const ignored = [
+              '**/{.git,node_modules}/**',
+              options.outDir,
+              ...customIgnores,
+            ]
+
+            const watchPaths =
+              typeof options.watch === 'boolean'
+                ? '.'
+                : Array.isArray(options.watch)
+                ? options.watch.filter(
+                    (path): path is string => typeof path === 'string'
+                  )
+                : options.watch
+
+            logger.info(
+              'CLI',
+              `Watching for changes in ${
+                Array.isArray(watchPaths)
+                  ? watchPaths.map((v) => '"' + v + '"').join(' | ')
+                  : '"' + watchPaths + '"'
+              }`
+            )
+            logger.info(
+              'CLI',
+              `Ignoring changes in ${ignored
+                .map((v) => '"' + v + '"')
+                .join(' | ')}`
+            )
+
+            const watcher = watch(watchPaths, {
+              ignoreInitial: true,
+              ignorePermissionErrors: true,
+              ignored,
+            })
+            watcher.on('all', async (type, file) => {
+              logger.info('CLI', `Change detected: ${type} ${file}`)
+              debouncedBuildAll()
             })
           }
+
+          logger.info('CLI', `Target: ${options.target}`)
+
+          await buildAll()
+
+          startWatcher()
         }
-
-        const startWatcher = async () => {
-          if (!options.watch) return
-
-          const { watch } = await import('chokidar')
-
-          const customIgnores = options.ignoreWatch
-            ? Array.isArray(options.ignoreWatch)
-              ? options.ignoreWatch
-              : [options.ignoreWatch]
-            : []
-
-          const ignored = [
-            '**/{.git,node_modules}/**',
-            options.outDir,
-            ...customIgnores,
-          ]
-
-          const watchPaths =
-            typeof options.watch === 'boolean'
-              ? '.'
-              : Array.isArray(options.watch)
-              ? options.watch.filter(
-                  (path): path is string => typeof path === 'string'
-                )
-              : options.watch
-
-          logger.info(
-            'CLI',
-            `Watching for changes in ${
-              Array.isArray(watchPaths)
-                ? watchPaths.map((v) => '"' + v + '"').join(' | ')
-                : '"' + watchPaths + '"'
-            }`
-          )
-          logger.info(
-            'CLI',
-            `Ignoring changes in ${ignored
-              .map((v) => '"' + v + '"')
-              .join(' | ')}`
-          )
-
-          const watcher = watch(watchPaths, {
-            ignoreInitial: true,
-            ignorePermissionErrors: true,
-            ignored,
-          })
-          watcher.on('all', async (type, file) => {
-            logger.info('CLI', `Change detected: ${type} ${file}`)
-            debouncedBuildAll()
-          })
-        }
-
-        logger.info('CLI', `Target: ${options.target}`)
-
-        await buildAll()
-
-        startWatcher()
 
         if (options.dts) {
           const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')

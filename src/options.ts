@@ -3,6 +3,14 @@ import type { InputOption } from 'rollup'
 
 export type Format = 'cjs' | 'esm' | 'iife'
 
+export type DtsConfig = {
+  entry?: InputOption
+  /** Resolve external types used in dts files from node_modules */
+  resolve?: boolean | (string | RegExp)[]
+  /** Emit declaration files only */
+  only?: boolean
+}
+
 /**
  * The options available in tsup.config.ts
  * Not all of them are available from CLI flags
@@ -40,14 +48,7 @@ export type Options = {
   define?: {
     [k: string]: string
   }
-  dts?:
-    | boolean
-    | string
-    | {
-        entry?: InputOption
-        /** Resolve external types used in dts files from node_modules */
-        resolve?: boolean | (string | RegExp)[]
-      }
+  dts?: boolean | string | DtsConfig
   sourcemap?: BuildOptions['sourcemap']
   /** Don't bundle these packages */
   external?: (string | RegExp)[]

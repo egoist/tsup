@@ -769,21 +769,18 @@ test('bundle svelte', async () => {
 })
 
 test('bundle svelte without styles', async () => {
-  const { outFiles } = await run(
-    getTestName(),
-    {
-      'input.ts': `import App from './App.svelte'
+  const { outFiles } = await run(getTestName(), {
+    'input.ts': `import App from './App.svelte'
       export { App }
       `,
-      'App.svelte': `
+    'App.svelte': `
       <script>
       let msg = 'hello svelte'
       </script>
 
       <span>{msg}</span>
       `,
-    }
-  )
+  })
 
   expect(outFiles).toMatchInlineSnapshot(`
     Array [
@@ -1105,7 +1102,7 @@ test('multiple entry with the same base name', async () => {
   `)
 })
 
-test('backslash in entry', async () => {
+test('windows: backslash in entry', async () => {
   const { outFiles } = await run(
     getTestName(),
     { 'src/input.ts': `export const foo = 1` },
@@ -1116,6 +1113,23 @@ test('backslash in entry', async () => {
   expect(outFiles).toMatchInlineSnapshot(`
     Array [
       "input.js",
+    ]
+  `)
+})
+
+test('emit declaration files only', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const foo = 1`,
+    },
+    {
+      flags: ['--dts-only'],
+    }
+  )
+  expect(outFiles).toMatchInlineSnapshot(`
+    Array [
+      "input.d.ts",
     ]
   `)
 })
