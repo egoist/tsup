@@ -768,6 +768,30 @@ test('bundle svelte', async () => {
   `)
 })
 
+test('bundle svelte without styles', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `import App from './App.svelte'
+      export { App }
+      `,
+      'App.svelte': `
+      <script>
+      let msg = 'hello svelte'
+      </script>
+
+      <span>{msg}</span>
+      `,
+    }
+  )
+
+  expect(outFiles).toMatchInlineSnapshot(`
+    Array [
+      "input.js",
+    ]
+  `)
+})
+
 test('onSuccess', async () => {
   const randomNumber = Math.random() + ''
   const { logs } = await run(
