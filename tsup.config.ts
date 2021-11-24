@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { defineConfig } from './src'
+import { defineConfig } from 'tsup'
 
 export default defineConfig({
   name: 'tsup',
