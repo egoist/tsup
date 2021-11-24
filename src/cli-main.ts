@@ -2,8 +2,8 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
 import flat from 'flat'
-import slash from 'slash'
 import { Format, Options } from '.'
+import { slash } from './utils'
 
 function ensureArray(input: string): string[] {
   return Array.isArray(input) ? input : input.split(',')

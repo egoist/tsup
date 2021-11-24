@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
 import type { MarkRequired } from 'ts-essentials'
-import { removeFiles, debouncePromise } from './utils'
+import { removeFiles, debouncePromise, slash } from './utils'
 import { loadTsupConfig, resolveTsConfig } from './load'
 import glob from 'globby'
 import { handleError, PrettyError } from './errors'
@@ -15,7 +15,6 @@ import { version } from '../package.json'
 import { createLogger, setSilent } from './log'
 import { DtsConfig, Format, Options } from './options'
 import { runEsbuild } from './esbuild'
-import slash from 'slash'
 
 export type { Format, Options }
 
