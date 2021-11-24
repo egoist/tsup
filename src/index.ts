@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
 import type { MarkRequired } from 'ts-essentials'
-import { removeFiles, debouncePromise } from './utils'
+import { removeFiles, debouncePromise, slash } from './utils'
 import { loadTsupConfig, resolveTsConfig } from './load'
 import glob from 'globby'
 import { handleError, PrettyError } from './errors'
@@ -242,6 +242,7 @@ export async function build(_options: Options) {
               ignored,
             })
             watcher.on('all', async (type, file) => {
+              file = slash(file)
               if (!buildDependencies.has(file)) return
 
               logger.info('CLI', `Change detected: ${type} ${file}`)
