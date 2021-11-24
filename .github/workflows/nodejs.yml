@@ -11,11 +11,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         node-version: [14.x]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -32,7 +33,9 @@ jobs:
       - run: npm ci
       - run: npm run test --if-present
       - run: npx semantic-release
-        if: "!contains(github.event.head_commit.message, 'skip-release')"
+        if: |
+          !contains(github.event.head_commit.message, 'skip-release') &&
+          startsWith(matrix.os, 'ubuntu')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
