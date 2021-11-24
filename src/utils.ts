@@ -1,11 +1,7 @@
 import fs from 'fs'
 import glob from 'globby'
 import resolveFrom from 'resolve-from'
-
-// No backslash in path
-export function slash(input: string) {
-  return input.replace(/\\/g, '/')
-}
+import slash from 'slash'
 
 export type External =
   | string
