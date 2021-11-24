@@ -1,4 +1,4 @@
-import colors from 'chalk'
+import * as colors from 'colorette'
 
 export const makeLabel = (
   name: string | undefined,

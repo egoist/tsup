@@ -1,5 +1,5 @@
 import { isMainThread, parentPort } from 'worker_threads'
-import colors from 'chalk'
+import * as colors from 'colorette'
 
 export class PrettyError extends Error {
   constructor(message: string) {
