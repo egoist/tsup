@@ -27,7 +27,7 @@
   "dependencies": {
     "bundle-require": "^2.1.2",
     "cac": "^6.7.2",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
     "esbuild": "^0.13.4",
