@@ -3,7 +3,7 @@ import glob from 'globby'
 import resolveFrom from 'resolve-from'
 
 // No backslash in path
-function slash(input: string) {
+export function slash(input: string) {
   return input.replace(/\\/g, '/')
 }
 
