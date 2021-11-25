@@ -138,6 +138,7 @@ export async function runEsbuild(
               externalPlugin({
                 patterns: external,
                 skipNodeModulesBundle: options.skipNodeModulesBundle,
+                tsconfigResolvePaths: options.tsconfigResolvePaths,
               }),
             ]
           : []),

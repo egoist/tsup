@@ -1,10 +1,11 @@
 import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
-import type { MarkRequired } from 'ts-essentials'
+import type { Buildable, DeepPartial, MarkRequired } from 'ts-essentials'
 import { removeFiles, debouncePromise, slash } from './utils'
 import { loadTsupConfig, resolveTsConfig } from './load'
 import glob from 'globby'
+import { loadTsConfig } from 'bundle-require'
 import { handleError, PrettyError } from './errors'
 import resolveFrom from 'resolve-from'
 import { parseArgsStringToArgv } from 'string-argv'
@@ -23,6 +24,7 @@ export type NormalizedOptions = Omit<
   'dts'
 > & {
   dts?: DtsConfig
+  tsconfigResolvePaths: Record<string, any>
 }
 
 export const defineConfig = (
@@ -51,9 +53,23 @@ const normalizeOptions = async (
   optionsFromConfigFile: Options | undefined,
   optionsOverride: Options
 ) => {
-  const options: Options = {
+  const _options = {
     ...optionsFromConfigFile,
     ...optionsOverride,
+  }
+  const options: Buildable<NormalizedOptions> = {
+    target: 'node12',
+    format: ['cjs'],
+    outDir: 'dist',
+    ..._options,
+    dts:
+      typeof _options.dts === 'boolean'
+        ? _options.dts
+          ? {}
+          : undefined
+        : typeof _options.dts === 'string'
+        ? { entry: _options.dts }
+        : _options.dts,
   }
 
   setSilent(options.silent)
@@ -82,32 +98,16 @@ const normalizeOptions = async (
     logger.info('CLI', `Building entry: ${JSON.stringify(input)}`)
   }
 
-  options.outDir = options.outDir || 'dist'
-
-  // Build in cjs format by default
-  if (!options.format) {
-    options.format = ['cjs']
-  }
-
-  const tsconfig = await resolveTsConfig(process.cwd(), options.tsconfig)
-  if (tsconfig) {
+  const tsconfig = loadTsConfig(process.cwd(), options.tsconfig)
+  if (tsconfig.path) {
     logger.info(
       'CLI',
-      `Using tsconfig: ${path.relative(process.cwd(), tsconfig)}`
+      `Using tsconfig: ${path.relative(process.cwd(), tsconfig.path)}`
     )
-    options.tsconfig = tsconfig
+    options.tsconfig = tsconfig.path
+    options.tsconfigResolvePaths = tsconfig.data?.compilerOptions?.paths || {}
   } else if (options.tsconfig) {
     throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
-  }
-
-  if (!options.target) {
-    options.target = 'node12'
-  }
-
-  if (options.dts === true) {
-    options.dts = {}
-  } else if (typeof options.dts === 'string') {
-    options.dts = { entry: options.dts }
   }
 
   return options as NormalizedOptions
