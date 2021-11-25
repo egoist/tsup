@@ -1102,7 +1102,7 @@ test('multiple entry with the same base name', async () => {
   `)
 })
 
-test('windows: backslash in entry', async () => {
+test('windows backslash in entry', async () => {
   const { outFiles } = await run(
     getTestName(),
     { 'src/input.ts': `export const foo = 1` },
