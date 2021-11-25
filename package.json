@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "bundle-require": "^2.1.7",
-    "cac": "^6.7.2",
+    "cac": "^6.7.12",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
     "esbuild": "^0.13.4",
