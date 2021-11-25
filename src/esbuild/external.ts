@@ -5,11 +5,13 @@ import { tsconfigPathsToRegExp, match } from 'bundle-require'
 const NON_NODE_MODULE_RE = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/
 
 export const externalPlugin = ({
-  patterns,
+  external,
+  noExternal,
   skipNodeModulesBundle,
   tsconfigResolvePaths,
 }: {
-  patterns?: (string | RegExp)[]
+  external?: (string | RegExp)[]
+  noExternal?: (string | RegExp)[]
   skipNodeModulesBundle?: boolean
   tsconfigResolvePaths?: Record<string, any>
 }): Plugin => {
@@ -35,18 +37,12 @@ export const externalPlugin = ({
         })
       }
 
-      if (!patterns || patterns.length === 0) return
-
       build.onResolve({ filter: /.*/ }, (args) => {
-        const external = patterns.some((p) => {
-          if (p instanceof RegExp) {
-            return p.test(args.path)
-          }
-          return args.path === p
-        })
-
-        if (external) {
-          return { path: args.path, external }
+        if (match(args.path, noExternal)) {
+          return
+        }
+        if (match(args.path, external)) {
+          return { external: true }
         }
       })
     },

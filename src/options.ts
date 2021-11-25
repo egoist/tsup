@@ -50,7 +50,9 @@ export type Options = {
   }
   dts?: boolean | string | DtsConfig
   sourcemap?: BuildOptions['sourcemap']
-  /** Don't bundle these packages */
+  /** Always bundle modules matching given patterns */
+  noExternal?: (string | RegExp)[]
+  /** Don't bundle these modules */
   external?: (string | RegExp)[]
   /** Transform the result with `@babel/core` */
   babel?: boolean

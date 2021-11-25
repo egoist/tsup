@@ -102,7 +102,7 @@ export async function runEsbuild(
     // So here we use a custom plugin to implement it
     format !== 'iife' &&
       externalPlugin({
-        patterns: external,
+        external,
         skipNodeModulesBundle: options.skipNodeModulesBundle,
         tsconfigResolvePaths: options.tsconfigResolvePaths,
       }),
