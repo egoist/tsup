@@ -33,7 +33,7 @@ jobs:
       - run: npm ci
       - run: npm run test --if-present
   release:
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     needs: ["build"]
     steps:
       - uses: actions/checkout@v2
