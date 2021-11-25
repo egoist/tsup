@@ -17,19 +17,27 @@
     "url": "https://github.com/egoist/tsup.git"
   },
   "scripts": {
-    "dev": "npm run build:simple -- --watch",
+    "dev": "pnpm run build-fast -- --watch",
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
-    "prepublishOnly": "npm run build",
-    "test": "npm run build:simple && jest",
-    "//": "Building without dts for speed",
-    "build:simple": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting"
+    "prepublishOnly": "pnpm run build-fast",
+    "test": "pnpm run build && pnpm run test-only",
+    "test-only": "ava  test/*.test.ts --fail-fast   ",
+    "build-fast": "pnpm run build -- --no-dts"
+  },
+  "ava": {
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "sucrase//register"
+    ]
   },
   "dependencies": {
     "bundle-require": "^2.1.7",
     "cac": "^6.7.12",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
-    "esbuild": "^0.13.4",
+    "esbuild": "^0.13.15",
     "execa": "^5.0.0",
     "globby": "^11.0.3",
     "joycon": "^3.0.1",
@@ -47,15 +55,14 @@
     "@types/debug": "^4.1.5",
     "@types/flat": "^5.0.2",
     "@types/fs-extra": "^9.0.11",
-    "@types/jest": "^26.0.22",
     "@types/node": "^14.14.41",
     "@types/resolve": "^1.20.0",
+    "ava": "^4.0.0-rc.1",
     "buble": "^0.20.0",
     "colorette": "^2.0.16",
     "consola": "^2.15.3",
     "flat": "^5.0.2",
     "fs-extra": "^9.1.0",
-    "jest": "^26.6.3",
     "jju": "^1.4.0",
     "postcss": "^8.2.10",
     "postcss-simple-vars": "^6.0.3",
@@ -67,7 +74,6 @@
     "strip-json-comments": "^3.1.1",
     "svelte": "3.37.0",
     "ts-essentials": "^7.0.1",
-    "ts-jest": "^26.5.5",
     "tsconfig-paths": "^3.12.0",
     "tsup": "^5.9.1",
     "typescript": "^4.2.4",
