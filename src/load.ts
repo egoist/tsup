@@ -46,7 +46,7 @@ export async function loadTsupConfig(
       'package.json',
     ],
     cwd,
-    path.dirname(cwd)
+    path.parse(cwd).root
   )
 
   if (configPath) {
