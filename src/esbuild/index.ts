@@ -19,6 +19,7 @@ import { getBabel, truthy } from '../utils'
 import { PrettyError } from '../errors'
 import { transform } from 'sucrase'
 import { swcPlugin } from './swc'
+import { nativeNodeModulesPlugin } from './native-node-module'
 
 const getOutputExtensionMap = (
   pkgTypeField: string | undefined,
@@ -106,6 +107,7 @@ export async function runEsbuild(
         tsconfigResolvePaths: options.tsconfigResolvePaths,
       }),
     options.tsconfigDecoratorMetadata && swcPlugin(),
+    nativeNodeModulesPlugin(),
     postcssPlugin({ css }),
     sveltePlugin({ css }),
     ...(options.esbuildPlugins || []),
