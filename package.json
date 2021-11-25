@@ -21,7 +21,7 @@
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
     "prepublishOnly": "pnpm run build-fast",
     "test": "pnpm run build && pnpm run test-only",
-    "test-only": "ava test/*.test.ts --fail-fast --timeout 40s",
+    "test-only": "ava test/*.test.ts --fail-fast --timeout 60s",
     "build-fast": "pnpm run build -- --no-dts"
   },
   "ava": {
