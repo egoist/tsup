@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "bundle-require": "^2.1.7",
-    "cac": "^6.7.2",
+    "cac": "^6.7.12",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
     "esbuild": "^0.13.4",
@@ -69,7 +69,7 @@
     "ts-jest": "^26.5.5",
     "tsconfig-paths": "^3.12.0",
     "tsup": "^5.9.1",
-    "typescript": "^4.2.4",
+    "typescript": "^4.5.2",
     "wait-for-expect": "^3.0.2"
   },
   "peerDependencies": {
