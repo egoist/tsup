@@ -40,6 +40,13 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
       - run: npx semantic-release
         if: "!contains(github.event.head_commit.message, 'skip-release')"
         env:
