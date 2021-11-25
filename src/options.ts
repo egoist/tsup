@@ -9,6 +9,10 @@ export type DtsConfig = {
   resolve?: boolean | (string | RegExp)[]
   /** Emit declaration files only */
   only?: boolean
+  /** Insert at the top of each output .d.ts file  */
+  banner?: string
+  /** Insert at the bottom */
+  footer?: string
 }
 
 /**

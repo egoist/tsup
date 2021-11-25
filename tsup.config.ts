@@ -3,6 +3,10 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
   name: 'tsup',
+  dts: {
+    resolve: true,
+    banner: '// hehe',
+  },
   esbuildPlugins: [
     {
       name: 'patch-rollup-plugin-dts',

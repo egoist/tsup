@@ -162,6 +162,8 @@ const getRollupConfig = async (
       dir: options.outDir || 'dist',
       format: 'esm',
       exports: 'named',
+      banner: dtsOptions.banner,
+      footer: dtsOptions.footer,
     },
   }
 }

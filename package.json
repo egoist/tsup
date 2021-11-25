@@ -18,7 +18,7 @@
   },
   "scripts": {
     "dev": "npm run build:simple -- --watch",
-    "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --dts-resolve --splitting",
+    "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
     "prepublishOnly": "npm run build",
     "test": "npm run build:simple && jest",
     "//": "Building without dts for speed",
