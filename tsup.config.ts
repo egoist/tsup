@@ -5,7 +5,6 @@ export default defineConfig({
   name: 'tsup',
   dts: {
     resolve: true,
-    banner: '// hehe',
   },
   esbuildPlugins: [
     {
