@@ -1133,3 +1133,25 @@ test('emit declaration files only', async () => {
     ]
   `)
 })
+
+test('decorator metadata', async () => {
+  const { getFileContent } = await run(getTestName(), {
+    'input.ts': `
+        function Injectable() {}
+
+        @Injectable()
+        export class Foo {
+          @Field()
+          bar() {}
+        }
+      `,
+    'tsconfig.json': `{
+        "compilerOptions": {
+          "emitDecoratorMetadata": true,
+        }
+      }`,
+  })
+  expect(await getFileContent('dist/input.js')).toContain(
+    `Reflect.metadata("design:type"`
+  )
+})

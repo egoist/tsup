@@ -1,7 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 import { transform as transformToEs5 } from 'buble'
-import { build as esbuild, BuildResult, formatMessages } from 'esbuild'
+import {
+  build as esbuild,
+  BuildResult,
+  formatMessages,
+  Plugin as EsbuildPlugin,
+} from 'esbuild'
 import { NormalizedOptions, Format } from '..'
 import { getDeps, loadPkg } from '../load'
 import { Logger } from '../log'
@@ -10,9 +15,10 @@ import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
 import { sveltePlugin } from './svelte'
 import consola from 'consola'
-import { getBabel } from '../utils'
+import { getBabel, truthy } from '../utils'
 import { PrettyError } from '../errors'
 import { transform } from 'sucrase'
+import { swcPlugin } from './swc'
 
 const getOutputExtensionMap = (
   pkgTypeField: string | undefined,
@@ -81,6 +87,30 @@ export async function runEsbuild(
   const platform = options.platform || 'node'
   const loader = options.loader || {}
 
+  const esbuildPlugins: Array<EsbuildPlugin | false | undefined> = [
+    format === 'cjs' && nodeProtocolPlugin(),
+    {
+      name: 'modify-options',
+      setup(build) {
+        if (options.esbuildOptions) {
+          options.esbuildOptions(build.initialOptions, { format })
+        }
+      },
+    },
+    // esbuild's `external` option doesn't support RegExp
+    // So here we use a custom plugin to implement it
+    format !== 'iife' &&
+      externalPlugin({
+        patterns: external,
+        skipNodeModulesBundle: options.skipNodeModulesBundle,
+        tsconfigResolvePaths: options.tsconfigResolvePaths,
+      }),
+    options.tsconfigDecoratorMetadata && swcPlugin(),
+    postcssPlugin({ css }),
+    sveltePlugin({ css }),
+    ...(options.esbuildPlugins || []),
+  ]
+
   try {
     result = await esbuild({
       entryPoints: options.entryPoints,
@@ -121,31 +151,7 @@ export async function runEsbuild(
         platform === 'node'
           ? ['module', 'main']
           : ['browser', 'module', 'main'],
-      plugins: [
-        ...(format === 'cjs' ? [nodeProtocolPlugin()] : []),
-        {
-          name: 'modify-options',
-          setup(build) {
-            if (options.esbuildOptions) {
-              options.esbuildOptions(build.initialOptions, { format })
-            }
-          },
-        },
-        // esbuild's `external` option doesn't support RegExp
-        // So here we use a custom plugin to implement it
-        ...(format !== 'iife'
-          ? [
-              externalPlugin({
-                patterns: external,
-                skipNodeModulesBundle: options.skipNodeModulesBundle,
-                tsconfigResolvePaths: options.tsconfigResolvePaths,
-              }),
-            ]
-          : []),
-        postcssPlugin({ css }),
-        sveltePlugin({ css }),
-        ...(options.esbuildPlugins || []),
-      ],
+      plugins: esbuildPlugins.filter(truthy),
       define: {
         ...(format === 'cjs'
           ? {

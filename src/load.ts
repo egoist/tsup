@@ -32,10 +32,6 @@ const jsonLoader = {
 
 joycon.addLoader(jsonLoader)
 
-export function resolveTsConfig(cwd: string, tsconfig = 'tsconfig.json') {
-  return joycon.resolve([tsconfig], cwd, path.dirname(cwd))
-}
-
 export async function loadTsupConfig(
   cwd: string
 ): Promise<{ path?: string; data?: ReturnType<typeof defineConfig> }> {

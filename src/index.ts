@@ -1,9 +1,9 @@
 import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
-import type { Buildable, DeepPartial, MarkRequired } from 'ts-essentials'
+import type { Buildable, MarkRequired } from 'ts-essentials'
 import { removeFiles, debouncePromise, slash } from './utils'
-import { loadTsupConfig, resolveTsConfig } from './load'
+import { loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
 import { handleError, PrettyError } from './errors'
@@ -25,6 +25,7 @@ export type NormalizedOptions = Omit<
 > & {
   dts?: DtsConfig
   tsconfigResolvePaths: Record<string, any>
+  tsconfigDecoratorMetadata?: boolean
 }
 
 export const defineConfig = (
@@ -106,6 +107,8 @@ const normalizeOptions = async (
     )
     options.tsconfig = tsconfig.path
     options.tsconfigResolvePaths = tsconfig.data?.compilerOptions?.paths || {}
+    options.tsconfigDecoratorMetadata =
+      tsconfig.data?.compilerOptions?.emitDecoratorMetadata
   } else if (options.tsconfig) {
     throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
   }
