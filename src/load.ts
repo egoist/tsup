@@ -1,19 +1,14 @@
 import fs from 'fs'
-import { parse as parseJson } from 'jju/lib/parse'
 import JoyCon from 'joycon'
 import path from 'path'
-import { bundleRequire } from 'bundle-require'
-import stripJsonComments from 'strip-json-comments'
+import { bundleRequire, jsoncParse } from 'bundle-require'
 import { defineConfig } from './'
 
 const joycon = new JoyCon()
 
 const loadJson = async (filepath: string) => {
   try {
-    const content = stripJsonComments(
-      await fs.promises.readFile(filepath, 'utf8')
-    )
-    return parseJson(content)
+    return jsoncParse(await fs.promises.readFile(filepath, 'utf8'))
   } catch (error: any) {
     throw new Error(
       `Failed to parse ${path.relative(process.cwd(), filepath)}: ${

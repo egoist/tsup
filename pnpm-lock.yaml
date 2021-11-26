@@ -23,7 +23,6 @@ specifiers:
   flat: ^5.0.2
   fs-extra: ^9.1.0
   globby: ^11.0.3
-  jju: ^1.4.0
   joycon: ^3.0.1
   postcss: ^8.2.10
   postcss-load-config: ^3.0.1
@@ -35,7 +34,6 @@ specifiers:
   rollup-plugin-dts: ^3.0.2
   rollup-plugin-hashbang: ^2.2.2
   string-argv: ^0.3.1
-  strip-json-comments: ^3.1.1
   sucrase: ^3.20.1
   svelte: 3.37.0
   tree-kill: ^1.2.2
@@ -76,7 +74,6 @@ devDependencies:
   consola: 2.15.3
   flat: 5.0.2
   fs-extra: 9.1.0
-  jju: 1.4.0
   postcss: 8.4.1
   postcss-simple-vars: 6.0.3_postcss@8.4.1
   prettier: 2.5.0
@@ -84,7 +81,6 @@ devDependencies:
   rollup-plugin-dts: 3.0.2_rollup@2.60.1+typescript@4.5.2
   rollup-plugin-hashbang: 2.2.2
   string-argv: 0.3.1
-  strip-json-comments: 3.1.1
   svelte: 3.37.0
   ts-essentials: 7.0.3_typescript@4.5.2
   tsconfig-paths: 3.12.0
@@ -1492,10 +1488,6 @@ packages:
   /isexe/2.0.0:
     resolution: {integrity: sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=}
 
-  /jju/1.4.0:
-    resolution: {integrity: sha1-o6vicYryQaKykE+EpiWXDzia4yo=}
-    dev: true
-
   /joycon/3.0.1:
     resolution: {integrity: sha512-SJcJNBg32dGgxhPtM0wQqxqV0ax9k/9TaUskGDSJkSFSQOEWWvQ3zzWdGQRIUry2j1zA5+ReH13t0Mf3StuVZA==}
     engines: {node: '>=10'}
@@ -2097,11 +2089,6 @@ packages:
   /strip-final-newline/2.0.0:
     resolution: {integrity: sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==}
     engines: {node: '>=6'}
-
-  /strip-json-comments/3.1.1:
-    resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
-    engines: {node: '>=8'}
-    dev: true
 
   /sucrase/3.20.3:
     resolution: {integrity: sha512-azqwq0/Bs6RzLAdb4dXxsCgMtAaD2hzmUr4UhSfsxO46JFPAwMnnb441B/qsudZiS6Ylea3JXZe3Q497lsgXzQ==}
