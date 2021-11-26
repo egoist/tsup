@@ -41,7 +41,7 @@ specifiers:
   tree-kill: ^1.2.2
   ts-essentials: ^7.0.1
   tsconfig-paths: ^3.12.0
-  tsup: ^5.9.1
+  tsup: ^5.10.0
   typescript: ^4.2.4
   wait-for-expect: ^3.0.2
 
