@@ -428,6 +428,23 @@ test('bundle svelte without styles', async (t) => {
   t.deepEqual(outFiles, ['input.js'])
 })
 
+test('svelte: typescript support', async (t) => {
+  const { outFiles } = await run(t.title, {
+    'input.ts': `import App from './App.svelte'
+      export { App }
+      `,
+    'App.svelte': `
+      <script lang="ts">
+      let msg: string = 'hello svelte'
+      </script>
+
+      <span>{msg}</span>
+      `,
+  })
+
+  t.deepEqual(outFiles, ['input.js'])
+})
+
 test('onSuccess', async (t) => {
   const randomNumber = Math.random() + ''
   const { logs } = await run(

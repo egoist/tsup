@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { Plugin } from 'esbuild'
+import { Plugin, transform } from 'esbuild'
 import { localRequire } from '../utils'
 
 const useSvelteCssExtension = (p: string) =>
@@ -59,7 +59,22 @@ export const sveltePlugin = ({
 
         // Convert Svelte syntax to JavaScript
         try {
-          const result = svelte.compile(source, {
+          const preprocess = await svelte.preprocess(source, {
+            async script({ content, attributes }) {
+              if (attributes.lang !== 'ts') return { code: content }
+
+              const { code, map } = await transform(content, {
+                sourcefile: args.path,
+                loader: 'ts',
+                sourcemap: true,
+              })
+              return {
+                code,
+                map,
+              }
+            },
+          })
+          const result = svelte.compile(preprocess.code, {
             filename,
             css: false,
           })
