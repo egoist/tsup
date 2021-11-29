@@ -172,6 +172,7 @@ export async function runEsbuild(
       },
       inject: [
         format === 'cjs' ? path.join(__dirname, '../assets/cjs_shims.js') : '',
+        format === 'esm' ? path.join(__dirname, '../assets/esm_shims.js') : '',
         ...(options.inject || []),
       ].filter(Boolean),
       outdir:

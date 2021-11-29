@@ -517,6 +517,21 @@ test(`transform import.meta.url in cjs format`, async (t) => {
   t.snapshot(await getFileContent('dist/input.js'))
 })
 
+test(`transform __dirname, __filename in esm format`, async (t) => {
+  const { getFileContent } = await run(
+    t.title,
+    {
+      'input.ts': `export const a = __dirname
+    export const b = __filename
+    `,
+    },
+    {
+      flags: ['--format', 'esm'],
+    }
+  )
+  t.snapshot(await getFileContent('dist/input.mjs'))
+})
+
 test('debounce promise', async (t) => {
   try {
     const equal = <T>(a: T, b: T) => {
