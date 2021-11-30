@@ -429,20 +429,30 @@ test('bundle svelte without styles', async (t) => {
 })
 
 test('svelte: typescript support', async (t) => {
-  const { outFiles } = await run(t.title, {
+  const { outFiles, output } = await run(t.title, {
     'input.ts': `import App from './App.svelte'
       export { App }
       `,
     'App.svelte': `
       <script lang="ts">
-      let msg: string = 'hello svelte'
+      import Component from './Component.svelte'
+      let say: string = 'hello'
+      let name: string = 'svelte'
       </script>
 
-      <span>{msg}</span>
+      <Component {name}>{say}</Component>
       `,
+    'Component.svelte': `
+      <script lang="ts">
+      export let name: string
+      </script>
+
+      <slot /> {name}
+    `,
   })
 
   t.deepEqual(outFiles, ['input.js'])
+  t.assert(output.includes('// Component.svelte'))
 })
 
 test('onSuccess', async (t) => {
@@ -643,7 +653,7 @@ test('multiple entry with the same base name', async (t) => {
   t.deepEqual(outFiles, ['bar/input.js', 'input.js'])
 })
 
-test('windows backslash in entry', async (t) => {
+test('windows: backslash in entry', async (t) => {
   const { outFiles } = await run(
     t.title,
     { 'src/input.ts': `export const foo = 1` },

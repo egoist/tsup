@@ -67,6 +67,11 @@ export const sveltePlugin = ({
                 sourcefile: args.path,
                 loader: 'ts',
                 sourcemap: true,
+                tsconfigRaw: {
+                  compilerOptions: {
+                    importsNotUsedAsValues: 'preserve',
+                  },
+                },
               })
               return {
                 code,
