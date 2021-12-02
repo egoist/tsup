@@ -17,12 +17,12 @@
     "url": "https://github.com/egoist/tsup.git"
   },
   "scripts": {
-    "dev": "pnpm run build-fast -- --watch",
+    "dev": "npm run build-fast -- --watch",
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
-    "prepublishOnly": "pnpm run build-fast",
-    "test": "pnpm run build && pnpm run test-only",
+    "prepublishOnly": "npm run build-fast",
+    "test": "npm run build && npm run test-only",
     "test-only": "ava test/*.test.ts --fail-fast --timeout 60s",
-    "build-fast": "pnpm run build -- --no-dts"
+    "build-fast": "npm run build -- --no-dts"
   },
   "ava": {
     "extensions": [

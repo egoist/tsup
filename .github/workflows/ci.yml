@@ -45,7 +45,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Build and Test
-        run: pnpm test
+        run: npm test
 
   release:
     runs-on: ubuntu-latest
@@ -68,6 +68,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-release-
             ${{ runner.os }}-
       - run: npm i -g pnpm
+      - run: pnpm i
       - run: pnpx -y semantic-release --branches main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
