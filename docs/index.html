@@ -8,7 +8,7 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
     />
     <title>tsup</title>
-    <meta name="description" content="bundle typescript library with ease">
+    <meta name="description" content="bundle typescript library with ease" />
     <!-- Stylesheet -->
     <link
       rel="stylesheet"
@@ -16,22 +16,20 @@
     />
   </head>
   <body>
-    <!-- Script -->
-    <script src="https://unpkg.com/@egoist/docup@1/dist/docup.min.js"></script>
-    <!-- Start app -->
-    <script>
+    <script type="module">
+      import * as docup from 'https://unpkg.com/@egoist/docup@2/dist/docup.min.js'
       docup.init({
         // ..options
         navLinks: [
           {
             text: `GitHub`,
-            link: `https://github.com/egoist/tsup`
+            link: `https://github.com/egoist/tsup`,
           },
           {
             text: `❤️️ Sponsor`,
-            link: `https://github.com/sponsors/egoist`
-          }
-        ]
+            link: `https://github.com/sponsors/egoist`,
+          },
+        ],
       })
     </script>
   </body>

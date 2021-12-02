@@ -1,3 +1,19 @@
+```js preact
+import { html } from 'docup'
+
+export default () => {
+  let isPreview = location.hostname !== 'tsup.egoist.sh'
+
+  if (!isPreview) return null
+
+  return html`
+    <div class="message message_type__warning">
+      This is a preview version of the docs.
+    </div>
+  `
+}
+```
+
 Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
 
 ## What can it bundle?
