@@ -222,24 +222,12 @@ When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` ts
 tsup src/index.ts --watch
 ```
 
-You can also specify the directories to be watched. By default, if no path is specified, it watches the current directory.
-
-```bash
-tsup src/index.ts --watch src
-```
-
-You can specify more than a single directory
-
-```bash
-tsup src/index.ts --watch src --watch lib
-```
-
-You can specify one or more extra folders to be ignored while watching changes
+Turn on watch mode. This means that after the initial build, tsup will continue to watch for changes in any of the resolved files.
 
 > By default it always ignores `dist`, `node_modules` & `.git`
 
 ```bash
-tsup src/index.ts --watch --ignore-watch ignore-this-folder
+tsup src/index.ts --watch --ignore-watch ignore-this-folder-too
 ```
 
 > You can specify more than a folder repeating "--ignore-watch", for example: `tsup src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2`
@@ -250,7 +238,7 @@ You can specify command to be executed after a successful build, specially usefu
 
 > You should not use shell scripts, if you need to specify shell scripts you can add it in your "scripts" field and set for example `tsup src/index.ts --watch --onSuccess \"npm run dev\"`
 
-```
+```bash
 tsup src/index.ts --watch --onSuccess "node dist/index.js"
 ```
 
