@@ -85,7 +85,7 @@ export const postcssPlugin = ({
         const { plugins, options } = await getPostcssConfig(args.path)
 
         walk: {
-          // Return if no postcss plugins are supplied
+          // Break walk block if no postcss plugins are supplied
           if (!plugins || plugins.length === 0) {
             break walk
           }
