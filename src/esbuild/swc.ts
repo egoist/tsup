@@ -9,7 +9,7 @@ export const swcPlugin = (): Plugin => {
   return {
     name: 'swc',
 
-    async setup(build) {
+    setup(build) {
       const swc: typeof import('@swc/core') = localRequire('@swc/core')
 
       if (!swc) {

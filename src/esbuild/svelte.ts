@@ -37,11 +37,12 @@ export const sveltePlugin = ({
         }
 
         // This converts a message in Svelte's format to esbuild's format
-        let convertMessage = ({ message, start, end }: any) => {
+        const convertMessage = ({ message, start, end }: any) => {
           let location
           if (start && end) {
-            let lineText = source.split(/\r\n|\r|\n/g)[start.line - 1]
-            let lineEnd = start.line === end.line ? end.column : lineText.length
+            const lineText = source.split(/\r\n|\r|\n/g)[start.line - 1]
+            const lineEnd =
+              start.line === end.line ? end.column : lineText.length
             location = {
               file: filename,
               line: start.line,
@@ -54,8 +55,8 @@ export const sveltePlugin = ({
         }
 
         // Load the file from the file system
-        let source = await fs.promises.readFile(args.path, 'utf8')
-        let filename = path.relative(process.cwd(), args.path)
+        const source = await fs.promises.readFile(args.path, 'utf8')
+        const filename = path.relative(process.cwd(), args.path)
 
         // Convert Svelte syntax to JavaScript
         try {

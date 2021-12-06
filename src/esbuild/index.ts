@@ -26,7 +26,7 @@ const getOutputExtensionMap = (
   format: Format
 ) => {
   const isModule = pkgTypeField === 'module'
-  const map: any = {}
+  const map: Record<string, string> = {}
   if (isModule && format === 'cjs') {
     map['.js'] = '.cjs'
   }
@@ -172,7 +172,9 @@ export async function runEsbuild(
       },
       inject: [
         format === 'cjs' ? path.join(__dirname, '../assets/cjs_shims.js') : '',
-        format === 'esm' && platform === 'node' ? path.join(__dirname, '../assets/esm_shims.js') : '',
+        format === 'esm' && platform === 'node'
+          ? path.join(__dirname, '../assets/esm_shims.js')
+          : '',
         ...(options.inject || []),
       ].filter(Boolean),
       outdir:
@@ -262,10 +264,17 @@ export async function runEsbuild(
                   spreadRest: true,
                 },
               }).code
-            } catch (error: any) {
-              throw new PrettyError(
-                `Error compiling to es5 target:\n${error.snippet}`
-              )
+            } catch (error) {
+              if (error instanceof Error) {
+                throw new PrettyError(
+                  `Error compiling to es5 target:\n${
+                    // @ts-expect-error not sure how to type error.snippet
+                    error.snippet || error.message
+                  }`
+                )
+              } else {
+                throw error
+              }
             }
           }
           // Workaround to enable code splitting for cjs format

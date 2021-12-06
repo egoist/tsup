@@ -196,7 +196,7 @@ async function watchRollup(options: {
     ...options.inputConfig,
     plugins: options.inputConfig.plugins,
     output: options.outputConfig,
-  }).on('event', async (event) => {
+  }).on('event', (event) => {
     if (event.code === 'START') {
       logger.info('dts', 'Build start')
     } else if (event.code === 'BUNDLE_END') {
