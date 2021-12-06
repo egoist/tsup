@@ -122,4 +122,5 @@ export type Options = {
    * Use a custom tsconfig
    */
   tsconfig?: string
+  injectStyle?: boolean
 }
