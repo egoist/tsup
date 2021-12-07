@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "npm run build-fast -- --watch",
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
-    "prepublishOnly": "npm run build-fast",
+    "prepublishOnly": "npm run build",
     "test": "npm run build && npm run test-only",
     "test-only": "ava test/*.test.ts --fail-fast --timeout 60s",
     "build-fast": "npm run build -- --no-dts"
