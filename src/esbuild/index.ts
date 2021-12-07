@@ -158,7 +158,7 @@ export async function runEsbuild(
       define: {
         ...(format === 'cjs' && injectShims
           ? {
-              'import.meta.url': 'importMetaUrlShim',
+              'import.meta.url': 'importMetaUrl',
             }
           : {}),
         ...options.define,
