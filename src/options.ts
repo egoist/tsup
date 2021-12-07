@@ -122,4 +122,9 @@ export type Options = {
    * Use a custom tsconfig
    */
   tsconfig?: string
+  /**
+   * CJS and ESM shims
+   * @default `true`
+   */
+  shims?: boolean
 }

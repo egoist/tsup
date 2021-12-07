@@ -87,6 +87,7 @@ export async function runEsbuild(
 
   const platform = options.platform || 'node'
   const loader = options.loader || {}
+  const injectShims = options.shims !== false
 
   const esbuildPlugins: Array<EsbuildPlugin | false | undefined> = [
     format === 'cjs' && nodeProtocolPlugin(),
@@ -155,7 +156,7 @@ export async function runEsbuild(
           : ['browser', 'module', 'main'],
       plugins: esbuildPlugins.filter(truthy),
       define: {
-        ...(format === 'cjs'
+        ...(format === 'cjs' && injectShims
           ? {
               'import.meta.url': 'importMetaUrlShim',
             }
@@ -171,8 +172,10 @@ export async function runEsbuild(
         }, {}),
       },
       inject: [
-        format === 'cjs' ? path.join(__dirname, '../assets/cjs_shims.js') : '',
-        format === 'esm' && platform === 'node'
+        format === 'cjs' && injectShims
+          ? path.join(__dirname, '../assets/cjs_shims.js')
+          : '',
+        format === 'esm' && injectShims && platform === 'node'
           ? path.join(__dirname, '../assets/esm_shims.js')
           : '',
         ...(options.inject || []),
