@@ -9,18 +9,22 @@ const joycon = new JoyCon()
 const loadJson = async (filepath: string) => {
   try {
     return jsoncParse(await fs.promises.readFile(filepath, 'utf8'))
-  } catch (error: any) {
-    throw new Error(
-      `Failed to parse ${path.relative(process.cwd(), filepath)}: ${
-        error.message
-      }`
-    )
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(
+        `Failed to parse ${path.relative(process.cwd(), filepath)}: ${
+          error.message
+        }`
+      )
+    } else {
+      throw error
+    }
   }
 }
 
 const jsonLoader = {
   test: /\.json$/,
-  async load(filepath: string) {
+  load(filepath: string) {
     return loadJson(filepath)
   },
 }

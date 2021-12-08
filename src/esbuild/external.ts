@@ -13,7 +13,7 @@ export const externalPlugin = ({
   external?: (string | RegExp)[]
   noExternal?: (string | RegExp)[]
   skipNodeModulesBundle?: boolean
-  tsconfigResolvePaths?: Record<string, any>
+  tsconfigResolvePaths?: Record<string, string[]>
 }): Plugin => {
   return {
     name: `external`,

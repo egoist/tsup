@@ -26,7 +26,7 @@ const getOutputExtensionMap = (
   format: Format
 ) => {
   const isModule = pkgTypeField === 'module'
-  const map: any = {}
+  const map: Record<string, string> = {}
   if (isModule && format === 'cjs') {
     map['.js'] = '.cjs'
   }
@@ -87,6 +87,7 @@ export async function runEsbuild(
 
   const platform = options.platform || 'node'
   const loader = options.loader || {}
+  const injectShims = options.shims !== false
 
   const esbuildPlugins: Array<EsbuildPlugin | false | undefined> = [
     format === 'cjs' && nodeProtocolPlugin(),
@@ -106,7 +107,7 @@ export async function runEsbuild(
         skipNodeModulesBundle: options.skipNodeModulesBundle,
         tsconfigResolvePaths: options.tsconfigResolvePaths,
       }),
-    options.tsconfigDecoratorMetadata && swcPlugin(),
+    options.tsconfigDecoratorMetadata && swcPlugin({ logger }),
     nativeNodeModulesPlugin(),
     postcssPlugin({ css, inject: options.injectStyle }),
     sveltePlugin({ css }),
@@ -155,9 +156,9 @@ export async function runEsbuild(
           : ['browser', 'module', 'main'],
       plugins: esbuildPlugins.filter(truthy),
       define: {
-        ...(format === 'cjs'
+        ...(format === 'cjs' && injectShims
           ? {
-              'import.meta.url': 'importMetaUrlShim',
+              'import.meta.url': 'importMetaUrl',
             }
           : {}),
         ...options.define,
@@ -171,8 +172,12 @@ export async function runEsbuild(
         }, {}),
       },
       inject: [
-        format === 'cjs' ? path.join(__dirname, '../assets/cjs_shims.js') : '',
-        format === 'esm' && platform === 'node' ? path.join(__dirname, '../assets/esm_shims.js') : '',
+        format === 'cjs' && injectShims
+          ? path.join(__dirname, '../assets/cjs_shims.js')
+          : '',
+        format === 'esm' && injectShims && platform === 'node'
+          ? path.join(__dirname, '../assets/esm_shims.js')
+          : '',
         ...(options.inject || []),
       ].filter(Boolean),
       outdir:
@@ -221,7 +226,7 @@ export async function runEsbuild(
   // Manually write files
   if (result && result.outputFiles) {
     const timeInMs = Date.now() - startTime
-    logger.success(format, `Build success in ${Math.floor(timeInMs)}ms`)
+    logger.success(format, `⚡️ Build success in ${Math.floor(timeInMs)}ms`)
 
     await Promise.all(
       result.outputFiles.map(async (file) => {
@@ -262,10 +267,17 @@ export async function runEsbuild(
                   spreadRest: true,
                 },
               }).code
-            } catch (error: any) {
-              throw new PrettyError(
-                `Error compiling to es5 target:\n${error.snippet}`
-              )
+            } catch (error) {
+              if (error instanceof Error) {
+                throw new PrettyError(
+                  `Error compiling to es5 target:\n${
+                    // @ts-expect-error not sure how to type error.snippet
+                    error.snippet || error.message
+                  }`
+                )
+              } else {
+                throw error
+              }
             }
           }
           // Workaround to enable code splitting for cjs format

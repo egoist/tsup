@@ -13,7 +13,7 @@ const resolveModule = (
 ): Promise<string | null> =>
   new Promise((resolve, reject) => {
     _resolve(id, opts, (err, res) => {
-      // @ts-expect-error
+      // @ts-expect-error error code is not typed
       if (err?.code === 'MODULE_NOT_FOUND') return resolve(null)
       if (err) return reject(err)
       resolve(res || null)

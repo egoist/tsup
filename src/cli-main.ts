@@ -118,7 +118,7 @@ export async function main(options: Options = {}) {
         options.inject = inject
       }
       if (flags.define) {
-        const define: any = flat(flags.define)
+        const define: Record<string, string> = flat(flags.define)
         options.define = define
       }
       if (flags.loader) {

@@ -1,15 +1,29 @@
 import * as colors from 'colorette'
 
+type LOG_TYPE = 'info' | 'success' | 'error' | 'warn'
+
+const colorize = (type: LOG_TYPE, data: any, onlyImportant = false) => {
+  if (onlyImportant && (type === 'info' || type === 'success')) return data
+
+  const color =
+    type === 'info'
+      ? 'blue'
+      : type === 'error'
+      ? 'red'
+      : type === 'warn'
+      ? 'yellow'
+      : 'green'
+  return colors[color](data)
+}
+
 export const makeLabel = (
   name: string | undefined,
   input: string,
-  type: 'info' | 'success' | 'error'
+  type: LOG_TYPE
 ) => {
   return [
     name && `${colors.dim('[')}${name.toUpperCase()}${colors.dim(']')}`,
-    colors[type === 'info' ? 'blue' : type === 'error' ? 'red' : 'green'](
-      input.toUpperCase()
-    ),
+    colorize(type, input.toUpperCase()),
   ]
     .filter(Boolean)
     .join(colors.dim(' '))
@@ -41,15 +55,29 @@ export const createLogger = (name?: string) => {
       return this.log(label, 'error', ...args)
     },
 
-    log(label: string, type: 'info' | 'success' | 'error', ...data: unknown[]) {
+    warn(label: string, ...args: any[]) {
+      return this.log(label, 'warn', ...args)
+    },
+
+    log(
+      label: string,
+      type: 'info' | 'success' | 'error' | 'warn',
+      ...data: unknown[]
+    ) {
       switch (type) {
         case 'error': {
-          return console.error(makeLabel(name, label, type), ...data)
+          return console.error(
+            makeLabel(name, label, type),
+            ...data.map((item) => colorize(type, item, true))
+          )
         }
         default:
           if (silent) return
 
-          console.log(makeLabel(name, label, type), ...data)
+          console.log(
+            makeLabel(name, label, type),
+            ...data.map((item) => colorize(type, item, true))
+          )
       }
     },
   }

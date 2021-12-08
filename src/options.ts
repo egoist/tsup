@@ -122,5 +122,9 @@ export type Options = {
    * Use a custom tsconfig
    */
   tsconfig?: string
+  /**
+   * Inject CSS as style tags to document head
+   * @default {false}
+   */
   injectStyle?: boolean
 }

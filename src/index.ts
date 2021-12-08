@@ -24,7 +24,7 @@ export type NormalizedOptions = Omit<
   'dts'
 > & {
   dts?: DtsConfig
-  tsconfigResolvePaths: Record<string, any>
+  tsconfigResolvePaths: Record<string, string[]>
   tsconfigDecoratorMetadata?: boolean
 }
 
@@ -144,7 +144,7 @@ export async function build(_options: Options) {
           /** Files imported by the entry */
           const buildDependencies: Set<string> = new Set()
 
-          async function killPreviousProcess() {
+          const killPreviousProcess = async () => {
             if (existingOnSuccess) {
               await killProcess({
                 pid: existingOnSuccess.pid,
@@ -244,7 +244,7 @@ export async function build(_options: Options) {
               ignorePermissionErrors: true,
               ignored,
             })
-            watcher.on('all', async (type, file) => {
+            watcher.on('all', (type, file) => {
               file = slash(file)
               if (!buildDependencies.has(file)) return
 
