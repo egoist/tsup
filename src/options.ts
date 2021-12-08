@@ -127,4 +127,9 @@ export type Options = {
    * @default `true`
    */
   shims?: boolean
+  /**
+   * Inject CSS as style tags to document head
+   * @default {false}
+   */
+  injectStyle?: boolean
 }
