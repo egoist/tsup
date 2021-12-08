@@ -704,6 +704,10 @@ test('shebang', async (t) => {
     }
   )
 
+  if (process.platform === 'win32') {
+    return t.pass()
+  }
+
   t.notThrows(() => {
     fs.accessSync(join(outDir, 'a.js'), fs.constants.X_OK)
   })
