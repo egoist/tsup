@@ -123,8 +123,8 @@ export type Options = {
    */
   tsconfig?: string
   /**
-   * CJS and ESM shims
-   * @default `true`
+   * Inject CSS as style tags to document head
+   * @default {false}
    */
-  shims?: boolean
+  injectStyle?: boolean
 }

@@ -697,3 +697,18 @@ test('decorator metadata', async (t) => {
   const contents = await getFileContent('dist/input.js')
   t.assert(contents.includes(`Reflect.metadata("design:type"`))
 })
+
+test('inject style', async (t) => {
+  const { outFiles, output } = await run(
+    t.title,
+    {
+      'input.ts': `import './style.css'`,
+      'style.css': `.hello { color: red }`
+    },
+    {
+      flags: ['--inject-style', '--minify'],
+    }
+  )
+  t.deepEqual(outFiles, ['input.js'])
+  t.assert(output.includes('.hello{color:red}'))
+})
