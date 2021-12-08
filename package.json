@@ -45,21 +45,18 @@
     "resolve-from": "^5.0.0",
     "rollup": "^2.60.0",
     "sucrase": "^3.20.1",
-    "tree-kill": "^1.2.2"
+    "tree-kill": "^1.2.2",
+    "source-map": "^0.7.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.15",
     "@rollup/plugin-json": "^4.1.0",
     "@swc/core": "^1.2.112",
-    "@types/babel__core": "^7.1.16",
-    "@types/buble": "^0.19.2",
     "@types/debug": "^4.1.5",
     "@types/flat": "^5.0.2",
     "@types/fs-extra": "^9.0.11",
     "@types/node": "^14.14.41",
     "@types/resolve": "^1.20.0",
     "ava": "^4.0.0-rc.1",
-    "buble": "^0.20.0",
     "colorette": "^2.0.16",
     "consola": "^2.15.3",
     "flat": "^5.0.2",

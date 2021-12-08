@@ -1,5 +1,6 @@
 import type { BuildOptions, Plugin as EsbuildPlugin, Loader } from 'esbuild'
 import type { InputOption } from 'rollup'
+import { Plugin } from './plugin'
 
 export type Format = 'cjs' | 'esm' | 'iife'
 
@@ -53,13 +54,11 @@ export type Options = {
     [k: string]: string
   }
   dts?: boolean | string | DtsConfig
-  sourcemap?: BuildOptions['sourcemap']
+  sourcemap?: boolean
   /** Always bundle modules matching given patterns */
   noExternal?: (string | RegExp)[]
   /** Don't bundle these modules */
   external?: (string | RegExp)[]
-  /** Transform the result with `@babel/core` */
-  babel?: boolean
   /**
    * Replace `process.env.NODE_ENV` with `production` or `development`
    * `production` when the bundled is minified, `development` otherwise
@@ -127,4 +126,13 @@ export type Options = {
    * @default {false}
    */
   injectStyle?: boolean
+  /**
+   * Inject cjs and esm shims if needed
+   * @default {true}
+   */
+  shims?: boolean
+  /**
+   * TSUP plugins
+   */
+  plugins?: Plugin[]
 }

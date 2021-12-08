@@ -187,28 +187,6 @@ test('bundle graphql-tools with --sourcemap inline flag', async (t) => {
   t.assert(output.includes('//# sourceMappingURL='))
 })
 
-test('es5 target', async (t) => {
-  const { output, outFiles } = await run(
-    t.title,
-    {
-      'input.ts': `
-    export class Foo {
-      hi (): void {
-        let a = () => 'foo'
-  
-        console.log(a())
-      }
-    }
-    `,
-    },
-    {
-      flags: ['--target', 'es5'],
-    }
-  )
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.js'])
-})
-
 test('multiple formats', async (t) => {
   const { output, outFiles } = await run(
     t.title,
@@ -703,7 +681,7 @@ test('inject style', async (t) => {
     t.title,
     {
       'input.ts': `import './style.css'`,
-      'style.css': `.hello { color: red }`
+      'style.css': `.hello { color: red }`,
     },
     {
       flags: ['--inject-style', '--minify'],

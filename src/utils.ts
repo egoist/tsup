@@ -40,11 +40,6 @@ export function isExternal(
   return false
 }
 
-export function getBabel(): null | typeof import('@babel/core') {
-  const p = resolveFrom.silent(process.cwd(), '@babel/core')
-  return p && require(p)
-}
-
 export function getPostcss(): null | typeof import('postcss') {
   const p = resolveFrom.silent(process.cwd(), 'postcss')
   return p && require(p)
