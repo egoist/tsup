@@ -15,7 +15,7 @@ export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
 
       if (!swc) {
         logger.warn(
-          'CLI',
+          build.initialOptions.format!,
           `You have emitDecoratorMetadata enabled but @swc/core was not installed, skipping swc plugin`
         )
         return
