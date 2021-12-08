@@ -111,11 +111,13 @@ export class PluginContainer {
             }
           }
         }
+
         await outputFile(
           info.path,
           info.type === 'chunk'
             ? info.code + getSourcemapComment(!!info.map, info.path)
-            : info.contents
+            : info.contents,
+          { mode: info.type === 'chunk' ? info.mode : undefined }
         )
         if (info.type === 'chunk' && info.map) {
           const map =

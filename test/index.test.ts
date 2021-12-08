@@ -1,5 +1,5 @@
 import test from 'ava'
-import { resolve } from 'path'
+import { join, resolve } from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
 import glob from 'globby'
@@ -65,6 +65,7 @@ async function run(
     },
     outFiles,
     logs,
+    outDir: resolve(testDir, 'dist'),
     getFileContent(filename: string) {
       return fs.readFile(resolve(testDir, filename), 'utf8')
     },
@@ -689,4 +690,22 @@ test('inject style', async (t) => {
   )
   t.deepEqual(outFiles, ['input.js'])
   t.assert(output.includes('.hello{color:red}'))
+})
+
+test('shebang', async (t) => {
+  const { outDir } = await run(
+    t.title,
+    {
+      'a.ts': `#!/usr/bin/env node\bconsole.log('a')`,
+      'b.ts': `console.log('b')`,
+    },
+    {
+      entry: ['a.ts', 'b.ts'],
+    }
+  )
+
+  const a = await fs.promises.stat(join(outDir, 'a.js'))
+  t.is(a.mode, 33261)
+  const b = await fs.promises.stat(join(outDir, 'b.js'))
+  t.is(b.mode, 33188)
 })
