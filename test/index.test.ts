@@ -704,8 +704,10 @@ test('shebang', async (t) => {
     }
   )
 
-  const a = await fs.promises.stat(join(outDir, 'a.js'))
-  t.is(a.mode, 33261)
-  const b = await fs.promises.stat(join(outDir, 'b.js'))
-  t.is(b.mode, 33188)
+  t.notThrows(() => {
+    fs.accessSync(join(outDir, 'a.js'), fs.constants.X_OK)
+  })
+  t.throws(() => {
+    fs.accessSync(join(outDir, 'b.js'), fs.constants.X_OK)
+  })
 })
