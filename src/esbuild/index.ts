@@ -107,7 +107,7 @@ export async function runEsbuild(
         skipNodeModulesBundle: options.skipNodeModulesBundle,
         tsconfigResolvePaths: options.tsconfigResolvePaths,
       }),
-    options.tsconfigDecoratorMetadata && swcPlugin(),
+    options.tsconfigDecoratorMetadata && swcPlugin({ logger }),
     nativeNodeModulesPlugin(),
     postcssPlugin({ css }),
     sveltePlugin({ css }),
@@ -226,7 +226,7 @@ export async function runEsbuild(
   // Manually write files
   if (result && result.outputFiles) {
     const timeInMs = Date.now() - startTime
-    logger.success(format, `Build success in ${Math.floor(timeInMs)}ms`)
+    logger.success(format, `⚡️ Build success in ${Math.floor(timeInMs)}ms`)
 
     await Promise.all(
       result.outputFiles.map(async (file) => {

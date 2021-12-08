@@ -178,7 +178,7 @@ async function runRollup(options: RollupConfig) {
     logger.info('dts', 'Build start')
     const bundle = await rollup(options.inputConfig)
     await bundle.write(options.outputConfig)
-    logger.success('dts', `Build success in ${getDuration()}`)
+    logger.success('dts', `⚡️ Build success in ${getDuration()}`)
   } catch (error) {
     logger.error('dts', 'Build error')
     parentPort?.postMessage('error')
@@ -200,7 +200,7 @@ async function watchRollup(options: {
     if (event.code === 'START') {
       logger.info('dts', 'Build start')
     } else if (event.code === 'BUNDLE_END') {
-      logger.success('dts', `Build success in ${event.duration}ms`)
+      logger.success('dts', `⚡️ Build success in ${event.duration}ms`)
       parentPort?.postMessage('success')
     } else if (event.code === 'ERROR') {
       logger.error('dts', 'Build failed')

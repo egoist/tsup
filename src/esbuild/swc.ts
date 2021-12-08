@@ -3,9 +3,10 @@
  */
 import { JscConfig } from '@swc/core'
 import { Plugin } from 'esbuild'
+import { Logger } from '../log'
 import { localRequire } from '../utils'
 
-export const swcPlugin = (): Plugin => {
+export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
   return {
     name: 'swc',
 
@@ -13,6 +14,10 @@ export const swcPlugin = (): Plugin => {
       const swc: typeof import('@swc/core') = localRequire('@swc/core')
 
       if (!swc) {
+        logger.warn(
+          'CLI',
+          `You have emitDecoratorMetadata enabled but @swc/core was not installed, skipping swc plugin`
+        )
         return
       }
 
