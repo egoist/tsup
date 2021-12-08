@@ -5,7 +5,7 @@ import { getPostcss } from '../utils'
 
 export const postcssPlugin = ({
   css,
-  inject
+  inject,
 }: {
   css?: Map<string, string>
   inject?: boolean
@@ -27,7 +27,7 @@ export const postcssPlugin = ({
           const result = await loadConfig({}, path.dirname(file))
           configCache.set(file, result)
           return result
-        } catch (error) {
+        } catch (error: any) {
           if (error.message.includes('No PostCSS Config found in')) {
             const result = { plugins: [], options: {} }
             return result
@@ -36,14 +36,16 @@ export const postcssPlugin = ({
         }
       }
 
-      build.onResolve({ filter: /^style-inject$/ }, () => {
-        return { path: 'style-inject', namespace: 'style-inject' }
+      build.onResolve({ filter: /^#style-inject$/ }, () => {
+        return { path: '#style-inject', namespace: '#style-inject' }
       })
 
-      build.onLoad({ filter: /^style-inject$/, namespace: 'style-inject' }, () => {
-        return {
-          // Taken from https://github.com/egoist/style-inject/blob/master/src/index.js (MIT)
-          contents: `
+      build.onLoad(
+        { filter: /^#style-inject$/, namespace: '#style-inject' },
+        () => {
+          return {
+            // Taken from https://github.com/egoist/style-inject/blob/master/src/index.js (MIT)
+            contents: `
           export default function styleInject(css, { insertAt } = {}) {
             if (!css || typeof document === 'undefined') return
           
@@ -68,9 +70,10 @@ export const postcssPlugin = ({
             }
           }
           `,
-          loader: 'js'
+            loader: 'js',
+          }
         }
-      })
+      )
 
       build.onLoad({ filter: /\.css$/ }, async (args) => {
         let contents: string
@@ -84,12 +87,7 @@ export const postcssPlugin = ({
         // Load postcss config
         const { plugins, options } = await getPostcssConfig(args.path)
 
-        walk: {
-          // Break walk block if no postcss plugins are supplied
-          if (!plugins || plugins.length === 0) {
-            break walk
-          }
-
+        if (plugins || plugins.length > 0) {
           // Load postcss
           const postcss = getPostcss()
           if (!postcss) {
@@ -111,17 +109,23 @@ export const postcssPlugin = ({
         }
 
         if (inject) {
-          contents = (await transform(contents, {
-            minify: true,
-            loader: 'css'
-          })).code
+          contents = (
+            await transform(contents, {
+              minify: build.initialOptions.minify,
+              minifyIdentifiers: build.initialOptions.minifyIdentifiers,
+              minifySyntax: build.initialOptions.minifySyntax,
+              minifyWhitespace: build.initialOptions.minifyWhitespace,
+              loader: 'css',
+            })
+          ).code
 
-          contents = `import styleInject from 'style-inject'
-styleInject(\`${contents}\`)`
+          contents = `import styleInject from '#style-inject';styleInject(${JSON.stringify(
+            contents
+          )})`
 
           return {
             contents,
-            loader: 'js'
+            loader: 'js',
           }
         }
 
