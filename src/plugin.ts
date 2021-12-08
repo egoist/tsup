@@ -37,10 +37,17 @@ export type RenderChunk = (
   | void
 >
 
+export type BuildStart = () => MaybePromise<void>
+export type BuildEnd = () => MaybePromise<void>
+
 export type Plugin = {
   name: string
 
+  buildStart?: BuildStart
+
   renderChunk?: RenderChunk
+
+  buildEnd?: BuildEnd
 }
 
 export type PluginContext = {
@@ -61,6 +68,14 @@ export class PluginContainer {
 
   constructor(plugins: Plugin[]) {
     this.plugins = plugins
+  }
+
+  async buildStarted() {
+    for (const plugin of this.plugins) {
+      if (plugin.buildStart) {
+        await plugin.buildStart()
+      }
+    }
   }
 
   async buildFinished({
@@ -129,6 +144,12 @@ export class PluginContainer {
         }
       })
     )
+
+    for (const plugin of this.plugins) {
+      if (plugin.buildEnd) {
+        await plugin.buildEnd()
+      }
+    }
   }
 }
 

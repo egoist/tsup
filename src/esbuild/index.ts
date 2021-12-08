@@ -15,13 +15,9 @@ import { postcssPlugin } from './postcss'
 import { sveltePlugin } from './svelte'
 import consola from 'consola'
 import { truthy } from '../utils'
-import { PrettyError } from '../errors'
-import { transform } from 'sucrase'
 import { swcPlugin } from './swc'
 import { nativeNodeModulesPlugin } from './native-node-module'
 import { PluginContainer } from '../plugin'
-import { cjsSplitting } from '../plugins/cjs-splitting'
-import { shebang } from '../plugins/shebang'
 
 const getOutputExtensionMap = (
   pkgTypeField: string | undefined,
@@ -48,11 +44,13 @@ export async function runEsbuild(
     css,
     logger,
     buildDependencies,
+    pluginContainer,
   }: {
     format: Format
     css?: Map<string, string>
     buildDependencies: Set<string>
     logger: Logger
+    pluginContainer: PluginContainer
   }
 ) {
   const pkg = await loadPkg(process.cwd())
@@ -115,12 +113,6 @@ export async function runEsbuild(
     sveltePlugin({ css }),
     ...(options.esbuildPlugins || []),
   ]
-
-  const pluginContainer = new PluginContainer([
-    shebang(),
-    cjsSplitting(),
-    ...(options.plugins || []),
-  ])
 
   try {
     result = await esbuild({

@@ -16,6 +16,9 @@ import { version } from '../package.json'
 import { createLogger, setSilent } from './log'
 import { DtsConfig, Format, Options } from './options'
 import { runEsbuild } from './esbuild'
+import { shebang } from './plugins/shebang'
+import { cjsSplitting } from './plugins/cjs-splitting'
+import { PluginContainer } from './plugin'
 
 export type { Format, Options }
 
@@ -178,14 +181,21 @@ export async function build(_options: Options) {
 
             const css: Map<string, string> = new Map()
             await Promise.all([
-              ...options.format.map((format, index) =>
-                runEsbuild(options, {
+              ...options.format.map(async (format, index) => {
+                const pluginContainer = new PluginContainer([
+                  shebang(),
+                  cjsSplitting(),
+                  ...(options.plugins || []),
+                ])
+                await pluginContainer.buildStarted()
+                await runEsbuild(options, {
+                  pluginContainer,
                   format,
                   css: index === 0 ? css : undefined,
                   logger,
                   buildDependencies,
                 })
-              ),
+              }),
             ])
             await killPromise
             if (options.onSuccess) {
