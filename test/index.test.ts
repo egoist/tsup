@@ -692,6 +692,28 @@ test('inject style', async (t) => {
   t.assert(output.includes('.hello{color:red}'))
 })
 
+test('inject style in multi formats', async (t) => {
+  const { outFiles, getFileContent } = await run(
+    t.title,
+    {
+      'input.ts': `export * from './App.svelte'`,
+      'App.svelte': `
+      <span>{msg}</span>
+
+      <style>
+      span {color: red}
+      </style>`,
+    },
+    {
+      flags: ['--inject-style', '--minify', '--format', 'esm,cjs,iife'],
+    }
+  )
+  t.deepEqual(outFiles, ['input.global.js', 'input.js', 'input.mjs'])
+  for (const file of outFiles) {
+    t.assert((await getFileContent(`dist/${file}`)).includes('{color:red}'))
+  }
+})
+
 test('shebang', async (t) => {
   const { outDir } = await run(
     t.title,

@@ -195,7 +195,7 @@ export async function build(_options: Options) {
                 await runEsbuild(options, {
                   pluginContainer,
                   format,
-                  css: index === 0 ? css : undefined,
+                  css: (index === 0 || options.injectStyle) ? css : undefined,
                   logger,
                   buildDependencies,
                 })
