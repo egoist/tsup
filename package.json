@@ -29,7 +29,7 @@
       "ts"
     ],
     "require": [
-      "sucrase//register"
+      "sucrase/register"
     ]
   },
   "dependencies": {
@@ -44,11 +44,11 @@
     "postcss-load-config": "^3.0.1",
     "resolve-from": "^5.0.0",
     "rollup": "^2.60.0",
-    "sucrase": "^3.20.1",
     "tree-kill": "^1.2.2",
     "source-map": "^0.7.3"
   },
   "devDependencies": {
+    "sucrase": "^3.20.3",
     "@rollup/plugin-json": "^4.1.0",
     "@swc/core": "^1.2.112",
     "@types/debug": "^4.1.5",

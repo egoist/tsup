@@ -715,3 +715,25 @@ test('shebang', async (t) => {
     fs.accessSync(join(outDir, 'b.js'), fs.constants.X_OK)
   })
 })
+
+test('es5 target', async (t) => {
+  const { output, outFiles } = await run(
+    t.title,
+    {
+      'input.ts': `
+    export class Foo {
+      hi (): void {
+        let a = () => 'foo'
+  
+        console.log(a())
+      }
+    }
+    `,
+    },
+    {
+      flags: ['--target', 'es5'],
+    }
+  )
+  t.regex(output, /createClass/)
+  t.deepEqual(outFiles, ['input.js'])
+})

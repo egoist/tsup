@@ -19,6 +19,7 @@ import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
 import { PluginContainer } from './plugin'
+import { es5 } from './plugins/es5'
 
 export type { Format, Options }
 
@@ -185,6 +186,7 @@ export async function build(_options: Options) {
                 const pluginContainer = new PluginContainer([
                   shebang(),
                   cjsSplitting(),
+                  es5(),
                   ...(options.plugins || []),
                 ])
                 await pluginContainer.buildStarted()

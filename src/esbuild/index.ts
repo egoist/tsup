@@ -94,6 +94,7 @@ export async function runEsbuild(
     {
       name: 'modify-options',
       setup(build) {
+        pluginContainer.modifyEsbuildOptions(build.initialOptions, { format })
         if (options.esbuildOptions) {
           options.esbuildOptions(build.initialOptions, { format })
         }

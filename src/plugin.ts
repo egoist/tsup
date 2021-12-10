@@ -1,5 +1,5 @@
 import path from 'path'
-import { OutputFile } from 'esbuild'
+import { OutputFile, BuildOptions as EsbuildOptions } from 'esbuild'
 import { SourceMapConsumer, SourceMapGenerator, RawSourceMap } from 'source-map'
 import { Format, NormalizedOptions } from '.'
 import { outputFile } from './fs'
@@ -40,8 +40,15 @@ export type RenderChunk = (
 export type BuildStart = () => MaybePromise<void>
 export type BuildEnd = () => MaybePromise<void>
 
+export type ModifyEsbuildOptions = (
+  options: EsbuildOptions,
+  context: { format: Format }
+) => void
+
 export type Plugin = {
   name: string
+
+  esbuildOptions?: ModifyEsbuildOptions
 
   buildStart?: BuildStart
 
@@ -68,6 +75,14 @@ export class PluginContainer {
 
   constructor(plugins: Plugin[]) {
     this.plugins = plugins
+  }
+
+  modifyEsbuildOptions(options: EsbuildOptions, context: { format: Format }) {
+    for (const plugin of this.plugins) {
+      if (plugin.esbuildOptions) {
+        plugin.esbuildOptions(options, context)
+      }
+    }
   }
 
   async buildStarted() {
