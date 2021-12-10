@@ -72,7 +72,7 @@ All other CLI flags still apply to this command.
 
 You can also use `tsup` using file configurations or in a property inside your `package.json`, and you can even use `TypeScript` and have type-safety while you are using it.
 
-> Most of these options can be overwritten using the CLI options
+> INFO: Most of these options can be overwritten using the CLI options
 
 You can use any of these files:
 
@@ -82,7 +82,7 @@ You can use any of these files:
 - `tsup.config.json`
 - `tsup` property in your `package.json`
 
-> In all the custom files you can export the options either as `tsup`, `default` or `module.exports =`
+> INFO: In all the custom files you can export the options either as `tsup`, `default` or `module.exports =`
 
 [Check out all available options](https://github.com/egoist/tsup/blob/master/src/options.ts).
 
@@ -218,7 +218,7 @@ To disable code splitting altogether, try the `--no-splitting` flag instead.
 
 ### ES5 support
 
-You can use `--target es5` to compile the code down to es5, it's processed by [buble](http://buble.surge.sh/). Some features are NOT supported by this target, namely: `for .. of`.
+You can use `--target es5` to compile the code down to es5, in this target your code will be transpiled by esbuild to es2020 first, and then transpiled to es5 by [SWC](https://swc.rc).
 
 ### Compile-time environment variables
 
@@ -240,23 +240,23 @@ tsup src/index.ts --watch
 
 Turn on watch mode. This means that after the initial build, tsup will continue to watch for changes in any of the resolved files.
 
-> By default it always ignores `dist`, `node_modules` & `.git`
+> INFO: By default it always ignores `dist`, `node_modules` & `.git`
 
 ```bash
 tsup src/index.ts --watch --ignore-watch ignore-this-folder-too
 ```
 
-> You can specify more than a folder repeating "--ignore-watch", for example: `tsup src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2`
+> INFO: You can specify more than a folder repeating "--ignore-watch", for example: `tsup src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2`
 
 ### onSuccess
 
 You can specify command to be executed after a successful build, specially useful for **Watch mode**
 
-> You should not use shell scripts, if you need to specify shell scripts you can add it in your "scripts" field and set for example `tsup src/index.ts --watch --onSuccess \"npm run dev\"`
-
 ```bash
 tsup src/index.ts --watch --onSuccess "node dist/index.js"
 ```
+
+> Warning: You should not use shell scripts, if you need to specify shell scripts you can add it in your "scripts" field and set for example `tsup src/index.ts --watch --onSuccess \"npm run dev\"`
 
 ### Minify output
 
@@ -363,6 +363,12 @@ For more details:
 ```bash
 tsup --help
 ```
+
+## Troubleshooting
+
+### error: No matching export in "xxx.ts" for import "xxx"
+
+This usualy happens when you have `emitDecoratorMetadata` enabled in your tsconfig.json, in this mode we use [SWC](https://swc.rc) to transpile decorators to JavaScript so exported types will be eliminated, that's why esbuild won't be able to find corresponding exports. You can fix this by changing your import statement from `import { SomeType }` to `import { type SomeType }` or `import type { SomeType }`.
 
 ## License
 

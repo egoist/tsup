@@ -1,5 +1,5 @@
 import test from 'ava'
-import { resolve } from 'path'
+import { join, resolve } from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
 import glob from 'globby'
@@ -65,6 +65,7 @@ async function run(
     },
     outFiles,
     logs,
+    outDir: resolve(testDir, 'dist'),
     getFileContent(filename: string) {
       return fs.readFile(resolve(testDir, filename), 'utf8')
     },
@@ -185,28 +186,6 @@ test('bundle graphql-tools with --sourcemap inline flag', async (t) => {
   )
 
   t.assert(output.includes('//# sourceMappingURL='))
-})
-
-test('es5 target', async (t) => {
-  const { output, outFiles } = await run(
-    t.title,
-    {
-      'input.ts': `
-    export class Foo {
-      hi (): void {
-        let a = () => 'foo'
-  
-        console.log(a())
-      }
-    }
-    `,
-    },
-    {
-      flags: ['--target', 'es5'],
-    }
-  )
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.js'])
 })
 
 test('multiple formats', async (t) => {
@@ -703,7 +682,7 @@ test('inject style', async (t) => {
     t.title,
     {
       'input.ts': `import './style.css'`,
-      'style.css': `.hello { color: red }`
+      'style.css': `.hello { color: red }`,
     },
     {
       flags: ['--inject-style', '--minify'],
@@ -711,4 +690,50 @@ test('inject style', async (t) => {
   )
   t.deepEqual(outFiles, ['input.js'])
   t.assert(output.includes('.hello{color:red}'))
+})
+
+test('shebang', async (t) => {
+  const { outDir } = await run(
+    t.title,
+    {
+      'a.ts': `#!/usr/bin/env node\bconsole.log('a')`,
+      'b.ts': `console.log('b')`,
+    },
+    {
+      entry: ['a.ts', 'b.ts'],
+    }
+  )
+
+  if (process.platform === 'win32') {
+    return t.pass()
+  }
+
+  t.notThrows(() => {
+    fs.accessSync(join(outDir, 'a.js'), fs.constants.X_OK)
+  })
+  t.throws(() => {
+    fs.accessSync(join(outDir, 'b.js'), fs.constants.X_OK)
+  })
+})
+
+test('es5 target', async (t) => {
+  const { output, outFiles } = await run(
+    t.title,
+    {
+      'input.ts': `
+    export class Foo {
+      hi (): void {
+        let a = () => 'foo'
+  
+        console.log(a())
+      }
+    }
+    `,
+    },
+    {
+      flags: ['--target', 'es5'],
+    }
+  )
+  t.regex(output, /createClass/)
+  t.deepEqual(outFiles, ['input.js'])
 })

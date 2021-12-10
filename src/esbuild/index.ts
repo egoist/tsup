@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import { transform as transformToEs5 } from 'buble'
 import {
   build as esbuild,
   BuildResult,
@@ -15,11 +14,10 @@ import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
 import { sveltePlugin } from './svelte'
 import consola from 'consola'
-import { getBabel, truthy } from '../utils'
-import { PrettyError } from '../errors'
-import { transform } from 'sucrase'
+import { truthy } from '../utils'
 import { swcPlugin } from './swc'
 import { nativeNodeModulesPlugin } from './native-node-module'
+import { PluginContainer } from '../plugin'
 
 const getOutputExtensionMap = (
   pkgTypeField: string | undefined,
@@ -46,11 +44,13 @@ export async function runEsbuild(
     css,
     logger,
     buildDependencies,
+    pluginContainer,
   }: {
     format: Format
     css?: Map<string, string>
     buildDependencies: Set<string>
     logger: Logger
+    pluginContainer: PluginContainer
   }
 ) {
   const pkg = await loadPkg(process.cwd())
@@ -94,6 +94,7 @@ export async function runEsbuild(
     {
       name: 'modify-options',
       setup(build) {
+        pluginContainer.modifyEsbuildOptions(build.initialOptions, { format })
         if (options.esbuildOptions) {
           options.esbuildOptions(build.initialOptions, { format })
         }
@@ -123,8 +124,8 @@ export async function runEsbuild(
       globalName: options.globalName,
       jsxFactory: options.jsxFactory,
       jsxFragment: options.jsxFragment,
-      sourcemap: options.sourcemap,
-      target: options.target === 'es5' ? 'es2016' : options.target,
+      sourcemap: options.sourcemap ? 'external' : false,
+      target: options.target,
       footer: options.footer,
       banner: options.banner,
       tsconfig: options.tsconfig,
@@ -228,74 +229,14 @@ export async function runEsbuild(
     const timeInMs = Date.now() - startTime
     logger.success(format, `⚡️ Build success in ${Math.floor(timeInMs)}ms`)
 
-    await Promise.all(
-      result.outputFiles.map(async (file) => {
-        const dir = path.dirname(file.path)
-        const outPath = file.path
-        const ext = path.extname(outPath)
-        const comeFromSource = ext === '.js' || ext === outExtension['.js']
-        await fs.promises.mkdir(dir, { recursive: true })
-        let contents = file.text
-        let mode: number | undefined
-        if (contents[0] === '#' && contents[1] === '!') {
-          mode = 0o755
-        }
-        if (comeFromSource) {
-          if (options.babel) {
-            const babel = getBabel()
-            if (babel) {
-              contents = await babel
-                .transformAsync(contents, {
-                  filename: file.path,
-                })
-                .then((res) => res?.code || contents)
-            } else {
-              throw new PrettyError(
-                `@babel/core is not found in ${process.cwd()}`
-              )
-            }
-          }
-          if (options.target === 'es5') {
-            try {
-              contents = transformToEs5(contents, {
-                source: file.path,
-                file: file.path,
-                transforms: {
-                  modules: false,
-                  arrow: true,
-                  dangerousTaggedTemplateString: true,
-                  spreadRest: true,
-                },
-              }).code
-            } catch (error) {
-              if (error instanceof Error) {
-                throw new PrettyError(
-                  `Error compiling to es5 target:\n${
-                    // @ts-expect-error not sure how to type error.snippet
-                    error.snippet || error.message
-                  }`
-                )
-              } else {
-                throw error
-              }
-            }
-          }
-          // Workaround to enable code splitting for cjs format
-          // Manually transform esm to cjs
-          // TODO: remove this once esbuild supports code splitting for cjs natively
-          if (splitting && format === 'cjs') {
-            contents = transform(contents, {
-              filePath: file.path,
-              transforms: ['imports'],
-            }).code
-          }
-        }
-        await fs.promises.writeFile(outPath, contents, {
-          encoding: 'utf8',
-          mode,
-        })
-      })
-    )
+    await pluginContainer.buildFinished({
+      files: result.outputFiles,
+      context: {
+        format,
+        splitting,
+        options,
+      },
+    })
   }
 
   if (result.metafile) {
