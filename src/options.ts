@@ -135,4 +135,8 @@ export type Options = {
    * TSUP plugins
    */
   plugins?: Plugin[]
+   * Inject CSS as style tags to document head
+   * @default {false}
+   */
+  injectStyle?: boolean
 }

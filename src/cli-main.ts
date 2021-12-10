@@ -83,6 +83,7 @@ export async function main(options: Options = {}) {
     })
     .option('--loader <ext=loader>', 'Specify the loader for a file extension')
     .option('--no-config', 'Disable config file')
+    .option('--no-shims', 'Disable cjs and esm shims')
     .option('--inject-style', 'Inject style tag to document head')
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
