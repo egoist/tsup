@@ -89,12 +89,19 @@ export async function runEsbuild(
   const loader = options.loader || {}
   const injectShims = options.shims !== false
 
+  pluginContainer.setContext({
+    format,
+    splitting,
+    options,
+    logger,
+  })
+
   const esbuildPlugins: Array<EsbuildPlugin | false | undefined> = [
     format === 'cjs' && nodeProtocolPlugin(),
     {
       name: 'modify-options',
       setup(build) {
-        pluginContainer.modifyEsbuildOptions(build.initialOptions, { format })
+        pluginContainer.modifyEsbuildOptions(build.initialOptions)
         if (options.esbuildOptions) {
           options.esbuildOptions(build.initialOptions, { format })
         }
@@ -231,11 +238,7 @@ export async function runEsbuild(
 
     await pluginContainer.buildFinished({
       files: result.outputFiles,
-      context: {
-        format,
-        splitting,
-        options,
-      },
+      metafile: result.metafile,
     })
   }
 

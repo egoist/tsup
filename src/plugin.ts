@@ -1,8 +1,9 @@
 import path from 'path'
-import { OutputFile, BuildOptions as EsbuildOptions } from 'esbuild'
+import { OutputFile, BuildOptions as EsbuildOptions, Metafile } from 'esbuild'
 import { SourceMapConsumer, SourceMapGenerator, RawSourceMap } from 'source-map'
 import { Format, NormalizedOptions } from '.'
 import { outputFile } from './fs'
+import { Logger } from './log'
 
 export type ChunkInfo = {
   type: 'chunk'
@@ -37,12 +38,15 @@ export type RenderChunk = (
   | void
 >
 
-export type BuildStart = () => MaybePromise<void>
-export type BuildEnd = () => MaybePromise<void>
+export type BuildStart = (this: PluginContext) => MaybePromise<void>
+export type BuildEnd = (
+  this: PluginContext,
+  ctx: { metafile?: Metafile }
+) => MaybePromise<void>
 
 export type ModifyEsbuildOptions = (
-  options: EsbuildOptions,
-  context: { format: Format }
+  this: PluginContext,
+  options: EsbuildOptions
 ) => void
 
 export type Plugin = {
@@ -61,6 +65,7 @@ export type PluginContext = {
   format: Format
   splitting?: boolean
   options: NormalizedOptions
+  logger: Logger
 }
 
 const parseSourceMap = (map?: string | object | null) => {
@@ -72,15 +77,25 @@ const isCSS = (path: string) => /\.css$/.test(path)
 
 export class PluginContainer {
   plugins: Plugin[]
+  context?: PluginContext
 
   constructor(plugins: Plugin[]) {
     this.plugins = plugins
   }
 
-  modifyEsbuildOptions(options: EsbuildOptions, context: { format: Format }) {
+  setContext(context: PluginContext) {
+    this.context = context
+  }
+
+  getContext() {
+    if (!this.context) throw new Error(`Plugin context is not set`)
+    return this.context
+  }
+
+  modifyEsbuildOptions(options: EsbuildOptions) {
     for (const plugin of this.plugins) {
       if (plugin.esbuildOptions) {
-        plugin.esbuildOptions(options, context)
+        plugin.esbuildOptions.call(this.getContext(), options)
       }
     }
   }
@@ -88,17 +103,17 @@ export class PluginContainer {
   async buildStarted() {
     for (const plugin of this.plugins) {
       if (plugin.buildStart) {
-        await plugin.buildStart()
+        await plugin.buildStart.call(this.getContext())
       }
     }
   }
 
   async buildFinished({
     files,
-    context,
+    metafile,
   }: {
     files: OutputFile[]
-    context: PluginContext
+    metafile?: Metafile
   }) {
     await Promise.all(
       files.map(async (file) => {
@@ -118,7 +133,7 @@ export class PluginContainer {
         for (const plugin of this.plugins) {
           if (info.type === 'chunk' && plugin.renderChunk) {
             const result = await plugin.renderChunk.call(
-              context,
+              this.getContext(),
               info.code,
               info
             )
@@ -162,7 +177,7 @@ export class PluginContainer {
 
     for (const plugin of this.plugins) {
       if (plugin.buildEnd) {
-        await plugin.buildEnd()
+        await plugin.buildEnd.call(this.getContext(), { metafile })
       }
     }
   }

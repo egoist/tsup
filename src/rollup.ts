@@ -10,6 +10,7 @@ import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 import { createLogger, setSilent } from './log'
 import { getDeps } from './load'
 import path from 'path'
+import { reportSize } from './lib/report-size'
 
 const logger = createLogger()
 
@@ -177,8 +178,22 @@ async function runRollup(options: RollupConfig) {
     }
     logger.info('dts', 'Build start')
     const bundle = await rollup(options.inputConfig)
-    await bundle.write(options.outputConfig)
+    const result = await bundle.write(options.outputConfig)
     logger.success('dts', `⚡️ Build success in ${getDuration()}`)
+    reportSize(
+      logger,
+      'dts',
+      result.output.reduce((res, info) => {
+        const name = path.relative(
+          process.cwd(),
+          path.join(options.outputConfig.dir || '.', info.fileName)
+        )
+        return {
+          ...res,
+          [name]: info.type === 'chunk' ? info.code.length : info.source.length,
+        }
+      }, {})
+    )
   } catch (error) {
     logger.error('dts', 'Build error')
     parentPort?.postMessage('error')

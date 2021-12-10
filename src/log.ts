@@ -2,7 +2,7 @@ import * as colors from 'colorette'
 
 type LOG_TYPE = 'info' | 'success' | 'error' | 'warn'
 
-const colorize = (type: LOG_TYPE, data: any, onlyImportant = false) => {
+export const colorize = (type: LOG_TYPE, data: any, onlyImportant = false) => {
   if (onlyImportant && (type === 'info' || type === 'success')) return data
 
   const color =
@@ -26,7 +26,7 @@ export const makeLabel = (
     colorize(type, input.toUpperCase()),
   ]
     .filter(Boolean)
-    .join(colors.dim(' '))
+    .join(' ')
 }
 
 let silent = false

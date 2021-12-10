@@ -20,6 +20,7 @@ import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
 import { PluginContainer } from './plugin'
 import { es5 } from './plugins/es5'
+import { sizeReporter } from './plugins/size-reporter'
 
 export type { Format, Options }
 
@@ -185,9 +186,10 @@ export async function build(_options: Options) {
               ...options.format.map(async (format, index) => {
                 const pluginContainer = new PluginContainer([
                   shebang(),
+                  ...(options.plugins || []),
                   cjsSplitting(),
                   es5(),
-                  ...(options.plugins || []),
+                  sizeReporter(),
                 ])
                 await pluginContainer.buildStarted()
                 await runEsbuild(options, {
