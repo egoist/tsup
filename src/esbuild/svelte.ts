@@ -70,7 +70,7 @@ export const sveltePlugin = ({
                 sourcemap: true,
                 tsconfigRaw: {
                   compilerOptions: {
-                    importsNotUsedAsValues: 'preserve',
+                    preserveValueImports: true,
                   },
                 },
               })
