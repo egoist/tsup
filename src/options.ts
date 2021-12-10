@@ -133,6 +133,8 @@ export type Options = {
   shims?: boolean
   /**
    * TSUP plugins
+   * @experimental
+   * @alpha
    */
   plugins?: Plugin[]
 }
