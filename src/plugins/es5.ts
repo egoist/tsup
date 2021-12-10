@@ -1,3 +1,4 @@
+import { PrettyError } from '../errors'
 import { Plugin } from '../plugin'
 import { localRequire } from '../utils'
 
@@ -18,6 +19,13 @@ export const es5 = (): Plugin => {
         return
       }
       const swc: typeof import('@swc/core') = localRequire('@swc/core')
+
+      if (!swc) {
+        throw new PrettyError(
+          '@swc/core is required for es5 target. Please install it with `npm install @swc/core -D`'
+        )
+      }
+
       const result = await swc.transform(code, {
         filename: info.path,
         sourceMaps: this.options.sourcemap,
