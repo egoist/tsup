@@ -92,10 +92,10 @@ You can use any of these files:
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
+  entry: ['src/index.ts'],
   splitting: false,
   sourcemap: true,
   clean: true,
-  input: ['src/index.ts'],
 })
 ```
 
@@ -120,10 +120,10 @@ The `options` here is derived from CLI flags.
 ```json
 {
   "tsup": {
+    "entry": ["src/index.ts"],
     "splitting": false,
     "sourcemap": true,
-    "clean": true,
-    "input": ["src/index.ts"]
+    "clean": true
   },
   "scripts": {
     "build": "tsup"
