@@ -85,7 +85,7 @@ const getRollupConfig = async (
   const compilerOptions = loadCompilerOptions(options.tsconfig)
 
   const dtsOptions = options.dts || {}
-  dtsOptions.entry = dtsOptions.entry || options.entryPoints
+  dtsOptions.entry = dtsOptions.entry || options.entry
 
   if (Array.isArray(dtsOptions.entry) && dtsOptions.entry.length > 1) {
     dtsOptions.entry = toObjectEntry(dtsOptions.entry)

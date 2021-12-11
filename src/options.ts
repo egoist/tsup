@@ -23,7 +23,11 @@ export type DtsConfig = {
 export type Options = {
   /** Optional config name to show in CLI output */
   name?: string
+  /**
+   * @deprecated Use `entry` instead
+   */
   entryPoints?: BuildOptions['entryPoints']
+  entry?: BuildOptions['entryPoints']
   /**
    * Output different formats to differen folder instead of using different extensions
    */

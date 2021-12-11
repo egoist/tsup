@@ -91,7 +91,7 @@ export async function main(options: Options = {}) {
         ...flags,
       })
       if (files.length > 0) {
-        options.entryPoints = files.map(slash)
+        options.entry = files.map(slash)
       }
       if (flags.format) {
         const format = ensureArray(flags.format) as Format[]

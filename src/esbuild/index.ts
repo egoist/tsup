@@ -124,7 +124,7 @@ export async function runEsbuild(
 
   try {
     result = await esbuild({
-      entryPoints: options.entryPoints,
+      entryPoints: options.entry,
       format: format === 'cjs' && splitting ? 'esm' : format,
       bundle: typeof options.bundle === 'undefined' ? true : options.bundle,
       platform,

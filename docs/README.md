@@ -95,7 +95,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  entryPoints: ['src/index.ts'],
+  input: ['src/index.ts'],
 })
 ```
 
@@ -123,7 +123,7 @@ The `options` here is derived from CLI flags.
     "splitting": false,
     "sourcemap": true,
     "clean": true,
-    "entryPoints": ["src/index.ts"]
+    "input": ["src/index.ts"]
   },
   "scripts": {
     "build": "tsup"

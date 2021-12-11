@@ -25,7 +25,7 @@ import { sizeReporter } from './plugins/size-reporter'
 export type { Format, Options }
 
 export type NormalizedOptions = Omit<
-  MarkRequired<Options, 'entryPoints' | 'format' | 'outDir'>,
+  MarkRequired<Options, 'entry' | 'format' | 'outDir'>,
   'dts'
 > & {
   dts?: DtsConfig
@@ -80,28 +80,28 @@ const normalizeOptions = async (
 
   setSilent(options.silent)
 
-  const input = options.entryPoints
+  const entry = options.entry || options.entryPoints
 
-  if (!input || Object.keys(input).length === 0) {
+  if (!entry || Object.keys(entry).length === 0) {
     throw new PrettyError(`No input files, try "tsup <your-file>" instead`)
   }
 
-  if (Array.isArray(input)) {
-    options.entryPoints = await glob(input)
+  if (Array.isArray(entry)) {
+    options.entry = await glob(entry)
     // Ensure entry exists
-    if (!options.entryPoints || options.entryPoints.length === 0) {
-      throw new PrettyError(`Cannot find ${input}`)
+    if (!options.entry || options.entry.length === 0) {
+      throw new PrettyError(`Cannot find ${entry}`)
     } else {
-      logger.info('CLI', `Building entry: ${options.entryPoints.join(', ')}`)
+      logger.info('CLI', `Building entry: ${options.entry.join(', ')}`)
     }
   } else {
-    Object.keys(input).forEach((alias) => {
-      const filename = input[alias]!
+    Object.keys(entry).forEach((alias) => {
+      const filename = entry[alias]!
       if (!fs.existsSync(filename)) {
         throw new PrettyError(`Cannot find ${alias}: ${filename}`)
       }
     })
-    logger.info('CLI', `Building entry: ${JSON.stringify(input)}`)
+    logger.info('CLI', `Building entry: ${JSON.stringify(entry)}`)
   }
 
   const tsconfig = loadTsConfig(process.cwd(), options.tsconfig)
