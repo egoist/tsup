@@ -73,6 +73,7 @@ export const sveltePlugin = ({
                     preserveValueImports: true,
                   },
                 },
+                logLevel: build.initialOptions.logLevel,
               })
               return {
                 code,
