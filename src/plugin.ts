@@ -160,7 +160,7 @@ export class PluginContainer {
         await outputFile(
           info.path,
           info.type === 'chunk'
-            ? info.code + getSourcemapComment(!!info.map, info.path)
+            ? info.code + getSourcemapComment(!!info.map, info.path, isCSS(file.path))
             : info.contents,
           { mode: info.type === 'chunk' ? info.mode : undefined }
         )
@@ -183,6 +183,9 @@ export class PluginContainer {
   }
 }
 
-const getSourcemapComment = (hasMap: boolean, filepath: string) => {
-  return hasMap ? `//# sourceMappingURL=${path.basename(filepath)}.map` : ''
+const getSourcemapComment = (hasMap: boolean, filepath: string, isCssFile: boolean) => {
+  if (!hasMap) return ''
+  const prefix = isCssFile ? '/*' : '//'
+  const suffix = isCssFile ? ' */' : ''
+  return `${prefix}# sourceMappingURL=${path.basename(filepath)}${suffix}`
 }
