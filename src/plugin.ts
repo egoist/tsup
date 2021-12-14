@@ -187,5 +187,5 @@ const getSourcemapComment = (hasMap: boolean, filepath: string, isCssFile: boole
   if (!hasMap) return ''
   const prefix = isCssFile ? '/*' : '//'
   const suffix = isCssFile ? ' */' : ''
-  return `${prefix}# sourceMappingURL=${path.basename(filepath)}${suffix}`
+  return `${prefix}# sourceMappingURL=${path.basename(filepath)}.map${suffix}`
 }
