@@ -11,6 +11,7 @@ import { createLogger, setSilent } from './log'
 import { getDeps } from './load'
 import path from 'path'
 import { reportSize } from './lib/report-size'
+import resolveFrom from 'resolve-from'
 
 const logger = createLogger()
 
@@ -196,7 +197,6 @@ async function runRollup(options: RollupConfig) {
     )
   } catch (error) {
     logger.error('dts', 'Build error')
-    parentPort?.postMessage('error')
     handleError(error)
   }
 }
@@ -219,7 +219,6 @@ async function watchRollup(options: {
       parentPort?.postMessage('success')
     } else if (event.code === 'ERROR') {
       logger.error('dts', 'Build failed')
-      parentPort?.postMessage('error')
       handleError(event.error)
     }
   })
@@ -237,5 +236,12 @@ const startRollup = async (options: NormalizedOptions) => {
 
 parentPort?.on('message', (data) => {
   logger.setName(data.configName)
+  const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')
+  if (!hasTypescript) {
+    logger.error('dts', `You need to install "typescript" in your project`)
+    parentPort?.postMessage('error')
+    parentPort?.close()
+    return
+  }
   startRollup(data.options)
 })
