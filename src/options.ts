@@ -29,7 +29,7 @@ export type Options = {
   entryPoints?: BuildOptions['entryPoints']
   entry?: BuildOptions['entryPoints']
   /**
-   * Output different formats to differen folder instead of using different extensions
+   * Output different formats to different folder instead of using different extensions
    */
   legacyOutput?: boolean
   /**
