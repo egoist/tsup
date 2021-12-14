@@ -131,7 +131,11 @@ export async function runEsbuild(
       globalName: options.globalName,
       jsxFactory: options.jsxFactory,
       jsxFragment: options.jsxFragment,
-      sourcemap: options.sourcemap ? 'external' : false,
+      sourcemap: options.sourcemap
+        ? options.sourcemap === 'inline'
+          ? options.sourcemap
+          : 'external'
+        : false,
       target: options.target,
       footer: options.footer,
       banner: options.banner,

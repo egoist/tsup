@@ -185,7 +185,7 @@ test('bundle graphql-tools with --sourcemap inline flag', async (t) => {
     }
   )
 
-  t.assert(output.includes('//# sourceMappingURL='))
+  t.assert(output.includes('//# sourceMappingURL=data:'))
 })
 
 test('multiple formats', async (t) => {
