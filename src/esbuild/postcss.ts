@@ -115,6 +115,7 @@ export const postcssPlugin = ({
               minifyIdentifiers: build.initialOptions.minifyIdentifiers,
               minifySyntax: build.initialOptions.minifySyntax,
               minifyWhitespace: build.initialOptions.minifyWhitespace,
+              logLevel: build.initialOptions.logLevel,
               loader: 'css',
             })
           ).code

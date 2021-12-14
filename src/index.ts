@@ -144,6 +144,25 @@ export async function build(_options: Options) {
           logger.info('CLI', 'Running in watch mode')
         }
 
+        if (options.dts) {
+          const worker = new Worker(path.join(__dirname, './rollup.js'))
+          worker.postMessage({
+            configName: item?.name,
+            options: {
+              ...options, // functions cannot be cloned
+              esbuildPlugins: undefined,
+              esbuildOptions: undefined,
+            },
+          })
+          worker.on('message', (data) => {
+            if (data === 'error') {
+              process.exitCode = 1
+            } else if (data === 'success') {
+              process.exitCode = 0
+            }
+          })
+        }
+
         if (!options.dts?.only) {
           let existingOnSuccess: ChildProcess | undefined
           /** Files imported by the entry */
@@ -195,7 +214,7 @@ export async function build(_options: Options) {
                 await runEsbuild(options, {
                   pluginContainer,
                   format,
-                  css: (index === 0 || options.injectStyle) ? css : undefined,
+                  css: index === 0 || options.injectStyle ? css : undefined,
                   logger,
                   buildDependencies,
                 })
@@ -272,30 +291,6 @@ export async function build(_options: Options) {
           await buildAll()
 
           startWatcher()
-        }
-
-        if (options.dts) {
-          const hasTypescript = resolveFrom.silent(process.cwd(), 'typescript')
-          if (!hasTypescript) {
-            throw new Error(`You need to install "typescript" in your project`)
-          }
-
-          const worker = new Worker(path.join(__dirname, './rollup.js'))
-          worker.postMessage({
-            configName: item?.name,
-            options: {
-              ...options, // functions cannot be cloned
-              esbuildPlugins: undefined,
-              esbuildOptions: undefined,
-            },
-          })
-          worker.on('message', (data) => {
-            if (data === 'error') {
-              process.exitCode = 1
-            } else if (data === 'success') {
-              process.exitCode = 0
-            }
-          })
         }
       }
     )

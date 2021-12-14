@@ -35,6 +35,6 @@ export function handleError(error: any) {
   }
   process.exitCode = 1
   if (!isMainThread && parentPort) {
-    parentPort.postMessage('has-error')
+    parentPort.postMessage('error')
   }
 }
