@@ -163,9 +163,9 @@ If you want to inline sourcemap, you can try:
 tsup index.ts --sourcemap inline
 ```
 
-> Warn: Note that inline sourcemap is solely used for development, e.g. when developing a browser extension and the access to `.map` file is not allowed, and it's not recommended for production.
+> Warning: Note that inline sourcemap is solely used for development, e.g. when developing a browser extension and the access to `.map` file is not allowed, and it's not recommended for production.
 
-> Warn: Source map is not supported in `--dts` build.
+> Warning: Source map is not supported in `--dts` build.
 
 ### Bundle formats
 
