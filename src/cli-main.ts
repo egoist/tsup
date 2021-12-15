@@ -39,8 +39,8 @@ export async function main(options: Options = {}) {
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
     .option('--dts-only', 'Emit declaration files only')
     .option(
-      '--sourcemap [option]',
-      'Generate sourcemap, "external", "inline", "both"'
+      '--sourcemap [inline]',
+      'Generate external sourcemap, or inline source: --sourcemap inline'
     )
     .option(
       '--watch [path]',

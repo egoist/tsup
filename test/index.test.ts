@@ -162,7 +162,7 @@ test('enable --dts-resolve for specific module', async (t) => {
 })
 
 test('bundle graphql-tools with --sourcemap flag', async (t) => {
-  await run(
+  const { outFiles } = await run(
     t.title,
     {
       'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
@@ -171,11 +171,11 @@ test('bundle graphql-tools with --sourcemap flag', async (t) => {
       flags: ['--sourcemap'],
     }
   )
-  t.pass()
+  t.deepEqual(outFiles, ['input.js', 'input.js.map'])
 })
 
 test('bundle graphql-tools with --sourcemap inline flag', async (t) => {
-  const { output } = await run(
+  const { output, outFiles } = await run(
     t.title,
     {
       'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
@@ -185,7 +185,8 @@ test('bundle graphql-tools with --sourcemap inline flag', async (t) => {
     }
   )
 
-  t.assert(output.includes('//# sourceMappingURL='))
+  t.assert(output.includes('//# sourceMappingURL=data:application/json;base64'))
+  t.deepEqual(outFiles, ['input.js'])
 })
 
 test('multiple formats', async (t) => {

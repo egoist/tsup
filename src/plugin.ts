@@ -41,7 +41,7 @@ export type RenderChunk = (
 export type BuildStart = (this: PluginContext) => MaybePromise<void>
 export type BuildEnd = (
   this: PluginContext,
-  ctx: { metafile?: Metafile }
+  ctx: { writtenFiles: WrittenFile[] }
 ) => MaybePromise<void>
 
 export type ModifyEsbuildOptions = (
@@ -67,6 +67,8 @@ export type PluginContext = {
   options: NormalizedOptions
   logger: Logger
 }
+
+export type WrittenFile = { readonly name: string; readonly size: number }
 
 const parseSourceMap = (map?: string | object | null) => {
   return typeof map === 'string' ? JSON.parse(map) : map
@@ -109,27 +111,31 @@ export class PluginContainer {
   }
 
   async buildFinished({
-    files,
+    outputFiles,
     metafile,
   }: {
-    files: OutputFile[]
+    outputFiles: OutputFile[]
     metafile?: Metafile
   }) {
+    const files: Array<ChunkInfo | AssetInfo> = outputFiles
+      .filter((file) => !file.path.endsWith('.map'))
+      .map((file) => {
+        if (isJS(file.path) || isCSS(file.path)) {
+          return {
+            type: 'chunk',
+            path: file.path,
+            code: file.text,
+            map: outputFiles.find((f) => f.path === `${file.path}.map`)?.text,
+          }
+        } else {
+          return { type: 'asset', path: file.path, contents: file.contents }
+        }
+      })
+
+    const writtenFiles: WrittenFile[] = []
+
     await Promise.all(
-      files.map(async (file) => {
-        const info: AssetInfo | ChunkInfo =
-          isJS(file.path) || isCSS(file.path)
-            ? {
-                type: 'chunk',
-                path: file.path,
-                code: file.text,
-                map: files.find((f) => f.path === `${file.path}.map`)?.text,
-              }
-            : {
-                type: 'asset',
-                path: file.path,
-                contents: file.contents,
-              }
+      files.map(async (info) => {
         for (const plugin of this.plugins) {
           if (info.type === 'chunk' && plugin.renderChunk) {
             const result = await plugin.renderChunk.call(
@@ -157,35 +163,67 @@ export class PluginContainer {
           }
         }
 
-        await outputFile(
-          info.path,
+        const inlineSourceMap = this.context!.options.sourcemap === 'inline'
+        const contents =
           info.type === 'chunk'
-            ? info.code + getSourcemapComment(!!info.map, info.path, isCSS(file.path))
-            : info.contents,
-          { mode: info.type === 'chunk' ? info.mode : undefined }
-        )
-        if (info.type === 'chunk' && info.map) {
+            ? info.code +
+              getSourcemapComment(
+                inlineSourceMap,
+                info.map,
+                info.path,
+                isCSS(info.path)
+              )
+            : info.contents
+        await outputFile(info.path, contents, {
+          mode: info.type === 'chunk' ? info.mode : undefined,
+        })
+        writtenFiles.push({
+          get name() {
+            return path.relative(process.cwd(), info.path)
+          },
+          get size() {
+            return contents.length
+          },
+        })
+        if (info.type === 'chunk' && info.map && !inlineSourceMap) {
           const map =
             typeof info.map === 'string' ? JSON.parse(info.map) : info.map
-          // map.sources = map.sources?.map((name: string) =>
-          //   path.relative(path.dirname(info.path), name)
-          // )
-          await outputFile(`${info.path}.map`, JSON.stringify(map))
+          const outPath = `${info.path}.map`
+          const contents = JSON.stringify(map)
+          await outputFile(outPath, contents)
+          writtenFiles.push({
+            get name() {
+              return path.relative(process.cwd(), outPath)
+            },
+            get size() {
+              return contents.length
+            },
+          })
         }
       })
     )
 
     for (const plugin of this.plugins) {
       if (plugin.buildEnd) {
-        await plugin.buildEnd.call(this.getContext(), { metafile })
+        await plugin.buildEnd.call(this.getContext(), { writtenFiles })
       }
     }
   }
 }
 
-const getSourcemapComment = (hasMap: boolean, filepath: string, isCssFile: boolean) => {
-  if (!hasMap) return ''
+const getSourcemapComment = (
+  inline: boolean,
+  map: RawSourceMap | string | null | undefined,
+  filepath: string,
+  isCssFile: boolean
+) => {
+  if (!map) return ''
   const prefix = isCssFile ? '/*' : '//'
   const suffix = isCssFile ? ' */' : ''
-  return `${prefix}# sourceMappingURL=${path.basename(filepath)}.map${suffix}`
+  const url = inline
+    ? `data:application/json;base64,${Buffer.from(
+        typeof map === 'string' ? map : JSON.stringify(map)
+      ).toString('base64')}`
+    : `${path.basename(filepath)}.map`
+  return `${prefix}# sourceMappingURL=${url}${suffix}`
 }

@@ -58,7 +58,7 @@ export type Options = {
     [k: string]: string
   }
   dts?: boolean | string | DtsConfig
-  sourcemap?: boolean
+  sourcemap?: boolean | 'inline'
   /** Always bundle modules matching given patterns */
   noExternal?: (string | RegExp)[]
   /** Don't bundle these modules */

@@ -5,15 +5,14 @@ export const sizeReporter = (): Plugin => {
   return {
     name: 'size-reporter',
 
-    buildEnd({ metafile }) {
-      if (!metafile) return
+    buildEnd({ writtenFiles }) {
       reportSize(
         this.logger,
         this.format,
-        Object.keys(metafile.outputs).reduce((res, name) => {
+        writtenFiles.reduce((res, file) => {
           return {
             ...res,
-            [name]: metafile!.outputs[name].bytes,
+            [file.name]: file.size,
           }
         }, {})
       )

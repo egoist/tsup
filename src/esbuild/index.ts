@@ -237,7 +237,7 @@ export async function runEsbuild(
     logger.success(format, `⚡️ Build success in ${Math.floor(timeInMs)}ms`)
 
     await pluginContainer.buildFinished({
-      files: result.outputFiles,
+      outputFiles: result.outputFiles,
       metafile: result.metafile,
     })
   }
