@@ -112,6 +112,7 @@ export async function runEsbuild(
     format !== 'iife' &&
       externalPlugin({
         external,
+        noExternal: options.external,
         skipNodeModulesBundle: options.skipNodeModulesBundle,
         tsconfigResolvePaths: options.tsconfigResolvePaths,
       }),
