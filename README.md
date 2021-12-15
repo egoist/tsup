@@ -4,11 +4,11 @@
 
 Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
 
-## What can it bundle?
+## 👀 What can it bundle?
 
 Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. And TypeScript `.ts`, `.tsx`. [CSS support is experimental](https://tsup.egoist.sh/#css-support).
 
-## Install
+## ⚙️ Install
 
 Install it locally in your project folder:
 
@@ -20,7 +20,7 @@ yarn add tsup --dev
 
 You can also install it globally but it's not recommended.
 
-## Usage
+## 📖 Usage
 
 ### Bundle files
 
@@ -38,9 +38,13 @@ tsup src/index.ts src/cli.ts
 
 This will output `dist/index.js` and `dist/cli.js`.
 
-## Documentation
+## 📚 Documentation
 
 For complete usages, please dive into the [docs](https://tsup.egoist.sh).
+
+## 💬 Discussions
+
+Head over to the [discussions](https://github.com/egoist/tsup/discussions) to share your ideas.
 
 ## Sponsors
 
