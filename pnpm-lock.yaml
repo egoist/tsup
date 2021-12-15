@@ -37,7 +37,7 @@ specifiers:
   tree-kill: ^1.2.2
   ts-essentials: ^7.0.1
   tsconfig-paths: ^3.12.0
-  tsup: ^5.11.4
+  tsup: ^5.11.5
   typescript: ^4.2.4
   wait-for-expect: ^3.0.2
 
@@ -80,7 +80,7 @@ devDependencies:
   svelte: 3.37.0
   ts-essentials: 7.0.3_typescript@4.5.2
   tsconfig-paths: 3.12.0
-  tsup: 5.11.4_typescript@4.5.2
+  tsup: 5.11.5_typescript@4.5.2
   typescript: 4.5.2
   wait-for-expect: 3.0.2
 
@@ -89,6 +89,7 @@ packages:
   /@babel/code-frame/7.16.0:
     resolution: {integrity: sha512-IF4EOMEV+bfYwOmNxGzSnjR2EmQod7f1UXOpZM3l4i4o4QNwzjtJAu/HxdjHq0aYBvdqMuQEY1eg0nqW9ZPORA==}
     engines: {node: '>=6.9.0'}
+    requiresBuild: true
     dependencies:
       '@babel/highlight': 7.16.0
     dev: true
@@ -1854,8 +1855,8 @@ packages:
       strip-bom: 3.0.0
     dev: true
 
-  /tsup/5.11.4_typescript@4.5.2:
-    resolution: {integrity: sha512-xDpGHCRHn2McoxneCS6ljz2Ab+8vhpF0jpc/LEpA6tzWC347Z3T+zen4de8VanjYpeKUvTrLxrXdzdvd0DAdGQ==}
+  /tsup/5.11.5_typescript@4.5.2:
+    resolution: {integrity: sha512-Excynz+DMkZvkqRQKuSW0OoKqJ2PkVJ1Vnte8/vIRkRXHmYq/0RBPKsZHLh4DraPVeyQ+dB2gbzpmarbTsc5DQ==}
     hasBin: true
     peerDependencies:
       typescript: ^4.2.3
