@@ -93,7 +93,7 @@ export type Options = {
    */
   pure?: string | string[]
   /**
-   * Disable bunlding, default to true
+   * Disable bundling, default to true
    */
   bundle?: boolean
   /**
