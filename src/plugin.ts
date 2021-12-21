@@ -154,7 +154,7 @@ export class PluginContainer {
                 )
                 const generator =
                   SourceMapGenerator.fromSourceMap(originalConsumer)
-                generator.applySourceMap(newConsumer)
+                generator.applySourceMap(newConsumer, info.path)
                 info.map = generator.toJSON()
                 originalConsumer.destroy()
                 newConsumer.destroy()
