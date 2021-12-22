@@ -55,7 +55,7 @@ export type Options = {
     [k: string]: string
   }
   define?: {
-    [k: string]: string
+    [k: string]: string | boolean | number | null
   }
   dts?: boolean | string | DtsConfig
   sourcemap?: boolean | 'inline'
