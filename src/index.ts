@@ -187,6 +187,7 @@ export async function build(_options: Options) {
 
           const buildAll = async () => {
             const killPromise = killPreviousProcess()
+            const preBuildDependencies = new Set(buildDependencies)
             buildDependencies.clear()
 
             if (options.clean) {
@@ -217,6 +218,9 @@ export async function build(_options: Options) {
                   css: index === 0 || options.injectStyle ? css : undefined,
                   logger,
                   buildDependencies,
+                }).catch((error) => {
+                  preBuildDependencies.forEach(buildDependencies.add)
+                  throw error
                 })
               }),
             ])
