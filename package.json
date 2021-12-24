@@ -71,7 +71,7 @@
     "svelte": "3.37.0",
     "ts-essentials": "^7.0.1",
     "tsconfig-paths": "^3.12.0",
-    "tsup": "^5.11.5",
+    "tsup": "^5.11.8",
     "typescript": "^4.5.4",
     "wait-for-expect": "^3.0.2"
   },

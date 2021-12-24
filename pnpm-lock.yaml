@@ -37,7 +37,7 @@ specifiers:
   tree-kill: ^1.2.2
   ts-essentials: ^7.0.1
   tsconfig-paths: ^3.12.0
-  tsup: ^5.11.5
+  tsup: ^5.11.8
   typescript: ^4.5.4
   wait-for-expect: ^3.0.2
 
@@ -80,7 +80,7 @@ devDependencies:
   svelte: 3.37.0
   ts-essentials: 7.0.3_typescript@4.5.4
   tsconfig-paths: 3.12.0
-  tsup: 5.11.5_typescript@4.5.4
+  tsup: 5.11.8_typescript@4.5.4
   typescript: 4.5.4
   wait-for-expect: 3.0.2
 
@@ -1855,11 +1855,11 @@ packages:
       strip-bom: 3.0.0
     dev: true
 
-  /tsup/5.11.5_typescript@4.5.4:
-    resolution: {integrity: sha512-Excynz+DMkZvkqRQKuSW0OoKqJ2PkVJ1Vnte8/vIRkRXHmYq/0RBPKsZHLh4DraPVeyQ+dB2gbzpmarbTsc5DQ==}
+  /tsup/5.11.8_typescript@4.5.4:
+    resolution: {integrity: sha512-MB348Kkip7NlHkISq/1YxNauj6qc8yiOL5mslUifLZtjBKEbSasaGdQRTRcHeM+cZ31sA+59XAnNyEIAjZajCQ==}
     hasBin: true
     peerDependencies:
-      typescript: ^4.2.3
+      typescript: ^4.5.4
     peerDependenciesMeta:
       typescript:
         optional: true
