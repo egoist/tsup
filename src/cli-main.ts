@@ -65,10 +65,6 @@ export async function main(options: Options = {}) {
     .option('--jsxFragment <jsxFragment>', 'Name of JSX fragment function', {
       default: 'React.Fragment',
     })
-    .option(
-      '--inlineDynamicImports',
-      'Create a single bundle that inline dynamic imports'
-    )
     .option('--replaceNodeEnv', 'Replace process.env.NODE_ENV')
     .option('--no-splitting', 'Disable code splitting')
     .option('--clean', 'Clean output directory')
