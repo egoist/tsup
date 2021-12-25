@@ -187,6 +187,9 @@ export async function build(_options: Options) {
 
           const buildAll = async () => {
             const killPromise = killPreviousProcess()
+            // Store previous build dependencies in case the build failed
+            // So we can restore it
+            const previousBuildDependencies = new Set(buildDependencies)
             buildDependencies.clear()
 
             if (options.clean) {
@@ -217,6 +220,9 @@ export async function build(_options: Options) {
                   css: index === 0 || options.injectStyle ? css : undefined,
                   logger,
                   buildDependencies,
+                }).catch((error) => {
+                  previousBuildDependencies.forEach(v => buildDependencies.add(v))
+                  throw error
                 })
               }),
             ])
