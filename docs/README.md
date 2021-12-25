@@ -372,7 +372,7 @@ tsup --help
 
 ### error: No matching export in "xxx.ts" for import "xxx"
 
-This usualy happens when you have `emitDecoratorMetadata` enabled in your tsconfig.json, in this mode we use [SWC](https://swc.rc) to transpile decorators to JavaScript so exported types will be eliminated, that's why esbuild won't be able to find corresponding exports. You can fix this by changing your import statement from `import { SomeType }` to `import { type SomeType }` or `import type { SomeType }`.
+This usually happens when you have `emitDecoratorMetadata` enabled in your tsconfig.json, in this mode we use [SWC](https://swc.rc) to transpile decorators to JavaScript so exported types will be eliminated, that's why esbuild won't be able to find corresponding exports. You can fix this by changing your import statement from `import { SomeType }` to `import { type SomeType }` or `import type { SomeType }`.
 
 ## License
 

@@ -96,7 +96,7 @@ const getRollupConfig = async (
 
   if (dtsOptions.resolve) {
     tsResolveOptions = {}
-    // Only resolve speicifc types when `dts.resolve` is an array
+    // Only resolve specific types when `dts.resolve` is an array
     if (Array.isArray(dtsOptions.resolve)) {
       tsResolveOptions.resolveOnly = dtsOptions.resolve
     }
