@@ -67,7 +67,7 @@ export async function main(options: Options = {}) {
     })
     .option(
       '--inlineDynamicImports',
-      'Create a single bundle that inlines dynamic imports'
+      'Create a single bundle that inline dynamic imports'
     )
     .option('--replaceNodeEnv', 'Replace process.env.NODE_ENV')
     .option('--no-splitting', 'Disable code splitting')
