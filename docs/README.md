@@ -108,7 +108,7 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig((options) => {
   return {
-    minify: !options.watch,
+    minify: process.env.TSUP_MINIFY !== 'false',
   }
 })
 ```
