@@ -18,7 +18,7 @@ specifiers:
   esbuild: ^0.14.2
   execa: ^5.0.0
   flat: 5.0.2
-  fs-extra: 9.1.0
+  fs-extra: 10.0.0
   globby: ^11.0.3
   joycon: ^3.0.1
   postcss: 8.4.5
@@ -69,7 +69,7 @@ devDependencies:
   colorette: 2.0.16
   consola: 2.15.3
   flat: 5.0.2
-  fs-extra: 9.1.0
+  fs-extra: 10.0.0
   postcss: 8.4.5
   postcss-simple-vars: 6.0.3_postcss@8.4.5
   prettier: 2.5.1
@@ -434,11 +434,6 @@ packages:
   /arrify/3.0.0:
     resolution: {integrity: sha512-tLkvA81vQG/XqE2mjDkGQHoOINtMHtysSnemrmoGe6PydDPMRbVugqyk4A6V/WDWEfm3l+0d8anA9r8cv/5Jaw==}
     engines: {node: '>=12'}
-    dev: true
-
-  /at-least-node/1.0.0:
-    resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
-    engines: {node: '>= 4.0.0'}
     dev: true
 
   /ava/4.0.0-rc.1:
@@ -1001,11 +996,10 @@ packages:
     hasBin: true
     dev: true
 
-  /fs-extra/9.1.0:
-    resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
-    engines: {node: '>=10'}
+  /fs-extra/10.0.0:
+    resolution: {integrity: sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==}
+    engines: {node: '>=12'}
     dependencies:
-      at-least-node: 1.0.0
       graceful-fs: 4.2.8
       jsonfile: 6.1.0
       universalify: 2.0.0
