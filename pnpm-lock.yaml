@@ -33,7 +33,7 @@ specifiers:
   source-map: ^0.7.3
   string-argv: 0.3.1
   sucrase: ^3.20.3
-  svelte: 3.37.0
+  svelte: 3.44.3
   tree-kill: ^1.2.2
   ts-essentials: 7.0.3
   tsconfig-paths: 3.12.0
@@ -77,7 +77,7 @@ devDependencies:
   rollup-plugin-dts: 4.1.0_rollup@2.60.1+typescript@4.5.4
   rollup-plugin-hashbang: 2.2.2
   string-argv: 0.3.1
-  svelte: 3.37.0
+  svelte: 3.44.3
   ts-essentials: 7.0.3_typescript@4.5.4
   tsconfig-paths: 3.12.0
   tsup: 5.11.9_typescript@4.5.4
@@ -1809,8 +1809,8 @@ packages:
       has-flag: 4.0.0
     dev: true
 
-  /svelte/3.37.0:
-    resolution: {integrity: sha512-TRF30F4W4+d+Jr2KzUUL1j8Mrpns/WM/WacxYlo5MMb2E5Qy2Pk1Guj6GylxsW9OnKQl1tnF8q3hG/hQ3h6VUA==}
+  /svelte/3.44.3:
+    resolution: {integrity: sha512-aGgrNCip5PQFNfq9e9tmm7EYxWLVHoFsEsmKrtOeRD8dmoGDdyTQ+21xd7qgFd8MNdKGSYvg7F9dr+Tc0yDymg==}
     engines: {node: '>= 8'}
     dev: true
 
