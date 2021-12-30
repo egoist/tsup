@@ -35,7 +35,7 @@ specifiers:
   sucrase: ^3.20.3
   svelte: 3.44.3
   tree-kill: ^1.2.2
-  ts-essentials: 7.0.3
+  ts-essentials: 9.1.2
   tsconfig-paths: 3.12.0
   tsup: 5.11.9
   typescript: 4.5.4
@@ -78,7 +78,7 @@ devDependencies:
   rollup-plugin-hashbang: 2.2.2
   string-argv: 0.3.1
   svelte: 3.44.3
-  ts-essentials: 7.0.3_typescript@4.5.4
+  ts-essentials: 9.1.2_typescript@4.5.4
   tsconfig-paths: 3.12.0
   tsup: 5.11.9_typescript@4.5.4
   typescript: 4.5.4
@@ -1839,10 +1839,10 @@ packages:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
 
-  /ts-essentials/7.0.3_typescript@4.5.4:
-    resolution: {integrity: sha512-8+gr5+lqO3G84KdiTSMRLtuyJ+nTBVRKuCrK4lidMPdVeEp0uqC875uE5NMcaA7YYMN7XsNiFQuMvasF8HT/xQ==}
+  /ts-essentials/9.1.2_typescript@4.5.4:
+    resolution: {integrity: sha512-EaSmXsAhEiirrTY1Oaa7TSpei9dzuCuFPmjKRJRPamERYtfaGS8/KpOSbjergLz/Y76/aZlV9i/krgzsuWEBbg==}
     peerDependencies:
-      typescript: '>=3.7.0'
+      typescript: '>=4.1.0'
     dependencies:
       typescript: 4.5.4
     dev: true
