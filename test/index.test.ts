@@ -760,3 +760,20 @@ test('es5 target', async (t) => {
   t.regex(output, /createClass/)
   t.deepEqual(outFiles, ['input.js'])
 })
+
+test('multiple targets', async (t) => {
+  const { output, outFiles } = await run(
+    t.title,
+    {
+      'input.ts': `
+      export const answer = 42
+      `
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--target', 'es2020,chrome58,firefox57,safari11,edge16'],
+    }
+  )
+  t.snapshot(output)
+  t.deepEqual(outFiles, ['input.js'])
+})
