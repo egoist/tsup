@@ -37,7 +37,7 @@ export type Options = {
    *
    * default to `node12`
    */
-  target?: string
+  target?: string | string[]
   minify?: boolean
   minifyWhitespace?: boolean
   minifyIdentifiers?: boolean
