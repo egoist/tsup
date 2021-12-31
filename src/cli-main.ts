@@ -98,7 +98,7 @@ export async function main(options: Options = {}) {
         options.external = external
       }
       if (flags.target) {
-        options.target = flags.target.indexOf(',') >= 0 ? flags.target.split(',') : flags.target
+        options.target = flags.target.split(',')
       }
       if (flags.dts || flags.dtsResolve || flags.dtsOnly) {
         options.dts = {}
