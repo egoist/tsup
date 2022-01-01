@@ -54,7 +54,7 @@
     "@types/debug": "4.1.7",
     "@types/flat": "5.0.2",
     "@types/fs-extra": "9.0.13",
-    "@types/node": "14.18.3",
+    "@types/node": "14.18.4",
     "@types/resolve": "1.20.1",
     "ava": "4.0.0-rc.1",
     "colorette": "2.0.16",
