@@ -152,6 +152,7 @@ export async function build(_options: Options) {
               ...options, // functions cannot be cloned
               esbuildPlugins: undefined,
               esbuildOptions: undefined,
+              plugins: undefined,
             },
           })
           worker.on('message', (data) => {
@@ -221,7 +222,9 @@ export async function build(_options: Options) {
                   logger,
                   buildDependencies,
                 }).catch((error) => {
-                  previousBuildDependencies.forEach(v => buildDependencies.add(v))
+                  previousBuildDependencies.forEach((v) =>
+                    buildDependencies.add(v)
+                  )
                   throw error
                 })
               }),
