@@ -1,4 +1,5 @@
 import { Plugin } from 'esbuild'
+import resolveFrom from 'resolve-from'
 
 // Copied from https://github.com/evanw/esbuild/issues/1051#issuecomment-806325487
 export const nativeNodeModulesPlugin = (): Plugin => {
@@ -8,7 +9,7 @@ export const nativeNodeModulesPlugin = (): Plugin => {
       // If a ".node" file is imported within a module in the "file" namespace, resolve
       // it to an absolute path and put it into the "node-file" virtual namespace.
       build.onResolve({ filter: /\.node$/, namespace: 'file' }, (args) => ({
-        path: require.resolve(args.path, { paths: [args.resolveDir] }),
+        path: resolveFrom(args.resolveDir, args.path),
         namespace: 'node-file',
       }))
 

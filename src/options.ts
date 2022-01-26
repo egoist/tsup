@@ -29,10 +29,6 @@ export type Options = {
   entryPoints?: BuildOptions['entryPoints']
   entry?: BuildOptions['entryPoints']
   /**
-   * Output different formats to different folder instead of using different extensions
-   */
-  legacyOutput?: boolean
-  /**
    * Compile target
    *
    * default to `node12`
@@ -132,7 +128,7 @@ export type Options = {
   injectStyle?: boolean
   /**
    * Inject cjs and esm shims if needed
-   * @default {true}
+   * @default {false}
    */
   shims?: boolean
   /**

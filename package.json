@@ -6,6 +6,7 @@
     "tsup": "dist/cli-default.js",
     "tsup-node": "dist/cli-node.js"
   },
+  "type": "module",
   "types": "dist/index.d.ts",
   "files": [
     "/dist",
@@ -21,23 +22,15 @@
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
     "prepublishOnly": "npm run build",
     "test": "npm run build && npm run test-only",
-    "test-only": "ava test/*.test.ts --fail-fast --timeout 60s",
+    "test-only": "vitest run",
     "build-fast": "npm run build -- --no-dts"
   },
-  "ava": {
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "sucrase/register"
-    ]
-  },
   "dependencies": {
-    "bundle-require": "^2.1.8",
+    "bundle-require": "^3.0.1",
     "cac": "^6.7.12",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
-    "esbuild": "^0.14.2",
+    "esbuild": "^0.14.14",
     "execa": "^5.0.0",
     "globby": "^11.0.3",
     "joycon": "^3.0.1",
@@ -58,7 +51,6 @@
     "@types/resolve": "1.20.1",
     "ava": "4.0.0",
     "colorette": "2.0.16",
-    "consola": "2.15.3",
     "flat": "5.0.2",
     "fs-extra": "10.0.0",
     "postcss": "8.4.5",
@@ -66,13 +58,14 @@
     "prettier": "2.5.1",
     "resolve": "1.20.0",
     "rollup-plugin-dts": "4.1.0",
-    "rollup-plugin-hashbang": "2.2.2",
     "string-argv": "0.3.1",
+    "strip-json-comments": "^4.0.0",
     "svelte": "3.44.3",
     "ts-essentials": "9.1.2",
     "tsconfig-paths": "3.12.0",
     "tsup": "5.11.10",
     "typescript": "4.5.4",
+    "vitest": "^0.2.3",
     "wait-for-expect": "3.0.2"
   },
   "peerDependencies": {
@@ -82,5 +75,8 @@
     "typescript": {
       "optional": true
     }
+  },
+  "engines": {
+    "node": "^14.13.1 || >=16.0.0"
   }
 }

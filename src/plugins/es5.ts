@@ -1,6 +1,6 @@
 import { PrettyError } from '../errors'
 import { Plugin } from '../plugin'
-import { localRequire } from '../utils'
+import { localImport } from '../utils'
 
 export const es5 = (): Plugin => {
   let enabled = false
@@ -18,7 +18,7 @@ export const es5 = (): Plugin => {
       if (!enabled || !/\.(cjs|js)$/.test(info.path)) {
         return
       }
-      const swc: typeof import('@swc/core') = localRequire('@swc/core')
+      const swc = await localImport<typeof import('@swc/core')>('@swc/core')
 
       if (!swc) {
         throw new PrettyError(

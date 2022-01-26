@@ -1,6 +1,11 @@
 import fs from 'fs'
+import path from 'path'
 import glob from 'globby'
+import { fileURLToPath } from 'url'
 import resolveFrom from 'resolve-from'
+import strip from 'strip-json-comments'
+
+export const distDir = path.dirname(fileURLToPath(import.meta.url))
 
 export type External =
   | string
@@ -40,14 +45,9 @@ export function isExternal(
   return false
 }
 
-export function getPostcss(): null | typeof import('postcss') {
-  const p = resolveFrom.silent(process.cwd(), 'postcss')
-  return p && require(p)
-}
-
-export function localRequire(moduleName: string) {
+export async function localImport<T>(moduleName: string): Promise<null | T> {
   const p = resolveFrom.silent(process.cwd(), moduleName)
-  return p && require(p)
+  return p ? import(p) : null
 }
 
 export function pathExists(p: string) {
@@ -115,4 +115,14 @@ type Truthy<T> = T extends false | '' | 0 | null | undefined ? never : T // from
 
 export function truthy<T>(value: T): value is Truthy<T> {
   return Boolean(value)
+}
+
+export function jsoncParse(data: string) {
+  try {
+    return new Function('return ' + strip(data).trim())()
+  } catch (_) {
+    // Silently ignore any error
+    // That's what tsc/jsonc-parser did after all
+    return {}
+  }
 }

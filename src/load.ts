@@ -1,8 +1,9 @@
 import fs from 'fs'
 import JoyCon from 'joycon'
 import path from 'path'
-import { bundleRequire, jsoncParse } from 'bundle-require'
+import { bundleRequire } from 'bundle-require'
 import { defineConfig } from './'
+import { jsoncParse } from './utils'
 
 const joycon = new JoyCon()
 

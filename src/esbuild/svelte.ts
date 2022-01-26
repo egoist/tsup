@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { Plugin, transform } from 'esbuild'
-import { localRequire } from '../utils'
+import { localImport } from '../utils'
 
 const useSvelteCssExtension = (p: string) =>
   p.replace(/\.svelte$/, '.svelte.css')
@@ -28,7 +28,7 @@ export const sveltePlugin = ({
       })
 
       build.onLoad({ filter: /\.svelte$/ }, async (args) => {
-        svelte = svelte || localRequire('svelte/compiler')
+        svelte = svelte || (await localImport('svelte/compiler'))
 
         if (!svelte) {
           return {

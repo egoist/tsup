@@ -13,8 +13,7 @@ import { nodeProtocolPlugin } from './node-protocol'
 import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
 import { sveltePlugin } from './svelte'
-import consola from 'consola'
-import { truthy } from '../utils'
+import { distDir, truthy } from '../utils'
 import { swcPlugin } from './swc'
 import { nativeNodeModulesPlugin } from './native-node-module'
 import { PluginContainer } from '../plugin'
@@ -182,18 +181,15 @@ export async function runEsbuild(
       },
       inject: [
         format === 'cjs' && injectShims
-          ? path.join(__dirname, '../assets/cjs_shims.js')
+          ? path.join(distDir, '../assets/cjs_shims.js')
           : '',
         format === 'esm' && injectShims && platform === 'node'
-          ? path.join(__dirname, '../assets/esm_shims.js')
+          ? path.join(distDir, '../assets/esm_shims.js')
           : '',
         ...(options.inject || []),
       ].filter(Boolean),
-      outdir:
-        options.legacyOutput && format !== 'cjs'
-          ? path.join(outDir, format)
-          : outDir,
-      outExtension: options.legacyOutput ? undefined : outExtension,
+      outdir: outDir,
+      outExtension,
       write: false,
       splitting,
       logLevel: 'error',
@@ -228,7 +224,7 @@ export async function runEsbuild(
       color: true,
     })
     formatted.forEach((message) => {
-      consola.warn(message)
+      console.warn(message)
     })
   }
 

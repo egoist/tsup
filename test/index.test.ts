@@ -1,15 +1,28 @@
-import test from 'ava'
-import { join, resolve } from 'path'
+import { test, expect, beforeAll } from 'vitest'
+import path from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
 import glob from 'globby'
 import waitForExpect from 'wait-for-expect'
+import { fileURLToPath } from 'url'
 import { debouncePromise } from '../src/utils'
 
-const cacheDir = resolve(__dirname, '.cache')
-const bin = resolve(__dirname, '../dist/cli-default.js')
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-test.before(async () => {
+const cacheDir = path.resolve(__dirname, '.cache')
+const bin = path.resolve(__dirname, '../dist/cli-default.js')
+
+const getTestName = () => {
+  const name = expect.getState().currentTestName
+
+  if (!name) {
+    throw new Error('No test name')
+  }
+
+  return name
+}
+
+beforeAll(async () => {
   await fs.remove(cacheDir)
   console.log(`Installing dependencies in ./test folder`)
   await execa('pnpm', ['i'], { cwd: __dirname })
@@ -29,12 +42,12 @@ async function run(
     env?: Record<string, string>
   } = {}
 ) {
-  const testDir = resolve(cacheDir, filenamify(title))
+  const testDir = path.resolve(cacheDir, filenamify(title))
 
   // Write entry files on disk
   await Promise.all(
     Object.keys(files).map((name) => {
-      return fs.outputFile(resolve(testDir, name), files[name], 'utf8')
+      return fs.outputFile(path.resolve(testDir, name), files[name], 'utf8')
     })
   )
 
@@ -56,34 +69,34 @@ async function run(
 
   // Get output
   const outFiles = await glob('**/*', {
-    cwd: resolve(testDir, 'dist'),
+    cwd: path.resolve(testDir, 'dist'),
   }).then((res) => res.sort())
 
   return {
     get output() {
-      return fs.readFileSync(resolve(testDir, 'dist/input.js'), 'utf8')
+      return fs.readFileSync(path.resolve(testDir, 'dist/input.js'), 'utf8')
     },
     outFiles,
     logs,
-    outDir: resolve(testDir, 'dist'),
+    outDir: path.resolve(testDir, 'dist'),
     getFileContent(filename: string) {
-      return fs.readFile(resolve(testDir, filename), 'utf8')
+      return fs.readFile(path.resolve(testDir, filename), 'utf8')
     },
   }
 }
 
-test('simple', async (t) => {
-  const { output, outFiles } = await run(t.title, {
+test('simple', async () => {
+  const { output, outFiles } = await run(getTestName(), {
     'input.ts': `import foo from './foo';export default foo`,
     'foo.ts': `export default 'foo'`,
   })
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.js'])
+  expect(output).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.js'])
 })
 
-test('bundle graphql-tools with --dts flag', async (t) => {
+test('bundle graphql-tools with --dts flag', async () => {
   await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
     },
@@ -91,12 +104,11 @@ test('bundle graphql-tools with --dts flag', async (t) => {
       flags: ['--dts'],
     }
   )
-  t.pass()
 })
 
-test('bundle graphql-tools with --dts-resolve flag', async (t) => {
+test('bundle graphql-tools with --dts-resolve flag', async () => {
   await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
     },
@@ -104,12 +116,11 @@ test('bundle graphql-tools with --dts-resolve flag', async (t) => {
       flags: ['--dts-resolve'],
     }
   )
-  t.pass()
 })
 
-test('bundle vue and ts-essentials with --dts --dts-resolve flag', async (t) => {
+test('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
   await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export * from 'vue'
       export type { MarkRequired } from 'ts-essentials'
@@ -119,12 +130,11 @@ test('bundle vue and ts-essentials with --dts --dts-resolve flag', async (t) => 
       flags: ['--dts', '--dts-resolve'],
     }
   )
-  t.pass()
 })
 
-test('bundle @egoist/path-parser with --dts --dts-resolve flag', async (t) => {
+test('bundle @egoist/path-parser with --dts --dts-resolve flag', async () => {
   const { getFileContent } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `import { PathParser } from '@egoist/path-parser'
       export type Opts = {
@@ -137,11 +147,10 @@ test('bundle @egoist/path-parser with --dts --dts-resolve flag', async (t) => {
       flags: ['--dts', '--dts-resolve'],
     }
   )
-  t.pass()
 })
 
-test('enable --dts-resolve for specific module', async (t) => {
-  const { getFileContent } = await run(t.title, {
+test('enable --dts-resolve for specific module', async () => {
+  const { getFileContent } = await run(getTestName(), {
     'input.ts': `export * from 'vue'
       export type {MarkRequired} from 'foo'
       `,
@@ -158,12 +167,12 @@ test('enable --dts-resolve for specific module', async (t) => {
       `,
   })
   const content = await getFileContent('dist/input.d.ts')
-  t.snapshot(content)
+  expect(content).toMatchSnapshot()
 })
 
-test('bundle graphql-tools with --sourcemap flag', async (t) => {
+test('bundle graphql-tools with --sourcemap flag', async () => {
   const { outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
     },
@@ -171,12 +180,12 @@ test('bundle graphql-tools with --sourcemap flag', async (t) => {
       flags: ['--sourcemap'],
     }
   )
-  t.deepEqual(outFiles, ['input.js', 'input.js.map'])
+  expect(outFiles).toEqual(['input.js', 'input.js.map'])
 })
 
-test('bundle graphql-tools with --sourcemap inline flag', async (t) => {
+test('bundle graphql-tools with --sourcemap inline flag', async () => {
   const { output, outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
     },
@@ -185,13 +194,13 @@ test('bundle graphql-tools with --sourcemap inline flag', async (t) => {
     }
   )
 
-  t.assert(output.includes('//# sourceMappingURL=data:application/json;base64'))
-  t.deepEqual(outFiles, ['input.js'])
+  expect(output).toContain('//# sourceMappingURL=data:application/json;base64')
+  expect(outFiles).toEqual(['input.js'])
 })
 
-test('multiple formats', async (t) => {
+test('multiple formats', async () => {
   const { output, outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `
     export const a = 1
@@ -202,13 +211,13 @@ test('multiple formats', async (t) => {
     }
   )
 
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.global.js', 'input.js', 'input.mjs'])
+  expect(output).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.global.js', 'input.js', 'input.mjs'])
 })
 
-test('multiple formats and pkg.type is module', async (t) => {
+test('multiple formats and pkg.type is module', async () => {
   const { output, outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `
     export const a = 1
@@ -220,31 +229,13 @@ test('multiple formats and pkg.type is module', async (t) => {
     }
   )
 
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.cjs', 'input.global.js', 'input.js'])
+  expect(output).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.cjs', 'input.global.js', 'input.js'])
 })
 
-test('multiple formats with legacy output', async (t) => {
+test('minify', async () => {
   const { output, outFiles } = await run(
-    t.title,
-    {
-      'input.ts': `
-    export const a = 1
-    `,
-      'package.json': JSON.stringify({ type: 'module' }),
-    },
-    {
-      flags: ['--format', 'esm,cjs,iife', '--legacy-output'],
-    }
-  )
-
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['esm/input.js', 'iife/input.js', 'input.js'])
-})
-
-test('minify', async (t) => {
-  const { output, outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `
     export function foo() {
@@ -257,13 +248,13 @@ test('minify', async (t) => {
     }
   )
 
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.js'])
+  expect(output).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.js'])
 })
 
-test('--env flag', async (t) => {
+test('--env flag', async () => {
   const { output, outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `
     export const env = process.env.NODE_ENV
@@ -274,12 +265,12 @@ test('--env flag', async (t) => {
     }
   )
 
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.js'])
+  expect(output).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.js'])
 })
 
-test('import css', async (t) => {
-  const { output, outFiles } = await run(t.title, {
+test('import css', async () => {
+  const { output, outFiles } = await run(getTestName(), {
     'input.ts': `
     import './foo.css'
     `,
@@ -297,13 +288,13 @@ test('import css', async (t) => {
     `,
   })
 
-  t.snapshot(output, `""`)
-  t.deepEqual(outFiles, ['input.css', 'input.js'])
+  expect(output, `""`).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.css', 'input.js'])
 })
 
-test('import css in --dts', async (t) => {
+test('import css in --dts', async () => {
   const { output, outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `
     import './foo.css'
@@ -317,19 +308,19 @@ test('import css in --dts', async (t) => {
     { flags: ['--dts'] }
   )
 
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.css', 'input.d.ts', 'input.js'])
+  expect(output).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.css', 'input.d.ts', 'input.js'])
 })
 
-test('node protocol', async (t) => {
-  const { output } = await run(t.title, {
+test('node protocol', async () => {
+  const { output } = await run(getTestName(), {
     'input.ts': `import fs from 'node:fs'; console.log(fs)`,
   })
-  t.snapshot(output)
+  expect(output).toMatchSnapshot()
 })
 
-test('external', async (t) => {
-  const { output } = await run(t.title, {
+test('external', async () => {
+  const { output } = await run(getTestName(), {
     'input.ts': `export {foo} from 'foo'
     export {bar} from 'bar'
     export {baz} from 'baz'
@@ -346,12 +337,12 @@ test('external', async (t) => {
     }
     `,
   })
-  t.snapshot(output)
+  expect(output).toMatchSnapshot()
 })
 
-test('disable code splitting to get proper module.exports =', async (t) => {
+test('disable code splitting to get proper module.exports =', async () => {
   const { output } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export = 123`,
     },
@@ -359,12 +350,12 @@ test('disable code splitting to get proper module.exports =', async (t) => {
       flags: ['--no-splitting'],
     }
   )
-  t.snapshot(output)
+  expect(output).toMatchSnapshot()
 })
 
-test('bundle svelte', async (t) => {
+test('bundle svelte', async () => {
   const { output, getFileContent } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `import App from './App.svelte'
       export { App }
@@ -386,13 +377,13 @@ test('bundle svelte', async (t) => {
       flags: ['--external', 'svelte/internal'],
     }
   )
-  t.snapshot(output, 'output')
+  expect(output, 'output').toMatchSnapshot()
 
-  t.snapshot(await getFileContent('dist/input.css'), 'css')
+  expect(await getFileContent('dist/input.css'), 'css').toMatchSnapshot()
 })
 
-test('bundle svelte without styles', async (t) => {
-  const { outFiles } = await run(t.title, {
+test('bundle svelte without styles', async () => {
+  const { outFiles } = await run(getTestName(), {
     'input.ts': `import App from './App.svelte'
       export { App }
       `,
@@ -405,11 +396,11 @@ test('bundle svelte without styles', async (t) => {
       `,
   })
 
-  t.deepEqual(outFiles, ['input.js'])
+  expect(outFiles).toEqual(['input.js'])
 })
 
-test('svelte: typescript support', async (t) => {
-  const { outFiles, output } = await run(t.title, {
+test('svelte: typescript support', async () => {
+  const { outFiles, output } = await run(getTestName(), {
     'input.ts': `import App from './App.svelte'
       export { App }
       `,
@@ -431,14 +422,14 @@ test('svelte: typescript support', async (t) => {
     `,
   })
 
-  t.deepEqual(outFiles, ['input.js'])
-  t.assert(output.includes('// Component.svelte'))
+  expect(outFiles).toEqual(['input.js'])
+  expect(output).toContain('// Component.svelte')
 })
 
-test('onSuccess', async (t) => {
+test('onSuccess', async () => {
   const randomNumber = Math.random() + ''
   const { logs } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': "console.log('test');",
     },
@@ -447,11 +438,11 @@ test('onSuccess', async (t) => {
     }
   )
 
-  t.deepEqual(logs.includes(randomNumber), true)
+  expect(logs.includes(randomNumber)).toEqual(true)
 })
 
-test('support baseUrl and paths in tsconfig.json', async (t) => {
-  const { getFileContent } = await run(t.title, {
+test('support baseUrl and paths in tsconfig.json', async () => {
+  const { getFileContent } = await run(getTestName(), {
     'input.ts': `export * from '@/foo'`,
     'foo.ts': `export const foo = 'foo'`,
     'tsconfig.json': `{
@@ -461,12 +452,12 @@ test('support baseUrl and paths in tsconfig.json', async (t) => {
       }
     }`,
   })
-  t.snapshot(await getFileContent('dist/input.js'))
+  expect(await getFileContent('dist/input.js')).toMatchSnapshot()
 })
 
-test('support baseUrl and paths in tsconfig.json in --dts build', async (t) => {
+test('support baseUrl and paths in tsconfig.json in --dts build', async () => {
   const { getFileContent } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export * from '@/foo'`,
       'src/foo.ts': `export const foo = 'foo'`,
@@ -479,12 +470,12 @@ test('support baseUrl and paths in tsconfig.json in --dts build', async (t) => {
     },
     { flags: ['--dts'] }
   )
-  t.snapshot(await getFileContent('dist/input.d.ts'))
+  expect(await getFileContent('dist/input.d.ts')).toMatchSnapshot()
 })
 
-test('support baseUrl and paths in tsconfig.json in --dts-resolve build', async (t) => {
+test('support baseUrl and paths in tsconfig.json in --dts-resolve build', async () => {
   const { getFileContent } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export * from '@/foo'`,
       'src/foo.ts': `export const foo = 'foo'`,
@@ -497,32 +488,36 @@ test('support baseUrl and paths in tsconfig.json in --dts-resolve build', async 
     },
     { flags: ['--dts-resolve'] }
   )
-  t.snapshot(await getFileContent('dist/input.d.ts'))
+  expect(await getFileContent('dist/input.d.ts')).toMatchSnapshot()
 })
 
-test(`transform import.meta.url in cjs format`, async (t) => {
-  const { getFileContent } = await run(t.title, {
-    'input.ts': `export default import.meta.url`,
-  })
-  t.snapshot(await getFileContent('dist/input.js'))
-})
-
-test(`transform __dirname, __filename in esm format`, async (t) => {
+test(`transform import.meta.url in cjs format`, async () => {
   const { getFileContent } = await run(
-    t.title,
+    getTestName(),
+    {
+      'input.ts': `export default import.meta.url`,
+    },
+    { flags: ['--shims'] }
+  )
+  expect(await getFileContent('dist/input.js')).toContain('getImportMetaUrl')
+})
+
+test(`transform __dirname and __filename in esm format`, async () => {
+  const { getFileContent } = await run(
+    getTestName(),
     {
       'input.ts': `export const a = __dirname
     export const b = __filename
     `,
     },
     {
-      flags: ['--format', 'esm'],
+      flags: ['--format', 'esm', '--shims'],
     }
   )
-  t.snapshot(await getFileContent('dist/input.mjs'))
+  expect(await getFileContent('dist/input.mjs')).toMatchSnapshot()
 })
 
-test('debounce promise', async (t) => {
+test('debounce promise', async () => {
   try {
     const equal = <T>(a: T, b: T) => {
       const result = a === b
@@ -541,11 +536,11 @@ test('debounce promise', async (t) => {
       },
       100,
       (err: any) => {
-        t.fail(err)
+        expect.fail(err.message)
       }
     )
 
-    t.deepEqual(n, 0)
+    expect(n).toEqual(0)
 
     debounceFunction()
     debounceFunction()
@@ -557,7 +552,7 @@ test('debounce promise', async (t) => {
     })
     await sleep(100)
 
-    t.deepEqual(n, 1)
+    expect(n).toEqual(1)
 
     debounceFunction()
 
@@ -565,25 +560,25 @@ test('debounce promise', async (t) => {
       equal(n, 2)
     })
   } catch (err: any) {
-    return t.fail(err)
+    return expect.fail(err.message)
   }
 })
 
-test('exclude dependencies', async (t) => {
-  const { getFileContent } = await run(t.title, {
+test('exclude dependencies', async () => {
+  const { getFileContent } = await run(getTestName(), {
     'input.ts': `export {foo} from 'foo';export {nested} from 'foo/nested'`,
     'package.json': `{"dependencies":{"foo":"0.0.0"}}`,
     'node_modules/foo/index.js': `export const foo = 'foo'`,
     'node_modules/foo/package.json': `{"name":"foo"}`,
   })
   const contents = await getFileContent('dist/input.js')
-  t.assert(contents.includes('require("foo")'))
-  t.assert(contents.includes('require("foo/nested")'))
+  expect(contents).toContain('require("foo")')
+  expect(contents).toContain('require("foo/nested")')
 })
 
-test('code splitting in cjs format', async (t) => {
+test('code splitting in cjs format', async () => {
   const { getFileContent } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `const foo = () => import('./foo');export {foo}`,
       'another-input.ts': `const foo = () => import('./foo');export {foo}`,
@@ -591,37 +586,43 @@ test('code splitting in cjs format', async (t) => {
     },
     { flags: ['another-input.ts', '--splitting'] }
   )
-  t.snapshot(await getFileContent('dist/input.js'))
-  t.snapshot(await getFileContent('dist/another-input.js'))
+  expect(await getFileContent('dist/input.js')).toMatchSnapshot()
+  expect(await getFileContent('dist/another-input.js')).toMatchSnapshot()
 })
 
-test('declaration files with multiple entrypoints #316', async (t) => {
+test('declaration files with multiple entrypoints #316', async () => {
   const { getFileContent } = await run(
-    t.title,
+    getTestName(),
     {
       'src/index.ts': `export const foo = 1`,
       'src/bar/index.ts': `export const bar = 'bar'`,
     },
     { flags: ['--dts'], entry: ['src/index.ts', 'src/bar/index.ts'] }
   )
-  t.snapshot(await getFileContent('dist/index.d.ts'), 'dist/index.d.ts')
-  t.snapshot(await getFileContent('dist/bar/index.d.ts'), 'dist/bar/index.d.ts')
+  expect(
+    await getFileContent('dist/index.d.ts'),
+    'dist/index.d.ts'
+  ).toMatchSnapshot()
+  expect(
+    await getFileContent('dist/bar/index.d.ts'),
+    'dist/bar/index.d.ts'
+  ).toMatchSnapshot()
 })
 
-test('esbuild metafile', async (t) => {
+test('esbuild metafile', async () => {
   const { outFiles } = await run(
-    t.title,
+    getTestName(),
     { 'input.ts': `export const foo = 1` },
     {
       flags: ['--metafile'],
     }
   )
-  t.deepEqual(outFiles, ['input.js', 'metafile-cjs.json'])
+  expect(outFiles).toEqual(['input.js', 'metafile-cjs.json'])
 })
 
-test('multiple entry with the same base name', async (t) => {
+test('multiple entry with the same base name', async () => {
   const { outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'src/input.ts': `export const foo = 1`,
       'src/bar/input.ts': `export const bar = 2`,
@@ -630,23 +631,23 @@ test('multiple entry with the same base name', async (t) => {
       entry: ['src/input.ts', 'src/bar/input.ts'],
     }
   )
-  t.deepEqual(outFiles, ['bar/input.js', 'input.js'])
+  expect(outFiles).toEqual(['bar/input.js', 'input.js'])
 })
 
-test('windows: backslash in entry', async (t) => {
+test('windows: backslash in entry', async () => {
   const { outFiles } = await run(
-    t.title,
+    getTestName(),
     { 'src/input.ts': `export const foo = 1` },
     {
       entry: ['src\\input.ts'],
     }
   )
-  t.deepEqual(outFiles, ['input.js'])
+  expect(outFiles).toEqual(['input.js'])
 })
 
-test('emit declaration files only', async (t) => {
+test('emit declaration files only', async () => {
   const { outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export const foo = 1`,
     },
@@ -654,11 +655,11 @@ test('emit declaration files only', async (t) => {
       flags: ['--dts-only'],
     }
   )
-  t.deepEqual(outFiles, ['input.d.ts'])
+  expect(outFiles).toEqual(['input.d.ts'])
 })
 
-test('decorator metadata', async (t) => {
-  const { getFileContent } = await run(t.title, {
+test('decorator metadata', async () => {
+  const { getFileContent } = await run(getTestName(), {
     'input.ts': `
         function Injectable() {}
 
@@ -675,12 +676,12 @@ test('decorator metadata', async (t) => {
       }`,
   })
   const contents = await getFileContent('dist/input.js')
-  t.assert(contents.includes(`Reflect.metadata("design:type"`))
+  expect(contents).toContain(`Reflect.metadata("design:type"`)
 })
 
-test('inject style', async (t) => {
+test('inject style', async () => {
   const { outFiles, output } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `import './style.css'`,
       'style.css': `.hello { color: red }`,
@@ -689,13 +690,13 @@ test('inject style', async (t) => {
       flags: ['--inject-style', '--minify'],
     }
   )
-  t.deepEqual(outFiles, ['input.js'])
-  t.assert(output.includes('.hello{color:red}'))
+  expect(outFiles).toEqual(['input.js'])
+  expect(output).toContain('.hello{color:red}')
 })
 
-test('inject style in multi formats', async (t) => {
+test('inject style in multi formats', async () => {
   const { outFiles, getFileContent } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `export * from './App.svelte'`,
       'App.svelte': `
@@ -709,15 +710,15 @@ test('inject style in multi formats', async (t) => {
       flags: ['--inject-style', '--minify', '--format', 'esm,cjs,iife'],
     }
   )
-  t.deepEqual(outFiles, ['input.global.js', 'input.js', 'input.mjs'])
+  expect(outFiles).toEqual(['input.global.js', 'input.js', 'input.mjs'])
   for (const file of outFiles) {
-    t.assert((await getFileContent(`dist/${file}`)).includes('{color:red}'))
+    expect(await getFileContent(`dist/${file}`)).toContain('{color:red}')
   }
 })
 
-test('shebang', async (t) => {
+test('shebang', async () => {
   const { outDir } = await run(
-    t.title,
+    getTestName(),
     {
       'a.ts': `#!/usr/bin/env node\bconsole.log('a')`,
       'b.ts': `console.log('b')`,
@@ -728,20 +729,20 @@ test('shebang', async (t) => {
   )
 
   if (process.platform === 'win32') {
-    return t.pass()
+    return
   }
 
-  t.notThrows(() => {
-    fs.accessSync(join(outDir, 'a.js'), fs.constants.X_OK)
-  })
-  t.throws(() => {
-    fs.accessSync(join(outDir, 'b.js'), fs.constants.X_OK)
-  })
+  expect(() => {
+    fs.accessSync(path.join(outDir, 'a.js'), fs.constants.X_OK)
+  }).not.toThrow()
+  expect(() => {
+    fs.accessSync(path.join(outDir, 'b.js'), fs.constants.X_OK)
+  }).toThrow()
 })
 
-test('es5 target', async (t) => {
+test('es5 target', async () => {
   const { output, outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `
     export class Foo {
@@ -757,23 +758,23 @@ test('es5 target', async (t) => {
       flags: ['--target', 'es5'],
     }
   )
-  t.regex(output, /createClass/)
-  t.deepEqual(outFiles, ['input.js'])
+  expect(output).toMatch(/createClass/)
+  expect(outFiles).toEqual(['input.js'])
 })
 
-test('multiple targets', async (t) => {
+test('multiple targets', async () => {
   const { output, outFiles } = await run(
-    t.title,
+    getTestName(),
     {
       'input.ts': `
       export const answer = 42
-      `
+      `,
     },
     {
       entry: ['input.ts'],
       flags: ['--target', 'es2020,chrome58,firefox57,safari11,edge16'],
     }
   )
-  t.snapshot(output)
-  t.deepEqual(outFiles, ['input.js'])
+  expect(output).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.js'])
 })

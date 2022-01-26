@@ -4,14 +4,14 @@
 import { JscConfig } from '@swc/core'
 import { Plugin } from 'esbuild'
 import { Logger } from '../log'
-import { localRequire } from '../utils'
+import { localImport } from '../utils'
 
 export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
   return {
     name: 'swc',
 
-    setup(build) {
-      const swc: typeof import('@swc/core') = localRequire('@swc/core')
+    async setup(build) {
+      const swc = await localImport<typeof import('@swc/core')>('@swc/core')
 
       if (!swc) {
         logger.warn(

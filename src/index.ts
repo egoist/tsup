@@ -2,12 +2,11 @@ import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
 import type { Buildable, MarkRequired } from 'ts-essentials'
-import { removeFiles, debouncePromise, slash } from './utils'
+import { removeFiles, debouncePromise, slash, distDir } from './utils'
 import { loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
 import { handleError, PrettyError } from './errors'
-import resolveFrom from 'resolve-from'
 import { parseArgsStringToArgv } from 'string-argv'
 import type { ChildProcess } from 'child_process'
 import execa from 'execa'
@@ -64,9 +63,10 @@ const normalizeOptions = async (
     ...optionsOverride,
   }
   const options: Buildable<NormalizedOptions> = {
-    target: 'node12',
+    target: 'es2020',
     format: ['cjs'],
     outDir: 'dist',
+    shims: false,
     ..._options,
     dts:
       typeof _options.dts === 'boolean'
@@ -105,7 +105,7 @@ const normalizeOptions = async (
   }
 
   const tsconfig = loadTsConfig(process.cwd(), options.tsconfig)
-  if (tsconfig.path) {
+  if (tsconfig) {
     logger.info(
       'CLI',
       `Using tsconfig: ${path.relative(process.cwd(), tsconfig.path)}`
@@ -145,7 +145,7 @@ export async function build(_options: Options) {
         }
 
         if (options.dts) {
-          const worker = new Worker(path.join(__dirname, './rollup.js'))
+          const worker = new Worker(path.join(distDir, 'rollup.js'))
           worker.postMessage({
             configName: item?.name,
             options: {

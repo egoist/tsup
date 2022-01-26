@@ -2,7 +2,6 @@ import { parentPort } from 'worker_threads'
 import { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { NormalizedOptions } from './'
 import ts from 'typescript'
-import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { handleError } from './errors'
 import { removeFiles } from './utils'
@@ -12,6 +11,7 @@ import { getDeps } from './load'
 import path from 'path'
 import { reportSize } from './lib/report-size'
 import resolveFrom from 'resolve-from'
+import dtsPlugin from 'rollup-plugin-dts'
 
 const logger = createLogger()
 
@@ -25,11 +25,6 @@ const loadCompilerOptions = (tsconfig?: string) => {
   )
   return options
 }
-
-// Use `require` to esbuild use the cjs build of rollup-plugin-dts
-// the mjs build of rollup-plugin-dts uses `import.meta.url` which makes Node throws syntax error
-// since tsup is published as a commonjs module for now
-const dtsPlugin: typeof import('rollup-plugin-dts') = require('rollup-plugin-dts')
 
 type RollupConfig = {
   inputConfig: InputOptions
@@ -148,10 +143,9 @@ const getRollupConfig = async (
       plugins: [
         tsupCleanPlugin,
         tsResolveOptions && tsResolvePlugin(tsResolveOptions),
-        hashbangPlugin(),
         jsonPlugin(),
         ignoreFiles,
-        dtsPlugin.default({
+        dtsPlugin({
           compilerOptions: {
             ...compilerOptions,
             baseUrl: path.resolve(compilerOptions.baseUrl || '.'),

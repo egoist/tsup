@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { Plugin, transform } from 'esbuild'
-import { getPostcss } from '../utils'
+import { localImport } from '../utils'
 
 export const postcssPlugin = ({
   css,
@@ -17,14 +17,14 @@ export const postcssPlugin = ({
       const configCache = new Map()
 
       const getPostcssConfig = async (file: string) => {
-        const loadConfig = require('postcss-load-config')
+        const loadConfig = await import('postcss-load-config')
 
         if (configCache.has(file)) {
           return configCache.get(file)
         }
 
         try {
-          const result = await loadConfig({}, path.dirname(file))
+          const result = await loadConfig.default({}, path.dirname(file))
           configCache.set(file, result)
           return result
         } catch (error: any) {
@@ -89,7 +89,7 @@ export const postcssPlugin = ({
 
         if (plugins || plugins.length > 0) {
           // Load postcss
-          const postcss = getPostcss()
+          const postcss = await localImport<typeof import('postcss')>('postcss')
           if (!postcss) {
             return {
               errors: [
@@ -102,7 +102,7 @@ export const postcssPlugin = ({
 
           // Transform CSS
           const result = await postcss
-            ?.default(plugins)
+            .default(plugins)
             .process(contents, { ...options, from: args.path })
 
           contents = result.css

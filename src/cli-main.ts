@@ -1,5 +1,3 @@
-import { readFileSync } from 'fs'
-import { join } from 'path'
 import { cac } from 'cac'
 import flat from 'flat'
 import { Format, Options } from '.'
@@ -31,10 +29,6 @@ export async function main(options: Options = {}) {
     .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
       default: 'es2017',
     })
-    .option(
-      '--legacy-output',
-      'Output different formats to different folder instead of using different extensions'
-    )
     .option('--dts [entry]', 'Generate declaration file')
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
     .option('--dts-only', 'Emit declaration files only')
@@ -79,7 +73,7 @@ export async function main(options: Options = {}) {
     })
     .option('--loader <ext=loader>', 'Specify the loader for a file extension')
     .option('--no-config', 'Disable config file')
-    .option('--no-shims', 'Disable cjs and esm shims')
+    .option('--shims', 'Enable cjs and esm shims')
     .option('--inject-style', 'Inject style tag to document head')
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
@@ -98,7 +92,10 @@ export async function main(options: Options = {}) {
         options.external = external
       }
       if (flags.target) {
-        options.target = flags.target.indexOf(',') >= 0 ? flags.target.split(',') : flags.target
+        options.target =
+          flags.target.indexOf(',') >= 0
+            ? flags.target.split(',')
+            : flags.target
       }
       if (flags.dts || flags.dtsResolve || flags.dtsOnly) {
         options.dts = {}
@@ -135,8 +132,7 @@ export async function main(options: Options = {}) {
 
   cli.help()
 
-  const pkgPath = join(__dirname, '../package.json')
-  cli.version(JSON.parse(readFileSync(pkgPath, 'utf8')).version)
+  cli.version(__PKG_VERSION__)
 
   cli.parse(process.argv, { run: false })
   await cli.runMatchedCommand()
