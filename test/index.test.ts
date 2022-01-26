@@ -211,7 +211,6 @@ test('multiple formats', async () => {
     }
   )
 
-  expect(output).toMatchSnapshot()
   expect(outFiles).toEqual(['input.global.js', 'input.js', 'input.mjs'])
 })
 
@@ -229,7 +228,6 @@ test('multiple formats and pkg.type is module', async () => {
     }
   )
 
-  expect(output).toMatchSnapshot()
   expect(outFiles).toEqual(['input.cjs', 'input.global.js', 'input.js'])
 })
 
@@ -248,7 +246,7 @@ test('minify', async () => {
     }
   )
 
-  expect(output).toMatchSnapshot()
+  expect(output).toContain(`return"foo"`)
   expect(outFiles).toEqual(['input.js'])
 })
 
