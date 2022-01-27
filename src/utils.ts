@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'globby'
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
 
@@ -47,7 +47,7 @@ export function isExternal(
 
 export async function localImport<T>(moduleName: string): Promise<null | T> {
   const p = resolveFrom.silent(process.cwd(), moduleName)
-  return p ? import(p) : null
+  return p ? import(pathToFileURL(p).href) : null
 }
 
 export function pathExists(p: string) {
