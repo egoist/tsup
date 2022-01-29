@@ -7,7 +7,6 @@ import { loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
 import { handleError, PrettyError } from './errors'
-import resolveFrom from 'resolve-from'
 import { parseArgsStringToArgv } from 'string-argv'
 import type { ChildProcess } from 'child_process'
 import execa from 'execa'
@@ -105,7 +104,7 @@ const normalizeOptions = async (
   }
 
   const tsconfig = loadTsConfig(process.cwd(), options.tsconfig)
-  if (tsconfig.path) {
+  if (tsconfig) {
     logger.info(
       'CLI',
       `Using tsconfig: ${path.relative(process.cwd(), tsconfig.path)}`

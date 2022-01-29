@@ -3,8 +3,8 @@ import { join, resolve } from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
 import glob from 'globby'
-import waitForExpect from 'wait-for-expect'
-import { debouncePromise } from '../src/utils'
+// import waitForExpect from 'wait-for-expect'
+// import { debouncePromise } from '../src/utils'
 
 const cacheDir = resolve(__dirname, '.cache')
 const bin = resolve(__dirname, '../dist/cli-default.js')
@@ -522,52 +522,52 @@ test(`transform __dirname, __filename in esm format`, async (t) => {
   t.snapshot(await getFileContent('dist/input.mjs'))
 })
 
-test('debounce promise', async (t) => {
-  try {
-    const equal = <T>(a: T, b: T) => {
-      const result = a === b
-      if (!result) throw new Error(`${a} !== ${b}`)
-    }
+// test('debounce promise', async (t) => {
+//   try {
+//     const equal = <T>(a: T, b: T) => {
+//       const result = a === b
+//       if (!result) throw new Error(`${a} !== ${b}`)
+//     }
 
-    const sleep = (n: number = ~~(Math.random() * 50) + 20) =>
-      new Promise<void>((resolve) => setTimeout(resolve, n))
+//     const sleep = (n: number = ~~(Math.random() * 50) + 20) =>
+//       new Promise<void>((resolve) => setTimeout(resolve, n))
 
-    let n = 0
+//     let n = 0
 
-    const debounceFunction = debouncePromise(
-      async () => {
-        await sleep()
-        ++n
-      },
-      100,
-      (err: any) => {
-        t.fail(err)
-      }
-    )
+//     const debounceFunction = debouncePromise(
+//       async () => {
+//         await sleep()
+//         ++n
+//       },
+//       100,
+//       (err: any) => {
+//         t.fail(err)
+//       }
+//     )
 
-    t.deepEqual(n, 0)
+//     t.deepEqual(n, 0)
 
-    debounceFunction()
-    debounceFunction()
-    debounceFunction()
-    debounceFunction()
+//     debounceFunction()
+//     debounceFunction()
+//     debounceFunction()
+//     debounceFunction()
 
-    await waitForExpect(() => {
-      equal(n, 1)
-    })
-    await sleep(100)
+//     await waitForExpect(() => {
+//       equal(n, 1)
+//     })
+//     await sleep(100)
 
-    t.deepEqual(n, 1)
+//     t.deepEqual(n, 1)
 
-    debounceFunction()
+//     debounceFunction()
 
-    await waitForExpect(() => {
-      equal(n, 2)
-    })
-  } catch (err: any) {
-    return t.fail(err)
-  }
-})
+//     await waitForExpect(() => {
+//       equal(n, 2)
+//     })
+//   } catch (err: any) {
+//     return t.fail(err)
+//   }
+// })
 
 test('exclude dependencies', async (t) => {
   const { getFileContent } = await run(t.title, {
@@ -767,7 +767,7 @@ test('multiple targets', async (t) => {
     {
       'input.ts': `
       export const answer = 42
-      `
+      `,
     },
     {
       entry: ['input.ts'],

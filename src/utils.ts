@@ -1,6 +1,7 @@
 import fs from 'fs'
 import glob from 'globby'
 import resolveFrom from 'resolve-from'
+import strip from 'strip-json-comments'
 
 export type External =
   | string
@@ -115,4 +116,14 @@ type Truthy<T> = T extends false | '' | 0 | null | undefined ? never : T // from
 
 export function truthy<T>(value: T): value is Truthy<T> {
   return Boolean(value)
+}
+
+export function jsoncParse(data: string) {
+  try {
+    return new Function('return ' + strip(data).trim())()
+  } catch {
+    // Silently ignore any error
+    // That's what tsc/jsonc-parser did after all
+    return {}
+  }
 }

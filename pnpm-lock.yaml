@@ -9,7 +9,7 @@ specifiers:
   '@types/node': 14.18.4
   '@types/resolve': 1.20.1
   ava: 4.0.0
-  bundle-require: ^2.1.8
+  bundle-require: ^3.0.2
   cac: ^6.7.12
   chokidar: ^3.5.1
   colorette: 2.0.16
@@ -32,6 +32,7 @@ specifiers:
   rollup-plugin-hashbang: 2.2.2
   source-map: ^0.7.3
   string-argv: 0.3.1
+  strip-json-comments: ^4.0.0
   sucrase: ^3.20.3
   svelte: 3.44.3
   tree-kill: ^1.2.2
@@ -42,7 +43,7 @@ specifiers:
   wait-for-expect: 3.0.2
 
 dependencies:
-  bundle-require: 2.1.8_esbuild@0.14.2
+  bundle-require: 3.0.2_esbuild@0.14.2
   cac: 6.7.12
   chokidar: 3.5.2
   debug: 4.3.2
@@ -77,6 +78,7 @@ devDependencies:
   rollup-plugin-dts: 4.1.0_rollup@2.60.1+typescript@4.5.4
   rollup-plugin-hashbang: 2.2.2
   string-argv: 0.3.1
+  strip-json-comments: 4.0.0
   svelte: 3.44.3
   ts-essentials: 9.1.2_typescript@4.5.4
   tsconfig-paths: 3.12.0
@@ -524,6 +526,17 @@ packages:
       esbuild: '>=0.13'
     dependencies:
       esbuild: 0.14.2
+    dev: true
+
+  /bundle-require/3.0.2_esbuild@0.14.2:
+    resolution: {integrity: sha512-WLS50LRdi8oAMnQfoxqjI3Fszi0xaI6dJumvtX909u0WREkYCuFGeE2UwMn5H8bSUXWtUB0XeBqNkgpVjMcYyQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    peerDependencies:
+      esbuild: '>=0.13'
+    dependencies:
+      esbuild: 0.14.2
+      load-tsconfig: 0.2.2
+    dev: false
 
   /cac/6.7.12:
     resolution: {integrity: sha512-rM7E2ygtMkJqD9c7WnFU6fruFcN3xe4FM5yUmgxhZzIKJk4uHl9U/fhwdajGFQbQuv43FAUo1Fe8gX/oIKDeSA==}
@@ -1276,6 +1289,11 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dev: true
 
+  /load-tsconfig/0.2.2:
+    resolution: {integrity: sha512-9B4XOMjNhphRmXg3YHFnpgEH5fmYKofXJ7M6sLkRcfJ5DcuPiStlQ1Or+1Rv/aML716kQ9Q+C9zJGUcfMYiq4Q==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dev: false
+
   /locate-path/7.0.0:
     resolution: {integrity: sha512-+cg2yXqDUKfo4hsFxwa3G1cBJeA+gs1vD8FyV9/odWoUlQe/4syxHQ5DPtKjtfm6gnKbZzjCqzX03kXosvZB1w==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -1755,6 +1773,11 @@ packages:
   /strip-final-newline/2.0.0:
     resolution: {integrity: sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==}
     engines: {node: '>=6'}
+
+  /strip-json-comments/4.0.0:
+    resolution: {integrity: sha512-LzWcbfMbAsEDTRmhjWIioe8GcDRl0fa35YMXFoJKDdiD/quGFmjJjdgPjFJJNwCMaLyQqFIDqCdHD2V4HfLgYA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dev: true
 
   /sucrase/3.20.3:
     resolution: {integrity: sha512-azqwq0/Bs6RzLAdb4dXxsCgMtAaD2hzmUr4UhSfsxO46JFPAwMnnb441B/qsudZiS6Ylea3JXZe3Q497lsgXzQ==}

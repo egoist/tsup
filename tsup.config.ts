@@ -1,8 +1,8 @@
-import fs from 'fs'
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
   name: 'tsup',
+  target: 'node12.20.0',
   dts: {
     resolve: true,
     // build types for `src/index.ts` only
