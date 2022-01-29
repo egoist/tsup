@@ -8,7 +8,7 @@ specifiers:
   '@types/fs-extra': 9.0.13
   '@types/node': 14.18.4
   '@types/resolve': 1.20.1
-  ava: 4.0.0
+  ava: 4.0.1
   bundle-require: ^3.0.2
   cac: ^6.7.12
   chokidar: ^3.5.1
@@ -66,7 +66,7 @@ devDependencies:
   '@types/fs-extra': 9.0.13
   '@types/node': 14.18.4
   '@types/resolve': 1.20.1
-  ava: 4.0.0
+  ava: 4.0.1
   colorette: 2.0.16
   consola: 2.15.3
   flat: 5.0.2
@@ -438,8 +438,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /ava/4.0.0:
-    resolution: {integrity: sha512-XEVx8EE/ZseJ3nz3nfVG+UoT4aGyUmD5s6SZFs5Aqi04Yr77DZAx7ItyW5hThtYywkOLdsM68as/u6P5fmb52Q==}
+  /ava/4.0.1:
+    resolution: {integrity: sha512-+12A/JDWyShBCZAKISEEPyM2dwkUrrAfPILqXi4LI4Aa58d92PzjY829hmuoSeACPNqrn2Wlbnja8c/n7bKV6Q==}
     engines: {node: '>=12.22 <13 || >=14.17 <15 || >=16.4 <17 || >=17'}
     hasBin: true
     peerDependencies:
