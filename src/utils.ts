@@ -120,7 +120,7 @@ export function truthy<T>(value: T): value is Truthy<T> {
 export function jsoncParse(data: string) {
   try {
     return new Function('return ' + strip(data).trim())()
-  } catch (_) {
+  } catch {
     // Silently ignore any error
     // That's what tsc/jsonc-parser did after all
     return {}
