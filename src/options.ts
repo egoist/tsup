@@ -71,7 +71,7 @@ export type Options = {
   /**
    * Code splitting
    * Default to `true`
-   * You may want to disable code splitting sometimes: #255
+   * You may want to disable code splitting sometimes: [`#255`](https://github.com/egoist/tsup/issues/255)
    */
   splitting?: boolean
   /**
