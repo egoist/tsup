@@ -779,3 +779,30 @@ test('multiple targets', async () => {
   expect(output).toMatchSnapshot()
   expect(outFiles).toEqual(['input.js'])
 })
+
+test('dts only: ignore files', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `
+      import './style.scss'
+
+      export const a = 1
+      `,
+      'style.scss': `
+      @keyframes gallery-loading-spinner {
+        0% {}
+      }
+      `,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--dts-only'],
+    }
+  )
+  expect(outFiles).toMatchInlineSnapshot(`
+    [
+      "input.d.ts",
+    ]
+  `)
+})

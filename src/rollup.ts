@@ -126,7 +126,7 @@ const getRollupConfig = async (
   const ignoreFiles: Plugin = {
     name: 'tsup:ignore-files',
     load(id) {
-      if (/\.(css|vue|svelte)$/.test(id)) {
+      if (!/\.(js|cjs|mjs|jsx|ts|tsx|mts|json)$/.test(id)) {
         return ''
       }
     },
