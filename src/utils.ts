@@ -64,7 +64,7 @@ export async function removeFiles(patterns: string[], dir: string) {
     cwd: dir,
     absolute: true,
   })
-  await Promise.all(files.map((file) => fs.promises.unlink(file)))
+  files.forEach((file) => fs.existsSync(file) && fs.unlinkSync(file))
 }
 
 export function debouncePromise<T extends unknown[]>(
