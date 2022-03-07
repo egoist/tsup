@@ -123,6 +123,15 @@ export async function runEsbuild(
     ...(options.esbuildPlugins || []),
   ]
 
+  const banner =
+    typeof options.banner === 'function'
+      ? options.banner({ format })
+      : options.banner
+  const footer =
+    typeof options.footer === 'function'
+      ? options.footer({ format })
+      : options.footer
+
   try {
     result = await esbuild({
       entryPoints: options.entry,
@@ -134,8 +143,8 @@ export async function runEsbuild(
       jsxFragment: options.jsxFragment,
       sourcemap: options.sourcemap ? 'external' : false,
       target: options.target,
-      footer: options.footer,
-      banner: options.banner,
+      banner,
+      footer,
       tsconfig: options.tsconfig,
       loader: {
         '.aac': 'file',

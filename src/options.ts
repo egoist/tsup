@@ -16,6 +16,13 @@ export type DtsConfig = {
   footer?: string
 }
 
+export type BannerOrFooter =
+  | {
+      js?: string
+      css?: string
+    }
+  | ((ctx: { format: Format }) => { js?: string; css?: string } | undefined)
+
 /**
  * The options available in tsup.config.ts
  * Not all of them are available from CLI flags
@@ -106,8 +113,8 @@ export type Options = {
    * @see https://esbuild.github.io/api/#metafile
    */
   metafile?: boolean
-  footer?: BuildOptions['footer']
-  banner?: BuildOptions['banner']
+  footer?: BannerOrFooter
+  banner?: BannerOrFooter
   /**
    * Target platform
    * @default `node`
