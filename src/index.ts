@@ -149,6 +149,8 @@ export async function build(_options: Options) {
             configName: item?.name,
             options: {
               ...options, // functions cannot be cloned
+              banner: undefined,
+              footer: undefined,
               esbuildPlugins: undefined,
               esbuildOptions: undefined,
               plugins: undefined,
