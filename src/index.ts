@@ -100,6 +100,7 @@ const normalizeOptions = async (
         throw new PrettyError(`Cannot find ${alias}: ${filename}`)
       }
     })
+    options.entry = entry
     logger.info('CLI', `Building entry: ${JSON.stringify(entry)}`)
   }
 
