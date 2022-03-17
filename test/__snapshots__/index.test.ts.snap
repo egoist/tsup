@@ -2,18 +2,35 @@
 
 exports[`--env flag 1`] = `
 "var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
+var __reExport = (target, module2, copyDefault, desc) => {
+  if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
+    for (let key of __getOwnPropNames(module2))
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
+        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+  }
+  return target;
+};
+var __toCommonJS = /* @__PURE__ */ ((cache) => {
+  return (module2, temp) => {
+    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
+  };
+})(typeof WeakMap !== \\"undefined\\" ? /* @__PURE__ */ new WeakMap() : 0);
 
 // input.ts
-__export(exports, {
+var input_exports = {};
+__export(input_exports, {
   env: () => env
 });
 var env = \\"test\\";
+module.exports = __toCommonJS(input_exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   env
@@ -22,37 +39,37 @@ var env = \\"test\\";
 `;
 
 exports[`bundle svelte 1`] = `
-"var __create = Object.create;
-var __defProp = Object.defineProperty;
+"var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __reExport = (target, module2, desc) => {
+var __reExport = (target, module2, copyDefault, desc) => {
   if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
     for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && key !== \\"default\\")
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
         __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
   }
   return target;
 };
-var __toModule = (module2) => {
-  return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, \\"default\\", module2 && module2.__esModule && \\"default\\" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
-};
+var __toCommonJS = /* @__PURE__ */ ((cache) => {
+  return (module2, temp) => {
+    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
+  };
+})(typeof WeakMap !== \\"undefined\\" ? /* @__PURE__ */ new WeakMap() : 0);
 
 // input.ts
-__export(exports, {
+var input_exports = {};
+__export(input_exports, {
   App: () => App_default
 });
 
 // App.svelte
-var import_internal = __toModule(require(\\"svelte/internal\\"));
+var import_internal = require(\\"svelte/internal\\");
 function create_fragment(ctx) {
   let span;
   return {
@@ -81,6 +98,7 @@ var App = class extends import_internal.SvelteComponent {
   }
 };
 var App_default = App;
+module.exports = __toCommonJS(input_exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   App
@@ -100,10 +118,10 @@ exports[`code splitting in cjs format 1`] = `
 "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});
 
 
-var _chunk56VUBPK5js = require('./chunk-56VUBPK5.js');
+var _chunkVF632YU7js = require('./chunk-VF632YU7.js');
 
 // input.ts
-var foo = () => Promise.resolve().then(() => _chunk56VUBPK5js.__toModule.call(void 0, _chunk56VUBPK5js.__require.call(void 0, \\"./foo-UAUJLGDY.js\\")));
+var foo = () => Promise.resolve().then(() => _chunkVF632YU7js.__toESM.call(void 0, _chunkVF632YU7js.__require.call(void 0, \\"./foo-UHQYLI73.js\\")));
 
 
 exports.foo = foo;
@@ -114,10 +132,10 @@ exports[`code splitting in cjs format 2`] = `
 "\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});
 
 
-var _chunk56VUBPK5js = require('./chunk-56VUBPK5.js');
+var _chunkVF632YU7js = require('./chunk-VF632YU7.js');
 
 // another-input.ts
-var foo = () => Promise.resolve().then(() => _chunk56VUBPK5js.__toModule.call(void 0, _chunk56VUBPK5js.__require.call(void 0, \\"./foo-UAUJLGDY.js\\")));
+var foo = () => Promise.resolve().then(() => _chunkVF632YU7js.__toESM.call(void 0, _chunkVF632YU7js.__require.call(void 0, \\"./foo-UHQYLI73.js\\")));
 
 
 exports.foo = foo;
@@ -154,41 +172,42 @@ export { MarkRequired };
 `;
 
 exports[`external 1`] = `
-"var __create = Object.create;
-var __defProp = Object.defineProperty;
+"var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __reExport = (target, module2, desc) => {
+var __reExport = (target, module2, copyDefault, desc) => {
   if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
     for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && key !== \\"default\\")
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
         __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
   }
   return target;
 };
-var __toModule = (module2) => {
-  return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, \\"default\\", module2 && module2.__esModule && \\"default\\" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
-};
+var __toCommonJS = /* @__PURE__ */ ((cache) => {
+  return (module2, temp) => {
+    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
+  };
+})(typeof WeakMap !== \\"undefined\\" ? /* @__PURE__ */ new WeakMap() : 0);
 
 // input.ts
-__export(exports, {
+var input_exports = {};
+__export(input_exports, {
   bar: () => import_bar.bar,
   baz: () => baz,
   foo: () => import_foo.foo
 });
-var import_foo = __toModule(require(\\"foo\\"));
-var import_bar = __toModule(require(\\"bar\\"));
+var import_foo = require(\\"foo\\");
+var import_bar = require(\\"bar\\");
 
 // node_modules/baz/index.ts
 var baz = \\"baz\\";
+module.exports = __toCommonJS(input_exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   bar,
@@ -204,18 +223,35 @@ exports[`import css in --dts 1`] = `""`;
 
 exports[`multiple targets 1`] = `
 "var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
+var __reExport = (target, module2, copyDefault, desc) => {
+  if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
+    for (let key of __getOwnPropNames(module2))
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
+        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+  }
+  return target;
+};
+var __toCommonJS = /* @__PURE__ */ ((cache) => {
+  return (module2, temp) => {
+    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
+  };
+})(typeof WeakMap !== \\"undefined\\" ? /* @__PURE__ */ new WeakMap() : 0);
 
 // input.ts
-__export(exports, {
+var input_exports = {};
+__export(input_exports, {
   answer: () => answer
 });
 var answer = 42;
+module.exports = __toCommonJS(input_exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   answer
@@ -231,35 +267,51 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-var __reExport = (target, module2, desc) => {
+var __reExport = (target, module2, copyDefault, desc) => {
   if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
     for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && key !== \\"default\\")
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
         __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
   }
   return target;
 };
-var __toModule = (module2) => {
-  return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, \\"default\\", module2 && module2.__esModule && \\"default\\" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
+var __toESM = (module2, isNodeMode) => {
+  return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, \\"default\\", !isNodeMode && module2 && module2.__esModule ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
 };
 
 // input.ts
-var import_node_fs = __toModule(require(\\"fs\\"));
+var import_node_fs = __toESM(require(\\"fs\\"));
 console.log(import_node_fs.default);
 "
 `;
 
 exports[`simple 1`] = `
 "var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
+var __reExport = (target, module2, copyDefault, desc) => {
+  if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
+    for (let key of __getOwnPropNames(module2))
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
+        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+  }
+  return target;
+};
+var __toCommonJS = /* @__PURE__ */ ((cache) => {
+  return (module2, temp) => {
+    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
+  };
+})(typeof WeakMap !== \\"undefined\\" ? /* @__PURE__ */ new WeakMap() : 0);
 
 // input.ts
-__export(exports, {
+var input_exports = {};
+__export(input_exports, {
   default: () => input_default
 });
 
@@ -268,6 +320,7 @@ var foo_default = \\"foo\\";
 
 // input.ts
 var input_default = foo_default;
+module.exports = __toCommonJS(input_exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {});
 "
@@ -275,20 +328,37 @@ var input_default = foo_default;
 
 exports[`support baseUrl and paths in tsconfig.json 1`] = `
 "var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
+var __reExport = (target, module2, copyDefault, desc) => {
+  if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
+    for (let key of __getOwnPropNames(module2))
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
+        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+  }
+  return target;
+};
+var __toCommonJS = /* @__PURE__ */ ((cache) => {
+  return (module2, temp) => {
+    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
+  };
+})(typeof WeakMap !== \\"undefined\\" ? /* @__PURE__ */ new WeakMap() : 0);
 
 // input.ts
-__export(exports, {
+var input_exports = {};
+__export(input_exports, {
   foo: () => foo
 });
 
 // foo.ts
 var foo = \\"foo\\";
+module.exports = __toCommonJS(input_exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   foo
