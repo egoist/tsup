@@ -20,7 +20,7 @@ specifiers:
   fs-extra: 10.0.0
   globby: ^11.0.3
   joycon: ^3.0.1
-  postcss: 8.4.5
+  postcss: 8.4.12
   postcss-load-config: ^3.0.1
   postcss-simple-vars: 6.0.3
   prettier: 2.5.1
@@ -70,8 +70,8 @@ devDependencies:
   consola: 2.15.3
   flat: 5.0.2
   fs-extra: 10.0.0
-  postcss: 8.4.5
-  postcss-simple-vars: 6.0.3_postcss@8.4.5
+  postcss: 8.4.12
+  postcss-simple-vars: 6.0.3_postcss@8.4.12
   prettier: 2.5.1
   resolve: 1.20.0
   rollup-plugin-dts: 4.1.0_rollup@2.60.1+typescript@4.6.3
@@ -1324,8 +1324,8 @@ packages:
       object-assign: 4.1.1
       thenify-all: 1.6.0
 
-  /nanoid/3.1.30:
-    resolution: {integrity: sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==}
+  /nanoid/3.3.1:
+    resolution: {integrity: sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
@@ -1406,22 +1406,22 @@ packages:
       lilconfig: 2.0.4
       yaml: 1.10.2
 
-  /postcss-simple-vars/6.0.3_postcss@8.4.5:
+  /postcss-simple-vars/6.0.3_postcss@8.4.12:
     resolution: {integrity: sha512-fkNn4Zio8vN4vIig9IFdb8lVlxWnYR769RgvxCM6YWlFKie/nQaOcaMMMFz/s4gsfHW4/5bJW+i57zD67mQU7g==}
     engines: {node: '>=10.0'}
     peerDependencies:
       postcss: ^8.2.1
     dependencies:
-      postcss: 8.4.5
+      postcss: 8.4.12
     dev: true
 
-  /postcss/8.4.5:
-    resolution: {integrity: sha512-jBDboWM8qpaqwkMwItqTQTiFikhs/67OYVvblFFTM7MrZjt6yMKd6r2kgXizEbTTljacm4NldIlZnhbjr84QYg==}
+  /postcss/8.4.12:
+    resolution: {integrity: sha512-lg6eITwYe9v6Hr5CncVbK70SoioNQIq81nsaG86ev5hAidQvmOeETBqs7jm43K2F5/Ley3ytDtriImV6TpNiSg==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
-      nanoid: 3.1.30
+      nanoid: 3.3.1
       picocolors: 1.0.0
-      source-map-js: 1.0.1
+      source-map-js: 1.0.2
     dev: true
 
   /prettier/2.5.1:
@@ -1504,8 +1504,8 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
 
-  /source-map-js/1.0.1:
-    resolution: {integrity: sha512-4+TN2b3tqOCd/kaGRJ/sTYA0tR0mdXx26ipdolxcwtJVqEnqNYvlCAt1q3ypy4QMlYus+Zh34RNtYLoq2oQ4IA==}
+  /source-map-js/1.0.2:
+    resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
     dev: true
 
@@ -1674,7 +1674,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.13.15
-      postcss: 8.4.5
+      postcss: 8.4.12
       resolve: 1.20.0
       rollup: 2.60.1
     optionalDependencies:
