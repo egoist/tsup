@@ -33,7 +33,7 @@ specifiers:
   string-argv: 0.3.1
   strip-json-comments: ^4.0.0
   sucrase: ^3.20.3
-  svelte: 3.44.3
+  svelte: 3.46.4
   tree-kill: ^1.2.2
   ts-essentials: 9.1.2
   tsconfig-paths: 3.12.0
@@ -78,7 +78,7 @@ devDependencies:
   rollup-plugin-hashbang: 2.2.2
   string-argv: 0.3.1
   strip-json-comments: 4.0.0
-  svelte: 3.44.3
+  svelte: 3.46.4
   ts-essentials: 9.1.2_typescript@4.6.3
   tsconfig-paths: 3.12.0
   tsup: 5.11.10_typescript@4.6.3
@@ -1556,8 +1556,8 @@ packages:
     dev: true
     optional: true
 
-  /svelte/3.44.3:
-    resolution: {integrity: sha512-aGgrNCip5PQFNfq9e9tmm7EYxWLVHoFsEsmKrtOeRD8dmoGDdyTQ+21xd7qgFd8MNdKGSYvg7F9dr+Tc0yDymg==}
+  /svelte/3.46.4:
+    resolution: {integrity: sha512-qKJzw6DpA33CIa+C/rGp4AUdSfii0DOTCzj/2YpSKKayw5WGSS624Et9L1nU1k2OVRS9vaENQXp2CVZNU+xvIg==}
     engines: {node: '>= 8'}
     dev: true
 
