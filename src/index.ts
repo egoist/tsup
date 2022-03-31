@@ -145,25 +145,33 @@ export async function build(_options: Options) {
         }
 
         if (options.dts) {
-          const worker = new Worker(path.join(__dirname, './rollup.js'))
-          worker.postMessage({
-            configName: item?.name,
-            options: {
-              ...options, // functions cannot be cloned
-              banner: undefined,
-              footer: undefined,
-              esbuildPlugins: undefined,
-              esbuildOptions: undefined,
-              plugins: undefined,
-            },
-          })
-          worker.on('message', (data) => {
-            if (data === 'error') {
-              process.exitCode = 1
-            } else if (data === 'success') {
-              process.exitCode = 0
-            }
-          })
+          const dtsTask = () => {
+            return new Promise<void>((resolve, reject) => {
+              const worker = new Worker(path.join(__dirname, './rollup.js'))
+              worker.postMessage({
+                configName: item?.name,
+                options: {
+                  ...options, // functions cannot be cloned
+                  banner: undefined,
+                  footer: undefined,
+                  esbuildPlugins: undefined,
+                  esbuildOptions: undefined,
+                  plugins: undefined,
+                },
+              })
+              worker.on('message', (data) => {
+                if (data === 'error') {
+                  process.exitCode = 1
+                  reject()
+                } else if (data === 'success') {
+                  process.exitCode = 0
+                  resolve()
+                }
+              })
+            })
+          }
+
+          await dtsTask()
         }
 
         if (!options.dts?.only) {

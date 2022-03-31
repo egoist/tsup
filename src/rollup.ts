@@ -244,6 +244,7 @@ const startRollup = async (options: NormalizedOptions) => {
     watchRollup(config)
   } else {
     await runRollup(config)
+    parentPort?.postMessage('success')
     parentPort?.close()
   }
 }
