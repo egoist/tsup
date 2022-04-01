@@ -250,7 +250,7 @@ test('minify', async () => {
   expect(outFiles).toEqual(['input.js'])
 })
 
-test('--env flag', async () => {
+test('env flag', async () => {
   const { output, outFiles } = await run(
     getTestName(),
     {
@@ -263,7 +263,7 @@ test('--env flag', async () => {
     }
   )
 
-  expect(output).toMatchSnapshot()
+  expect(output).toContain('var env = "production"')
   expect(outFiles).toEqual(['input.js'])
 })
 
@@ -375,9 +375,9 @@ test('bundle svelte', async () => {
       flags: ['--external', 'svelte/internal'],
     }
   )
-  expect(output, 'output').toMatchSnapshot()
-
-  expect(await getFileContent('dist/input.css'), 'css').toMatchSnapshot()
+  expect(output).not.toContain('<script>')
+  const css = await getFileContent('dist/input.css')
+  expect(css).toContain('color: red;')
 })
 
 test('bundle svelte without styles', async () => {
