@@ -144,9 +144,9 @@ export async function build(_options: Options) {
           logger.info('CLI', 'Running in watch mode')
         }
 
-        if (options.dts) {
-          const dtsTask = () => {
-            return new Promise<void>((resolve, reject) => {
+        const dtsTask = async () => {
+          if (options.dts) {
+            await new Promise<void>((resolve, reject) => {
               const worker = new Worker(path.join(__dirname, './rollup.js'))
               worker.postMessage({
                 configName: item?.name,
@@ -170,147 +170,149 @@ export async function build(_options: Options) {
               })
             })
           }
-
-          await dtsTask()
         }
 
-        if (!options.dts?.only) {
-          let existingOnSuccess: ChildProcess | undefined
-          /** Files imported by the entry */
-          const buildDependencies: Set<string> = new Set()
+        const otherTasks = async () => {
+          if (!options.dts?.only) {
+            let existingOnSuccess: ChildProcess | undefined
+            /** Files imported by the entry */
+            const buildDependencies: Set<string> = new Set()
 
-          const killPreviousProcess = async () => {
-            if (existingOnSuccess) {
-              await killProcess({
-                pid: existingOnSuccess.pid,
-              })
-              existingOnSuccess = undefined
-            }
-          }
-
-          const debouncedBuildAll = debouncePromise(
-            () => {
-              return buildAll()
-            },
-            100,
-            handleError
-          )
-
-          const buildAll = async () => {
-            const killPromise = killPreviousProcess()
-            // Store previous build dependencies in case the build failed
-            // So we can restore it
-            const previousBuildDependencies = new Set(buildDependencies)
-            buildDependencies.clear()
-
-            if (options.clean) {
-              const extraPatterns = Array.isArray(options.clean)
-                ? options.clean
-                : []
-              await removeFiles(
-                ['**/*', '!**/*.d.ts', ...extraPatterns],
-                options.outDir
-              )
-              logger.info('CLI', 'Cleaning output folder')
-            }
-
-            const css: Map<string, string> = new Map()
-            await Promise.all([
-              ...options.format.map(async (format, index) => {
-                const pluginContainer = new PluginContainer([
-                  shebang(),
-                  ...(options.plugins || []),
-                  cjsSplitting(),
-                  es5(),
-                  sizeReporter(),
-                ])
-                await pluginContainer.buildStarted()
-                await runEsbuild(options, {
-                  pluginContainer,
-                  format,
-                  css: index === 0 || options.injectStyle ? css : undefined,
-                  logger,
-                  buildDependencies,
-                }).catch((error) => {
-                  previousBuildDependencies.forEach((v) =>
-                    buildDependencies.add(v)
-                  )
-                  throw error
+            const killPreviousProcess = async () => {
+              if (existingOnSuccess) {
+                await killProcess({
+                  pid: existingOnSuccess.pid,
                 })
-              }),
-            ])
-            await killPromise
-            if (options.onSuccess) {
-              const parts = parseArgsStringToArgv(options.onSuccess)
-              const exec = parts[0]
-              const args = parts.splice(1)
-              existingOnSuccess = execa(exec, args, {
-                stdio: 'inherit',
+                existingOnSuccess = undefined
+              }
+            }
+
+            const debouncedBuildAll = debouncePromise(
+              () => {
+                return buildAll()
+              },
+              100,
+              handleError
+            )
+
+            const buildAll = async () => {
+              const killPromise = killPreviousProcess()
+              // Store previous build dependencies in case the build failed
+              // So we can restore it
+              const previousBuildDependencies = new Set(buildDependencies)
+              buildDependencies.clear()
+
+              if (options.clean) {
+                const extraPatterns = Array.isArray(options.clean)
+                  ? options.clean
+                  : []
+                await removeFiles(
+                  ['**/*', '!**/*.d.ts', ...extraPatterns],
+                  options.outDir
+                )
+                logger.info('CLI', 'Cleaning output folder')
+              }
+
+              const css: Map<string, string> = new Map()
+              await Promise.all([
+                ...options.format.map(async (format, index) => {
+                  const pluginContainer = new PluginContainer([
+                    shebang(),
+                    ...(options.plugins || []),
+                    cjsSplitting(),
+                    es5(),
+                    sizeReporter(),
+                  ])
+                  await pluginContainer.buildStarted()
+                  await runEsbuild(options, {
+                    pluginContainer,
+                    format,
+                    css: index === 0 || options.injectStyle ? css : undefined,
+                    logger,
+                    buildDependencies,
+                  }).catch((error) => {
+                    previousBuildDependencies.forEach((v) =>
+                      buildDependencies.add(v)
+                    )
+                    throw error
+                  })
+                }),
+              ])
+              await killPromise
+              if (options.onSuccess) {
+                const parts = parseArgsStringToArgv(options.onSuccess)
+                const exec = parts[0]
+                const args = parts.splice(1)
+                existingOnSuccess = execa(exec, args, {
+                  stdio: 'inherit',
+                })
+              }
+            }
+
+            const startWatcher = async () => {
+              if (!options.watch) return
+
+              const { watch } = await import('chokidar')
+
+              const customIgnores = options.ignoreWatch
+                ? Array.isArray(options.ignoreWatch)
+                  ? options.ignoreWatch
+                  : [options.ignoreWatch]
+                : []
+
+              const ignored = [
+                '**/{.git,node_modules}/**',
+                options.outDir,
+                ...customIgnores,
+              ]
+
+              const watchPaths =
+                typeof options.watch === 'boolean'
+                  ? '.'
+                  : Array.isArray(options.watch)
+                  ? options.watch.filter(
+                      (path): path is string => typeof path === 'string'
+                    )
+                  : options.watch
+
+              logger.info(
+                'CLI',
+                `Watching for changes in ${
+                  Array.isArray(watchPaths)
+                    ? watchPaths.map((v) => '"' + v + '"').join(' | ')
+                    : '"' + watchPaths + '"'
+                }`
+              )
+              logger.info(
+                'CLI',
+                `Ignoring changes in ${ignored
+                  .map((v) => '"' + v + '"')
+                  .join(' | ')}`
+              )
+
+              const watcher = watch(watchPaths, {
+                ignoreInitial: true,
+                ignorePermissionErrors: true,
+                ignored,
+              })
+              watcher.on('all', (type, file) => {
+                file = slash(file)
+                if (!buildDependencies.has(file)) return
+
+                logger.info('CLI', `Change detected: ${type} ${file}`)
+                debouncedBuildAll()
               })
             }
+
+            logger.info('CLI', `Target: ${options.target}`)
+
+            await buildAll()
+
+            startWatcher()
           }
-
-          const startWatcher = async () => {
-            if (!options.watch) return
-
-            const { watch } = await import('chokidar')
-
-            const customIgnores = options.ignoreWatch
-              ? Array.isArray(options.ignoreWatch)
-                ? options.ignoreWatch
-                : [options.ignoreWatch]
-              : []
-
-            const ignored = [
-              '**/{.git,node_modules}/**',
-              options.outDir,
-              ...customIgnores,
-            ]
-
-            const watchPaths =
-              typeof options.watch === 'boolean'
-                ? '.'
-                : Array.isArray(options.watch)
-                ? options.watch.filter(
-                    (path): path is string => typeof path === 'string'
-                  )
-                : options.watch
-
-            logger.info(
-              'CLI',
-              `Watching for changes in ${
-                Array.isArray(watchPaths)
-                  ? watchPaths.map((v) => '"' + v + '"').join(' | ')
-                  : '"' + watchPaths + '"'
-              }`
-            )
-            logger.info(
-              'CLI',
-              `Ignoring changes in ${ignored
-                .map((v) => '"' + v + '"')
-                .join(' | ')}`
-            )
-
-            const watcher = watch(watchPaths, {
-              ignoreInitial: true,
-              ignorePermissionErrors: true,
-              ignored,
-            })
-            watcher.on('all', (type, file) => {
-              file = slash(file)
-              if (!buildDependencies.has(file)) return
-
-              logger.info('CLI', `Change detected: ${type} ${file}`)
-              debouncedBuildAll()
-            })
-          }
-
-          logger.info('CLI', `Target: ${options.target}`)
-
-          await buildAll()
-
-          startWatcher()
         }
+
+        await Promise.all([dtsTask(), otherTasks()])
       }
     )
   )
