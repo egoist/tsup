@@ -26,7 +26,6 @@ export const nativeNodeModulesPlugin = (): Plugin => {
       // Files in the "node-file" virtual namespace call "require()" on the
       // path from esbuild of the ".node" file in the output directory.
       build.onLoad({ filter: /.*/, namespace: 'node-file' }, (args) => {
-        console.log(args.path)
         return {
           contents: `
             import path from ${JSON.stringify(args.path)}
