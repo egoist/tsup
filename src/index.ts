@@ -162,7 +162,7 @@ export async function build(_options: Options) {
               worker.on('message', (data) => {
                 if (data === 'error') {
                   process.exitCode = 1
-                  reject()
+                  reject(new Error('Failed to bundle declaration files'))
                 } else if (data === 'success') {
                   process.exitCode = 0
                   resolve()
