@@ -1,3 +1,4 @@
+import path from 'path'
 import { Plugin } from 'esbuild'
 
 // Copied from https://github.com/evanw/esbuild/issues/1051#issuecomment-806325487
@@ -7,20 +8,34 @@ export const nativeNodeModulesPlugin = (): Plugin => {
     setup(build) {
       // If a ".node" file is imported within a module in the "file" namespace, resolve
       // it to an absolute path and put it into the "node-file" virtual namespace.
-      build.onResolve({ filter: /\.node$/, namespace: 'file' }, (args) => ({
-        path: require.resolve(args.path, { paths: [args.resolveDir] }),
-        namespace: 'node-file',
-      }))
+      build.onResolve({ filter: /\.node$/, namespace: 'file' }, (args) => {
+        const resolvedId = require.resolve(args.path, {
+          paths: [args.resolveDir],
+        })
+        if (resolvedId.endsWith('.node')) {
+          return {
+            path: resolvedId,
+            namespace: 'node-file',
+          }
+        }
+        return {
+          path: resolvedId,
+        }
+      })
 
       // Files in the "node-file" virtual namespace call "require()" on the
       // path from esbuild of the ".node" file in the output directory.
-      build.onLoad({ filter: /.*/, namespace: 'node-file' }, (args) => ({
-        contents: `
-          import path from ${JSON.stringify(args.path)}
-          try { module.exports = require(path) }
-          catch {}
-        `,
-      }))
+      build.onLoad({ filter: /.*/, namespace: 'node-file' }, (args) => {
+        console.log(args.path)
+        return {
+          contents: `
+            import path from ${JSON.stringify(args.path)}
+            try { module.exports = require(path) }
+            catch {}
+          `,
+          resolveDir: path.dirname(args.path),
+        }
+      })
 
       // If a ".node" file is imported within a module in the "node-file" namespace, put
       // it in the "file" namespace where esbuild's default loading behavior will handle

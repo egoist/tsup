@@ -806,3 +806,16 @@ test('dts only: ignore files', async () => {
     ]
   `)
 })
+
+test('native-node-module plugin should handle *.node(.js) import properly', async () => {
+  await run(
+    getTestName(),
+    {
+      'input.tsx': `export * from './hi.node'`,
+      'hi.node.js': `export const hi = 'hi'`,
+    },
+    {
+      entry: ['input.tsx'],
+    }
+  )
+})
