@@ -3,6 +3,7 @@
  */
 import { JscConfig } from '@swc/core'
 import { Plugin } from 'esbuild'
+import path from 'path'
 import { Logger } from '../log'
 import { localRequire } from '../utils'
 
@@ -42,13 +43,26 @@ export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
 
         const result = await swc.transformFile(args.path, {
           jsc,
-          sourceMaps: 'inline',
+          sourceMaps: true,
           configFile: false,
           swcrc: false,
         })
 
+        let code = result.code
+        if (result.map) {
+          const map: { sources: string[] } = JSON.parse(result.map)
+          // Make sure sources are relative path
+          map.sources = map.sources.map((source) => {
+            return path.isAbsolute(source)
+              ? path.relative(path.dirname(args.path), source)
+              : source
+          })
+          code += `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+            JSON.stringify(map)
+          ).toString('base64')}`
+        }
         return {
-          contents: result.code,
+          contents: code,
         }
       })
     },

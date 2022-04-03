@@ -819,3 +819,23 @@ test('native-node-module plugin should handle *.node(.js) import properly', asyn
     }
   )
 })
+
+test('proper sourcemap sources path when swc is enabled', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const hi = 'hi'`,
+      'tsconfig.json': JSON.stringify({
+        compilerOptions: {
+          emitDecoratorMetadata: true,
+        },
+      }),
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--sourcemap'],
+    }
+  )
+  const map = await getFileContent('dist/input.js.map')
+  expect(map).toContain(`["../input.ts"]`)
+})
