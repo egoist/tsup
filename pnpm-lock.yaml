@@ -17,7 +17,7 @@ specifiers:
   esbuild: ^0.14.25
   execa: ^5.0.0
   flat: 5.0.2
-  fs-extra: 10.0.0
+  fs-extra: 10.1.0
   globby: ^11.0.3
   joycon: ^3.0.1
   postcss: 8.4.12
@@ -69,7 +69,7 @@ devDependencies:
   colorette: 2.0.16
   consola: 2.15.3
   flat: 5.0.2
-  fs-extra: 10.0.0
+  fs-extra: 10.1.0
   postcss: 8.4.12
   postcss-simple-vars: 6.0.3_postcss@8.4.12
   prettier: 2.5.1
@@ -981,8 +981,8 @@ packages:
     hasBin: true
     dev: true
 
-  /fs-extra/10.0.0:
-    resolution: {integrity: sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==}
+  /fs-extra/10.1.0:
+    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
     engines: {node: '>=12'}
     dependencies:
       graceful-fs: 4.2.8

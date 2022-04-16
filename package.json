@@ -51,7 +51,7 @@
     "colorette": "2.0.16",
     "consola": "2.15.3",
     "flat": "5.0.2",
-    "fs-extra": "10.0.0",
+    "fs-extra": "10.1.0",
     "postcss": "8.4.12",
     "postcss-simple-vars": "6.0.3",
     "prettier": "2.5.1",
