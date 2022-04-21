@@ -154,7 +154,7 @@ const getRollupConfig = async (
         dtsPlugin.default({
           compilerOptions: {
             ...compilerOptions,
-            baseUrl: path.resolve(compilerOptions.baseUrl || '.'),
+            baseUrl: compilerOptions.baseUrl || '.',
             // Ensure ".d.ts" modules are generated
             declaration: true,
             // Skip ".js" generation
