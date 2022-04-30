@@ -36,8 +36,8 @@ export async function loadTsupConfig(
   cwd: string
 ): Promise<{ path?: string; data?: ReturnType<typeof defineConfig> }> {
   const configJoycon = new JoyCon()
-  const configPath = await configJoycon.resolve(
-    [
+  const configPath = await configJoycon.resolve({
+    files: [
       'tsup.config.ts',
       'tsup.config.js',
       'tsup.config.cjs',
@@ -46,8 +46,9 @@ export async function loadTsupConfig(
       'package.json',
     ],
     cwd,
-    path.parse(cwd).root
-  )
+    stopDir: path.parse(cwd).root,
+    packageKey: 'tsup',
+  })
 
   if (configPath) {
     if (configPath.endsWith('.json')) {
