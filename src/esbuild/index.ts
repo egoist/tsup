@@ -174,6 +174,7 @@ export async function runEsbuild(
           : ['browser', 'module', 'main'],
       plugins: esbuildPlugins.filter(truthy),
       define: {
+        TSUP_FORMAT: JSON.stringify(format),
         ...(format === 'cjs' && injectShims
           ? {
               'import.meta.url': 'importMetaUrl',
