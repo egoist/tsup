@@ -126,7 +126,7 @@ export async function build(_options: Options) {
     _options.config === false ? {} : await loadTsupConfig(process.cwd())
 
   const configData =
-    typeof config.data === 'function' ? config.data(_options) : config.data
+    typeof config.data === 'function' ? await config.data(_options) : config.data
 
   await Promise.all(
     [...(Array.isArray(configData) ? configData : [configData])].map(
