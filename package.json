@@ -83,5 +83,8 @@
     "@swc/core": {
       "optional": true
     }
+  },
+  "engines": {
+    "node": ">=14"
   }
 }

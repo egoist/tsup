@@ -64,7 +64,7 @@ const normalizeOptions = async (
     ...optionsOverride,
   }
   const options: Buildable<NormalizedOptions> = {
-    target: 'node12',
+    target: 'node14',
     format: ['cjs'],
     outDir: 'dist',
     ..._options,

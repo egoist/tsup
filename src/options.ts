@@ -43,7 +43,7 @@ export type Options = {
   /**
    * Compile target
    *
-   * default to `node12`
+   * default to `node14`
    */
   target?: string | string[]
   minify?: boolean
