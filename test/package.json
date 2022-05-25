@@ -4,7 +4,8 @@
     "@egoist/path-parser": "1.0.4",
     "graphql": "^15.3.0",
     "graphql-tools": "^5.0.0",
-    "vue": "3.0.5"
+    "vue": "3.2.36",
+    "vue-router": "4.0.15"
   },
   "tsup": {}
 }

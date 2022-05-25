@@ -839,3 +839,22 @@ test('proper sourcemap sources path when swc is enabled', async () => {
   const map = await getFileContent('dist/input.js.map')
   expect(map).toContain(`["../input.ts"]`)
 })
+
+// Fixing https://github.com/evanw/esbuild/issues/1794
+test('use rollup for treeshaking', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `
+      export { useRoute } from 'vue-router' 
+      `,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--treeshake', '--external', 'vue', '--format', 'esm'],
+    }
+  )
+  expect(await getFileContent('dist/input.mjs')).toContain(
+    `import { inject } from 'vue'`
+  )
+})

@@ -1,6 +1,7 @@
 import type { BuildOptions, Plugin as EsbuildPlugin, Loader } from 'esbuild'
 import type { InputOption } from 'rollup'
 import { Plugin } from './plugin'
+import { TreeshakingStrategy } from './plugins/tree-shaking'
 
 export type Format = 'cjs' | 'esm' | 'iife'
 
@@ -139,7 +140,7 @@ export type Options = {
   injectStyle?: boolean
   /**
    * Inject cjs and esm shims if needed
-   * @default {true}
+   * @default true
    */
   shims?: boolean
   /**
@@ -148,4 +149,12 @@ export type Options = {
    * @alpha
    */
   plugins?: Plugin[]
+  /**
+   * By default esbuild already does treeshaking
+   *
+   * But this option allow you to perform additional treeshaking with Rollup
+   *
+   * This can result in smaller bundle size
+   */
+  treeshake?: TreeshakingStrategy
 }

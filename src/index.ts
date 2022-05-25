@@ -20,6 +20,7 @@ import { cjsSplitting } from './plugins/cjs-splitting'
 import { PluginContainer } from './plugin'
 import { es5 } from './plugins/es5'
 import { sizeReporter } from './plugins/size-reporter'
+import { treeShakingPlugin } from './plugins/tree-shaking'
 
 export type { Format, Options }
 
@@ -159,6 +160,7 @@ export async function build(_options: Options) {
                   esbuildPlugins: undefined,
                   esbuildOptions: undefined,
                   plugins: undefined,
+                  treeshake: undefined,
                 },
               })
               worker.on('message', (data) => {
@@ -219,6 +221,9 @@ export async function build(_options: Options) {
                   const pluginContainer = new PluginContainer([
                     shebang(),
                     ...(options.plugins || []),
+                    treeShakingPlugin({
+                      treeshake: options.treeshake,
+                    }),
                     cjsSplitting(),
                     es5(),
                     sizeReporter(),

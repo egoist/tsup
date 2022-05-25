@@ -81,6 +81,10 @@ export async function main(options: Options = {}) {
     .option('--no-config', 'Disable config file')
     .option('--no-shims', 'Disable cjs and esm shims')
     .option('--inject-style', 'Inject style tag to document head')
+    .option(
+      '--treeshake [strategy]',
+      'Using Rollup for treeshaking instead, "recommended" or "smallest" or "safest"'
+    )
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
       Object.assign(options, {
@@ -98,7 +102,10 @@ export async function main(options: Options = {}) {
         options.external = external
       }
       if (flags.target) {
-        options.target = flags.target.indexOf(',') >= 0 ? flags.target.split(',') : flags.target
+        options.target =
+          flags.target.indexOf(',') >= 0
+            ? flags.target.split(',')
+            : flags.target
       }
       if (flags.dts || flags.dtsResolve || flags.dtsOnly) {
         options.dts = {}

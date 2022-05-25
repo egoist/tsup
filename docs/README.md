@@ -149,7 +149,7 @@ The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `
 
 #### Generate TypeScript declaration maps (.d.ts.map)
 
-TypeScript declaration maps are mainly used to quickly jump to type definitions in the context of a monorepo (see [source issue](https://github.com/Microsoft/TypeScript/issues/14479) and [official documentation](https://www.typescriptlang.org/tsconfig/#declarationMap)). 
+TypeScript declaration maps are mainly used to quickly jump to type definitions in the context of a monorepo (see [source issue](https://github.com/Microsoft/TypeScript/issues/14479) and [official documentation](https://www.typescriptlang.org/tsconfig/#declarationMap)).
 
 They should not be included in a published NPM package and should not be confused with sourcemaps.
 
@@ -318,6 +318,26 @@ export default defineConfig({
   },
 })
 ```
+
+### Tree Shaking
+
+esbuild has [tree shaking](https://esbuild.github.io/api/#tree-shaking) enabled by default, but sometimes it's not working very well, see [#1794](https://github.com/evanw/esbuild/issues/1794) [#1435](https://github.com/evanw/esbuild/issues/1435), so tsup offers an additional option to let you use Rollup for tree shaking instead:
+
+```bash
+tsup src/index.ts --treeshake
+```
+
+This flag above will enable Rollup for tree shaking, and it's equivalent to the following `tsup.config.ts`:
+
+```ts
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  treeshake: true,
+})
+```
+
+This option has the same type as the `treeshake` option in Rollup, [see more](https://rollupjs.org/guide/en/#treeshake).
 
 ### What about type checking?
 
