@@ -1,4 +1,4 @@
-lockfileVersion: 5.4
+lockfileVersion: 5.3
 
 specifiers:
   '@rollup/plugin-json': 4.1.0
@@ -26,8 +26,8 @@ specifiers:
   prettier: 2.5.1
   resolve: 1.20.0
   resolve-from: ^5.0.0
-  rollup: ^2.60.0
-  rollup-plugin-dts: 4.2.0
+  rollup: ^2.74.1
+  rollup-plugin-dts: 4.2.1
   rollup-plugin-hashbang: 2.2.2
   source-map: 0.8.0-beta.0
   string-argv: 0.3.1
@@ -53,13 +53,13 @@ dependencies:
   joycon: 3.0.1
   postcss-load-config: 3.1.0
   resolve-from: 5.0.0
-  rollup: 2.60.1
+  rollup: 2.74.1
   source-map: 0.8.0-beta.0
   sucrase: 3.20.3
   tree-kill: 1.2.2
 
 devDependencies:
-  '@rollup/plugin-json': 4.1.0_rollup@2.60.1
+  '@rollup/plugin-json': 4.1.0_rollup@2.74.1
   '@swc/core': 1.2.126
   '@types/debug': 4.1.7
   '@types/flat': 5.0.2
@@ -74,7 +74,7 @@ devDependencies:
   postcss-simple-vars: 6.0.3_postcss@8.4.12
   prettier: 2.5.1
   resolve: 1.20.0
-  rollup-plugin-dts: 4.2.0_mer3b4v3kd44wytj4s7pugu6cm
+  rollup-plugin-dts: 4.2.1_rollup@2.74.1+typescript@4.6.3
   rollup-plugin-hashbang: 2.2.2
   string-argv: 0.3.1
   strip-json-comments: 4.0.0
@@ -141,16 +141,16 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
 
-  /@rollup/plugin-json/4.1.0_rollup@2.60.1:
+  /@rollup/plugin-json/4.1.0_rollup@2.74.1:
     resolution: {integrity: sha512-yfLbTdNS6amI/2OpmbiBoW12vngr5NW2jCJVZSBEz+H5KfUJZ2M7sDjk0U6GOOdCWFVScShte29o9NezJ53TPw==}
     peerDependencies:
       rollup: ^1.20.0 || ^2.0.0
     dependencies:
-      '@rollup/pluginutils': 3.1.0_rollup@2.60.1
-      rollup: 2.60.1
+      '@rollup/pluginutils': 3.1.0_rollup@2.74.1
+      rollup: 2.74.1
     dev: true
 
-  /@rollup/pluginutils/3.1.0_rollup@2.60.1:
+  /@rollup/pluginutils/3.1.0_rollup@2.74.1:
     resolution: {integrity: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==}
     engines: {node: '>= 8.0.0'}
     peerDependencies:
@@ -159,7 +159,7 @@ packages:
       '@types/estree': 0.0.39
       estree-walker: 1.0.1
       picomatch: 2.3.0
-      rollup: 2.60.1
+      rollup: 2.74.1
     dev: true
 
   /@swc/core-android-arm-eabi/1.2.126:
@@ -1368,15 +1368,15 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  /rollup-plugin-dts/4.2.0_mer3b4v3kd44wytj4s7pugu6cm:
-    resolution: {integrity: sha512-lx6irWVhz/x4//tIqRhzk4FOqGQ0n37ZM2wpPCn4uafl/EmiV92om7ZdAsq7Bzho6C+Xh5GfsyuP9H+Udv72Lg==}
-    engines: {node: '>=v12.22.10'}
+  /rollup-plugin-dts/4.2.1_rollup@2.74.1+typescript@4.6.3:
+    resolution: {integrity: sha512-eaxQZNUJ5iQcxNGlpJ1CUgG4OSVqWjDZ3nNSWBIoGrpcote2aNphSe1RJOaSYkb8dwn3o+rYm1vvld/5z3EGSQ==}
+    engines: {node: '>=v12.22.11'}
     peerDependencies:
-      rollup: ^2.55
-      typescript: ^4.1
+      rollup: ^2.70
+      typescript: ^4.6
     dependencies:
       magic-string: 0.26.1
-      rollup: 2.60.1
+      rollup: 2.74.1
       typescript: 4.6.3
     optionalDependencies:
       '@babel/code-frame': 7.16.7
@@ -1389,8 +1389,8 @@ packages:
       magic-string: 0.22.5
     dev: true
 
-  /rollup/2.60.1:
-    resolution: {integrity: sha512-akwfnpjY0rXEDSn1UTVfKXJhPsEBu+imi1gqBA1ZkHGydUnkV/fWCC90P7rDaLEW8KTwBcS1G3N4893Ndz+jwg==}
+  /rollup/2.74.1:
+    resolution: {integrity: sha512-K2zW7kV8Voua5eGkbnBtWYfMIhYhT9Pel2uhBk2WO5eMee161nPze/XRfvEQPFYz7KgrCCnmh2Wy0AMFLGGmMA==}
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
@@ -1564,7 +1564,7 @@ packages:
       joycon: 3.0.1
       postcss-load-config: 3.1.0
       resolve-from: 5.0.0
-      rollup: 2.60.1
+      rollup: 2.74.1
       source-map: 0.7.3
       sucrase: 3.20.3
       tree-kill: 1.2.2
@@ -1609,7 +1609,7 @@ packages:
       esbuild: 0.14.29
       postcss: 8.4.12
       resolve: 1.22.0
-      rollup: 2.60.1
+      rollup: 2.74.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
