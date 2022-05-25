@@ -69,10 +69,18 @@
     "wait-for-expect": "3.0.2"
   },
   "peerDependencies": {
-    "typescript": "^4.1.0"
+    "typescript": "^4.1.0",
+    "postcss": "^8.4.12",
+    "@swc/core": "^1"
   },
   "peerDependenciesMeta": {
     "typescript": {
+      "optional": true
+    },
+    "postcss": {
+      "optional": true
+    },
+    "@swc/core": {
       "optional": true
     }
   }

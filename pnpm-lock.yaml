@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 specifiers:
   '@rollup/plugin-json': 4.1.0
@@ -74,7 +74,7 @@ devDependencies:
   postcss-simple-vars: 6.0.3_postcss@8.4.12
   prettier: 2.5.1
   resolve: 1.20.0
-  rollup-plugin-dts: 4.2.1_rollup@2.74.1+typescript@4.6.3
+  rollup-plugin-dts: 4.2.1_rymbksdyfyl5jij5b5y6cpv63i
   rollup-plugin-hashbang: 2.2.2
   string-argv: 0.3.1
   strip-json-comments: 4.0.0
@@ -1368,7 +1368,7 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  /rollup-plugin-dts/4.2.1_rollup@2.74.1+typescript@4.6.3:
+  /rollup-plugin-dts/4.2.1_rymbksdyfyl5jij5b5y6cpv63i:
     resolution: {integrity: sha512-eaxQZNUJ5iQcxNGlpJ1CUgG4OSVqWjDZ3nNSWBIoGrpcote2aNphSe1RJOaSYkb8dwn3o+rYm1vvld/5z3EGSQ==}
     engines: {node: '>=v12.22.11'}
     peerDependencies:
