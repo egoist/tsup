@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
 import type { Buildable, MarkRequired } from 'ts-essentials'
-import { removeFiles, debouncePromise, slash } from './utils'
+import { removeFiles, debouncePromise, slash, MaybePromise } from './utils'
 import { loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
@@ -39,7 +39,7 @@ export const defineConfig = (
     | ((
         /** The options derived from CLI flags */
         overrideOptions: Options
-      ) => Options | Options[])
+      ) => MaybePromise<Options | Options[]>)
 ) => options
 
 const killProcess = ({
@@ -126,7 +126,9 @@ export async function build(_options: Options) {
     _options.config === false ? {} : await loadTsupConfig(process.cwd())
 
   const configData =
-    typeof config.data === 'function' ? config.data(_options) : config.data
+    typeof config.data === 'function'
+      ? await config.data(_options)
+      : config.data
 
   await Promise.all(
     [...(Array.isArray(configData) ? configData : [configData])].map(

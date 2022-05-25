@@ -3,6 +3,8 @@ import glob from 'globby'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
 
+export type MaybePromise<T> = T | Promise<T>
+
 export type External =
   | string
   | RegExp
