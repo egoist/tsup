@@ -1,127 +1,8 @@
 // Vitest Snapshot v1
 
-exports[`--env flag 1`] = `
-"var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __reExport = (target, module2, copyDefault, desc) => {
-  if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
-    for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
-        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
-  }
-  return target;
-};
-var __toCommonJS = /* @__PURE__ */ ((cache) => {
-  return (module2, temp) => {
-    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
-  };
-})(typeof WeakMap !== \\"undefined\\" ? /* @__PURE__ */ new WeakMap() : 0);
-
-// input.ts
-var input_exports = {};
-__export(input_exports, {
-  env: () => env
-});
-var env = \\"test\\";
-module.exports = __toCommonJS(input_exports);
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  env
-});
-"
-`;
-
-exports[`bundle svelte 1`] = `
-"var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __markAsModule = (target) => __defProp(target, \\"__esModule\\", { value: true });
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __reExport = (target, module2, copyDefault, desc) => {
-  if (module2 && typeof module2 === \\"object\\" || typeof module2 === \\"function\\") {
-    for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== \\"default\\"))
-        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
-  }
-  return target;
-};
-var __toCommonJS = /* @__PURE__ */ ((cache) => {
-  return (module2, temp) => {
-    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
-  };
-})(typeof WeakMap !== \\"undefined\\" ? /* @__PURE__ */ new WeakMap() : 0);
-
-// input.ts
-var input_exports = {};
-__export(input_exports, {
-  App: () => App_default
-});
-
-// App.svelte
-var import_internal = require(\\"svelte/internal\\");
-function create_fragment(ctx) {
-  let span;
-  return {
-    c() {
-      span = (0, import_internal.element)(\\"span\\");
-      span.textContent = \`\${msg}\`;
-      (0, import_internal.attr)(span, \\"class\\", \\"svelte-1jo4k3z\\");
-    },
-    m(target, anchor) {
-      (0, import_internal.insert)(target, span, anchor);
-    },
-    p: import_internal.noop,
-    i: import_internal.noop,
-    o: import_internal.noop,
-    d(detaching) {
-      if (detaching)
-        (0, import_internal.detach)(span);
-    }
-  };
-}
-var msg = \\"hello svelte\\";
-var App = class extends import_internal.SvelteComponent {
-  constructor(options) {
-    super();
-    (0, import_internal.init)(this, options, null, create_fragment, import_internal.safe_not_equal, {});
-  }
-};
-var App_default = App;
-module.exports = __toCommonJS(input_exports);
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  App
-});
-"
-`;
-
-exports[`bundle svelte 2`] = `
-"/* svelte-css:App.svelte.css */
-span.svelte-1jo4k3z {
-  color: red;
-}
-"
-`;
-
 exports[`code splitting in cjs format 1`] = `
-"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});
-
-
-var _chunkVF632YU7js = require('./chunk-VF632YU7.js');
-
-// input.ts
-var foo = () => Promise.resolve().then(() => _chunkVF632YU7js.__toESM.call(void 0, _chunkVF632YU7js.__require.call(void 0, \\"./foo-UHQYLI73.js\\")));
+"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
+var foo = () => Promise.resolve().then(() => require(\\"./foo-D62QZYUQ.js\\"));
 
 
 exports.foo = foo;
@@ -129,13 +10,8 @@ exports.foo = foo;
 `;
 
 exports[`code splitting in cjs format 2`] = `
-"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});
-
-
-var _chunkVF632YU7js = require('./chunk-VF632YU7.js');
-
-// another-input.ts
-var foo = () => Promise.resolve().then(() => _chunkVF632YU7js.__toESM.call(void 0, _chunkVF632YU7js.__require.call(void 0, \\"./foo-UHQYLI73.js\\")));
+"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// another-input.ts
+var foo = () => Promise.resolve().then(() => require(\\"./foo-D62QZYUQ.js\\"));
 
 
 exports.foo = foo;

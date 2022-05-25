@@ -87,7 +87,7 @@ export async function runEsbuild(
 
   const platform = options.platform || 'node'
   const loader = options.loader || {}
-  const injectShims = options.shims !== false
+  const injectShims = options.shims
 
   pluginContainer.setContext({
     format,

@@ -495,7 +495,9 @@ test(`transform import.meta.url in cjs format`, async () => {
     {
       'input.ts': `export default import.meta.url`,
     },
-    {}
+    {
+      flags: ['--shims'],
+    }
   )
   expect(await getFileContent('dist/input.js')).toContain('getImportMetaUrl')
 })
@@ -509,7 +511,7 @@ test(`transform __dirname and __filename in esm format`, async () => {
     `,
     },
     {
-      flags: ['--format', 'esm'],
+      flags: ['--format', 'esm', '--shims'],
     }
   )
   const code = await getFileContent('dist/input.mjs')
