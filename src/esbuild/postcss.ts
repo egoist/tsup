@@ -17,7 +17,7 @@ export const postcssPlugin = ({
       const configCache = new Map()
 
       const getPostcssConfig = async (file: string) => {
-        const loadConfig: typeof import('postcss-load-config') = require('postcss-load-config')
+        const loadConfig = require('postcss-load-config')
 
         if (configCache.has(file)) {
           return configCache.get(file)

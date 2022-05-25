@@ -21,7 +21,7 @@ specifiers:
   globby: ^11.0.3
   joycon: ^3.0.1
   postcss: 8.4.12
-  postcss-load-config: ^4.0.0
+  postcss-load-config: ^3.0.1
   postcss-simple-vars: 6.0.3
   prettier: 2.5.1
   resolve: 1.20.0
@@ -51,7 +51,7 @@ dependencies:
   execa: 5.1.1
   globby: 11.0.4
   joycon: 3.0.1
-  postcss-load-config: 4.0.0_postcss@8.4.12
+  postcss-load-config: 3.1.0
   resolve-from: 5.0.0
   rollup: 2.74.1
   source-map: 0.8.0-beta.0
@@ -1069,14 +1069,12 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       import-from: 3.0.0
-    dev: true
 
   /import-from/3.0.0:
     resolution: {integrity: sha512-CiuXOFFSzkU5x/CR0+z7T91Iht4CXgfCxVOFRhh2Zyhg5wOpWvvDLQUsWl+gcN+QscYBjez8hDCt85O7RLDttQ==}
     engines: {node: '>=8'}
     dependencies:
       resolve-from: 5.0.0
-    dev: true
 
   /inflight/1.0.6:
     resolution: {integrity: sha1-Sb1jMdfQLQwJvJEKEHW6gWW1bfk=}
@@ -1153,12 +1151,6 @@ packages:
   /lilconfig/2.0.4:
     resolution: {integrity: sha512-bfTIN7lEsiooCocSISTWXkiWJkRqtL9wYtYy+8EK3Y41qh3mpwPU0ycTOgjdY9ErwXCc8QyrQp82bdL0Xkm9yA==}
     engines: {node: '>=10'}
-    dev: true
-
-  /lilconfig/2.0.5:
-    resolution: {integrity: sha512-xaYmXZtTHPAw5m+xLN8ab9C+3a8YmV3asNSPOATITbtwrfbwaLJj8h66H1WMIpALCkqsIzK3h7oQ+PdX+LQ9Eg==}
-    engines: {node: '>=10'}
-    dev: false
 
   /lines-and-columns/1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -1313,24 +1305,6 @@ packages:
       import-cwd: 3.0.0
       lilconfig: 2.0.4
       yaml: 1.10.2
-    dev: true
-
-  /postcss-load-config/4.0.0_postcss@8.4.12:
-    resolution: {integrity: sha512-HBMHYoN1OobLx7EpbuW52AOZiJ408ISFJ6QTF/kJ8aKhpoOXFIDzEtcRwoh+JdEt6oUkcU7XZa2Ot0KJ5sI+jQ==}
-    engines: {node: '>= 14'}
-    peerDependencies:
-      postcss: '>=8.0.9'
-      ts-node: '>=9.0.0'
-    peerDependenciesMeta:
-      postcss:
-        optional: true
-      ts-node:
-        optional: true
-    dependencies:
-      lilconfig: 2.0.5
-      postcss: 8.4.12
-      yaml: 2.1.0
-    dev: false
 
   /postcss-simple-vars/6.0.3_postcss@8.4.12:
     resolution: {integrity: sha512-fkNn4Zio8vN4vIig9IFdb8lVlxWnYR769RgvxCM6YWlFKie/nQaOcaMMMFz/s4gsfHW4/5bJW+i57zD67mQU7g==}
@@ -1705,9 +1679,3 @@ packages:
   /yaml/1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
-    dev: true
-
-  /yaml/2.1.0:
-    resolution: {integrity: sha512-OuAINfTsoJrY5H7CBWnKZhX6nZciXBydrMtTHr1dC4nP40X5jyTIVlogZHxSlVZM8zSgXRfgZGsaHF4+pV+JRw==}
-    engines: {node: '>= 14'}
-    dev: false
