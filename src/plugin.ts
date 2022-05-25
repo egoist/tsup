@@ -4,6 +4,7 @@ import { SourceMapConsumer, SourceMapGenerator, RawSourceMap } from 'source-map'
 import { Format, NormalizedOptions } from '.'
 import { outputFile } from './fs'
 import { Logger } from './log'
+import { MaybePromise } from './utils'
 
 export type ChunkInfo = {
   type: 'chunk'
@@ -21,8 +22,6 @@ export type AssetInfo = {
   path: string
   contents: Uint8Array
 }
-
-type MaybePromise<T> = T | Promise<T>
 
 export type RenderChunk = (
   this: PluginContext,
