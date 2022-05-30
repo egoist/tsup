@@ -13,7 +13,7 @@ import execa from 'execa'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { createLogger, setSilent } from './log'
-import { DtsConfig, Format, Options } from './options'
+import { NormalizedOptions, Format, Options } from './options'
 import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
@@ -22,16 +22,7 @@ import { es5 } from './plugins/es5'
 import { sizeReporter } from './plugins/size-reporter'
 import { treeShakingPlugin } from './plugins/tree-shaking'
 
-export type { Format, Options }
-
-export type NormalizedOptions = Omit<
-  MarkRequired<Options, 'entry' | 'format' | 'outDir'>,
-  'dts'
-> & {
-  dts?: DtsConfig
-  tsconfigResolvePaths: Record<string, string[]>
-  tsconfigDecoratorMetadata?: boolean
-}
+export type { Format, Options, NormalizedOptions }
 
 export const defineConfig = (
   options:

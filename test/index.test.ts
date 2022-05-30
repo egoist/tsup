@@ -860,3 +860,29 @@ test('use rollup for treeshaking', async () => {
     `import { inject } from 'vue'`
   )
 })
+
+test('custom output extension', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const foo = [1,2,3]`,
+      'tsup.config.ts': `export default {
+        outExtension({ format }) {
+          return {
+            js: '.' + format + '.js'
+          }
+        }
+      }`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--format', 'esm,cjs'],
+    }
+  )
+  expect(outFiles).toMatchInlineSnapshot(`
+    [
+      "input.cjs.js",
+      "input.esm.js",
+    ]
+  `)
+})

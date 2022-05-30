@@ -1,9 +1,23 @@
 import type { BuildOptions, Plugin as EsbuildPlugin, Loader } from 'esbuild'
 import type { InputOption } from 'rollup'
-import { Plugin } from './plugin'
-import { TreeshakingStrategy } from './plugins/tree-shaking'
+import { MarkRequired } from 'ts-essentials'
+import type { Plugin } from './plugin'
+import type { TreeshakingStrategy } from './plugins/tree-shaking'
 
 export type Format = 'cjs' | 'esm' | 'iife'
+
+export type ContextForOutPathGeneration = {
+  options: NormalizedOptions
+  format: Format
+  /** "type" field in project's package.json */
+  pkgType?: string
+}
+
+export type OutExtensionObject = { js?: string }
+
+export type OutExtensionFactory = (
+  ctx: ContextForOutPathGeneration
+) => OutExtensionObject
 
 export type DtsConfig = {
   entry?: InputOption
@@ -57,6 +71,7 @@ export type Options = {
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string
+  outExtension?: OutExtensionFactory
   format?: Format[]
   globalName?: string
   env?: {
@@ -157,4 +172,13 @@ export type Options = {
    * This can result in smaller bundle size
    */
   treeshake?: TreeshakingStrategy
+}
+
+export type NormalizedOptions = Omit<
+  MarkRequired<Options, 'entry' | 'format' | 'outDir'>,
+  'dts'
+> & {
+  dts?: DtsConfig
+  tsconfigResolvePaths: Record<string, string[]>
+  tsconfigDecoratorMetadata?: boolean
 }

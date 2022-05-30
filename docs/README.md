@@ -224,6 +224,37 @@ dist
 └── index.js
 ```
 
+### Output extension
+
+You can also change the output extension of the files by using `outExtension` option:
+
+```ts
+export default defineConfig({
+  outExtension({ format }) {
+    return {
+      js: `.${format}.js`,
+    }
+  },
+})
+```
+
+This will generate your files to `[name].[format].js`.
+
+The signature of `outExtension` is:
+
+```ts
+type OutExtension = (ctx: Context) => Result
+
+type Context = {
+  options: NormalizedOptions
+  format: Format
+  /** "type" field in project's package.json */
+  pkgType?: string
+}
+
+type Result = { js?: string }
+```
+
 ### Code Splitting
 
 Code splitting currently only works with the `esm` output format, and it's enabled by default. If you want code splitting for `cjs` output format as well, try using `--splitting` flag which is an experimental feature to get rid of [the limitation in esbuild](https://esbuild.github.io/api/#splitting).
@@ -319,7 +350,7 @@ export default defineConfig({
 })
 ```
 
-### Tree Shaking
+### Tree shaking
 
 esbuild has [tree shaking](https://esbuild.github.io/api/#tree-shaking) enabled by default, but sometimes it's not working very well, see [#1794](https://github.com/evanw/esbuild/issues/1794) [#1435](https://github.com/evanw/esbuild/issues/1435), so tsup offers an additional option to let you use Rollup for tree shaking instead:
 

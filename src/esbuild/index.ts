@@ -18,23 +18,44 @@ import { truthy } from '../utils'
 import { swcPlugin } from './swc'
 import { nativeNodeModulesPlugin } from './native-node-module'
 import { PluginContainer } from '../plugin'
+import { OutExtensionFactory } from '../options'
 
-const getOutputExtensionMap = (
-  pkgTypeField: string | undefined,
+const defaultOutExtension = ({
+  format,
+  pkgType,
+}: {
   format: Format
-) => {
-  const isModule = pkgTypeField === 'module'
-  const map: Record<string, string> = {}
+  pkgType?: string
+}): { js: string } => {
+  let jsExtension = '.js'
+  const isModule = pkgType === 'module'
   if (isModule && format === 'cjs') {
-    map['.js'] = '.cjs'
+    jsExtension = '.cjs'
   }
   if (!isModule && format === 'esm') {
-    map['.js'] = '.mjs'
+    jsExtension = '.mjs'
   }
   if (format === 'iife') {
-    map['.js'] = '.global.js'
+    jsExtension = '.global.js'
   }
-  return map
+  return {
+    js: jsExtension,
+  }
+}
+
+const getOutputExtensionMap = (
+  options: NormalizedOptions,
+  format: Format,
+  pkgType: string | undefined
+) => {
+  const outExtension: OutExtensionFactory =
+    options.outExtension || defaultOutExtension
+
+  const defaultExtension = defaultOutExtension({ format, pkgType })
+  const extension = outExtension({ options, format, pkgType })
+  return {
+    '.js': extension.js || defaultExtension.js,
+  }
 }
 
 export async function runEsbuild(
@@ -62,7 +83,7 @@ export async function runEsbuild(
   ]
   const outDir = options.outDir
 
-  const outExtension = getOutputExtensionMap(pkg.type, format)
+  const outExtension = getOutputExtensionMap(options, format, pkg.type)
   const env: { [k: string]: string } = {
     ...options.env,
   }
