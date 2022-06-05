@@ -9,10 +9,10 @@ export const colorize = (type: LOG_TYPE, data: any, onlyImportant = false) => {
     type === 'info'
       ? 'blue'
       : type === 'error'
-      ? 'red'
-      : type === 'warn'
-      ? 'yellow'
-      : 'green'
+        ? 'red'
+        : type === 'warn'
+          ? 'yellow'
+          : 'green'
   return colors[color](data)
 }
 
@@ -33,6 +33,10 @@ let silent = false
 
 export function setSilent(isSilent?: boolean) {
   silent = !!isSilent
+}
+
+export function getSilent() {
+  return silent
 }
 
 export type Logger = ReturnType<typeof createLogger>
