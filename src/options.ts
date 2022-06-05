@@ -72,7 +72,7 @@ export type Options = {
   jsxFragment?: string
   outDir?: string
   outExtension?: OutExtensionFactory
-  format?: Format[]
+  format?: Format[] | string
   globalName?: string
   env?: {
     [k: string]: string
@@ -176,10 +176,11 @@ export type Options = {
 }
 
 export type NormalizedOptions = Omit<
-  MarkRequired<Options, 'entry' | 'format' | 'outDir'>,
-  'dts'
+  MarkRequired<Options, 'entry' | 'outDir'>,
+  'dts' | 'format'
 > & {
   dts?: DtsConfig
   tsconfigResolvePaths: Record<string, string[]>
   tsconfigDecoratorMetadata?: boolean
+  format: Format[]
 }

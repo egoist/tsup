@@ -56,9 +56,12 @@ const normalizeOptions = async (
   }
   const options: Buildable<NormalizedOptions> = {
     target: 'node14',
-    format: ['cjs'],
     outDir: 'dist',
     ..._options,
+    format:
+      typeof _options.format === 'string'
+        ? [_options.format as Format]
+        : _options.format || ['cjs'],
     dts:
       typeof _options.dts === 'boolean'
         ? _options.dts
