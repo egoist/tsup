@@ -78,6 +78,7 @@ export async function main(options: Options = {}) {
       default: 'node',
     })
     .option('--loader <ext=loader>', 'Specify the loader for a file extension')
+    .option('--config <filename>', 'Use a custom config file')
     .option('--no-config', 'Disable config file')
     .option('--shims', 'Enable cjs and esm shims')
     .option('--inject-style', 'Inject style tag to document head')

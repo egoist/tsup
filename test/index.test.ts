@@ -886,3 +886,24 @@ test('custom output extension', async () => {
     ]
   `)
 })
+
+test('custom config file', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const foo = [1,2,3]`,
+      'custom.config.ts': `export default {
+        format: ['esm']
+      }`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--config', 'custom.config.ts'],
+    }
+  )
+  expect(outFiles).toMatchInlineSnapshot(`
+    [
+      "input.mjs",
+    ]
+  `)
+})

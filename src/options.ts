@@ -142,8 +142,9 @@ export type Options = {
   loader?: Record<string, Loader>
   /**
    * Disable config file with `false`
+   * Or pass a custom config filename
    */
-  config?: boolean
+  config?: boolean | string
   /**
    * Use a custom tsconfig
    */

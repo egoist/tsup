@@ -33,18 +33,21 @@ const jsonLoader = {
 joycon.addLoader(jsonLoader)
 
 export async function loadTsupConfig(
-  cwd: string
+  cwd: string,
+  configFile?: string
 ): Promise<{ path?: string; data?: ReturnType<typeof defineConfig> }> {
   const configJoycon = new JoyCon()
   const configPath = await configJoycon.resolve({
-    files: [
-      'tsup.config.ts',
-      'tsup.config.js',
-      'tsup.config.cjs',
-      'tsup.config.mjs',
-      'tsup.config.json',
-      'package.json',
-    ],
+    files: configFile
+      ? [configFile]
+      : [
+          'tsup.config.ts',
+          'tsup.config.js',
+          'tsup.config.cjs',
+          'tsup.config.mjs',
+          'tsup.config.json',
+          'package.json',
+        ],
     cwd,
     stopDir: path.parse(cwd).root,
     packageKey: 'tsup',
