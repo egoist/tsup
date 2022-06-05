@@ -133,6 +133,32 @@ The `options` here is derived from CLI flags.
 }
 ```
 
+### Multiple entrypoints
+
+Beside using positional arguments `tsup [...files]` to specify multiple entrypoints, you can also use the cli flag `--entry`:
+
+```bash
+# Outputs `dist/a.js` and `dist/b.js`.
+tsup --entry src/a.ts --entry src/b.ts
+
+# Outputs `dist/foo.js` and `dist/bar.js`.
+tsup --entry.foo src/a.ts --entry.bar src/b.ts
+```
+
+It's equivalent to the following `tsup.config.ts`:
+
+```ts
+export default defineConfig({
+  // Outputs `dist/a.js` and `dist/b.js`.
+  entry: ['src/a.ts', 'src/b.ts'],
+  // Outputs `dist/foo.js` and `dist/bar.js`
+  entry: {
+    foo: 'src/a.ts',
+    bar: 'src/b.ts',
+  },
+})
+```
+
 ### Generate declaration file
 
 ```bash
