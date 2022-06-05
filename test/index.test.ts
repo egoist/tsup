@@ -907,3 +907,20 @@ test('custom config file', async () => {
     ]
   `)
 })
+
+test('use an object as entry from cli flag', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const foo = [1,2,3]`,
+    },
+    {
+      flags: ['--entry.foo', 'input.ts'],
+    }
+  )
+  expect(outFiles).toMatchInlineSnapshot(`
+    [
+      "foo.js",
+    ]
+  `)
+})

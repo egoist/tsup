@@ -16,6 +16,7 @@ export async function main(options: Options = {}) {
     .command('[...files]', 'Bundle files', {
       ignoreOptionDefaultValue: true,
     })
+    .option('--entry.* <file>', 'Use a key-value pair as entry files')
     .option('-d, --out-dir <dir>', 'Output directory', { default: 'dist' })
     .option('--format <format>', 'Bundle format, "cjs", "iife", "esm"', {
       default: 'cjs',
@@ -91,7 +92,7 @@ export async function main(options: Options = {}) {
       Object.assign(options, {
         ...flags,
       })
-      if (files.length > 0) {
+      if (!options.entry && files.length > 0) {
         options.entry = files.map(slash)
       }
       if (flags.format) {
