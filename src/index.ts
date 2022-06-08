@@ -7,7 +7,6 @@ import { loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
 import { handleError, PrettyError } from './errors'
-import { parseArgsStringToArgv } from 'string-argv'
 import type { ChildProcess } from 'child_process'
 import execa from 'execa'
 import kill from 'tree-kill'
@@ -29,9 +28,9 @@ export const defineConfig = (
     | Options
     | Options[]
     | ((
-        /** The options derived from CLI flags */
-        overrideOptions: Options
-      ) => MaybePromise<Options | Options[]>)
+      /** The options derived from CLI flags */
+      overrideOptions: Options
+    ) => MaybePromise<Options | Options[]>)
 ) => options
 
 const killProcess = ({
@@ -68,8 +67,8 @@ const normalizeOptions = async (
           ? {}
           : undefined
         : typeof _options.dts === 'string'
-        ? { entry: _options.dts }
-        : _options.dts,
+          ? { entry: _options.dts }
+          : _options.dts,
   }
 
   setSilent(options.silent)
@@ -121,9 +120,9 @@ export async function build(_options: Options) {
     _options.config === false
       ? {}
       : await loadTsupConfig(
-          process.cwd(),
-          _options.config === true ? undefined : _options.config
-        )
+        process.cwd(),
+        _options.config === true ? undefined : _options.config
+      )
 
   const configData =
     typeof config.data === 'function'
@@ -244,10 +243,8 @@ export async function build(_options: Options) {
               ])
               await killPromise
               if (options.onSuccess) {
-                const parts = parseArgsStringToArgv(options.onSuccess)
-                const exec = parts[0]
-                const args = parts.splice(1)
-                existingOnSuccess = execa(exec, args, {
+                existingOnSuccess = execa(options.onSuccess, {
+                  shell: true,
                   stdio: 'inherit',
                 })
               }
@@ -274,17 +271,16 @@ export async function build(_options: Options) {
                 typeof options.watch === 'boolean'
                   ? '.'
                   : Array.isArray(options.watch)
-                  ? options.watch.filter(
+                    ? options.watch.filter(
                       (path): path is string => typeof path === 'string'
                     )
-                  : options.watch
+                    : options.watch
 
               logger.info(
                 'CLI',
-                `Watching for changes in ${
-                  Array.isArray(watchPaths)
-                    ? watchPaths.map((v) => '"' + v + '"').join(' | ')
-                    : '"' + watchPaths + '"'
+                `Watching for changes in ${Array.isArray(watchPaths)
+                  ? watchPaths.map((v) => '"' + v + '"').join(' | ')
+                  : '"' + watchPaths + '"'
                 }`
               )
               logger.info(

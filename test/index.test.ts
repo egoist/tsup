@@ -279,7 +279,7 @@ test('import css', async () => {
     `,
     'foo.css': `
   $color: blue;
-  
+
   .foo {
     color: $color;
   }
@@ -297,7 +297,7 @@ test('import css in --dts', async () => {
       'input.ts': `
     import './foo.css'
     `,
-      'foo.css': `  
+      'foo.css': `
   .foo {
     color: blue
   }
@@ -425,18 +425,18 @@ test('svelte: typescript support', async () => {
 })
 
 test('onSuccess', async () => {
-  const randomNumber = Math.random() + ''
   const { logs } = await run(
     getTestName(),
     {
       'input.ts': "console.log('test');",
     },
     {
-      flags: ['--onSuccess', 'echo ' + randomNumber],
+      flags: ['--onSuccess', 'echo hello && echo world'],
     }
   )
 
-  expect(logs.includes(randomNumber)).toEqual(true)
+  expect(logs.includes("hello")).toEqual(true)
+  expect(logs.includes("world")).toEqual(true)
 })
 
 test('support baseUrl and paths in tsconfig.json', async () => {
@@ -751,7 +751,7 @@ test('es5 target', async () => {
     export class Foo {
       hi (): void {
         let a = () => 'foo'
-  
+
         console.log(a())
       }
     }
@@ -848,7 +848,7 @@ test('use rollup for treeshaking', async () => {
     getTestName(),
     {
       'input.ts': `
-      export { useRoute } from 'vue-router' 
+      export { useRoute } from 'vue-router'
       `,
     },
     {

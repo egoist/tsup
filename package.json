@@ -58,7 +58,6 @@
     "resolve": "1.20.0",
     "rollup-plugin-dts": "4.2.1",
     "rollup-plugin-hashbang": "2.2.2",
-    "string-argv": "0.3.1",
     "strip-json-comments": "4.0.0",
     "svelte": "3.46.4",
     "ts-essentials": "9.1.2",
@@ -69,9 +68,9 @@
     "wait-for-expect": "3.0.2"
   },
   "peerDependencies": {
-    "typescript": "^4.1.0",
+    "@swc/core": "^1",
     "postcss": "^8.4.12",
-    "@swc/core": "^1"
+    "typescript": "^4.1.0"
   },
   "peerDependenciesMeta": {
     "typescript": {
