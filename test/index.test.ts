@@ -279,7 +279,7 @@ test('import css', async () => {
     `,
     'foo.css': `
   $color: blue;
-  
+
   .foo {
     color: $color;
   }
@@ -297,7 +297,7 @@ test('import css in --dts', async () => {
       'input.ts': `
     import './foo.css'
     `,
-      'foo.css': `  
+      'foo.css': `
   .foo {
     color: blue
   }
@@ -437,6 +437,19 @@ test('onSuccess', async () => {
   )
 
   expect(logs.includes(randomNumber)).toEqual(true)
+})
+
+test.only('custom tsconfig', async () => {
+  const { getFileContent } = await run(getTestName(), {
+    'input.ts': `export const foo = 'foo'`,
+    'tsconfig.build.json': `{
+      "compilerOptions": {
+        "baseUrl":"."
+      }
+    }`,
+  }, { flags: ['--tsconfig', 'tsconfig.build.json'] })
+
+  expect(await getFileContent('dist/input.js')).toMatchSnapshot()
 })
 
 test('support baseUrl and paths in tsconfig.json', async () => {
@@ -751,7 +764,7 @@ test('es5 target', async () => {
     export class Foo {
       hi (): void {
         let a = () => 'foo'
-  
+
         console.log(a())
       }
     }
@@ -848,7 +861,7 @@ test('use rollup for treeshaking', async () => {
     getTestName(),
     {
       'input.ts': `
-      export { useRoute } from 'vue-router' 
+      export { useRoute } from 'vue-router'
       `,
     },
     {
