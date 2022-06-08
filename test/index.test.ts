@@ -439,7 +439,7 @@ test('onSuccess', async () => {
   expect(logs.includes(randomNumber)).toEqual(true)
 })
 
-test.only('custom tsconfig', async () => {
+test('custom tsconfig', async () => {
   const { getFileContent } = await run(getTestName(), {
     'input.ts': `export const foo = 'foo'`,
     'tsconfig.build.json': `{
