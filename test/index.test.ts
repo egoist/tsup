@@ -440,16 +440,18 @@ test('onSuccess', async () => {
 })
 
 test('custom tsconfig', async () => {
-  const { getFileContent } = await run(getTestName(), {
-    'input.ts': `export const foo = 'foo'`,
-    'tsconfig.build.json': `{
+  await run(
+    getTestName(),
+    {
+      'input.ts': `export const foo = 'foo'`,
+      'tsconfig.build.json': `{
       "compilerOptions": {
         "baseUrl":"."
       }
     }`,
-  }, { flags: ['--tsconfig', 'tsconfig.build.json'] })
-
-  expect(await getFileContent('dist/input.js')).toMatchSnapshot()
+    },
+    { flags: ['--tsconfig', 'tsconfig.build.json'] }
+  )
 })
 
 test('support baseUrl and paths in tsconfig.json', async () => {
