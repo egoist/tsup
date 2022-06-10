@@ -28,7 +28,7 @@ specifiers:
   resolve-from: ^5.0.0
   rollup: ^2.74.1
   rollup-plugin-dts: 4.2.1
-  rollup-plugin-hashbang: 2.2.2
+  rollup-plugin-hashbang: 3.0.0
   source-map: 0.8.0-beta.0
   strip-json-comments: 4.0.0
   sucrase: ^3.20.3
@@ -74,7 +74,7 @@ devDependencies:
   prettier: 2.5.1
   resolve: 1.20.0
   rollup-plugin-dts: 4.2.1_rymbksdyfyl5jij5b5y6cpv63i
-  rollup-plugin-hashbang: 2.2.2
+  rollup-plugin-hashbang: 3.0.0_rollup@2.74.1
   strip-json-comments: 4.0.0
   svelte: 3.46.4
   ts-essentials: 9.1.2_typescript@4.6.3
@@ -1171,10 +1171,10 @@ packages:
       get-func-name: 2.0.0
     dev: true
 
-  /magic-string/0.22.5:
-    resolution: {integrity: sha512-oreip9rJZkzvA8Qzk9HFs8fZGF/u7H/gtrE8EN6RjKJ9kh2HlC+yQ2QezifqTZfGyiuAV0dRv5a+y/8gBb1m9w==}
+  /magic-string/0.25.9:
+    resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
     dependencies:
-      vlq: 0.2.3
+      sourcemap-codec: 1.4.8
     dev: true
 
   /magic-string/0.26.1:
@@ -1378,11 +1378,14 @@ packages:
       '@babel/code-frame': 7.16.7
     dev: true
 
-  /rollup-plugin-hashbang/2.2.2:
-    resolution: {integrity: sha512-Yxw9ogeK3KncG1e4CvK0I0IKVBNeJP+DTZS3bExGTfGjw0WP1C7xxbY7LtRd8IKx4fFf53hz7XR1XG7UV6xqCw==}
-    engines: {node: '>=6'}
+  /rollup-plugin-hashbang/3.0.0_rollup@2.74.1:
+    resolution: {integrity: sha512-nNC2NeNcvkklPhPCUF8Yb+2a19xI0dSBBJJ2x814+Al2BqIEWOyaGIgEjPVSjjgxhoabkJC5vbO4AeI3cxx3wg==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      rollup: '>=2'
     dependencies:
-      magic-string: 0.22.5
+      magic-string: 0.25.9
+      rollup: 2.74.1
     dev: true
 
   /rollup/2.74.1:
@@ -1637,10 +1640,6 @@ packages:
       - less
       - sass
       - stylus
-    dev: true
-
-  /vlq/0.2.3:
-    resolution: {integrity: sha512-DRibZL6DsNhIgYQ+wNdWDL2SL3bKPlVrRiBqV5yuMm++op8W4kGFtaQfCs4KEJn0wBZcHVHJ3eoywX8983k1ow==}
     dev: true
 
   /wait-for-expect/3.0.2:

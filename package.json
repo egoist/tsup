@@ -57,7 +57,7 @@
     "prettier": "2.5.1",
     "resolve": "1.20.0",
     "rollup-plugin-dts": "4.2.1",
-    "rollup-plugin-hashbang": "2.2.2",
+    "rollup-plugin-hashbang": "3.0.0",
     "strip-json-comments": "4.0.0",
     "svelte": "3.46.4",
     "ts-essentials": "9.1.2",
