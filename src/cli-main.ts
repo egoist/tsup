@@ -79,6 +79,7 @@ export async function main(options: Options = {}) {
       default: 'node',
     })
     .option('--loader <ext=loader>', 'Specify the loader for a file extension')
+    .option('--tsconfig <filename>', 'Use a custom tsconfig')
     .option('--config <filename>', 'Use a custom config file')
     .option('--no-config', 'Disable config file')
     .option('--shims', 'Enable cjs and esm shims')
