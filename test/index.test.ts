@@ -250,6 +250,25 @@ test('minify', async () => {
   expect(outFiles).toEqual(['input.js'])
 })
 
+test('minify with es5 target', async () => {
+  const { output, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `
+    export function foo() {
+      return 'foo'
+    }
+    `,
+    },
+    {
+      flags: ['--minify', '--target', 'es5'],
+    }
+  )
+
+  expect(output).toContain(`return"foo"`)
+  expect(outFiles).toEqual(['input.js'])
+})
+
 test('env flag', async () => {
   const { output, outFiles } = await run(
     getTestName(),
@@ -435,8 +454,8 @@ test('onSuccess', async () => {
     }
   )
 
-  expect(logs.includes("hello")).toEqual(true)
-  expect(logs.includes("world")).toEqual(true)
+  expect(logs.includes('hello')).toEqual(true)
+  expect(logs.includes('world')).toEqual(true)
 })
 
 test('custom tsconfig', async () => {

@@ -29,6 +29,7 @@ export const es5 = (): Plugin => {
       const result = await swc.transform(code, {
         filename: info.path,
         sourceMaps: this.options.sourcemap,
+        minify: Boolean(this.options.minify),
         jsc: {
           target: 'es5',
           parser: {
