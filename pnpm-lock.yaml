@@ -30,7 +30,6 @@ specifiers:
   rollup-plugin-dts: 4.2.1
   rollup-plugin-hashbang: 2.2.2
   source-map: 0.8.0-beta.0
-  string-argv: 0.3.1
   strip-json-comments: 4.0.0
   sucrase: ^3.20.3
   svelte: 3.46.4
@@ -76,7 +75,6 @@ devDependencies:
   resolve: 1.20.0
   rollup-plugin-dts: 4.2.1_rymbksdyfyl5jij5b5y6cpv63i
   rollup-plugin-hashbang: 2.2.2
-  string-argv: 0.3.1
   strip-json-comments: 4.0.0
   svelte: 3.46.4
   ts-essentials: 9.1.2_typescript@4.6.3
@@ -1429,11 +1427,6 @@ packages:
 
   /sourcemap-codec/1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
-    dev: true
-
-  /string-argv/0.3.1:
-    resolution: {integrity: sha512-a1uQGz7IyVy9YwhqjZIZu1c8JO8dNIe20xBmSS6qu9kv++k3JGzCVmprbNN5Kn+BgzD5E7YYwg1CcjuJMRNsvg==}
-    engines: {node: '>=0.6.19'}
     dev: true
 
   /strip-bom/3.0.0:
