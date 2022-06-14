@@ -331,6 +331,16 @@ tsup src/index.ts --watch --onSuccess "node dist/index.js"
 
 > Warning: You should not use shell scripts, if you need to specify shell scripts you can add it in your "scripts" field and set for example `tsup src/index.ts --watch --onSuccess \"npm run dev\"`
 
+`onSuccess` can also be a `function` that returns `Promise`. For this to work, you need to use `tsup.config.ts` instead of the cli flag: 
+
+```ts
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  onSuccess: async () => { ... }
+})
+```
+
 ### Minify output
 
 You can also minify the output, resulting into lower bundle sizes by using the `--minify` flag.

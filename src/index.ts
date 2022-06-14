@@ -175,16 +175,26 @@ export async function build(_options: Options) {
         const otherTasks = async () => {
           if (!options.dts?.only) {
             let existingOnSuccess: ChildProcess | undefined
+            let existingOnSuccessFnPromise: Promise<any> | undefined
             /** Files imported by the entry */
             const buildDependencies: Set<string> = new Set()
 
-            const killPreviousProcess = async () => {
+            const killPreviousProcessOrPromise = async () => {
               if (existingOnSuccess) {
                 await killProcess({
                   pid: existingOnSuccess.pid,
                 })
-                existingOnSuccess = undefined
+              } else if (existingOnSuccessFnPromise) {
+                await Promise.race([
+                  existingOnSuccessFnPromise, 
+                  // cancel existingOnSuccessFnPromise if it is still running,
+                  // using a promise that's been already resolved
+                  Promise.resolve()
+                ])
               }
+              // reset them in all occassions anyway
+              existingOnSuccess = undefined
+              existingOnSuccessFnPromise = undefined
             }
 
             const debouncedBuildAll = debouncePromise(
@@ -196,7 +206,7 @@ export async function build(_options: Options) {
             )
 
             const buildAll = async () => {
-              const killPromise = killPreviousProcess()
+              const killPromise = killPreviousProcessOrPromise()
               // Store previous build dependencies in case the build failed
               // So we can restore it
               const previousBuildDependencies = new Set(buildDependencies)
@@ -243,10 +253,14 @@ export async function build(_options: Options) {
               ])
               await killPromise
               if (options.onSuccess) {
-                existingOnSuccess = execa(options.onSuccess, {
-                  shell: true,
-                  stdio: 'inherit',
-                })
+                if (typeof options.onSuccess === 'function') {
+                  existingOnSuccessFnPromise = options.onSuccess()
+                } else {
+                  existingOnSuccess = execa(options.onSuccess, {
+                    shell: true,
+                    stdio: 'inherit',
+                  })
+                }
               }
             }
 
