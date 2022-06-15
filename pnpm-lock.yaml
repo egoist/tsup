@@ -6,7 +6,7 @@ specifiers:
   '@types/debug': 4.1.7
   '@types/flat': 5.0.2
   '@types/fs-extra': 9.0.13
-  '@types/node': 14.18.12
+  '@types/node': 16.11.41
   '@types/resolve': 1.20.1
   bundle-require: ^3.0.2
   cac: ^6.7.12
@@ -63,7 +63,7 @@ devDependencies:
   '@types/debug': 4.1.7
   '@types/flat': 5.0.2
   '@types/fs-extra': 9.0.13
-  '@types/node': 14.18.12
+  '@types/node': 16.11.41
   '@types/resolve': 1.20.1
   colorette: 2.0.16
   consola: 2.15.3
@@ -325,7 +325,7 @@ packages:
   /@types/fs-extra/9.0.13:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
     dependencies:
-      '@types/node': 14.18.12
+      '@types/node': 16.11.41
     dev: true
 
   /@types/json5/0.0.29:
@@ -336,8 +336,8 @@ packages:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: true
 
-  /@types/node/14.18.12:
-    resolution: {integrity: sha512-q4jlIR71hUpWTnGhXWcakgkZeHa3CCjcQcnuzU8M891BAWA2jHiziiWEPEkdS5pFsz7H9HJiy8BrK7tBRNrY7A==}
+  /@types/node/16.11.41:
+    resolution: {integrity: sha512-mqoYK2TnVjdkGk8qXAVGc/x9nSaTpSrFaGFm43BUH3IdoBV0nta6hYaGmdOvIMlbHJbUEVen3gvwpwovAZKNdQ==}
     dev: true
 
   /@types/resolve/1.20.1:
