@@ -23,7 +23,7 @@ specifiers:
   postcss: 8.4.12
   postcss-load-config: ^3.0.1
   postcss-simple-vars: 6.0.3
-  prettier: 2.5.1
+  prettier: 2.7.1
   resolve: 1.20.0
   resolve-from: ^5.0.0
   rollup: ^2.74.1
@@ -71,7 +71,7 @@ devDependencies:
   fs-extra: 10.0.0
   postcss: 8.4.12
   postcss-simple-vars: 6.0.3_postcss@8.4.12
-  prettier: 2.5.1
+  prettier: 2.7.1
   resolve: 1.20.0
   rollup-plugin-dts: 4.2.1_rymbksdyfyl5jij5b5y6cpv63i
   rollup-plugin-hashbang: 2.2.2
@@ -1321,8 +1321,8 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /prettier/2.5.1:
-    resolution: {integrity: sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==}
+  /prettier/2.7.1:
+    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
