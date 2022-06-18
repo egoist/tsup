@@ -7,7 +7,7 @@ specifiers:
   '@types/flat': 5.0.2
   '@types/fs-extra': 9.0.13
   '@types/node': 14.18.12
-  '@types/resolve': 1.20.1
+  '@types/resolve': 1.20.2
   bundle-require: ^3.0.2
   cac: ^6.7.12
   chokidar: ^3.5.1
@@ -24,7 +24,7 @@ specifiers:
   postcss-load-config: ^3.0.1
   postcss-simple-vars: 6.0.3
   prettier: 2.5.1
-  resolve: 1.20.0
+  resolve: 1.22.1
   resolve-from: ^5.0.0
   rollup: ^2.74.1
   rollup-plugin-dts: 4.2.1
@@ -64,7 +64,7 @@ devDependencies:
   '@types/flat': 5.0.2
   '@types/fs-extra': 9.0.13
   '@types/node': 14.18.12
-  '@types/resolve': 1.20.1
+  '@types/resolve': 1.20.2
   colorette: 2.0.16
   consola: 2.15.3
   flat: 5.0.2
@@ -72,7 +72,7 @@ devDependencies:
   postcss: 8.4.12
   postcss-simple-vars: 6.0.3_postcss@8.4.12
   prettier: 2.5.1
-  resolve: 1.20.0
+  resolve: 1.22.1
   rollup-plugin-dts: 4.2.1_rymbksdyfyl5jij5b5y6cpv63i
   rollup-plugin-hashbang: 2.2.2
   strip-json-comments: 4.0.0
@@ -340,8 +340,8 @@ packages:
     resolution: {integrity: sha512-q4jlIR71hUpWTnGhXWcakgkZeHa3CCjcQcnuzU8M891BAWA2jHiziiWEPEkdS5pFsz7H9HJiy8BrK7tBRNrY7A==}
     dev: true
 
-  /@types/resolve/1.20.1:
-    resolution: {integrity: sha512-Ku5+GPFa12S3W26Uwtw+xyrtIpaZsGYHH6zxNbZlstmlvMYSZRzOwzwsXbxlVUbHyUucctSyuFtu6bNxwYomIw==}
+  /@types/resolve/1.20.2:
+    resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
     dev: true
 
   /ansi-styles/3.2.1:
@@ -1089,14 +1089,8 @@ packages:
     dependencies:
       binary-extensions: 2.2.0
 
-  /is-core-module/2.8.0:
-    resolution: {integrity: sha512-vd15qHsaqrRL7dtH6QNuy0ndJmRDrS9HAM1CAiSifNUFv4x1a0CCVsj18hJ1mShxIG6T2i1sO78MkP56r0nYRw==}
-    dependencies:
-      has: 1.0.3
-    dev: true
-
-  /is-core-module/2.8.1:
-    resolution: {integrity: sha512-SdNCUs284hr40hFTFP6l0IfZ/RSrMXF3qgoRHd3/79unUTvrFO/JoXwkGm+5J/Oe3E/b5GsnG330uUNgRpu1PA==}
+  /is-core-module/2.9.0:
+    resolution: {integrity: sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A==}
     dependencies:
       has: 1.0.3
     dev: true
@@ -1344,18 +1338,11 @@ packages:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
 
-  /resolve/1.20.0:
-    resolution: {integrity: sha512-wENBPt4ySzg4ybFQW2TT1zMQucPK95HSh/nq2CFTZVOGut2+pQvSsgtda4d26YrYcr067wjbmzOG8byDPBX63A==}
-    dependencies:
-      is-core-module: 2.8.0
-      path-parse: 1.0.7
-    dev: true
-
-  /resolve/1.22.0:
-    resolution: {integrity: sha512-Hhtrw0nLeSrFQ7phPp4OOcVjLPIeMnRlr5mcnVuMe7M/7eBn98A3hmFRLoFo3DLZkivSYwhRUJTyPyWAk56WLw==}
+  /resolve/1.22.1:
+    resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
     hasBin: true
     dependencies:
-      is-core-module: 2.8.1
+      is-core-module: 2.9.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
@@ -1601,7 +1588,7 @@ packages:
     dependencies:
       esbuild: 0.14.29
       postcss: 8.4.12
-      resolve: 1.22.0
+      resolve: 1.22.1
       rollup: 2.74.1
     optionalDependencies:
       fsevents: 2.3.2
