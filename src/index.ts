@@ -1,7 +1,6 @@
 import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
-import type { Buildable, MarkRequired } from 'ts-essentials'
 import { removeFiles, debouncePromise, slash, MaybePromise } from './utils'
 import { loadTsupConfig } from './load'
 import glob from 'globby'
@@ -12,7 +11,7 @@ import execa from 'execa'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { createLogger, setSilent } from './log'
-import { NormalizedOptions, Format, Options } from './options'
+import { NormalizedOptions, Format, Options, DtsConfig } from './options'
 import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
@@ -53,7 +52,7 @@ const normalizeOptions = async (
     ...optionsFromConfigFile,
     ...optionsOverride,
   }
-  const options: Buildable<NormalizedOptions> = {
+  const options: Partial<NormalizedOptions> = {
     target: 'node14',
     outDir: 'dist',
     ..._options,

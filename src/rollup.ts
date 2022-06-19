@@ -169,6 +169,7 @@ const getRollupConfig = async (
             preserveSymlinks: false,
             // Ensure we can parse the latest code
             target: ts.ScriptTarget.ESNext,
+            ...(options.dts?.compilerOptions || {}),
           },
         }),
       ].filter(Boolean),
