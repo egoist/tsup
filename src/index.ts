@@ -11,7 +11,7 @@ import execa from 'execa'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { createLogger, setSilent } from './log'
-import { NormalizedOptions, Format, Options, DtsConfig } from './options'
+import { NormalizedOptions, Format, Options } from './options'
 import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
@@ -27,9 +27,9 @@ export const defineConfig = (
     | Options
     | Options[]
     | ((
-      /** The options derived from CLI flags */
-      overrideOptions: Options
-    ) => MaybePromise<Options | Options[]>)
+        /** The options derived from CLI flags */
+        overrideOptions: Options
+      ) => MaybePromise<Options | Options[]>)
 ) => options
 
 const killProcess = ({
@@ -66,8 +66,8 @@ const normalizeOptions = async (
           ? {}
           : undefined
         : typeof _options.dts === 'string'
-          ? { entry: _options.dts }
-          : _options.dts,
+        ? { entry: _options.dts }
+        : _options.dts,
   }
 
   setSilent(options.silent)
@@ -107,6 +107,12 @@ const normalizeOptions = async (
     options.tsconfigResolvePaths = tsconfig.data?.compilerOptions?.paths || {}
     options.tsconfigDecoratorMetadata =
       tsconfig.data?.compilerOptions?.emitDecoratorMetadata
+    if (options.dts) {
+      options.dts.compilerOptions = {
+        ...(tsconfig.data.compilerOptions || {}),
+        ...(options.dts.compilerOptions || {}),
+      }
+    }
   } else if (options.tsconfig) {
     throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
   }
@@ -119,9 +125,9 @@ export async function build(_options: Options) {
     _options.config === false
       ? {}
       : await loadTsupConfig(
-        process.cwd(),
-        _options.config === true ? undefined : _options.config
-      )
+          process.cwd(),
+          _options.config === true ? undefined : _options.config
+        )
 
   const configData =
     typeof config.data === 'function'
@@ -270,16 +276,17 @@ export async function build(_options: Options) {
                 typeof options.watch === 'boolean'
                   ? '.'
                   : Array.isArray(options.watch)
-                    ? options.watch.filter(
+                  ? options.watch.filter(
                       (path): path is string => typeof path === 'string'
                     )
-                    : options.watch
+                  : options.watch
 
               logger.info(
                 'CLI',
-                `Watching for changes in ${Array.isArray(watchPaths)
-                  ? watchPaths.map((v) => '"' + v + '"').join(' | ')
-                  : '"' + watchPaths + '"'
+                `Watching for changes in ${
+                  Array.isArray(watchPaths)
+                    ? watchPaths.map((v) => '"' + v + '"').join(' | ')
+                    : '"' + watchPaths + '"'
                 }`
               )
               logger.info(

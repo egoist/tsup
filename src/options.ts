@@ -3,7 +3,6 @@ import type { InputOption } from 'rollup'
 import { MarkRequired } from 'ts-essentials'
 import type { Plugin } from './plugin'
 import type { TreeshakingStrategy } from './plugins/tree-shaking'
-import type { CompilerOptions } from 'typescript'
 
 export type Format = 'cjs' | 'esm' | 'iife'
 
@@ -31,7 +30,7 @@ export type DtsConfig = {
   /** Insert at the bottom */
   footer?: string
   /** Overrides `compilerOptions` */
-  compilerOptions?: CompilerOptions
+  compilerOptions?: any
 }
 
 export type BannerOrFooter =
