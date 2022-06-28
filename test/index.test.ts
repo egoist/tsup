@@ -713,7 +713,7 @@ test('decorator metadata', async () => {
       }`,
   })
   const contents = await getFileContent('dist/input.js')
-  expect(contents).toContain(`Reflect.metadata("design:type"`)
+  expect(contents).toContain(`metadata("design:type"`)
 })
 
 test('inject style', async () => {
@@ -797,6 +797,30 @@ test('es5 target', async () => {
   )
   expect(output).toMatch(/createClass/)
   expect(outFiles).toEqual(['input.js'])
+})
+
+test.only('es5 minify', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `
+    export class Foo {
+      hi (): void {
+        let a = () => 'foo'
+
+        console.log(a())
+      }
+    }
+    `,
+    },
+    {
+      flags: ['--target', 'es5', '--format', 'iife', '--globalName', 'FooAPI', '--minify'],
+    }
+  )
+  expect(outFiles).toEqual(['input.global.js'])
+  const iifeBundle = await getFileContent('dist/input.global.js');
+  expect(iifeBundle).toMatch(/var FooAPI/)
+  expect(iifeBundle).not.toMatch(/createClass/)
 })
 
 test('multiple targets', async () => {
