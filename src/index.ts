@@ -159,6 +159,7 @@ export async function build(_options: Options) {
                   esbuildOptions: undefined,
                   plugins: undefined,
                   treeshake: undefined,
+                  outExtension: undefined,
                 },
               })
               worker.on('message', (data) => {
