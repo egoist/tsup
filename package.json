@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-json": "4.1.0",
-    "@swc/core": "1.2.126",
+    "@swc/core": "1.2.205",
     "@types/debug": "4.1.7",
     "@types/flat": "5.0.2",
     "@types/fs-extra": "9.0.13",
