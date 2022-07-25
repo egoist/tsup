@@ -29,6 +29,11 @@ export type DtsConfig = {
   banner?: string
   /** Insert at the bottom */
   footer?: string
+  /**
+   * Overrides `compilerOptions`
+   * This option takes higher priority than `compilerOptions` in tsconfig.json
+   */
+  compilerOptions?: any
 }
 
 export type BannerOrFooter =
@@ -67,7 +72,7 @@ export type Options = {
   keepNames?: boolean
   watch?: boolean | string | (string | boolean)[]
   ignoreWatch?: string[] | string
-  onSuccess?: string
+  onSuccess?: string | ((...params: any[]) => Promise<any>),
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string

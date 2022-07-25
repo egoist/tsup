@@ -1,7 +1,6 @@
 import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
-import type { Buildable, MarkRequired } from 'ts-essentials'
 import { removeFiles, debouncePromise, slash, MaybePromise } from './utils'
 import { loadTsupConfig } from './load'
 import glob from 'globby'
@@ -28,9 +27,9 @@ export const defineConfig = (
     | Options
     | Options[]
     | ((
-      /** The options derived from CLI flags */
-      overrideOptions: Options
-    ) => MaybePromise<Options | Options[]>)
+        /** The options derived from CLI flags */
+        overrideOptions: Options
+      ) => MaybePromise<Options | Options[]>)
 ) => options
 
 const killProcess = ({
@@ -53,7 +52,7 @@ const normalizeOptions = async (
     ...optionsFromConfigFile,
     ...optionsOverride,
   }
-  const options: Buildable<NormalizedOptions> = {
+  const options: Partial<NormalizedOptions> = {
     target: 'node14',
     outDir: 'dist',
     ..._options,
@@ -67,8 +66,8 @@ const normalizeOptions = async (
           ? {}
           : undefined
         : typeof _options.dts === 'string'
-          ? { entry: _options.dts }
-          : _options.dts,
+        ? { entry: _options.dts }
+        : _options.dts,
   }
 
   setSilent(options.silent)
@@ -108,6 +107,12 @@ const normalizeOptions = async (
     options.tsconfigResolvePaths = tsconfig.data?.compilerOptions?.paths || {}
     options.tsconfigDecoratorMetadata =
       tsconfig.data?.compilerOptions?.emitDecoratorMetadata
+    if (options.dts) {
+      options.dts.compilerOptions = {
+        ...(tsconfig.data.compilerOptions || {}),
+        ...(options.dts.compilerOptions || {}),
+      }
+    }
   } else if (options.tsconfig) {
     throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
   }
@@ -120,9 +125,9 @@ export async function build(_options: Options) {
     _options.config === false
       ? {}
       : await loadTsupConfig(
-        process.cwd(),
-        _options.config === true ? undefined : _options.config
-      )
+          process.cwd(),
+          _options.config === true ? undefined : _options.config
+        )
 
   const configData =
     typeof config.data === 'function'
@@ -159,6 +164,8 @@ export async function build(_options: Options) {
                   esbuildOptions: undefined,
                   plugins: undefined,
                   treeshake: undefined,
+                  onSuccess: undefined,
+                  outExtension: undefined,
                 },
               })
               worker.on('message', (data) => {
@@ -175,16 +182,26 @@ export async function build(_options: Options) {
         const otherTasks = async () => {
           if (!options.dts?.only) {
             let existingOnSuccess: ChildProcess | undefined
+            let existingOnSuccessFnPromise: Promise<any> | undefined
             /** Files imported by the entry */
             const buildDependencies: Set<string> = new Set()
 
-            const killPreviousProcess = async () => {
+            const killPreviousProcessOrPromise = async () => {
               if (existingOnSuccess) {
                 await killProcess({
                   pid: existingOnSuccess.pid,
                 })
-                existingOnSuccess = undefined
+              } else if (existingOnSuccessFnPromise) {
+                await Promise.race([
+                  existingOnSuccessFnPromise,
+                  // cancel existingOnSuccessFnPromise if it is still running,
+                  // using a promise that's been already resolved
+                  Promise.resolve(),
+                ])
               }
+              // reset them in all occassions anyway
+              existingOnSuccess = undefined
+              existingOnSuccessFnPromise = undefined
             }
 
             const debouncedBuildAll = debouncePromise(
@@ -196,7 +213,7 @@ export async function build(_options: Options) {
             )
 
             const buildAll = async () => {
-              const killPromise = killPreviousProcess()
+              const killPromise = killPreviousProcessOrPromise()
               // Store previous build dependencies in case the build failed
               // So we can restore it
               const previousBuildDependencies = new Set(buildDependencies)
@@ -243,10 +260,14 @@ export async function build(_options: Options) {
               ])
               await killPromise
               if (options.onSuccess) {
-                existingOnSuccess = execa(options.onSuccess, {
-                  shell: true,
-                  stdio: 'inherit',
-                })
+                if (typeof options.onSuccess === 'function') {
+                  existingOnSuccessFnPromise = options.onSuccess()
+                } else {
+                  existingOnSuccess = execa(options.onSuccess, {
+                    shell: true,
+                    stdio: 'inherit',
+                  })
+                }
               }
             }
 
@@ -271,16 +292,17 @@ export async function build(_options: Options) {
                 typeof options.watch === 'boolean'
                   ? '.'
                   : Array.isArray(options.watch)
-                    ? options.watch.filter(
+                  ? options.watch.filter(
                       (path): path is string => typeof path === 'string'
                     )
-                    : options.watch
+                  : options.watch
 
               logger.info(
                 'CLI',
-                `Watching for changes in ${Array.isArray(watchPaths)
-                  ? watchPaths.map((v) => '"' + v + '"').join(' | ')
-                  : '"' + watchPaths + '"'
+                `Watching for changes in ${
+                  Array.isArray(watchPaths)
+                    ? watchPaths.map((v) => '"' + v + '"').join(' | ')
+                    : '"' + watchPaths + '"'
                 }`
               )
               logger.info(
@@ -297,8 +319,12 @@ export async function build(_options: Options) {
               })
               watcher.on('all', (type, file) => {
                 file = slash(file)
-                if (!buildDependencies.has(file)) return
-
+                // By default we only rebuild when imported files change
+                // If you specify custom `watch`, a string or multiple strings
+                // We rebuild when those files change
+                if (options.watch === true && !buildDependencies.has(file)) {
+                  return
+                }
                 logger.info('CLI', `Change detected: ${type} ${file}`)
                 debouncedBuildAll()
               })
