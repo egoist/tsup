@@ -713,7 +713,7 @@ test('decorator metadata', async () => {
       }`,
   })
   const contents = await getFileContent('dist/input.js')
-  expect(contents).toContain(`Reflect.metadata("design:type"`)
+  expect(contents).toContain(`__metadata("design:type", Function)`)
 })
 
 test('inject style', async () => {
