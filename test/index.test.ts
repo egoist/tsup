@@ -443,6 +443,7 @@ test('svelte: typescript support', async () => {
   expect(output).toContain('// Component.svelte')
 })
 
+
 test('onSuccess', async () => {
   const { logs } = await run(
     getTestName(),
@@ -452,6 +453,30 @@ test('onSuccess', async () => {
     {
       flags: ['--onSuccess', 'echo hello && echo world'],
     }
+  )
+
+  expect(logs.includes('hello')).toEqual(true)
+  expect(logs.includes('world')).toEqual(true)
+})
+
+test('onSuccess: use a function from config file', async () => {
+  const { logs } = await run(
+    getTestName(),
+    {
+      'input.ts': "console.log('test');",
+      'tsup.config.ts': `
+        export default {
+          onSuccess: async () => {
+            console.log('hello')
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                console.log('world')
+                resolve('')  
+              }, 1_000)
+            })
+          }
+        }`
+    },
   )
 
   expect(logs.includes('hello')).toEqual(true)
