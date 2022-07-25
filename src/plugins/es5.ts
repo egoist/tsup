@@ -35,6 +35,12 @@ export const es5 = (): Plugin => {
           parser: {
             syntax: 'ecmascript',
           },
+          minify: this.options.minify ? {
+            compress: false,
+            mangle: {
+              reserved: this.options.globalName ? [this.options.globalName] : []
+            },
+          } : undefined,
         },
       })
       return {
