@@ -958,3 +958,24 @@ test('use an object as entry from cli flag', async () => {
     ]
   `)
 })
+
+test('remove unused code', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `if (import.meta.foo) {
+        console.log(1)
+      } else {
+        console.log(2)
+      }`,
+      'tsup.config.ts': `export default {
+        define: {
+          'import.meta.foo': false
+        },
+        treeshake: true
+      }`,
+    },
+    {}
+  )
+  expect(await getFileContent('dist/input.js')).not.toContain('console.log(1)')
+})
