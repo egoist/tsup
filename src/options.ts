@@ -29,7 +29,10 @@ export type DtsConfig = {
   banner?: string
   /** Insert at the bottom */
   footer?: string
-  /** Overrides `compilerOptions` */
+  /**
+   * Overrides `compilerOptions`
+   * This option takes higher priority than `compilerOptions` in tsconfig.json
+   */
   compilerOptions?: any
 }
 
