@@ -443,7 +443,6 @@ test('svelte: typescript support', async () => {
   expect(output).toContain('// Component.svelte')
 })
 
-
 test('onSuccess', async () => {
   const { logs } = await run(
     getTestName(),
@@ -460,11 +459,9 @@ test('onSuccess', async () => {
 })
 
 test('onSuccess: use a function from config file', async () => {
-  const { logs } = await run(
-    getTestName(),
-    {
-      'input.ts': "console.log('test');",
-      'tsup.config.ts': `
+  const { logs } = await run(getTestName(), {
+    'input.ts': "console.log('test');",
+    'tsup.config.ts': `
         export default {
           onSuccess: async () => {
             console.log('hello')
@@ -475,9 +472,8 @@ test('onSuccess: use a function from config file', async () => {
               }, 1_000)
             })
           }
-        }`
-    },
-  )
+        }`,
+  })
 
   expect(logs.includes('hello')).toEqual(true)
   expect(logs.includes('world')).toEqual(true)
@@ -824,7 +820,7 @@ test('es5 target', async () => {
   expect(outFiles).toEqual(['input.js'])
 })
 
-test.only('es5 minify', async () => {
+test('es5 minify', async () => {
   const { getFileContent, outFiles } = await run(
     getTestName(),
     {
@@ -839,11 +835,19 @@ test.only('es5 minify', async () => {
     `,
     },
     {
-      flags: ['--target', 'es5', '--format', 'iife', '--globalName', 'FooAPI', '--minify'],
+      flags: [
+        '--target',
+        'es5',
+        '--format',
+        'iife',
+        '--globalName',
+        'FooAPI',
+        '--minify',
+      ],
     }
   )
   expect(outFiles).toEqual(['input.global.js'])
-  const iifeBundle = await getFileContent('dist/input.global.js');
+  const iifeBundle = await getFileContent('dist/input.global.js')
   expect(iifeBundle).toMatch(/var FooAPI/)
   expect(iifeBundle).not.toMatch(/createClass/)
 })
