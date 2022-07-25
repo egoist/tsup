@@ -160,6 +160,7 @@ export async function build(_options: Options) {
                   plugins: undefined,
                   treeshake: undefined,
                   onSuccess: undefined,
+                  outExtension: undefined,
                 },
               })
               worker.on('message', (data) => {
@@ -313,8 +314,12 @@ export async function build(_options: Options) {
               })
               watcher.on('all', (type, file) => {
                 file = slash(file)
-                if (!buildDependencies.has(file)) return
-
+                // By default we only rebuild when imported files change
+                // If you specify custom `watch`, a string or multiple strings
+                // We rebuild when those files change
+                if (options.watch === true && !buildDependencies.has(file)) {
+                  return
+                }
                 logger.info('CLI', `Change detected: ${type} ${file}`)
                 debouncedBuildAll()
               })
