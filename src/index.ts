@@ -1,7 +1,6 @@
 import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
-import type { Buildable, MarkRequired } from 'ts-essentials'
 import { removeFiles, debouncePromise, slash, MaybePromise } from './utils'
 import { loadTsupConfig } from './load'
 import glob from 'globby'
@@ -53,7 +52,7 @@ const normalizeOptions = async (
     ...optionsFromConfigFile,
     ...optionsOverride,
   }
-  const options: Buildable<NormalizedOptions> = {
+  const options: Partial<NormalizedOptions> = {
     target: 'node14',
     outDir: 'dist',
     ..._options,
@@ -108,6 +107,12 @@ const normalizeOptions = async (
     options.tsconfigResolvePaths = tsconfig.data?.compilerOptions?.paths || {}
     options.tsconfigDecoratorMetadata =
       tsconfig.data?.compilerOptions?.emitDecoratorMetadata
+    if (options.dts) {
+      options.dts.compilerOptions = {
+        ...(tsconfig.data.compilerOptions || {}),
+        ...(options.dts.compilerOptions || {}),
+      }
+    }
   } else if (options.tsconfig) {
     throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
   }

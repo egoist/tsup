@@ -15,11 +15,10 @@ import resolveFrom from 'resolve-from'
 
 const logger = createLogger()
 
-const loadCompilerOptions = (tsconfig?: string) => {
-  if (!tsconfig) return {}
-  const configFile = ts.readConfigFile(tsconfig, ts.sys.readFile)
+const parseCompilerOptions = (compilerOptions?: any) => {
+  if (!compilerOptions) return {}
   const { options } = ts.parseJsonConfigFileContent(
-    configFile.config,
+    { compilerOptions },
     ts.sys,
     './'
   )
@@ -83,7 +82,7 @@ const getRollupConfig = async (
 ): Promise<RollupConfig> => {
   setSilent(options.silent)
 
-  const compilerOptions = loadCompilerOptions(options.tsconfig)
+  const compilerOptions = parseCompilerOptions(options.dts?.compilerOptions)
 
   const dtsOptions = options.dts || {}
   dtsOptions.entry = dtsOptions.entry || options.entry
