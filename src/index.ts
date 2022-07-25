@@ -28,9 +28,9 @@ export const defineConfig = (
     | Options
     | Options[]
     | ((
-      /** The options derived from CLI flags */
-      overrideOptions: Options
-    ) => MaybePromise<Options | Options[]>)
+        /** The options derived from CLI flags */
+        overrideOptions: Options
+      ) => MaybePromise<Options | Options[]>)
 ) => options
 
 const killProcess = ({
@@ -67,8 +67,8 @@ const normalizeOptions = async (
           ? {}
           : undefined
         : typeof _options.dts === 'string'
-          ? { entry: _options.dts }
-          : _options.dts,
+        ? { entry: _options.dts }
+        : _options.dts,
   }
 
   setSilent(options.silent)
@@ -120,9 +120,9 @@ export async function build(_options: Options) {
     _options.config === false
       ? {}
       : await loadTsupConfig(
-        process.cwd(),
-        _options.config === true ? undefined : _options.config
-      )
+          process.cwd(),
+          _options.config === true ? undefined : _options.config
+        )
 
   const configData =
     typeof config.data === 'function'
@@ -159,6 +159,7 @@ export async function build(_options: Options) {
                   esbuildOptions: undefined,
                   plugins: undefined,
                   treeshake: undefined,
+                  onSuccess: undefined,
                 },
               })
               worker.on('message', (data) => {
@@ -186,10 +187,10 @@ export async function build(_options: Options) {
                 })
               } else if (existingOnSuccessFnPromise) {
                 await Promise.race([
-                  existingOnSuccessFnPromise, 
+                  existingOnSuccessFnPromise,
                   // cancel existingOnSuccessFnPromise if it is still running,
                   // using a promise that's been already resolved
-                  Promise.resolve()
+                  Promise.resolve(),
                 ])
               }
               // reset them in all occassions anyway
@@ -285,16 +286,17 @@ export async function build(_options: Options) {
                 typeof options.watch === 'boolean'
                   ? '.'
                   : Array.isArray(options.watch)
-                    ? options.watch.filter(
+                  ? options.watch.filter(
                       (path): path is string => typeof path === 'string'
                     )
-                    : options.watch
+                  : options.watch
 
               logger.info(
                 'CLI',
-                `Watching for changes in ${Array.isArray(watchPaths)
-                  ? watchPaths.map((v) => '"' + v + '"').join(' | ')
-                  : '"' + watchPaths + '"'
+                `Watching for changes in ${
+                  Array.isArray(watchPaths)
+                    ? watchPaths.map((v) => '"' + v + '"').join(' | ')
+                    : '"' + watchPaths + '"'
                 }`
               )
               logger.info(
