@@ -209,8 +209,8 @@ async function runRollup(options: RollupConfig) {
       }, {})
     )
   } catch (error) {
-    logger.error('dts', 'Build error')
     handleError(error)
+    logger.error('dts', 'Build error')
   }
 }
 
