@@ -329,8 +329,6 @@ You can specify command to be executed after a successful build, specially usefu
 tsup src/index.ts --watch --onSuccess "node dist/index.js"
 ```
 
-> Warning: You should not use shell scripts, if you need to specify shell scripts you can add it in your "scripts" field and set for example `tsup src/index.ts --watch --onSuccess \"npm run dev\"`
-
 `onSuccess` can also be a `function` that returns `Promise`. For this to work, you need to use `tsup.config.ts` instead of the cli flag:
 
 ```ts
