@@ -72,7 +72,9 @@ export type Options = {
   keepNames?: boolean
   watch?: boolean | string | (string | boolean)[]
   ignoreWatch?: string[] | string
-  onSuccess?: string | ((...params: any[]) => Promise<any>),
+  onSuccess?:
+    | string
+    | (() => Promise<void | undefined | (() => void | Promise<void>)>)
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string

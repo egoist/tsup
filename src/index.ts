@@ -179,29 +179,24 @@ export async function build(_options: Options) {
           }
         }
 
-        const otherTasks = async () => {
+        const mainTasks = async () => {
           if (!options.dts?.only) {
-            let existingOnSuccess: ChildProcess | undefined
-            let existingOnSuccessFnPromise: Promise<any> | undefined
+            let onSuccessProcess: ChildProcess | undefined
+            let onSuccessCleanup: (() => any) | undefined | void
             /** Files imported by the entry */
             const buildDependencies: Set<string> = new Set()
 
-            const killPreviousProcessOrPromise = async () => {
-              if (existingOnSuccess) {
+            const doOnSuccessCleanup = async () => {
+              if (onSuccessProcess) {
                 await killProcess({
-                  pid: existingOnSuccess.pid,
+                  pid: onSuccessProcess.pid,
                 })
-              } else if (existingOnSuccessFnPromise) {
-                await Promise.race([
-                  existingOnSuccessFnPromise,
-                  // cancel existingOnSuccessFnPromise if it is still running,
-                  // using a promise that's been already resolved
-                  Promise.resolve(),
-                ])
+              } else if (onSuccessCleanup) {
+                await onSuccessCleanup()
               }
               // reset them in all occassions anyway
-              existingOnSuccess = undefined
-              existingOnSuccessFnPromise = undefined
+              onSuccessProcess = undefined
+              onSuccessCleanup = undefined
             }
 
             const debouncedBuildAll = debouncePromise(
@@ -213,7 +208,7 @@ export async function build(_options: Options) {
             )
 
             const buildAll = async () => {
-              const killPromise = killPreviousProcessOrPromise()
+              await doOnSuccessCleanup()
               // Store previous build dependencies in case the build failed
               // So we can restore it
               const previousBuildDependencies = new Set(buildDependencies)
@@ -258,12 +253,12 @@ export async function build(_options: Options) {
                   })
                 }),
               ])
-              await killPromise
+
               if (options.onSuccess) {
                 if (typeof options.onSuccess === 'function') {
-                  existingOnSuccessFnPromise = options.onSuccess()
+                  onSuccessCleanup = await options.onSuccess()
                 } else {
-                  existingOnSuccess = execa(options.onSuccess, {
+                  onSuccessProcess = execa(options.onSuccess, {
                     shell: true,
                     stdio: 'inherit',
                   })
@@ -338,7 +333,7 @@ export async function build(_options: Options) {
           }
         }
 
-        await Promise.all([dtsTask(), otherTasks()])
+        await Promise.all([dtsTask(), mainTasks()])
       }
     )
   )
