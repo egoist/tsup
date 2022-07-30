@@ -1,6 +1,7 @@
 {
   "name": "tsup",
   "version": "0.0.0-semantic-release",
+  "description": "Bundle your TypeScript library with no config, powered by esbuild",
   "main": "dist/index.js",
   "bin": {
     "tsup": "dist/cli-default.js",
