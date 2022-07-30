@@ -50,6 +50,8 @@ Head over to the [discussions](https://github.com/egoist/tsup/discussions) to sh
 
 ## Sponsors
 
+<img src="https://cdn.jsdelivr.net/gh/egoist-bot/images@main/upic/ETF2kP.png" alt="browserku">
+
 [![sponsors](https://sponsors-images.egoist.sh/sponsors.svg)](https://github.com/sponsors/egoist)
 
 ## Project Stats
