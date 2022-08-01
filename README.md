@@ -40,7 +40,7 @@ This will output `dist/index.js` and `dist/cli.js`.
 
 ## 📚 Documentation
 
-For complete usages, please dive into the [docs](https://tsup.egoist.sh).
+For complete usages, please dive into the [docs](https://tsup.egoist.dev).
 
 For all configuration options, please see [the API docs](https://paka.dev/npm/tsup#module-index-export-Options).
 
@@ -52,7 +52,7 @@ Head over to the [discussions](https://github.com/egoist/tsup/discussions) to sh
 
 <a href="https://browserku.com" target="_blank"><img src="https://cdn.jsdelivr.net/gh/egoist-bot/images@main/upic/ETF2kP.png" alt="browserku"></a>
 
-[![sponsors](https://sponsors-images.egoist.sh/sponsors.svg)](https://github.com/sponsors/egoist)
+[![sponsors](https://sponsors-images.egoist.dev/sponsors.svg)](https://github.com/sponsors/egoist)
 
 ## Project Stats
 
