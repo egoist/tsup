@@ -2,7 +2,7 @@
 import { html } from 'docup'
 
 export default () => {
-  let isPreview = location.hostname !== 'tsup.egoist.sh'
+  let isPreview = location.hostname !== 'tsup.egoist.dev'
 
   if (!isPreview) return null
 
@@ -183,7 +183,7 @@ They should not be included in a published NPM package and should not be confuse
 
 [Tsup is not able to generate those files](https://github.com/egoist/tsup/issues/564). Instead, you should use the TypeScript compiler directly, by running the following command after the build is done: `tsc --emitDeclarationOnly --declaration`.
 
-You can combine this command with Tsup [`onSuccess`](https://tsup.egoist.sh/#onsuccess) callback.
+You can combine this command with Tsup [`onSuccess`](https://tsup.egoist.dev/#onsuccess) callback.
 
 ### Generate sourcemap file
 
