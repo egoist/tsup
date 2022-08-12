@@ -266,13 +266,13 @@ export async function runEsbuild(
 
   // Manually write files
   if (result && result.outputFiles) {
-    const timeInMs = Date.now() - startTime
-    logger.success(format, `⚡️ Build success in ${Math.floor(timeInMs)}ms`)
-
     await pluginContainer.buildFinished({
       outputFiles: result.outputFiles,
       metafile: result.metafile,
     })
+
+    const timeInMs = Date.now() - startTime
+    logger.success(format, `⚡️ Build success in ${Math.floor(timeInMs)}ms`)
   }
 
   if (result.metafile) {

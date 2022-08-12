@@ -1,7 +1,6 @@
 // Workaround to enable code splitting for cjs format
 // Manually transform esm to cjs
 // TODO: remove this once esbuild supports code splitting for cjs natively
-import path from 'path'
 import { Plugin } from '../plugin'
 
 export const cjsSplitting = (): Plugin => {
@@ -11,6 +10,7 @@ export const cjsSplitting = (): Plugin => {
     async renderChunk(code, info) {
       if (
         !this.splitting ||
+        this.options.treeshake || // <-- handled by rollup
         this.format !== 'cjs' ||
         info.type !== 'chunk' ||
         !/\.(js|cjs)$/.test(info.path)
