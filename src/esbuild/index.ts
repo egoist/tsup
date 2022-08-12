@@ -103,8 +103,8 @@ export async function runEsbuild(
     format === 'iife'
       ? false
       : typeof options.splitting === 'boolean'
-        ? options.splitting
-        : format === 'esm'
+      ? options.splitting
+      : format === 'esm'
 
   const platform = options.platform || 'node'
   const loader = options.loader || {}
@@ -131,12 +131,12 @@ export async function runEsbuild(
     // esbuild's `external` option doesn't support RegExp
     // So here we use a custom plugin to implement it
     format !== 'iife' &&
-    externalPlugin({
-      external,
-      noExternal: options.noExternal,
-      skipNodeModulesBundle: options.skipNodeModulesBundle,
-      tsconfigResolvePaths: options.tsconfigResolvePaths,
-    }),
+      externalPlugin({
+        external,
+        noExternal: options.noExternal,
+        skipNodeModulesBundle: options.skipNodeModulesBundle,
+        tsconfigResolvePaths: options.tsconfigResolvePaths,
+      }),
     options.tsconfigDecoratorMetadata && swcPlugin({ logger }),
     nativeNodeModulesPlugin(),
     postcssPlugin({ css, inject: options.injectStyle }),
@@ -156,7 +156,8 @@ export async function runEsbuild(
   try {
     result = await esbuild({
       entryPoints: options.entry,
-      format: format === 'cjs' && splitting ? 'esm' : format,
+      format:
+        (format === 'cjs' && splitting) || options.treeshake ? 'esm' : format,
       bundle: typeof options.bundle === 'undefined' ? true : options.bundle,
       platform,
       globalName: options.globalName,
@@ -198,8 +199,8 @@ export async function runEsbuild(
         TSUP_FORMAT: JSON.stringify(format),
         ...(format === 'cjs' && injectShims
           ? {
-            'import.meta.url': 'importMetaUrl',
-          }
+              'import.meta.url': 'importMetaUrl',
+            }
           : {}),
         ...options.define,
         ...Object.keys(env).reduce((res, key) => {

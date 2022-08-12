@@ -13,7 +13,10 @@ const cacheDir = path.resolve(__dirname, '.cache')
 const bin = path.resolve(__dirname, '../dist/cli-default.js')
 
 const getTestName = () => {
-  const name = expect.getState().currentTestName
+  const name = expect
+    .getState()
+    .currentTestName?.replace(/^[a-z]+/g, '_')
+    .replace(/-/g, '_')
 
   if (!name) {
     throw new Error('No test name')
@@ -944,7 +947,9 @@ test('use rollup for treeshaking', async () => {
     }
   )
   expect(await getFileContent('dist/input.mjs')).toContain(
-    `import { inject } from 'vue'`
+    `function useRoute() {
+  return inject(routeLocationKey);
+}`
   )
 })
 
@@ -1031,4 +1036,24 @@ test('remove unused code', async () => {
     {}
   )
   expect(await getFileContent('dist/input.js')).not.toContain('console.log(1)')
+})
+
+test('treeshake should work with hashbang', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': '#!/usr/bin/node\nconsole.log(123)',
+    },
+    {
+      flags: ['--treeshake'],
+    }
+  )
+  expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
+    "#!/usr/bin/node
+    'use strict';
+
+    // input.ts
+    console.log(123);
+    "
+  `)
 })

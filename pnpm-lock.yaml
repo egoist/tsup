@@ -38,7 +38,7 @@ specifiers:
   tsconfig-paths: 3.12.0
   tsup: 6.0.1
   typescript: 4.6.3
-  vitest: 0.19.0
+  vitest: 0.21.1
   wait-for-expect: 3.0.2
 
 dependencies:
@@ -81,7 +81,7 @@ devDependencies:
   tsconfig-paths: 3.12.0
   tsup: 6.0.1_ien5tfzdggmpmrmtxysw6xj5lu
   typescript: 4.6.3
-  vitest: 0.19.0
+  vitest: 0.21.1
   wait-for-expect: 3.0.2
 
 packages:
@@ -304,11 +304,11 @@ packages:
   /@types/chai-subset/1.3.3:
     resolution: {integrity: sha512-frBecisrNGz+F4T6bcc+NLeolfiojh5FxW2klu669+8BARtyQv2C/GkNW6FUodVe4BroGMP/wER/YDGc7rEllw==}
     dependencies:
-      '@types/chai': 4.3.1
+      '@types/chai': 4.3.3
     dev: true
 
-  /@types/chai/4.3.1:
-    resolution: {integrity: sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ==}
+  /@types/chai/4.3.3:
+    resolution: {integrity: sha512-hC7OMnszpxhZPduX+m+nrx+uFoLkWOMiR4oa/AZF3MuSETYTZmFfJAHqZEM8MVlvfG7BEUcgvtwoCTxBp6hm3g==}
     dev: true
 
   /@types/debug/4.1.7:
@@ -1649,8 +1649,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.19.0:
-    resolution: {integrity: sha512-nU80Gm95tMchigHpAMukxv1LoWbBGgknX/1MqrXCOoJoJL7/wfq4h2aow61o2jwf5szQrahoNqBqaGb+fYdYrQ==}
+  /vitest/0.21.1:
+    resolution: {integrity: sha512-WBIxuFmIDPuK47GO6Lu9eNeRMqHj/FWL3dk73OHH3eyPPWPiu+UB3QHLkLK2PEggCqJW4FaWoWg8R68S7p9+9Q==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -1674,7 +1674,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/chai': 4.3.1
+      '@types/chai': 4.3.3
       '@types/chai-subset': 1.3.3
       '@types/node': 14.18.12
       chai: 4.3.6
