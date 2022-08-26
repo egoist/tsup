@@ -8,7 +8,7 @@ specifiers:
   '@types/fs-extra': 9.0.13
   '@types/node': 14.18.12
   '@types/resolve': 1.20.1
-  bundle-require: ^3.0.2
+  bundle-require: ^3.1.0
   cac: ^6.7.12
   chokidar: ^3.5.1
   colorette: 2.0.16
@@ -42,7 +42,7 @@ specifiers:
   wait-for-expect: 3.0.2
 
 dependencies:
-  bundle-require: 3.0.2_esbuild@0.15.1
+  bundle-require: 3.1.0_esbuild@0.15.1
   cac: 6.7.12
   chokidar: 3.5.2
   debug: 4.3.2
@@ -392,8 +392,8 @@ packages:
     dependencies:
       fill-range: 7.0.1
 
-  /bundle-require/3.0.2_esbuild@0.14.50:
-    resolution: {integrity: sha512-WLS50LRdi8oAMnQfoxqjI3Fszi0xaI6dJumvtX909u0WREkYCuFGeE2UwMn5H8bSUXWtUB0XeBqNkgpVjMcYyQ==}
+  /bundle-require/3.1.0_esbuild@0.14.50:
+    resolution: {integrity: sha512-IIXtAO7fKcwPHNPt9kY/WNVJqy7NDy6YqJvv6ENH0TOZoJ+yjpEsn1w40WKZbR2ibfu5g1rfgJTvmFHpm5aOMA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     peerDependencies:
       esbuild: '>=0.13'
@@ -402,8 +402,8 @@ packages:
       load-tsconfig: 0.2.2
     dev: true
 
-  /bundle-require/3.0.2_esbuild@0.15.1:
-    resolution: {integrity: sha512-WLS50LRdi8oAMnQfoxqjI3Fszi0xaI6dJumvtX909u0WREkYCuFGeE2UwMn5H8bSUXWtUB0XeBqNkgpVjMcYyQ==}
+  /bundle-require/3.1.0_esbuild@0.15.1:
+    resolution: {integrity: sha512-IIXtAO7fKcwPHNPt9kY/WNVJqy7NDy6YqJvv6ENH0TOZoJ+yjpEsn1w40WKZbR2ibfu5g1rfgJTvmFHpm5aOMA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     peerDependencies:
       esbuild: '>=0.13'
@@ -1585,7 +1585,7 @@ packages:
         optional: true
     dependencies:
       '@swc/core': 1.2.218
-      bundle-require: 3.0.2_esbuild@0.14.50
+      bundle-require: 3.1.0_esbuild@0.14.50
       cac: 6.7.12
       chokidar: 3.5.2
       debug: 4.3.2
