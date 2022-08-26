@@ -233,7 +233,7 @@ export async function build(_options: Options) {
                     ...(options.plugins || []),
                     treeShakingPlugin({
                       treeshake: options.treeshake,
-                      name: options.globalName
+                      name: options.globalName,
                     }),
                     cjsSplitting(),
                     es5(),
@@ -262,6 +262,11 @@ export async function build(_options: Options) {
                   onSuccessProcess = execa(options.onSuccess, {
                     shell: true,
                     stdio: 'inherit',
+                  })
+                  onSuccessProcess.on('exit', (code) => {
+                    if (code && code !== 0) {
+                      process.exitCode = code
+                    }
                   })
                 }
               }
