@@ -9,8 +9,10 @@ export type TreeshakingStrategy =
 
 export const treeShakingPlugin = ({
   treeshake,
+  name
 }: {
-  treeshake?: TreeshakingStrategy
+  treeshake?: TreeshakingStrategy,
+  name?: string
 }): Plugin => {
   return {
     name: 'tree-shaking',
@@ -42,6 +44,7 @@ export const treeShakingPlugin = ({
         format: this.format,
         file: 'out.js',
         sourcemap: !!this.options.sourcemap,
+        name
       })
 
       for (const file of result.output) {

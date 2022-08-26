@@ -233,6 +233,7 @@ export async function build(_options: Options) {
                     ...(options.plugins || []),
                     treeShakingPlugin({
                       treeshake: options.treeshake,
+                      name: options.globalName
                     }),
                     cjsSplitting(),
                     es5(),
