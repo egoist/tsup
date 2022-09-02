@@ -9,10 +9,12 @@ export type TreeshakingStrategy =
 
 export const treeShakingPlugin = ({
   treeshake,
-  name
+  name,
+  silent,
 }: {
   treeshake?: TreeshakingStrategy,
   name?: string
+  silent?: boolean
 }): Plugin => {
   return {
     name: 'tree-shaking',
@@ -38,6 +40,7 @@ export const treeShakingPlugin = ({
         treeshake: treeshake,
         makeAbsoluteExternalsRelative: false,
         preserveEntrySignatures: 'exports-only',
+        onwarn: silent ? () => {} : undefined,
       })
 
       const result = await bundle.generate({

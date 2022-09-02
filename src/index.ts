@@ -234,6 +234,7 @@ export async function build(_options: Options) {
                     treeShakingPlugin({
                       treeshake: options.treeshake,
                       name: options.globalName,
+                      silent: options.silent,
                     }),
                     cjsSplitting(),
                     es5(),
