@@ -344,6 +344,7 @@ test('external', async () => {
     'input.ts': `export {foo} from 'foo'
     export {bar} from 'bar'
     export {baz} from 'baz'
+    export {qux} from 'qux'
     `,
     'node_modules/foo/index.ts': `export const foo = 'foo'`,
     'node_modules/foo/package.json': `{"name":"foo","version":"0.0.0"}`,
@@ -351,9 +352,12 @@ test('external', async () => {
     'node_modules/bar/package.json': `{"name":"bar","version":"0.0.0"}`,
     'node_modules/baz/index.ts': `export const baz = 'baz'`,
     'node_modules/baz/package.json': `{"name":"baz","version":"0.0.0"}`,
+    'node_modules/qux/index.ts': `export const qux = 'qux'`,
+    'node_modules/qux/package.json': `{"name":"qux","version":"0.0.0"}`,
+    'another/package.json': `{"name":"another-pkg","dependencies":{"qux":"0.0.0"}}`,
     'tsup.config.ts': `
     export default {
-      external: [/f/, 'bar']
+      external: [/f/, 'bar', 'another/package.json']
     }
     `,
   })

@@ -58,6 +58,27 @@ const getOutputExtensionMap = (
   }
 }
 
+/**
+ * Support to exclude special package.json
+ */
+const generateExternal = async (external: (string | RegExp)[]) => {
+  const result: (string | RegExp)[] = []
+
+  for (const item of external) {
+    if (typeof item !== 'string' || !item.endsWith('package.json')) {
+      result.push(item)
+      continue
+    }
+
+    let pkgPath: string = path.isAbsolute(item) ? path.dirname(item) : path.dirname(path.resolve(process.cwd(), item))
+
+    const deps = await getDeps(pkgPath)
+    result.push(...deps)
+  }
+
+  return result
+}
+
 export async function runEsbuild(
   options: NormalizedOptions,
   {
@@ -79,7 +100,7 @@ export async function runEsbuild(
   const external = [
     // Exclude dependencies, e.g. `lodash`, `lodash/get`
     ...deps.map((dep) => new RegExp(`^${dep}($|\\/|\\\\)`)),
-    ...(options.external || []),
+    ...(await generateExternal(options.external || [])),
   ]
   const outDir = options.outDir
 
@@ -103,8 +124,8 @@ export async function runEsbuild(
     format === 'iife'
       ? false
       : typeof options.splitting === 'boolean'
-      ? options.splitting
-      : format === 'esm'
+        ? options.splitting
+        : format === 'esm'
 
   const platform = options.platform || 'node'
   const loader = options.loader || {}
@@ -131,12 +152,12 @@ export async function runEsbuild(
     // esbuild's `external` option doesn't support RegExp
     // So here we use a custom plugin to implement it
     format !== 'iife' &&
-      externalPlugin({
-        external,
-        noExternal: options.noExternal,
-        skipNodeModulesBundle: options.skipNodeModulesBundle,
-        tsconfigResolvePaths: options.tsconfigResolvePaths,
-      }),
+    externalPlugin({
+      external,
+      noExternal: options.noExternal,
+      skipNodeModulesBundle: options.skipNodeModulesBundle,
+      tsconfigResolvePaths: options.tsconfigResolvePaths,
+    }),
     options.tsconfigDecoratorMetadata && swcPlugin({ logger }),
     nativeNodeModulesPlugin(),
     postcssPlugin({ css, inject: options.injectStyle }),
@@ -199,8 +220,8 @@ export async function runEsbuild(
         TSUP_FORMAT: JSON.stringify(format),
         ...(format === 'cjs' && injectShims
           ? {
-              'import.meta.url': 'importMetaUrl',
-            }
+            'import.meta.url': 'importMetaUrl',
+          }
           : {}),
         ...options.define,
         ...Object.keys(env).reduce((res, key) => {
