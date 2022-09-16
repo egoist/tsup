@@ -58,7 +58,7 @@ export async function main(options: Options = {}) {
       'Replace a global variable with an import from another file'
     )
     .option('--define.* <value>', 'Define compile-time constants')
-    .option('--external <name>', 'Mark specific packages as external')
+    .option('--external <name>', 'Mark specific packages / package.json (dependencies and peerDependencies) as external')
     .option('--global-name <name>', 'Global variable name for iife format')
     .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
       default: 'React.createElement',
