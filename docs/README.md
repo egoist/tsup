@@ -64,7 +64,8 @@ tsup automatically excludes packages specified in the `dependencies` and `peerDe
 tsup-node src/index.ts
 ```
 
-All other CLI flags still apply to this command.
+All other CLI flags still apply to this command. You can still use the `noExternal` option to reinclude packages in the bundle,
+for example packages that belong to a local monorepository.
 
 **If the regular `tsup` command doesn't work for you, please submit an issue with a link to your repo so we can make the default command better.**
 

@@ -116,6 +116,7 @@ export type Options = {
   silent?: boolean
   /**
    * Skip node_modules bundling
+   * Will still bundle modules matching the `noExternal` option
    */
   skipNodeModulesBundle?: boolean
   /**

@@ -28,6 +28,9 @@ export const externalPlugin = ({
           if (match(args.path, resolvePatterns)) {
             return
           }
+          if (match(args.path, noExternal)) {
+            return
+          }
           if (NON_NODE_MODULE_RE.test(args.path)) {
             return {
               path: args.path,
