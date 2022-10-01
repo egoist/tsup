@@ -486,6 +486,21 @@ For more details:
 tsup --help
 ```
 
+### Inject cjs and esm shims
+
+Enabling this option will fill in some code when building esm/cjs to make it work, such as `__dirname` which is only available in the cjs module and `import.meta.url` which is only available in the esm module
+
+```ts
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  shims: true,
+})
+```
+
+- When building the cjs bundle, it will compile `import.meta.url` as `typeof document === "undefined" ? new URL("file:" + __filename).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href`
+- When building the esm bundle, it will compile `__dirname` as `path.dirname(fileURLToPath(import.meta.url))`
+
 ## Troubleshooting
 
 ### error: No matching export in "xxx.ts" for import "xxx"
