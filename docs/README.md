@@ -385,6 +385,7 @@ type Loader =
   | 'file'
   | 'dataurl'
   | 'binary'
+  | 'copy'
   | 'default'
 ```
 
