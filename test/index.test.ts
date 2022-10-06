@@ -379,7 +379,9 @@ test('noExternal are respected when skipNodeModulesBundle is true', async () => 
     }
     `,
   })
-  expect(output).toMatchSnapshot()
+  expect(output).toContain(`var foo = "foo"`)
+  expect(output).not.toContain(`var bar = "bar"`)
+  expect(output).not.toContain(`var baz = "baz"`)
 })
 
 test('disable code splitting to get proper module.exports =', async () => {
