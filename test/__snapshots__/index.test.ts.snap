@@ -74,7 +74,8 @@ var input_exports = {};
 __export(input_exports, {
   bar: () => import_bar.bar,
   baz: () => baz,
-  foo: () => import_foo.foo
+  foo: () => import_foo.foo,
+  qux: () => import_qux.qux
 });
 module.exports = __toCommonJS(input_exports);
 var import_foo = require(\\"foo\\");
@@ -82,11 +83,15 @@ var import_bar = require(\\"bar\\");
 
 // node_modules/baz/index.ts
 var baz = \\"baz\\";
+
+// input.ts
+var import_qux = require(\\"qux\\");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   bar,
   baz,
-  foo
+  foo,
+  qux
 });
 "
 `;
