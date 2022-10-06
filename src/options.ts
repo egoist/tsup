@@ -142,7 +142,7 @@ export type Options = {
    * Target platform
    * @default `node`
    */
-  platform?: 'node' | 'browser'
+  platform?: 'node' | 'browser' | 'neutral'
   /**
    * Esbuild loader option
    */
