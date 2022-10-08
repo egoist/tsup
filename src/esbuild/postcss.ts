@@ -1,14 +1,16 @@
 import fs from 'fs'
 import path from 'path'
-import { Plugin, transform } from 'esbuild'
+import { Loader, Plugin, transform } from 'esbuild'
 import { getPostcss } from '../utils'
 
 export const postcssPlugin = ({
   css,
   inject,
+  cssLoader,
 }: {
   css?: Map<string, string>
   inject?: boolean
+  cssLoader?: Loader
 }): Plugin => {
   return {
     name: 'postcss',
@@ -132,7 +134,7 @@ export const postcssPlugin = ({
 
         return {
           contents,
-          loader: 'css',
+          loader: cssLoader ?? 'css',
         }
       })
     },

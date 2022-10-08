@@ -160,7 +160,7 @@ export async function runEsbuild(
     }),
     options.tsconfigDecoratorMetadata && swcPlugin({ logger }),
     nativeNodeModulesPlugin(),
-    postcssPlugin({ css, inject: options.injectStyle }),
+    postcssPlugin({ css, inject: options.injectStyle, cssLoader: loader['.css'] }),
     sveltePlugin({ css }),
     ...(options.esbuildPlugins || []),
   ]
