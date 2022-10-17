@@ -194,7 +194,7 @@ export async function build(_options: Options) {
               } else if (onSuccessCleanup) {
                 await onSuccessCleanup()
               }
-              // reset them in all occassions anyway
+              // reset them in all occasions anyway
               onSuccessProcess = undefined
               onSuccessCleanup = undefined
             }
