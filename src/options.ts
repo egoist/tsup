@@ -105,7 +105,7 @@ export type Options = {
    */
   splitting?: boolean
   /**
-   * Clean output directory before each build
+   * Clean output directory before each build. Does not remove `*.d.ts` files by default.
    */
   clean?: boolean | string[]
   esbuildPlugins?: EsbuildPlugin[]
