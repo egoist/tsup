@@ -171,7 +171,11 @@ const getRollupConfig = async (
           },
         }),
       ].filter(Boolean),
-      external: [...deps, ...(options.external || [])],
+      external: [
+        // Exclude dependencies, e.g. `lodash`, `lodash/get`
+        ...deps.map((dep) => new RegExp(`^${dep}($|\\/|\\\\)`)),
+        ...(options.external || [])
+      ],
     },
     outputConfig: {
       dir: options.outDir || 'dist',

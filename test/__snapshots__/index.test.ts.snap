@@ -204,6 +204,15 @@ var input_default = foo_default;
 "
 `;
 
+exports[`not bundle \`package/subpath\` in dts (resolve) 1`] = `
+"import * as foo_bar from 'foo/bar';
+
+declare const stuff: foo_bar.Foobar;
+
+export { stuff };
+"
+`;
+
 exports[`support baseUrl and paths in tsconfig.json 1`] = `
 "var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;

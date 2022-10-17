@@ -136,7 +136,7 @@ test('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
 })
 
 test('bundle @egoist/path-parser with --dts --dts-resolve flag', async () => {
-  const { getFileContent } = await run(
+  await run(
     getTestName(),
     {
       'input.ts': `import { PathParser } from '@egoist/path-parser'
@@ -150,6 +150,23 @@ test('bundle @egoist/path-parser with --dts --dts-resolve flag', async () => {
       flags: ['--dts', '--dts-resolve'],
     }
   )
+})
+
+test('not bundle `package/subpath` in dts (resolve)', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'package.json': `{ "dependencies": { "foo": "*" } }`,
+      'input.ts': `export const stuff: import('foo/bar').Foobar = { foo: 'foo', bar: 'bar' };`,
+      'node_modules/foo/bar.d.ts': `export type Foobar = { foo: 'foo', bar: 'bar' }`,
+      'node_modules/foo/package.json': `{ "name": "foo", "version": "0.0.0" }`,
+    },
+    { 
+      flags: ['--dts', '--dts-resolve'],
+    }
+  )
+  const content = await getFileContent('dist/input.d.ts')
+  expect(content).toMatchSnapshot()
 })
 
 test('enable --dts-resolve for specific module', async () => {
