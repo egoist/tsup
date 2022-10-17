@@ -364,6 +364,30 @@ test('external', async () => {
   expect(output).toMatchSnapshot()
 })
 
+test('noExternal are respected when skipNodeModulesBundle is true', async () => {
+  const { output } = await run(getTestName(), {
+    'input.ts': `export {foo} from 'foo'
+    export {bar} from 'bar'
+    export {baz} from 'baz'
+    `,
+    'node_modules/foo/index.ts': `export const foo = 'foo'`,
+    'node_modules/foo/package.json': `{"name":"foo","version":"0.0.0"}`,
+    'node_modules/bar/index.ts': `export const bar = 'bar'`,
+    'node_modules/bar/package.json': `{"name":"bar","version":"0.0.0"}`,
+    'node_modules/baz/index.ts': `export const baz = 'baz'`,
+    'node_modules/baz/package.json': `{"name":"baz","version":"0.0.0"}`,
+    'tsup.config.ts': `
+    export default {
+      skipNodeModulesBundle: true,
+      noExternal: [/foo/]
+    }
+    `,
+  })
+  expect(output).toContain(`var foo = "foo"`)
+  expect(output).not.toContain(`var bar = "bar"`)
+  expect(output).not.toContain(`var baz = "baz"`)
+})
+
 test('disable code splitting to get proper module.exports =', async () => {
   const { output } = await run(
     getTestName(),

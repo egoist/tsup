@@ -28,6 +28,14 @@ export const externalPlugin = ({
           if (match(args.path, resolvePatterns)) {
             return
           }
+          // Respect explicit external/noExternal conditions
+          if (match(args.path, noExternal)) {
+            return
+          }
+          if (match(args.path, external)) {
+            return { external: true }
+          }
+          // Exclude any other import that looks like a Node module
           if (NON_NODE_MODULE_RE.test(args.path)) {
             return {
               path: args.path,
@@ -35,16 +43,17 @@ export const externalPlugin = ({
             }
           }
         })
+      } else {
+        build.onResolve({ filter: /.*/ }, (args) => {
+          // Respect explicit external/noExternal conditions
+          if (match(args.path, noExternal)) {
+            return
+          }
+          if (match(args.path, external)) {
+            return { external: true }
+          }
+        })
       }
-
-      build.onResolve({ filter: /.*/ }, (args) => {
-        if (match(args.path, noExternal)) {
-          return
-        }
-        if (match(args.path, external)) {
-          return { external: true }
-        }
-      })
     },
   }
 }
