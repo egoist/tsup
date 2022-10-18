@@ -221,7 +221,7 @@ export async function build(_options: Options) {
                 // Don't clear d.ts files here if we are generating them
                 // They will be handled by the tsup:clean rollup plugin
                 if (options.dts) {
-                  extraPatterns.push('!**/*.d.ts');
+                  extraPatterns.unshift('!**/*.d.ts');
                 }
                 await removeFiles(
                   ['**/*', ...extraPatterns],
