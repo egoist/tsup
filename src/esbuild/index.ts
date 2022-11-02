@@ -138,6 +138,7 @@ export async function runEsbuild(
     logger,
   })
 
+  await pluginContainer.buildStarted()
   const esbuildPlugins: Array<EsbuildPlugin | false | undefined> = [
     format === 'cjs' && nodeProtocolPlugin(),
     {
