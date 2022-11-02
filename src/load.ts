@@ -3,7 +3,7 @@ import JoyCon from 'joycon'
 import path from 'path'
 import { bundleRequire } from 'bundle-require'
 import { defineConfig } from './'
-import { jsoncParse } from './utils'
+import { hash, jsoncParse } from './utils'
 
 const joycon = new JoyCon()
 
@@ -77,13 +77,16 @@ export async function loadTsupConfig(
   return {}
 }
 
-export async function loadPkg(cwd: string) {
+export async function loadPkg(cwd: string, clearCache: boolean = false) {
+  if (clearCache) {
+    joycon.clearCache();
+  }
   const { data } = await joycon.load(['package.json'], cwd, path.dirname(cwd))
   return data || {}
 }
 
-export async function getDeps(cwd: string) {
-  const data = await loadPkg(cwd)
+export async function getDeps(cwd: string, clearCache: boolean = false) {
+  const data = await loadPkg(cwd, clearCache)
 
   const deps = Array.from(
     new Set([
@@ -93,4 +96,9 @@ export async function getDeps(cwd: string) {
   )
 
   return deps
+}
+
+export async function getDepsHash(cwd: string) {
+  const deps = await getDeps(cwd, true)
+  return hash(deps.join(','))
 }

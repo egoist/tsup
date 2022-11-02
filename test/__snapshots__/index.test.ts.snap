@@ -167,6 +167,15 @@ console.log(import_node_fs.default);
 "
 `;
 
+exports[`not bundle \`package/subpath\` in dts (resolve) 1`] = `
+"import * as foo_bar from 'foo/bar';
+
+declare const stuff: foo_bar.Foobar;
+
+export { stuff };
+"
+`;
+
 exports[`simple 1`] = `
 "\\"use strict\\";
 var __defProp = Object.defineProperty;
@@ -201,15 +210,6 @@ var foo_default = \\"foo\\";
 var input_default = foo_default;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {});
-"
-`;
-
-exports[`not bundle \`package/subpath\` in dts (resolve) 1`] = `
-"import * as foo_bar from 'foo/bar';
-
-declare const stuff: foo_bar.Foobar;
-
-export { stuff };
 "
 `;
 

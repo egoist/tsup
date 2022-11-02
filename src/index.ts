@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
 import { removeFiles, debouncePromise, slash, MaybePromise } from './utils'
-import { loadTsupConfig } from './load'
+import { getDepsHash, loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
 import { handleError, PrettyError } from './errors'
@@ -185,6 +185,8 @@ export async function build(_options: Options) {
             let onSuccessCleanup: (() => any) | undefined | void
             /** Files imported by the entry */
             const buildDependencies: Set<string> = new Set()
+            
+            let depsHash = await getDepsHash(process.cwd())
 
             const doOnSuccessCleanup = async () => {
               if (onSuccessProcess) {
@@ -319,14 +321,27 @@ export async function build(_options: Options) {
                 ignorePermissionErrors: true,
                 ignored,
               })
-              watcher.on('all', (type, file) => {
+              watcher.on('all', async (type, file) => {
                 file = slash(file)
                 // By default we only rebuild when imported files change
                 // If you specify custom `watch`, a string or multiple strings
                 // We rebuild when those files change
-                if (options.watch === true && !buildDependencies.has(file)) {
+                let shouldSkipChange = false
+                
+                if (options.watch === true ) {
+                  if (file === 'package.json') {
+                    const currentHash = await getDepsHash(process.cwd())
+                    shouldSkipChange = currentHash === depsHash
+                    depsHash = currentHash
+                  } else if (!buildDependencies.has(file)) {
+                    shouldSkipChange = true
+                  }
+                }
+
+                if (shouldSkipChange) {
                   return
                 }
+
                 logger.info('CLI', `Change detected: ${type} ${file}`)
                 debouncedBuildAll()
               })
