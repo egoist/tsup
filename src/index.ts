@@ -53,7 +53,6 @@ const normalizeOptions = async (
     ...optionsOverride,
   }
   const options: Partial<NormalizedOptions> = {
-    target: 'node14',
     outDir: 'dist',
     ..._options,
     format:
@@ -113,10 +112,17 @@ const normalizeOptions = async (
         ...(options.dts.compilerOptions || {}),
       }
     }
+    if (!options.target) {
+      options.target = tsconfig.data?.compilerOptions?.target
+    }
   } else if (options.tsconfig) {
     throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
   }
 
+  if (!options.target) {
+    options.target = 'node14'
+  }
+  
   return options as NormalizedOptions
 }
 

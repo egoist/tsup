@@ -1102,3 +1102,44 @@ test('treeshake should work with hashbang', async () => {
     "
   `)
 })
+
+test('support target in tsconfig.json', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `await import('./foo')`,
+      'foo.ts': `export default 'foo'`,
+      'tsconfig.json': `{
+        "compilerOptions": {
+          "baseUrl":".",
+          "target": "esnext"
+        }
+      }`
+    }, 
+    {
+      flags: ['--format', 'esm', ],
+    }
+  )
+  expect(await getFileContent('dist/input.mjs')).contains('await import(')
+})
+
+test('override target in tsconfig.json', async () => {
+  await expect(
+    run(
+      getTestName(),
+      {
+        'input.ts': `await import('./foo')`,
+        'foo.ts': `export default 'foo'`,
+        'tsconfig.json': `{
+          "compilerOptions": {
+            "baseUrl":".",
+            "target": "esnext"
+          }
+        }`
+      }, 
+      {
+        flags: ['--format', 'esm', '--target', 'es2018' ],
+      }
+    )
+  ).rejects.toThrowError(`Top-level await is not available in the configured target environment ("es2018")`)
+})
