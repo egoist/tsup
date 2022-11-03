@@ -246,7 +246,6 @@ export async function build(_options: Options) {
                     es5(),
                     sizeReporter(),
                   ])
-                  await pluginContainer.buildStarted()
                   await runEsbuild(options, {
                     pluginContainer,
                     format,
