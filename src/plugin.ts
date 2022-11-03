@@ -5,6 +5,7 @@ import { Format, NormalizedOptions } from '.'
 import { outputFile } from './fs'
 import { Logger } from './log'
 import { MaybePromise } from './utils'
+import { SourceMap } from 'rollup'
 
 export type ChunkInfo = {
   type: 'chunk'
@@ -30,7 +31,7 @@ export type RenderChunk = (
 ) => MaybePromise<
   | {
       code: string
-      map?: object | string
+      map?: object | string | SourceMap | null
     }
   | undefined
   | null
