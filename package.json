@@ -26,7 +26,7 @@
     "build-fast": "npm run build -- --no-dts"
   },
   "dependencies": {
-    "bundle-require": "^3.1.0",
+    "bundle-require": "^3.1.2",
     "cac": "^6.7.12",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
