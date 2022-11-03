@@ -50,9 +50,17 @@ Head over to the [discussions](https://github.com/egoist/tsup/discussions) to sh
 
 ## Sponsors
 
-<a href="https://chromatic.com" target="_blank"><img src="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Frame%203.png" width="700" alt="chromatic"></a>
 
-[![sponsors](https://sponsors-images.egoist.dev/sponsors.svg)](https://github.com/sponsors/egoist)
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" width="500" srcset="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Group 2 (2).png">
+  <img alt="Ship UIs faster with automated workflows for Storybook"  width="500" src="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Group%202%20(1).png">
+</picture>
+</p>
+
+<p align="center">
+<a href="https://github.com/sponsors/egoist"><img src="https://sponsors-images.egoist.dev/sponsors.svg" alt="sponsors"></a>
+</p>
 
 ## Project Stats
 
