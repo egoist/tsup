@@ -3,7 +3,7 @@ import JoyCon from 'joycon'
 import path from 'path'
 import { bundleRequire } from 'bundle-require'
 import { defineConfig } from './'
-import { hash, jsoncParse } from './utils'
+import { jsoncParse } from './utils'
 
 const joycon = new JoyCon()
 
@@ -79,13 +79,19 @@ export async function loadTsupConfig(
 
 export async function loadPkg(cwd: string, clearCache: boolean = false) {
   if (clearCache) {
-    joycon.clearCache();
+    joycon.clearCache()
   }
   const { data } = await joycon.load(['package.json'], cwd, path.dirname(cwd))
   return data || {}
 }
 
-export async function getDeps(cwd: string, clearCache: boolean = false) {
+/*
+ * Production deps should be excluded from the bundle
+ */
+export async function getProductionDeps(
+  cwd: string,
+  clearCache: boolean = false
+) {
   const data = await loadPkg(cwd, clearCache)
 
   const deps = Array.from(
@@ -98,7 +104,15 @@ export async function getDeps(cwd: string, clearCache: boolean = false) {
   return deps
 }
 
-export async function getDepsHash(cwd: string) {
-  const deps = await getDeps(cwd, true)
-  return hash(deps.join(','))
+/**
+ * Use this to determine if we should rebuild when package.json changes
+ */
+export async function getAllDepsHash(cwd: string) {
+  const data = await loadPkg(cwd, true)
+
+  return JSON.stringify({
+    ...data.dependencies,
+    ...data.peerDependencies,
+    ...data.devDependencies,
+  })
 }

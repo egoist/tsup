@@ -8,7 +8,7 @@ import { handleError } from './errors'
 import { removeFiles } from './utils'
 import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 import { createLogger, setSilent } from './log'
-import { getDeps } from './load'
+import { getProductionDeps } from './load'
 import path from 'path'
 import { reportSize } from './lib/report-size'
 import resolveFrom from 'resolve-from'
@@ -111,7 +111,7 @@ const getRollupConfig = async (
     }
   }
 
-  const deps = await getDeps(process.cwd())
+  const deps = await getProductionDeps(process.cwd())
 
   const tsupCleanPlugin: Plugin = {
     name: 'tsup:clean',
@@ -174,7 +174,7 @@ const getRollupConfig = async (
       external: [
         // Exclude dependencies, e.g. `lodash`, `lodash/get`
         ...deps.map((dep) => new RegExp(`^${dep}($|\\/|\\\\)`)),
-        ...(options.external || [])
+        ...(options.external || []),
       ],
     },
     outputConfig: {

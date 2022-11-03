@@ -1,4 +1,3 @@
-import { createHash } from 'crypto'
 import fs from 'fs'
 import glob from 'globby'
 import resolveFrom from 'resolve-from'
@@ -129,8 +128,4 @@ export function jsoncParse(data: string) {
     // That's what tsc/jsonc-parser did after all
     return {}
   }
-}
-
-export function hash(content: string) {
-  return createHash('sha256').update(content).digest('hex');
 }
