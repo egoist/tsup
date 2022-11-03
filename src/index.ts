@@ -113,7 +113,7 @@ const normalizeOptions = async (
       }
     }
     if (!options.target) {
-      options.target = tsconfig.data?.compilerOptions?.target.toLowerCase()
+      options.target = tsconfig.data?.compilerOptions?.target?.toLowerCase()
     }
   } else if (options.tsconfig) {
     throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
