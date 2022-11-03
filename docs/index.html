@@ -20,6 +20,19 @@
       rel="stylesheet"
       href="https://unpkg.com/@egoist/docup@2/dist/docup.min.css"
     />
+    <style>
+      .logo-dark {
+        display: none;
+      }
+      @media (prefers-color-scheme: dark) {
+        .logo {
+          display: none;
+        }
+        .logo-dark {
+          display: block;
+        }
+      }
+    </style>
   </head>
   <body>
     <script type="module">
@@ -37,15 +50,21 @@
             link: `https://github.com/sponsors/egoist`,
           },
         ],
-        beforeSidebar: `<div style="background:#f9f9f9;padding: 20px;">
-        <div>
+        beforeSidebar: `<div style="padding: 20px;">
+        <div style="margin-bottom:10px">
           <strong style="font-size: 0.8rem;color:#ccc;">SPONSOR</strong>
         </div>
-        <a href="https://browserku.com" rel="nofollow noopener" target="_blank"
+        <a href="https://chromatic.com" rel="nofollow noopener" target="_blank"
           ><img 
-            title="API for web scraping, screenshots, PDF generation and more" 
-            alt="browserku logo" 
-            src="https://cdn.jsdelivr.net/gh/egoist-bot/images@main/upic/b38Wz1.png"
+            title="Ship UIs faster with automated workflows for Storybook" 
+            alt="chromatic logo" 
+            class="logo"
+            src="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Group 2 (1).png"
+        /><img 
+            title="Ship UIs faster with automated workflows for Storybook" 
+            alt="chromatic logo" 
+            class="logo logo-dark"
+            src="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Group 2 (2).png"
         /></a>
       </div>`,
       })

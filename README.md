@@ -50,7 +50,7 @@ Head over to the [discussions](https://github.com/egoist/tsup/discussions) to sh
 
 ## Sponsors
 
-<a href="https://browserku.com" target="_blank"><img src="https://cdn.jsdelivr.net/gh/egoist-bot/images@main/upic/ETF2kP.png" alt="browserku"></a>
+<a href="https://chromatic.com" target="_blank"><img src="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Frame%203.png" width="700" alt="chromatic"></a>
 
 [![sponsors](https://sponsors-images.egoist.dev/sponsors.svg)](https://github.com/sponsors/egoist)
 
