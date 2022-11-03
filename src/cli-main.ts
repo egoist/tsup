@@ -1,8 +1,7 @@
-import { readFileSync } from 'fs'
-import { join } from 'path'
 import { cac } from 'cac'
 import flat from 'flat'
 import { Format, Options } from '.'
+import { version } from '../package.json'
 import { slash } from './utils'
 
 function ensureArray(input: string): string[] {
@@ -58,7 +57,10 @@ export async function main(options: Options = {}) {
       'Replace a global variable with an import from another file'
     )
     .option('--define.* <value>', 'Define compile-time constants')
-    .option('--external <name>', 'Mark specific packages / package.json (dependencies and peerDependencies) as external')
+    .option(
+      '--external <name>',
+      'Mark specific packages / package.json (dependencies and peerDependencies) as external'
+    )
     .option('--global-name <name>', 'Global variable name for iife format')
     .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
       default: 'React.createElement',
@@ -145,8 +147,7 @@ export async function main(options: Options = {}) {
 
   cli.help()
 
-  const pkgPath = join(__dirname, '../package.json')
-  cli.version(JSON.parse(readFileSync(pkgPath, 'utf8')).version)
+  cli.version(version)
 
   cli.parse(process.argv, { run: false })
   await cli.runMatchedCommand()

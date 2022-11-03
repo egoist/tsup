@@ -329,7 +329,7 @@ export async function build(_options: Options) {
                 let shouldSkipChange = false
 
                 if (options.watch === true) {
-                  if (file === 'package.json') {
+                  if (file === 'package.json' && !buildDependencies.has(file)) {
                     const currentHash = await getAllDepsHash(process.cwd())
                     shouldSkipChange = currentHash === depsHash
                     depsHash = currentHash
