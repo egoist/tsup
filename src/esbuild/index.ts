@@ -7,7 +7,7 @@ import {
   Plugin as EsbuildPlugin,
 } from 'esbuild'
 import { NormalizedOptions, Format } from '..'
-import { getDeps, loadPkg } from '../load'
+import { getProductionDeps, loadPkg } from '../load'
 import { Logger, getSilent } from '../log'
 import { nodeProtocolPlugin } from './node-protocol'
 import { externalPlugin } from './external'
@@ -70,9 +70,11 @@ const generateExternal = async (external: (string | RegExp)[]) => {
       continue
     }
 
-    let pkgPath: string = path.isAbsolute(item) ? path.dirname(item) : path.dirname(path.resolve(process.cwd(), item))
+    let pkgPath: string = path.isAbsolute(item)
+      ? path.dirname(item)
+      : path.dirname(path.resolve(process.cwd(), item))
 
-    const deps = await getDeps(pkgPath)
+    const deps = await getProductionDeps(pkgPath)
     result.push(...deps)
   }
 
@@ -96,7 +98,7 @@ export async function runEsbuild(
   }
 ) {
   const pkg = await loadPkg(process.cwd())
-  const deps = await getDeps(process.cwd())
+  const deps = await getProductionDeps(process.cwd())
   const external = [
     // Exclude dependencies, e.g. `lodash`, `lodash/get`
     ...deps.map((dep) => new RegExp(`^${dep}($|\\/|\\\\)`)),
@@ -124,8 +126,8 @@ export async function runEsbuild(
     format === 'iife'
       ? false
       : typeof options.splitting === 'boolean'
-        ? options.splitting
-        : format === 'esm'
+      ? options.splitting
+      : format === 'esm'
 
   const platform = options.platform || 'node'
   const loader = options.loader || {}
@@ -153,15 +155,19 @@ export async function runEsbuild(
     // esbuild's `external` option doesn't support RegExp
     // So here we use a custom plugin to implement it
     format !== 'iife' &&
-    externalPlugin({
-      external,
-      noExternal: options.noExternal,
-      skipNodeModulesBundle: options.skipNodeModulesBundle,
-      tsconfigResolvePaths: options.tsconfigResolvePaths,
-    }),
+      externalPlugin({
+        external,
+        noExternal: options.noExternal,
+        skipNodeModulesBundle: options.skipNodeModulesBundle,
+        tsconfigResolvePaths: options.tsconfigResolvePaths,
+      }),
     options.tsconfigDecoratorMetadata && swcPlugin({ logger }),
     nativeNodeModulesPlugin(),
-    postcssPlugin({ css, inject: options.injectStyle, cssLoader: loader['.css'] }),
+    postcssPlugin({
+      css,
+      inject: options.injectStyle,
+      cssLoader: loader['.css'],
+    }),
     sveltePlugin({ css }),
     ...(options.esbuildPlugins || []),
   ]
@@ -221,8 +227,8 @@ export async function runEsbuild(
         TSUP_FORMAT: JSON.stringify(format),
         ...(format === 'cjs' && injectShims
           ? {
-            'import.meta.url': 'importMetaUrl',
-          }
+              'import.meta.url': 'importMetaUrl',
+            }
           : {}),
         ...options.define,
         ...Object.keys(env).reduce((res, key) => {

@@ -77,13 +77,22 @@ export async function loadTsupConfig(
   return {}
 }
 
-export async function loadPkg(cwd: string) {
+export async function loadPkg(cwd: string, clearCache: boolean = false) {
+  if (clearCache) {
+    joycon.clearCache()
+  }
   const { data } = await joycon.load(['package.json'], cwd, path.dirname(cwd))
   return data || {}
 }
 
-export async function getDeps(cwd: string) {
-  const data = await loadPkg(cwd)
+/*
+ * Production deps should be excluded from the bundle
+ */
+export async function getProductionDeps(
+  cwd: string,
+  clearCache: boolean = false
+) {
+  const data = await loadPkg(cwd, clearCache)
 
   const deps = Array.from(
     new Set([
@@ -93,4 +102,17 @@ export async function getDeps(cwd: string) {
   )
 
   return deps
+}
+
+/**
+ * Use this to determine if we should rebuild when package.json changes
+ */
+export async function getAllDepsHash(cwd: string) {
+  const data = await loadPkg(cwd, true)
+
+  return JSON.stringify({
+    ...data.dependencies,
+    ...data.peerDependencies,
+    ...data.devDependencies,
+  })
 }
