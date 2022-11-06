@@ -134,6 +134,21 @@ The `options` here is derived from CLI flags.
 }
 ```
 
+Developers who are using [vscode](https://code.visualstudio.com/) can associate the JSON Schema Store in their workspace  settings to provide intellisense capabilities on the `tsup` option via CDN. Provide the following configuration in your `.vscode/settings.json` file:
+
+```json
+{
+   "json.schemas": [
+    {
+      "fileMatch": [
+        "package.json"
+      ],
+      "url": "https://unpkg.com/tsup/schema.json"
+    }
+  ],
+}
+```
+
 ### Multiple entrypoints
 
 Beside using positional arguments `tsup [...files]` to specify multiple entrypoints, you can also use the cli flag `--entry`:
