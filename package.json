@@ -10,7 +10,8 @@
   "types": "dist/index.d.ts",
   "files": [
     "/dist",
-    "/assets"
+    "/assets",
+    "/schema.json"
   ],
   "author": "EGOIST",
   "license": "MIT",
