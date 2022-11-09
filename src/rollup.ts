@@ -115,10 +115,13 @@ const getRollupConfig = async (
 
   const tsupCleanPlugin: Plugin = {
     name: 'tsup:clean',
-    async buildStart() {
-      if (options.clean) {
-        await removeFiles(['**/*.d.ts'], options.outDir)
-      }
+    buildStart: {
+      order: 'pre',
+      async handler() {
+        if (options.clean) {
+          await removeFiles(['**/*.d.ts'], options.outDir)
+        }
+      },
     },
   }
 
