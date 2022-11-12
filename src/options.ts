@@ -181,6 +181,7 @@ export type Options = {
    * This can result in smaller bundle size
    */
   treeshake?: TreeshakingStrategy
+  ['--']: string[]
 }
 
 export type NormalizedOptions = Omit<
