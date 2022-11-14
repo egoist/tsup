@@ -522,6 +522,12 @@ export default defineConfig({
 - When building the cjs bundle, it will compile `import.meta.url` as `typeof document === "undefined" ? new URL("file:" + __filename).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href`
 - When building the esm bundle, it will compile `__dirname` as `path.dirname(fileURLToPath(import.meta.url))`
 
+### Copy files to output directory
+
+Use `--publicDir` flag to copy files inside `./public` folder to the output directory.
+
+You can also specify a custom directory using `--publicDir another-directory`.
+
 ## Troubleshooting
 
 ### error: No matching export in "xxx.ts" for import "xxx"

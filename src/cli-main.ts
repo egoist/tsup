@@ -90,6 +90,7 @@ export async function main(options: Options = {}) {
       '--treeshake [strategy]',
       'Using Rollup for treeshaking instead, "recommended" or "smallest" or "safest"'
     )
+    .option('--publicDir [dir]', 'Copy public directory to output directory')
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
       Object.assign(options, {

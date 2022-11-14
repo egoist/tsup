@@ -181,6 +181,10 @@ export type Options = {
    * This can result in smaller bundle size
    */
   treeshake?: TreeshakingStrategy
+  /**
+   * Copy the files inside `publicDir` to output directory
+   */
+  publicDir?: string | boolean
 }
 
 export type NormalizedOptions = Omit<
