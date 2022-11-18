@@ -323,7 +323,7 @@ tsup src/index.ts --env.NODE_ENV production
 
 ### Building CLI app
 
-When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the outout file executable, so you don't have to run `chmod +x dist/cli.js`.
+When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the output file executable, so you don't have to run `chmod +x dist/cli.js`.
 
 ### Watch mode
 
