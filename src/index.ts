@@ -180,6 +180,13 @@ export async function build(_options: Options) {
                   reject(new Error('error occured in dts build'))
                 } else if (data === 'success') {
                   resolve()
+                } else {
+                  const { type, text } = data
+                  if (type === 'log') {
+                    console.log(text)
+                  } else if (type === 'error') {
+                    console.error(text)
+                  }
                 }
               })
             })
