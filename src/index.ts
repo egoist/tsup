@@ -141,8 +141,11 @@ export async function build(_options: Options) {
       ? await config.data(_options)
       : config.data
 
+  const allTasks = [...(Array.isArray(configData) ? configData : [configData])]
+  let completedTasks = 0
+
   await Promise.all(
-    [...(Array.isArray(configData) ? configData : [configData])].map(
+    allTasks.map(
       async (item) => {
         const logger = createLogger(item?.name)
         const options = await normalizeOptions(logger, item, _options)
@@ -186,27 +189,45 @@ export async function build(_options: Options) {
           }
         }
 
+        let onSuccessProcess: ChildProcess | undefined
+        let onSuccessCleanup: (() => any) | undefined | void
+
+        const doOnSuccessCleanup = async () => {
+          if (onSuccessProcess) {
+            await killProcess({
+              pid: onSuccessProcess.pid,
+            })
+          } else if (onSuccessCleanup) {
+            await onSuccessCleanup()
+          }
+          // reset them in all occasions anyway
+          onSuccessProcess = undefined
+          onSuccessCleanup = undefined
+        }
+
+        const handleOnSuccess = async (onSuccess: Options['onSuccess']) => {
+          if (!onSuccess) return
+          else if (typeof onSuccess === 'function') {
+            onSuccessCleanup = await onSuccess()
+          } else {
+            onSuccessProcess = execa(onSuccess, {
+              shell: true,
+              stdio: 'inherit',
+            })
+            onSuccessProcess.on('exit', (code) => {
+              if (code && code !== 0) {
+                process.exitCode = code
+              }
+            })
+          }
+        }
+
         const mainTasks = async () => {
           if (!options.dts?.only) {
-            let onSuccessProcess: ChildProcess | undefined
-            let onSuccessCleanup: (() => any) | undefined | void
             /** Files imported by the entry */
             const buildDependencies: Set<string> = new Set()
 
             let depsHash = await getAllDepsHash(process.cwd())
-
-            const doOnSuccessCleanup = async () => {
-              if (onSuccessProcess) {
-                await killProcess({
-                  pid: onSuccessProcess.pid,
-                })
-              } else if (onSuccessCleanup) {
-                await onSuccessCleanup()
-              }
-              // reset them in all occasions anyway
-              onSuccessProcess = undefined
-              onSuccessCleanup = undefined
-            }
 
             const debouncedBuildAll = debouncePromise(
               () => {
@@ -264,21 +285,7 @@ export async function build(_options: Options) {
                 }),
               ])
 
-              if (options.onSuccess) {
-                if (typeof options.onSuccess === 'function') {
-                  onSuccessCleanup = await options.onSuccess()
-                } else {
-                  onSuccessProcess = execa(options.onSuccess, {
-                    shell: true,
-                    stdio: 'inherit',
-                  })
-                  onSuccessProcess.on('exit', (code) => {
-                    if (code && code !== 0) {
-                      process.exitCode = code
-                    }
-                  })
-                }
-              }
+              await handleOnSuccess(item?.onSuccess)
             }
 
             const startWatcher = async () => {
@@ -372,7 +379,12 @@ export async function build(_options: Options) {
           }
         }
 
-        await Promise.all([dtsTask(), mainTasks()])
+        await Promise.all([dtsTask(), mainTasks()]).then(() => ++completedTasks)
+
+        if (options.onSuccess && completedTasks === allTasks.length) {
+          await doOnSuccessCleanup()
+          await handleOnSuccess(options.onSuccess)
+        }
       }
     )
   )
