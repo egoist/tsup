@@ -3,6 +3,7 @@ import path from 'path'
 import {
   build as esbuild,
   BuildResult,
+  CommonOptions,
   formatMessages,
   Plugin as EsbuildPlugin,
 } from 'esbuild'
@@ -181,6 +182,18 @@ export async function runEsbuild(
       ? options.footer({ format })
       : options.footer
 
+  // if sourcemap is set to true, select `external`
+  let sourcemap: CommonOptions['sourcemap'] =
+    options.sourcemap === true ? 'external' : false
+
+  // if sourcemap is any of the allowed options, select that one
+  const sourcemapOptions = ['external', 'linked', 'inline', 'both']
+  if (
+    typeof options.sourcemap === 'string' &&
+    sourcemapOptions.indexOf(options.sourcemap) !== -1
+  )
+    sourcemap = options.sourcemap
+
   try {
     result = await esbuild({
       entryPoints: options.entry,
@@ -191,7 +204,7 @@ export async function runEsbuild(
       globalName: options.globalName,
       jsxFactory: options.jsxFactory,
       jsxFragment: options.jsxFragment,
-      sourcemap: options.sourcemap ? 'external' : false,
+      sourcemap,
       target: options.target,
       banner,
       footer,

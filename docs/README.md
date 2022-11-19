@@ -116,7 +116,7 @@ export default defineConfig((options) => {
 })
 ```
 
-The `options` here is derived from CLI flags.
+The `options` here are derived from CLI flags.
 
 #### package.json
 
@@ -192,15 +192,15 @@ You can combine this command with Tsup [`onSuccess`](https://tsup.egoist.dev/#on
 tsup index.ts --sourcemap
 ```
 
-This will emit `./dist/index.js` and `./dist/index.js.map`.
+This will emit `./dist/index.js` and `./dist/index.js.map`. Setting multiple entry files will result in each getting its corresponding `.map` file.
 
-If you set multiple entry files, each entry will get a corresponding `.map` file.
-
-If you want to inline sourcemap, you can try:
+If you want to inline sourcemap, you can use:
 
 ```bash
 tsup index.ts --sourcemap inline
 ```
+
+Supported sourcemap options: `external`, `linked`, `inline`, `both`. [Esbuild sourcemap options](https://esbuild.github.io/api/#sourcemap)
 
 > Warning: Note that inline sourcemap is solely used for development, e.g. when developing a browser extension and the access to `.map` file is not allowed, and it's not recommended for production.
 
