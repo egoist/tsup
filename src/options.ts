@@ -3,6 +3,7 @@ import type { InputOption } from 'rollup'
 import { MarkRequired } from 'ts-essentials'
 import type { Plugin } from './plugin'
 import type { TreeshakingStrategy } from './plugins/tree-shaking'
+import type { MinifyOptions } from 'terser'
 
 export type Format = 'cjs' | 'esm' | 'iife'
 
@@ -65,7 +66,8 @@ export type Options = {
    * default to `node14`
    */
   target?: string | string[]
-  minify?: boolean
+  minify?: boolean | 'terser'
+  terserOptions: MinifyOptions
   minifyWhitespace?: boolean
   minifyIdentifiers?: boolean
   minifySyntax?: boolean
