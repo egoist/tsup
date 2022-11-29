@@ -1,7 +1,9 @@
 import { MinifyOptions } from 'terser'
+import { PrettyError } from '../errors'
 import { createLogger } from '../log'
 import { Format, Options } from '../options'
 import { Plugin } from '../plugin'
+import { localRequire } from '../utils'
 
 const logger = createLogger()
 
@@ -21,7 +23,15 @@ export const terserPlugin = ({
       if (minifyOptions !== 'terser' || !/\.(cjs|js|mjs)$/.test(info.path))
         return
 
-      const { minify } = await import('terser')
+      const terser: typeof import('terser') | undefined = localRequire('terser')
+
+      if (!terser) {
+        throw new PrettyError(
+          'terser is required for terser minification. Please install it with `npm install terser -D`'
+        )
+      }
+
+      const { minify } = terser
 
       const defaultOptions: MinifyOptions = {}
 
