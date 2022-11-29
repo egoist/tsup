@@ -67,7 +67,7 @@ export type Options = {
    */
   target?: string | string[]
   minify?: boolean | 'terser'
-  terserOptions: MinifyOptions
+  terserOptions?: MinifyOptions
   minifyWhitespace?: boolean
   minifyIdentifiers?: boolean
   minifySyntax?: boolean
