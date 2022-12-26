@@ -227,8 +227,13 @@ export async function build(_options: Options) {
                 const extraPatterns = Array.isArray(options.clean)
                   ? options.clean
                   : []
+                // .d.ts files are removed in the `dtsTask` instead
+                // `dtsTask` is a separate process, which might start before `mainTasks`
+                if (options.dts) {
+                  extraPatterns.unshift('!**/*.d.ts');
+                }
                 await removeFiles(
-                  ['**/*', '!**/*.d.ts', ...extraPatterns],
+                  ['**/*', ...extraPatterns],
                   options.outDir
                 )
                 logger.info('CLI', 'Cleaning output folder')
