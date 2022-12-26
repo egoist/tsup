@@ -2,6 +2,45 @@
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "tsup",
   "version": 1.1,
+  "anyOf": [
+    {
+      "type": "object",
+      "required": ["tsup"],
+      "properties": {
+        "tsup": {
+          "type": ["object", "array"],
+          "oneOf": [
+            {
+              "type": "object",
+              "$ref": "#/definitions/options"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/options"
+              }
+            }
+          ]
+
+        }
+      }
+    },
+    {
+      "type": ["object", "array"],
+      "oneOf": [
+        {
+          "type": "object",
+          "$ref": "#/definitions/options"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/options"
+          }
+        }
+      ]
+    }
+  ],
   "definitions": {
     "options": {
       "type": "object",
@@ -306,12 +345,6 @@
           "description": "Inject cjs and esm shims if needed"
         }
       }
-    }
-  },
-  "type": "object",
-  "properties": {
-    "tsup": {
-      "$ref": "#/definitions/options"
     }
   }
 }
