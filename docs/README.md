@@ -134,7 +134,7 @@ The `options` here is derived from CLI flags.
 }
 ```
 
-#### JSON Schema Stores
+#### JSON Schema Store
 
 Developers who are using [vscode](https://code.visualstudio.com/) or text editor which supports the JSON Language Server can leverage the [tsup schema store](https://unpkg.com/tsup/schema.json) via CDN. This schema store will provide intellisense capabilities such as completions, validations and descriptions within JSON file configurations like the `tsup.config.json` and `package.json` (tsup) property.
 
@@ -142,7 +142,7 @@ Provide the following configuration in your `.vscode/settings.json` (or global) 
 
 ```json
 {
-   "json.schemas": [
+  "json.schemas": [
     {
       "url": "https://unpkg.com/tsup/schema.json",
       "fileMatch": [
@@ -150,7 +150,7 @@ Provide the following configuration in your `.vscode/settings.json` (or global) 
         "tsup.config.json"
       ]
     }
-  ],
+  ]
 }
 ```
 
