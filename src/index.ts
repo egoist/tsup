@@ -218,8 +218,8 @@ export async function build(_options: Options) {
                 const extraPatterns = Array.isArray(options.clean)
                   ? options.clean
                   : []
-                // Don't clear d.ts files here if we are generating them
-                // They will be handled by the tsup:clean rollup plugin
+                // .d.ts files are removed in the `dtsTask` instead
+                // `dtsTask` is a separate process, which might start before `mainTasks`
                 if (options.dts) {
                   extraPatterns.unshift('!**/*.d.ts');
                 }
