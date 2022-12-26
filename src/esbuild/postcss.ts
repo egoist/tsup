@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { Loader, Plugin, transform } from 'esbuild'
 import { getPostcss } from '../utils'
+import type { Result } from 'postcss-load-config';
 
 export const postcssPlugin = ({
   css,
@@ -16,18 +17,18 @@ export const postcssPlugin = ({
     name: 'postcss',
 
     setup(build) {
-      const configCache = new Map()
+      let configCache: Result
 
-      const getPostcssConfig = async (file: string) => {
+      const getPostcssConfig = async () => {
         const loadConfig = require('postcss-load-config')
 
-        if (configCache.has(file)) {
-          return configCache.get(file)
+        if (configCache) {
+          return configCache
         }
 
         try {
-          const result = await loadConfig({}, path.dirname(file))
-          configCache.set(file, result)
+          const result = await loadConfig({}, process.cwd())
+          configCache =  result
           return result
         } catch (error: any) {
           if (error.message.includes('No PostCSS Config found in')) {
@@ -87,7 +88,7 @@ export const postcssPlugin = ({
         }
 
         // Load postcss config
-        const { plugins, options } = await getPostcssConfig(args.path)
+        const { plugins, options } = await getPostcssConfig()
 
         if (plugins && plugins.length > 0) {
           // Load postcss
