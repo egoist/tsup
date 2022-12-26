@@ -89,7 +89,7 @@ export const postcssPlugin = ({
         // Load postcss config
         const { plugins, options } = await getPostcssConfig(args.path)
 
-        if (plugins || plugins.length > 0) {
+        if (plugins && plugins.length > 0) {
           // Load postcss
           const postcss = getPostcss()
           if (!postcss) {

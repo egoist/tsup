@@ -36,7 +36,7 @@ specifiers:
   tree-kill: ^1.2.2
   ts-essentials: 9.1.2
   tsconfig-paths: 3.12.0
-  tsup: 6.0.1
+  tsup: 6.4.0
   typescript: 4.6.3
   vitest: 0.21.1
   wait-for-expect: 3.0.2
@@ -79,7 +79,7 @@ devDependencies:
   svelte: 3.46.4
   ts-essentials: 9.1.2_typescript@4.6.3
   tsconfig-paths: 3.12.0
-  tsup: 6.0.1_ien5tfzdggmpmrmtxysw6xj5lu
+  tsup: 6.4.0_ien5tfzdggmpmrmtxysw6xj5lu
   typescript: 4.6.3
   vitest: 0.21.1
   wait-for-expect: 3.0.2
@@ -117,7 +117,6 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@nodelib/fs.scandir/2.1.5:
@@ -399,16 +398,6 @@ packages:
     dependencies:
       fill-range: 7.0.1
 
-  /bundle-require/3.1.2_esbuild@0.14.50:
-    resolution: {integrity: sha512-Of6l6JBAxiyQ5axFxUM6dYeP/W7X2Sozeo/4EYB9sJhL+dqL7TKjg+shwxp6jlu/6ZSERfsYtIpSJ1/x3XkAEA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    peerDependencies:
-      esbuild: '>=0.13'
-    dependencies:
-      esbuild: 0.14.50
-      load-tsconfig: 0.2.2
-    dev: true
-
   /bundle-require/3.1.2_esbuild@0.15.1:
     resolution: {integrity: sha512-Of6l6JBAxiyQ5axFxUM6dYeP/W7X2Sozeo/4EYB9sJhL+dqL7TKjg+shwxp6jlu/6ZSERfsYtIpSJ1/x3XkAEA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -417,7 +406,6 @@ packages:
     dependencies:
       esbuild: 0.15.1
       load-tsconfig: 0.2.2
-    dev: false
 
   /cac/6.7.12:
     resolution: {integrity: sha512-rM7E2ygtMkJqD9c7WnFU6fruFcN3xe4FM5yUmgxhZzIKJk4uHl9U/fhwdajGFQbQuv43FAUo1Fe8gX/oIKDeSA==}
@@ -509,6 +497,7 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: false
 
   /debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -550,7 +539,6 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-android-arm64/0.14.50:
@@ -568,7 +556,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-darwin-64/0.14.50:
@@ -586,7 +573,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-darwin-arm64/0.14.50:
@@ -604,7 +590,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-freebsd-64/0.14.50:
@@ -622,7 +607,6 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-freebsd-arm64/0.14.50:
@@ -640,7 +624,6 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-32/0.14.50:
@@ -658,7 +641,6 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-64/0.14.50:
@@ -676,7 +658,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-arm/0.14.50:
@@ -694,7 +675,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-arm64/0.14.50:
@@ -712,7 +692,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-mips64le/0.14.50:
@@ -730,7 +709,6 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-ppc64le/0.14.50:
@@ -748,7 +726,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-riscv64/0.14.50:
@@ -766,7 +743,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-s390x/0.14.50:
@@ -784,7 +760,6 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-netbsd-64/0.14.50:
@@ -802,7 +777,6 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-openbsd-64/0.14.50:
@@ -820,7 +794,6 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-sunos-64/0.14.50:
@@ -838,7 +811,6 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-windows-32/0.14.50:
@@ -856,7 +828,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-windows-64/0.14.50:
@@ -874,7 +845,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-windows-arm64/0.14.50:
@@ -892,7 +862,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild/0.14.50:
@@ -950,7 +919,6 @@ packages:
       esbuild-windows-32: 0.15.1
       esbuild-windows-64: 0.15.1
       esbuild-windows-arm64: 0.15.1
-    dev: false
 
   /escape-string-regexp/1.0.5:
     resolution: {integrity: sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==}
@@ -1580,8 +1548,8 @@ packages:
       strip-bom: 3.0.0
     dev: true
 
-  /tsup/6.0.1_ien5tfzdggmpmrmtxysw6xj5lu:
-    resolution: {integrity: sha512-2Pl1YkEEvzfg4aYgwUILaHV0wwZQKO7mNHMQChyzdCNlQqf11eug7gWk86XCb3CvRofCXBX87x73BTGjyS3cOQ==}
+  /tsup/6.4.0_ien5tfzdggmpmrmtxysw6xj5lu:
+    resolution: {integrity: sha512-4OlbqIK/SF+cJp0mMqPM2pKULvgj/1S2Gm3I1aFoFGIryUOyIqPZBoqKkqVQT6uFtWJ5AHftIv0riXKfHox1zQ==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
@@ -1597,18 +1565,18 @@ packages:
         optional: true
     dependencies:
       '@swc/core': 1.2.218
-      bundle-require: 3.1.2_esbuild@0.14.50
+      bundle-require: 3.1.2_esbuild@0.15.1
       cac: 6.7.12
       chokidar: 3.5.2
-      debug: 4.3.2
-      esbuild: 0.14.50
+      debug: 4.3.4
+      esbuild: 0.15.1
       execa: 5.1.1
       globby: 11.0.4
       joycon: 3.0.1
       postcss: 8.4.12
       postcss-load-config: 3.1.0
       resolve-from: 5.0.0
-      rollup: 2.77.0
+      rollup: 3.2.5
       source-map: 0.8.0-beta.0
       sucrase: 3.20.3
       tree-kill: 1.2.2

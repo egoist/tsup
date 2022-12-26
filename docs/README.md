@@ -305,7 +305,26 @@ Code splitting currently only works with the `esm` output format, and it's enabl
 
 To disable code splitting altogether, try the `--no-splitting` flag instead.
 
-### ES5 support
+### Target environment
+
+You can use the `target` option in `tsup.config.ts` or the `--target` flag to set the target environment for the generated JavaScript and/or CSS code. Each target environment is an environment name followed by a version number. The following environment names are currently supported:
+
+- chrome
+- edge
+- firefox
+- hermes
+- ie
+- ios
+- node
+- opera
+- rhino
+- safari
+
+In addition, you can also specify JavaScript language versions such as `es2020`.
+
+The value for `target` defaults to `compilerOptions.target` in your `tsconfig.json`, or `node14` if unspecified. For more information check out esbuild's [target](https://esbuild.github.io/api/#target) option.
+
+#### ES5 support
 
 You can use `--target es5` to compile the code down to es5, in this target your code will be transpiled by esbuild to es2020 first, and then transpiled to es5 by [SWC](https://swc.rs).
 
@@ -517,6 +536,12 @@ export default defineConfig({
 
 - When building the cjs bundle, it will compile `import.meta.url` as `typeof document === "undefined" ? new URL("file:" + __filename).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href`
 - When building the esm bundle, it will compile `__dirname` as `path.dirname(fileURLToPath(import.meta.url))`
+
+### Copy files to output directory
+
+Use `--publicDir` flag to copy files inside `./public` folder to the output directory.
+
+You can also specify a custom directory using `--publicDir another-directory`.
 
 ## Troubleshooting
 

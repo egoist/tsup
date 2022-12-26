@@ -19,6 +19,7 @@ import { PluginContainer } from './plugin'
 import { es5 } from './plugins/es5'
 import { sizeReporter } from './plugins/size-reporter'
 import { treeShakingPlugin } from './plugins/tree-shaking'
+import { copyPublicDir, isInPublicDir } from './lib/public-dir'
 
 export type { Format, Options, NormalizedOptions }
 
@@ -122,7 +123,7 @@ const normalizeOptions = async (
   if (!options.target) {
     options.target = 'node14'
   }
-  
+
   return options as NormalizedOptions
 }
 
@@ -226,8 +227,13 @@ export async function build(_options: Options) {
                 const extraPatterns = Array.isArray(options.clean)
                   ? options.clean
                   : []
+                // .d.ts files are removed in the `dtsTask` instead
+                // `dtsTask` is a separate process, which might start before `mainTasks`
+                if (options.dts) {
+                  extraPatterns.unshift('!**/*.d.ts');
+                }
                 await removeFiles(
-                  ['**/*', '!**/*.d.ts', ...extraPatterns],
+                  ['**/*', ...extraPatterns],
                   options.outDir
                 )
                 logger.info('CLI', 'Cleaning output folder')
@@ -328,6 +334,16 @@ export async function build(_options: Options) {
               })
               watcher.on('all', async (type, file) => {
                 file = slash(file)
+
+                if (
+                  options.publicDir &&
+                  isInPublicDir(options.publicDir, file)
+                ) {
+                  logger.info('CLI', `Change in public dir: ${file}`)
+                  copyPublicDir(options.publicDir, options.outDir)
+                  return
+                }
+
                 // By default we only rebuild when imported files change
                 // If you specify custom `watch`, a string or multiple strings
                 // We rebuild when those files change
@@ -355,6 +371,7 @@ export async function build(_options: Options) {
             logger.info('CLI', `Target: ${options.target}`)
 
             await buildAll()
+            copyPublicDir(options.publicDir, options.outDir)
 
             startWatcher()
           }
