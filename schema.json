@@ -6,17 +6,20 @@
     {
       "type": "object",
       "required": ["tsup"],
+      "additionalProperties": true,
       "properties": {
         "tsup": {
           "type": ["object", "array"],
           "oneOf": [
             {
               "type": "object",
+              "additionalProperties": false,
               "$ref": "#/definitions/options"
             },
             {
               "type": "array",
               "items": {
+                "additionalProperties": false,
                 "$ref": "#/definitions/options"
               }
             }
@@ -45,7 +48,6 @@
     "options": {
       "type": "object",
       "markdownDescription": "Configuration options for [tsup](https://tsup.egoist.dev)",
-      "additionalProperties": false,
       "properties": {
         "entry": {
           "markdownDescription": "Files that each serve as an input to the bundling algorithm.\n\n---\nReferences:\n- [Entry Points](https://esbuild.github.io/api/#entry-points) - esbuild\n - [Multiple Entrypoints](https://tsup.egoist.sh/#multiple-entrypoints) - tsup",
