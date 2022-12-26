@@ -32,7 +32,7 @@ specifiers:
   source-map: 0.8.0-beta.0
   strip-json-comments: 4.0.0
   sucrase: ^3.20.3
-  svelte: 3.46.4
+  svelte: 3.48.0
   tree-kill: ^1.2.2
   ts-essentials: 9.1.2
   tsconfig-paths: 3.12.0
@@ -76,7 +76,7 @@ devDependencies:
   rollup-plugin-dts: 5.0.0_mwekjofbfztuuh2kb3ofhfbyx4
   rollup-plugin-hashbang: 2.2.2
   strip-json-comments: 4.0.0
-  svelte: 3.46.4
+  svelte: 3.48.0
   ts-essentials: 9.1.2_typescript@4.6.3
   tsconfig-paths: 3.12.0
   tsup: 6.4.0_ien5tfzdggmpmrmtxysw6xj5lu
@@ -1487,8 +1487,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /svelte/3.46.4:
-    resolution: {integrity: sha512-qKJzw6DpA33CIa+C/rGp4AUdSfii0DOTCzj/2YpSKKayw5WGSS624Et9L1nU1k2OVRS9vaENQXp2CVZNU+xvIg==}
+  /svelte/3.48.0:
+    resolution: {integrity: sha512-fN2YRm/bGumvjUpu6yI3BpvZnpIm9I6A7HR4oUNYd7ggYyIwSA/BX7DJ+UXXffLp6XNcUijyLvttbPVCYa/3xQ==}
     engines: {node: '>= 8'}
     dev: true
 
