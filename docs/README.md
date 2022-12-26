@@ -134,20 +134,26 @@ The `options` here is derived from CLI flags.
 }
 ```
 
-Developers who are using [vscode](https://code.visualstudio.com/) can associate the JSON Schema Store in their workspace  settings to provide intellisense capabilities on the `tsup` option via CDN. Provide the following configuration in your `.vscode/settings.json` file:
+#### JSON Schema Stores
+
+Developers who are using [vscode](https://code.visualstudio.com/) or text editor which supports the JSON Language Server can leverage the [tsup schema store](https://unpkg.com/tsup/schema.json) via CDN. This schema store will provide intellisense capabilities such as completions, validations and descriptions within JSON file configurations like the `tsup.config.json` and `package.json` (tsup) property.
+
+Provide the following configuration in your `.vscode/settings.json` (or global) settings file:
 
 ```json
 {
    "json.schemas": [
     {
+      "url": "https://unpkg.com/tsup/schema.json",
       "fileMatch": [
-        "package.json"
-      ],
-      "url": "https://unpkg.com/tsup/schema.json"
+        "package.json",
+        "tsup.config.json"
+      ]
     }
   ],
 }
 ```
+
 
 ### Multiple entrypoints
 
