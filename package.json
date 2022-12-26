@@ -57,7 +57,7 @@
     "postcss-simple-vars": "6.0.3",
     "prettier": "2.5.1",
     "resolve": "1.20.0",
-    "rollup-plugin-dts": "5.0.0",
+    "rollup-plugin-dts": "5.1.0",
     "rollup-plugin-hashbang": "2.2.2",
     "strip-json-comments": "4.0.0",
     "svelte": "3.46.4",
