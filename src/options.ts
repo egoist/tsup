@@ -43,6 +43,11 @@ export type BannerOrFooter =
     }
   | ((ctx: { format: Format }) => { js?: string; css?: string } | undefined)
 
+type Autocomplete<Keys extends string> = Keys | Omit<string, Keys>;
+export type BrowserTarget = 'chrome' | 'deno' | 'edge' | 'firefox' | 'hermes' | 'ie' | 'ios' | 'node' | 'opera' | 'rhino' | 'safari';
+export type EsTarget = 'es3' | 'es5' | 'es6' | 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'esnext';
+export type Target = Autocomplete<BrowserTarget | EsTarget>;
+
 /**
  * The options available in tsup.config.ts
  * Not all of them are available from CLI flags
@@ -64,7 +69,7 @@ export type Options = {
    *
    * default to `node14`
    */
-  target?: string | string[]
+  target?: Target | Target[]
   minify?: boolean
   minifyWhitespace?: boolean
   minifyIdentifiers?: boolean
