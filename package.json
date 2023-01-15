@@ -15,6 +15,7 @@
   ],
   "author": "EGOIST",
   "license": "MIT",
+  "homepage": "https://tsup.egoist.dev/",
   "repository": {
     "url": "https://github.com/egoist/tsup.git"
   },
