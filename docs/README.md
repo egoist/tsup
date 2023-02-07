@@ -134,6 +134,27 @@ The `options` here is derived from CLI flags.
 }
 ```
 
+#### JSON Schema Store
+
+Developers who are using [vscode](https://code.visualstudio.com/) or text editor which supports the JSON Language Server can leverage the [tsup schema store](https://unpkg.com/tsup/schema.json) via CDN. This schema store will provide intellisense capabilities such as completions, validations and descriptions within JSON file configurations like the `tsup.config.json` and `package.json` (tsup) property.
+
+Provide the following configuration in your `.vscode/settings.json` (or global) settings file:
+
+```json
+{
+  "json.schemas": [
+    {
+      "url": "https://unpkg.com/tsup/schema.json",
+      "fileMatch": [
+        "package.json",
+        "tsup.config.json"
+      ]
+    }
+  ]
+}
+```
+
+
 ### Multiple entrypoints
 
 Beside using positional arguments `tsup [...files]` to specify multiple entrypoints, you can also use the cli flag `--entry`:
@@ -323,7 +344,7 @@ tsup src/index.ts --env.NODE_ENV production
 
 ### Building CLI app
 
-When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the outout file executable, so you don't have to run `chmod +x dist/cli.js`.
+When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the output file executable, so you don't have to run `chmod +x dist/cli.js`.
 
 ### Watch mode
 
@@ -387,6 +408,16 @@ You can also minify the output, resulting into lower bundle sizes by using the `
 ```bash
 tsup src/index.ts --minify
 ```
+
+To use [Terser](https://github.com/terser/terser) instead of esbuild for minification, pass terser as argument value
+
+```bash
+tsup src/index.ts --minify terser
+```
+
+> NOTE: You must have terser installed. Install it with `npm install -D terser`
+
+In `tsup.config.js`, you can pass `terserOptions` which will be passed to `terser.minify` as it is.
 
 ### Custom loader
 
