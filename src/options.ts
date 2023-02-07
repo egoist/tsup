@@ -76,6 +76,8 @@ export type EsTarget =
 
 export type Target = BrowserTarget | BrowserTargetWithVersion | EsTarget
 
+export type Entry = string[] | Record<string, string>
+
 /**
  * The options available in tsup.config.ts
  * Not all of them are available from CLI flags
@@ -86,8 +88,8 @@ export type Options = {
   /**
    * @deprecated Use `entry` instead
    */
-  entryPoints?: BuildOptions['entryPoints']
-  entry?: BuildOptions['entryPoints']
+  entryPoints?: Entry
+  entry?: Entry
   /**
    * Output different formats to different folder instead of using different extensions
    */
