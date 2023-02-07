@@ -27,7 +27,7 @@ specifiers:
   resolve: 1.20.0
   resolve-from: ^5.0.0
   rollup: ^3.2.5
-  rollup-plugin-dts: 5.0.0
+  rollup-plugin-dts: 5.1.0
   rollup-plugin-hashbang: 2.2.2
   source-map: 0.8.0-beta.0
   strip-json-comments: 4.0.0
@@ -74,7 +74,7 @@ devDependencies:
   postcss-simple-vars: 6.0.3_postcss@8.4.12
   prettier: 2.5.1
   resolve: 1.20.0
-  rollup-plugin-dts: 5.0.0_6mx6ustgc2aounvoqse2mdo3uy
+  rollup-plugin-dts: 5.1.0_mwekjofbfztuuh2kb3ofhfbyx4
   rollup-plugin-hashbang: 2.2.2
   strip-json-comments: 4.0.0
   svelte: 3.46.4
@@ -1699,8 +1699,8 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  /rollup-plugin-dts/5.0.0_6mx6ustgc2aounvoqse2mdo3uy:
-    resolution: {integrity: sha512-OO8ayCvuJCKaQSShyVTARxGurVVk4ulzbuvz+0zFd1f93vlnWFU5pBMT7HFeS6uj7MvvZLx4kUAarGATSU1+Ng==}
+  /rollup-plugin-dts/5.1.0_mwekjofbfztuuh2kb3ofhfbyx4:
+    resolution: {integrity: sha512-R+4cVEhu9LfAlR1hqp1D67nO5hsiYFSsbVa2Uj/xchN6WxN4Ct9VjuEP1mw7f4dKJR5rj+OtjUz5cVINX51eFA==}
     engines: {node: '>=v14'}
     peerDependencies:
       rollup: ^3.0.0

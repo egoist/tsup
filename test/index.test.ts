@@ -1192,3 +1192,58 @@ test('override target in tsconfig.json', async () => {
     )
   ).rejects.toThrowError(`Top-level await is not available in the configured target environment ("es2018")`)
 })
+
+test(`custom tsconfig should pass to dts plugin`, async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const foo = { name: 'foo'}`, 
+      'tsconfig.json': `{
+        "compilerOptions": {
+          "baseUrl":".",
+          "target": "esnext",
+          "incremental": true
+        }
+      }`,
+      'tsconfig.build.json': `{
+        "compilerOptions": {
+          "baseUrl":".",
+          "target": "esnext"
+        }
+      }`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: 'esm',
+          tsconfig: './tsconfig.build.json',
+          dts: {
+            only: true
+          }
+        }
+      `,
+    })
+    expect(outFiles).toEqual(['input.d.ts'])
+})
+
+test(`should generate export {} when there are no exports in source file`, async () => {
+  const { outFiles, getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `const a = 'a'`, 
+      'tsconfig.json': `{
+        "compilerOptions": {
+          "baseUrl":".",
+          "target": "esnext",
+        }
+      }`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: 'esm',
+          dts: true
+        }
+      `,
+    })
+    expect(outFiles).toEqual(['input.d.ts', 'input.mjs'])
+    expect(await getFileContent('dist/input.d.ts')).toContain('export { }')
+})

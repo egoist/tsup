@@ -151,6 +151,7 @@ const getRollupConfig = async (
         jsonPlugin(),
         ignoreFiles,
         dtsPlugin.default({
+          tsconfig: options.tsconfig,
           compilerOptions: {
             ...compilerOptions,
             baseUrl: compilerOptions.baseUrl || '.',
