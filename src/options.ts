@@ -44,7 +44,6 @@ export type BannerOrFooter =
     }
   | ((ctx: { format: Format }) => { js?: string; css?: string } | undefined)
 
-type Autocomplete<Keys extends string> = Keys | Omit<string, Keys>
 export type BrowserTarget =
   | 'chrome'
   | 'deno'
@@ -57,6 +56,10 @@ export type BrowserTarget =
   | 'opera'
   | 'rhino'
   | 'safari'
+export type BrowserTargetWithVersion =
+  | `${BrowserTarget}${number}`
+  | `${BrowserTarget}${number}.${number}`
+  | `${BrowserTarget}${number}.${number}.${number}`
 export type EsTarget =
   | 'es3'
   | 'es5'
@@ -70,7 +73,8 @@ export type EsTarget =
   | 'es2021'
   | 'es2022'
   | 'esnext'
-export type Target = Autocomplete<BrowserTarget | EsTarget>
+
+export type Target = BrowserTarget | BrowserTargetWithVersion | EsTarget
 
 /**
  * The options available in tsup.config.ts
