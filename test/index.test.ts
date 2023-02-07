@@ -1073,7 +1073,7 @@ test('remove unused code', async () => {
       }`,
       'tsup.config.ts': `export default {
         define: {
-          'import.meta.foo': false
+          'import.meta.foo': 'false'
         },
         treeshake: true
       }`,
