@@ -161,7 +161,7 @@ test('not bundle `package/subpath` in dts (resolve)', async () => {
       'node_modules/foo/bar.d.ts': `export type Foobar = { foo: 'foo', bar: 'bar' }`,
       'node_modules/foo/package.json': `{ "name": "foo", "version": "0.0.0" }`,
     },
-    { 
+    {
       flags: ['--dts', '--dts-resolve'],
     }
   )
@@ -957,6 +957,72 @@ test('native-node-module plugin should handle *.node(.js) import properly', asyn
   )
 })
 
+test('support `inline` sourcemaps', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const hi = 'hi'`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--sourcemap', 'inline'],
+    }
+  )
+  // outFiles should not contain input.js.map
+  expect(outFiles).toEqual(['input.js'])
+  const contents = await getFileContent('dist/input.js')
+  expect(contents).toContain(
+    '//# sourceMappingURL=data:application/json;base64'
+  )
+})
+
+test('support `external` sourcemaps', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const hi = 'hi'`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--sourcemap', 'external'],
+    }
+  )
+  expect(outFiles).toEqual(['input.js', 'input.js.map'])
+})
+
+test('support `linked` sourcemaps', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const hi = 'hi'`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--sourcemap', 'linked'],
+    }
+  )
+  expect(outFiles).toEqual(['input.js', 'input.js.map'])
+})
+
+test('support `both` sourcemaps', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const hi = 'hi'`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--sourcemap', 'both'],
+    }
+  )
+  expect(outFiles).toEqual(['input.js', 'input.js.map'])
+  const contents = await getFileContent('dist/input.js')
+  expect(contents).toContain(
+    '//# sourceMappingURL=data:application/json;base64'
+  )
+  expect(contents).toContain('//# sourceMappingURL=input.js.map')
+})
+
 test('proper sourcemap sources path when swc is enabled', async () => {
   const { getFileContent } = await run(
     getTestName(),
@@ -1114,10 +1180,10 @@ test('support target in tsconfig.json', async () => {
           "baseUrl":".",
           "target": "esnext"
         }
-      }`
-    }, 
+      }`,
+    },
     {
-      flags: ['--format', 'esm', ],
+      flags: ['--format', 'esm'],
     }
   )
   expect(await getFileContent('dist/input.mjs')).contains('await import(')
@@ -1135,11 +1201,13 @@ test('override target in tsconfig.json', async () => {
             "baseUrl":".",
             "target": "esnext"
           }
-        }`
-      }, 
+        }`,
+      },
       {
-        flags: ['--format', 'esm', '--target', 'es2018' ],
+        flags: ['--format', 'esm', '--target', 'es2018'],
       }
     )
-  ).rejects.toThrowError(`Top-level await is not available in the configured target environment ("es2018")`)
+  ).rejects.toThrowError(
+    `Top-level await is not available in the configured target environment ("es2018")`
+  )
 })
