@@ -20,6 +20,7 @@ import { es5 } from './plugins/es5'
 import { sizeReporter } from './plugins/size-reporter'
 import { treeShakingPlugin } from './plugins/tree-shaking'
 import { copyPublicDir, isInPublicDir } from './lib/public-dir'
+import { terserPlugin } from './plugins/terser'
 
 export type { Format, Options, NormalizedOptions }
 
@@ -180,6 +181,13 @@ export async function build(_options: Options) {
                   reject(new Error('error occured in dts build'))
                 } else if (data === 'success') {
                   resolve()
+                } else {
+                  const { type, text } = data
+                  if (type === 'log') {
+                    console.log(text)
+                  } else if (type === 'error') {
+                    console.error(text)
+                  }
                 }
               })
             })
@@ -253,6 +261,11 @@ export async function build(_options: Options) {
                     cjsSplitting(),
                     es5(),
                     sizeReporter(),
+                    terserPlugin({
+                      minifyOptions: options.minify,
+                      format,
+                      terserOptions: options.terserOptions,
+                    }),
                   ])
                   await runEsbuild(options, {
                     pluginContainer,
