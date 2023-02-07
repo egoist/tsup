@@ -44,6 +44,7 @@ export const treeShakingPlugin = ({
       })
 
       const result = await bundle.generate({
+        interop: 'auto',
         format: this.format,
         file: 'out.js',
         sourcemap: !!this.options.sourcemap,

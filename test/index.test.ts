@@ -998,6 +998,55 @@ test('use rollup for treeshaking', async () => {
   )
 })
 
+test('use rollup for treeshaking --format cjs', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'package.json': `{
+        "dependencies": {
+          "react-select": "5.7.0",
+          "react": "17.0.2",
+          "react-dom": "17.0.2"
+        }
+      }`,
+      'input.tsx': `
+      import ReactSelect from 'react-select'
+      
+      export const Component = (props: {}) => {
+        return <ReactSelect {...props} />
+      };
+      `,
+      'tsconfig.json': `{
+        "compilerOptions": {
+          "baseUrl": ".",
+          "esModuleInterop": true,
+          "isolatedModules": true,
+          "jsx": "react-jsx",
+          "lib": ["dom", "dom.iterable", "esnext"],
+          "module": "esnext",
+          "moduleResolution": "node",
+          "noEmit": true,
+          "rootDir": ".",
+          "skipLibCheck": true,
+          "sourceMap": true,
+          "strict": true,
+          "target": "es6",
+          "importHelpers": true,
+          "outDir": "dist"
+        }
+      }`,
+    },
+    {
+      entry: ['input.tsx'],
+      flags: ['--treeshake', '--target', 'es2022', '--format', 'cjs'],
+    }
+  )
+
+  expect(await getFileContent('dist/input.js')).toContain(
+    `jsxRuntime.jsx(ReactSelect__default.default`
+  )
+})
+
 test('custom output extension', async () => {
   const { outFiles } = await run(
     getTestName(),
