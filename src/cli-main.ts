@@ -20,7 +20,7 @@ export async function main(options: Options = {}) {
     .option('--format <format>', 'Bundle format, "cjs", "iife", "esm"', {
       default: 'cjs',
     })
-    .option('--minify', 'Minify bundle')
+    .option('--minify [terser]', 'Minify bundle')
     .option('--minify-whitespace', 'Minify whitespace')
     .option('--minify-identifiers', 'Minify identifiers')
     .option('--minify-syntax', 'Minify syntax')

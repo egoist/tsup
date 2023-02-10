@@ -409,6 +409,16 @@ You can also minify the output, resulting into lower bundle sizes by using the `
 tsup src/index.ts --minify
 ```
 
+To use [Terser](https://github.com/terser/terser) instead of esbuild for minification, pass terser as argument value
+
+```bash
+tsup src/index.ts --minify terser
+```
+
+> NOTE: You must have terser installed. Install it with `npm install -D terser`
+
+In `tsup.config.js`, you can pass `terserOptions` which will be passed to `terser.minify` as it is.
+
 ### Custom loader
 
 Esbuild loader list:

@@ -161,7 +161,7 @@ test('not bundle `package/subpath` in dts (resolve)', async () => {
       'node_modules/foo/bar.d.ts': `export type Foobar = { foo: 'foo', bar: 'bar' }`,
       'node_modules/foo/package.json': `{ "name": "foo", "version": "0.0.0" }`,
     },
-    { 
+    {
       flags: ['--dts', '--dts-resolve'],
     }
   )
@@ -998,6 +998,55 @@ test('use rollup for treeshaking', async () => {
   )
 })
 
+test('use rollup for treeshaking --format cjs', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'package.json': `{
+        "dependencies": {
+          "react-select": "5.7.0",
+          "react": "17.0.2",
+          "react-dom": "17.0.2"
+        }
+      }`,
+      'input.tsx': `
+      import ReactSelect from 'react-select'
+      
+      export const Component = (props: {}) => {
+        return <ReactSelect {...props} />
+      };
+      `,
+      'tsconfig.json': `{
+        "compilerOptions": {
+          "baseUrl": ".",
+          "esModuleInterop": true,
+          "isolatedModules": true,
+          "jsx": "react-jsx",
+          "lib": ["dom", "dom.iterable", "esnext"],
+          "module": "esnext",
+          "moduleResolution": "node",
+          "noEmit": true,
+          "rootDir": ".",
+          "skipLibCheck": true,
+          "sourceMap": true,
+          "strict": true,
+          "target": "es6",
+          "importHelpers": true,
+          "outDir": "dist"
+        }
+      }`,
+    },
+    {
+      entry: ['input.tsx'],
+      flags: ['--treeshake', '--target', 'es2022', '--format', 'cjs'],
+    }
+  )
+
+  expect(await getFileContent('dist/input.js')).toContain(
+    `jsxRuntime.jsx(ReactSelect__default.default`
+  )
+})
+
 test('custom output extension', async () => {
   const { outFiles } = await run(
     getTestName(),
@@ -1073,7 +1122,7 @@ test('remove unused code', async () => {
       }`,
       'tsup.config.ts': `export default {
         define: {
-          'import.meta.foo': false
+          'import.meta.foo': 'false'
         },
         treeshake: true
       }`,
@@ -1114,10 +1163,10 @@ test('support target in tsconfig.json', async () => {
           "baseUrl":".",
           "target": "esnext"
         }
-      }`
-    }, 
+      }`,
+    },
     {
-      flags: ['--format', 'esm', ],
+      flags: ['--format', 'esm'],
     }
   )
   expect(await getFileContent('dist/input.mjs')).contains('await import(')
@@ -1135,11 +1184,64 @@ test('override target in tsconfig.json', async () => {
             "baseUrl":".",
             "target": "esnext"
           }
-        }`
-      }, 
+        }`,
+      },
       {
-        flags: ['--format', 'esm', '--target', 'es2018' ],
+        flags: ['--format', 'esm', '--target', 'es2018'],
       }
     )
-  ).rejects.toThrowError(`Top-level await is not available in the configured target environment ("es2018")`)
+  ).rejects.toThrowError(
+    `Top-level await is not available in the configured target environment ("es2018")`
+  )
+})
+
+test(`custom tsconfig should pass to dts plugin`, async () => {
+  const { outFiles } = await run(getTestName(), {
+    'input.ts': `export const foo = { name: 'foo'}`,
+    'tsconfig.json': `{
+        "compilerOptions": {
+          "baseUrl":".",
+          "target": "esnext",
+          "incremental": true
+        }
+      }`,
+    'tsconfig.build.json': `{
+        "compilerOptions": {
+          "baseUrl":".",
+          "target": "esnext"
+        }
+      }`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: 'esm',
+          tsconfig: './tsconfig.build.json',
+          dts: {
+            only: true
+          }
+        }
+      `,
+  })
+  expect(outFiles).toEqual(['input.d.ts'])
+})
+
+test(`should generate export {} when there are no exports in source file`, async () => {
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `const a = 'a'`,
+    'tsconfig.json': `{
+        "compilerOptions": {
+          "baseUrl":".",
+          "target": "esnext",
+        }
+      }`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: 'esm',
+          dts: true
+        }
+      `,
+  })
+  expect(outFiles).toEqual(['input.d.ts', 'input.mjs'])
+  expect(await getFileContent('dist/input.d.ts')).toContain('export { }')
 })

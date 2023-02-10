@@ -257,12 +257,11 @@ export async function runEsbuild(
       write: false,
       splitting,
       logLevel: 'error',
-      minify: options.minify,
+      minify: options.minify === 'terser' ? false : options.minify,
       minifyWhitespace: options.minifyWhitespace,
       minifyIdentifiers: options.minifyIdentifiers,
       minifySyntax: options.minifySyntax,
       keepNames: options.keepNames,
-      incremental: !!options.watch,
       pure: typeof options.pure === 'string' ? [options.pure] : options.pure,
       metafile: true,
     })

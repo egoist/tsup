@@ -15,6 +15,7 @@
   ],
   "author": "EGOIST",
   "license": "MIT",
+  "homepage": "https://tsup.egoist.dev/",
   "repository": {
     "url": "https://github.com/egoist/tsup.git"
   },
@@ -27,11 +28,11 @@
     "build-fast": "npm run build -- --no-dts"
   },
   "dependencies": {
-    "bundle-require": "^3.1.2",
+    "bundle-require": "^4.0.0",
     "cac": "^6.7.12",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
-    "esbuild": "^0.15.1",
+    "esbuild": "^0.17.6",
     "execa": "^5.0.0",
     "globby": "^11.0.3",
     "joycon": "^3.0.1",
@@ -58,15 +59,16 @@
     "postcss-simple-vars": "6.0.3",
     "prettier": "2.5.1",
     "resolve": "1.20.0",
-    "rollup-plugin-dts": "5.0.0",
+    "rollup-plugin-dts": "5.1.0",
     "rollup-plugin-hashbang": "2.2.2",
     "strip-json-comments": "4.0.0",
     "svelte": "3.46.4",
+    "terser": "^5.16.0",
     "ts-essentials": "9.1.2",
     "tsconfig-paths": "3.12.0",
     "tsup": "6.4.0",
-    "typescript": "4.6.3",
-    "vitest": "0.21.1",
+    "typescript": "4.9.5",
+    "vitest": "0.28.4",
     "wait-for-expect": "3.0.2"
   },
   "peerDependencies": {
