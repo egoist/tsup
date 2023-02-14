@@ -16,6 +16,9 @@ export type ChunkInfo = {
    * Sets the file mode
    */
   mode?: number
+  entryPoint?: string
+  exports?: string[]
+  imports?: Metafile['outputs'][string]['imports']
 }
 
 export type AssetInfo = {
@@ -119,13 +122,18 @@ export class PluginContainer {
   }) {
     const files: Array<ChunkInfo | AssetInfo> = outputFiles
       .filter((file) => !file.path.endsWith('.map'))
-      .map((file) => {
+      .map((file): ChunkInfo | AssetInfo => {
         if (isJS(file.path) || isCSS(file.path)) {
+          const relativePath = path.relative(process.cwd(), file.path)
+          const meta = metafile?.outputs[relativePath]
           return {
             type: 'chunk',
             path: file.path,
             code: file.text,
             map: outputFiles.find((f) => f.path === `${file.path}.map`)?.text,
+            entryPoint: meta?.entryPoint,
+            exports: meta?.exports,
+            imports: meta?.imports,
           }
         } else {
           return { type: 'asset', path: file.path, contents: file.contents }
