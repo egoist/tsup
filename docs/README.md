@@ -158,7 +158,7 @@ Alternatively, you can provide the schema store via a `$schema` property.
 
 ```json
 {
-  "$schema": "https://cdn.jsdelivr.net/npm/tsup/schema.json",
+  "$schema": "https://cdn.jsdelivr.net/npm/tsup/schema.json"
 }
 ```
 
