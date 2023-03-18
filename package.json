@@ -59,7 +59,7 @@
     "postcss-simple-vars": "6.0.3",
     "prettier": "2.5.1",
     "resolve": "1.20.0",
-    "rollup-plugin-dts": "5.2.0",
+    "rollup-plugin-dts": "5.3.0",
     "rollup-plugin-hashbang": "2.2.2",
     "strip-json-comments": "4.0.0",
     "svelte": "3.46.4",
@@ -67,14 +67,14 @@
     "ts-essentials": "9.1.2",
     "tsconfig-paths": "3.12.0",
     "tsup": "6.6.1",
-    "typescript": "4.9.5",
+    "typescript": "5.0.2",
     "vitest": "0.28.4",
     "wait-for-expect": "3.0.2"
   },
   "peerDependencies": {
     "@swc/core": "^1",
     "postcss": "^8.4.12",
-    "typescript": "^4.1.0"
+    "typescript": ">=4.1.0"
   },
   "peerDependenciesMeta": {
     "typescript": {
