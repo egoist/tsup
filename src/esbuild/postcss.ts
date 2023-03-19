@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { Loader, Plugin, transform } from 'esbuild'
 import { getPostcss } from '../utils'
-import type { Result } from 'postcss-load-config';
+import type { Result } from 'postcss-load-config'
 
 export const postcssPlugin = ({
   css,
@@ -10,7 +10,7 @@ export const postcssPlugin = ({
   cssLoader,
 }: {
   css?: Map<string, string>
-  inject?: boolean
+  inject?: boolean | ((css: string, fileId: string) => string)
   cssLoader?: Loader
 }): Plugin => {
   return {
@@ -28,7 +28,7 @@ export const postcssPlugin = ({
 
         try {
           const result = await loadConfig({}, process.cwd())
-          configCache =  result
+          configCache = result
           return result
         } catch (error: any) {
           if (error.message.includes('No PostCSS Config found in')) {
@@ -123,9 +123,12 @@ export const postcssPlugin = ({
             })
           ).code
 
-          contents = `import styleInject from '#style-inject';styleInject(${JSON.stringify(
-            contents
-          )})`
+          contents =
+            typeof inject === 'function'
+              ? inject(JSON.stringify(contents), args.path)
+              : `import styleInject from '#style-inject';styleInject(${JSON.stringify(
+                  contents
+                )})`
 
           return {
             contents,

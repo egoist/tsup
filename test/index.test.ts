@@ -1245,3 +1245,25 @@ test(`should generate export {} when there are no exports in source file`, async
   expect(outFiles).toEqual(['input.d.ts', 'input.mjs'])
   expect(await getFileContent('dist/input.d.ts')).toContain('export { }')
 })
+
+test('custom inject style function', async () => {
+  const { outFiles, getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `import './style.css'`,
+      'style.css': `.hello { color: red }`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          minify: true,
+          format: ['esm', 'cjs'],
+          injectStyle: (css) => {
+            return "__custom_inject_style__(" + css +")";
+          }
+        }`,
+    },
+  )
+  expect(outFiles).toEqual(['input.js', 'input.mjs'])
+  expect(await getFileContent('dist/input.mjs')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
+  expect(await getFileContent('dist/input.js')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
+})
