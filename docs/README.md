@@ -52,13 +52,13 @@ This will output `dist/index.js` and `dist/cli.js`.
 
 ### Excluding packages
 
-By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `packages.json` are always excluded, you can also use `--external <module|pkgJson>` flag to mark other packages or other special `package.json`'s `dependencies` and `peerDependencies` as external.
+By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `package.json` are always excluded, you can also use `--external <module|pkgJson>` flag to mark other packages or other special `package.json`'s `dependencies` and `peerDependencies` as external.
 
 ### Excluding all packages
 
 If you are using **tsup** to build for **Node.js** applications/APIs, usually bundling dependencies is not needed, and it can even break things, for instance, while outputting to [ESM](https://nodejs.org/api/esm.html).
 
-tsup automatically excludes packages specified in the `dependencies` and `peerDependencies` fields in the `packages.json`, but if it somehow doesn't exclude some packages, this library also has a special executable `tsup-node` that automatically skips bundling any Node.js package.
+tsup automatically excludes packages specified in the `dependencies` and `peerDependencies` fields in the `package.json`, but if it somehow doesn't exclude some packages, this library also has a special executable `tsup-node` that automatically skips bundling any Node.js package.
 
 ```bash
 tsup-node src/index.ts
