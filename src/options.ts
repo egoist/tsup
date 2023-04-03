@@ -115,7 +115,7 @@ export type Options = {
   jsxFragment?: string
   outDir?: string
   outExtension?: OutExtensionFactory
-  format?: Format[] | string
+  format?: Format[] | Format
   globalName?: string
   env?: {
     [k: string]: string
