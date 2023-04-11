@@ -1267,3 +1267,30 @@ test('custom inject style function', async () => {
   expect(await getFileContent('dist/input.mjs')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
   expect(await getFileContent('dist/input.js')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
 })
+
+
+test('should load postcss esm config', async () => {
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `
+    import './foo.css'
+    `,
+    'package.json': `{
+      "type": "module"
+    }`,
+    'postcss.config.js': `
+    export default {
+      plugins: {'postcss-simple-vars': {}}
+    }
+    `,
+    'foo.css': `
+  $color: blue;
+
+  .foo {
+    color: $color;
+  }
+    `,
+  })
+
+  expect(outFiles).toEqual(['input.cjs', 'input.css'])
+  expect(await getFileContent('dist/input.css')).toContain('color: blue;')
+})
