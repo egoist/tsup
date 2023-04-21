@@ -12,7 +12,7 @@ export const treeShakingPlugin = ({
   name,
   silent,
 }: {
-  treeshake?: TreeshakingStrategy,
+  treeshake?: TreeshakingStrategy
   name?: string
   silent?: boolean
 }): Plugin => {
@@ -48,7 +48,7 @@ export const treeShakingPlugin = ({
         format: this.format,
         file: 'out.js',
         sourcemap: !!this.options.sourcemap,
-        name
+        name,
       })
 
       for (const file of result.output) {
