@@ -98,6 +98,15 @@ const normalizeOptions = async (
     logger.info('CLI', `Building entry: ${JSON.stringify(entry)}`)
   }
 
+  // set tsconfig path from esbuildOptions function raw
+  if (!options.tsconfig && options.esbuildOptions) {
+    const regex = /(\w+)\.tsconfig\s*=\s*['"]([^'"]*)['"]/;
+    const match = options.esbuildOptions.toString().match(regex);
+    if (match) {
+      options.tsconfig = match[2];
+    }
+  }
+
   const tsconfig = loadTsConfig(process.cwd(), options.tsconfig)
   if (tsconfig) {
     logger.info(

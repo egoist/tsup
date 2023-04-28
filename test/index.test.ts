@@ -1267,3 +1267,57 @@ test('custom inject style function', async () => {
   expect(await getFileContent('dist/input.mjs')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
   expect(await getFileContent('dist/input.js')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
 })
+
+test('set target by esbuildOptions', async () => {
+  await expect(
+    run(
+      getTestName(),
+      {
+        'input.ts': `const foo = 'foo';export default foo;`,
+        'tsup.config.ts': `export default {
+    esbuildOptions(options) {
+      options.tsconfig = 'custom.tsconfig.json';
+    },
+  }`,
+        'custom.tsconfig.json': `{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "esnext"
+    }
+  }`
+      },
+      {
+        flags: [
+          '--format',
+          'cjs',
+          // '--tsconfig',
+          // 'custom.tsconfig.json'
+        ],
+      }
+    )
+  ).rejects.toThrowError(
+    `Transforming const to the configured target environment ("es5") is not supported yet`
+  )
+})
+
+test('set target by default tsconfig.json', async () => {
+  await expect(
+    run(
+      getTestName(),
+      {
+        'input.ts': `const foo = 'foo';export default foo;`,
+        'tsconfig.json': `{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "esnext"
+    }
+  }`
+      },
+      {
+        flags: [ '--format', 'cjs' ],
+      }
+    )
+  ).rejects.toThrowError(
+    `Transforming const to the configured target environment ("es5") is not supported yet`
+  )
+})

@@ -9,7 +9,7 @@ export const es5 = (): Plugin => {
 
     esbuildOptions(options) {
       if (options.target === 'es5') {
-        options.target = 'es2020'
+        // options.target = 'es2020'
         enabled = true
       }
     },
