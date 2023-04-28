@@ -100,6 +100,8 @@ export type Options = {
    * default to `node14`
    */
   target?: Target | Target[]
+  /** set es5 target from command line/tsup target property? */
+  es5TargetOutOfJson?: boolean;
   minify?: boolean | 'terser'
   terserOptions?: MinifyOptions
   minifyWhitespace?: boolean

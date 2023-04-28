@@ -7,7 +7,7 @@ import { jsoncParse } from './utils'
 
 const joycon = new JoyCon()
 
-const loadJson = async (filepath: string) => {
+export const loadJson = async (filepath: string) => {
   try {
     return jsoncParse(await fs.promises.readFile(filepath, 'utf8'))
   } catch (error) {

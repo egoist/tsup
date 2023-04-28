@@ -7,9 +7,8 @@ export const es5 = (): Plugin => {
   return {
     name: 'es5-target',
 
-    esbuildOptions(options) {
-      if (options.target === 'es5') {
-        // options.target = 'es2020'
+    esbuildOptions() {
+      if (this.options.es5TargetOutOfJson) {
         enabled = true
       }
     },

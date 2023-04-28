@@ -107,6 +107,8 @@ const normalizeOptions = async (
     }
   }
 
+  options.es5TargetOutOfJson = options.target && options.target === 'es5';
+
   const tsconfig = loadTsConfig(process.cwd(), options.tsconfig)
   if (tsconfig) {
     logger.info(

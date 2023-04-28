@@ -7,7 +7,7 @@ import {
   Plugin as EsbuildPlugin,
 } from 'esbuild'
 import { NormalizedOptions, Format } from '..'
-import { getProductionDeps, loadPkg } from '../load'
+import { getProductionDeps, loadJson, loadPkg } from '../load'
 import { Logger, getSilent } from '../log'
 import { nodeProtocolPlugin } from './node-protocol'
 import { externalPlugin } from './external'
@@ -182,6 +182,11 @@ export async function runEsbuild(
       : options.footer
 
   try {
+    const tsconfigData = await loadJson(options.tsconfig as string);
+    const targetFromJson = tsconfigData?.compilerOptions.target;
+    // If --target=es5/tsup.target=es5 take effect, read target from tsconfig
+    const target = options.es5TargetOutOfJson ? targetFromJson : options.target
+
     result = await esbuild({
       entryPoints: options.entry,
       format:
@@ -192,7 +197,7 @@ export async function runEsbuild(
       jsxFactory: options.jsxFactory,
       jsxFragment: options.jsxFragment,
       sourcemap: options.sourcemap ? 'external' : false,
-      target: options.target,
+      target,
       banner,
       footer,
       tsconfig: options.tsconfig,
