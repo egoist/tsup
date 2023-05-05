@@ -1267,3 +1267,18 @@ test('custom inject style function', async () => {
   expect(await getFileContent('dist/input.mjs')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
   expect(await getFileContent('dist/input.js')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
 })
+
+test('preserve top-level variable for IIFE format', async () => {
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `export default 'foo'`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          globalName: 'globalFoo',
+          minify: 'terser',
+          format: ['iife']
+        }`,
+  })
+  expect(outFiles).toEqual(['input.global.js'])
+  expect(await getFileContent('dist/input.global.js')).toMatch(/globalFoo\s*=/)
+})
