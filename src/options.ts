@@ -221,6 +221,10 @@ export type Options = {
    * Copy the files inside `publicDir` to output directory
    */
   publicDir?: string | boolean
+  /**
+   * Emit declaration file only
+   */
+  dtsOnly?: boolean;
 }
 
 export type NormalizedOptions = Omit<
