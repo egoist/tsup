@@ -491,6 +491,24 @@ test('svelte: typescript support', async () => {
   expect(output).toContain('// Component.svelte')
 })
 
+test('svelte: sass support', async () => {
+  const { outFiles, output, getFileContent } = await run(getTestName(), {
+    'input.ts': `import App from './App.svelte'
+      export { App }
+      `,
+    'App.svelte': `
+      <div class="test">Hello</div>
+      <style lang="scss">
+      .test { &:hover { color: red } }
+      </style>
+      `,
+  })
+
+  expect(outFiles).toEqual(['input.css', 'input.js'])
+  const outputCss = await getFileContent('dist/input.css')
+  expect(outputCss).toMatch(/\.svelte-\w+:hover/)
+})
+
 test('onSuccess', async () => {
   const { logs } = await run(
     getTestName(),
@@ -1247,12 +1265,10 @@ test(`should generate export {} when there are no exports in source file`, async
 })
 
 test('custom inject style function', async () => {
-  const { outFiles, getFileContent } = await run(
-    getTestName(),
-    {
-      'input.ts': `import './style.css'`,
-      'style.css': `.hello { color: red }`,
-      'tsup.config.ts': `
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `import './style.css'`,
+    'style.css': `.hello { color: red }`,
+    'tsup.config.ts': `
         export default {
           entry: ['src/input.ts'],
           minify: true,
@@ -1261,8 +1277,7 @@ test('custom inject style function', async () => {
             return "__custom_inject_style__(" + css +")";
           }
         }`,
-    },
-  )
+  })
   expect(outFiles).toEqual(['input.js', 'input.mjs'])
   expect(await getFileContent('dist/input.mjs')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
   expect(await getFileContent('dist/input.js')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
