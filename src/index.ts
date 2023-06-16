@@ -262,6 +262,7 @@ export async function build(_options: Options) {
                       minifyOptions: options.minify,
                       format,
                       terserOptions: options.terserOptions,
+                      globalName: options.globalName,
                       logger,
                     }),
                   ])

@@ -1255,12 +1255,10 @@ test(`should generate export {} when there are no exports in source file`, async
 })
 
 test('custom inject style function', async () => {
-  const { outFiles, getFileContent } = await run(
-    getTestName(),
-    {
-      'input.ts': `import './style.css'`,
-      'style.css': `.hello { color: red }`,
-      'tsup.config.ts': `
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `import './style.css'`,
+    'style.css': `.hello { color: red }`,
+    'tsup.config.ts': `
         export default {
           entry: ['src/input.ts'],
           minify: true,
@@ -1269,13 +1267,30 @@ test('custom inject style function', async () => {
             return "__custom_inject_style__(" + css +")";
           }
         }`,
-    },
-  )
+  })
   expect(outFiles).toEqual(['input.js', 'input.mjs'])
-  expect(await getFileContent('dist/input.mjs')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
-  expect(await getFileContent('dist/input.js')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
+  expect(await getFileContent('dist/input.mjs')).toContain(
+    '__custom_inject_style__(`.hello{color:red}\n`)'
+  )
+  expect(await getFileContent('dist/input.js')).toContain(
+    '__custom_inject_style__(`.hello{color:red}\n`)'
+  )
 })
 
+test('preserve top-level variable for IIFE format', async () => {
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `export default 'foo'`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          globalName: 'globalFoo',
+          minify: 'terser',
+          format: ['iife']
+        }`,
+  })
+  expect(outFiles).toEqual(['input.global.js'])
+  expect(await getFileContent('dist/input.global.js')).toMatch(/globalFoo\s*=/)
+})
 
 test('should load postcss esm config', async () => {
   const { outFiles, getFileContent } = await run(getTestName(), {
