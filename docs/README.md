@@ -162,7 +162,11 @@ Beside using positional arguments `tsup [...files]` to specify multiple entrypoi
 ```bash
 # Outputs `dist/a.js` and `dist/b.js`.
 tsup --entry src/a.ts --entry src/b.ts
+```
 
+The associated output file names can be defined as follows: 
+
+```bash
 # Outputs `dist/foo.js` and `dist/bar.js`.
 tsup --entry.foo src/a.ts --entry.bar src/b.ts
 ```

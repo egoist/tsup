@@ -9,11 +9,13 @@ export const terserPlugin = ({
   minifyOptions,
   format,
   terserOptions = {},
-  logger
+  globalName,
+  logger,
 }: {
   minifyOptions: Options['minify']
   format: Format
-  terserOptions?: MinifyOptions,
+  terserOptions?: MinifyOptions
+  globalName?: string
   logger: Logger
 }): Plugin => {
   return {
@@ -37,7 +39,7 @@ export const terserPlugin = ({
 
       if (format === 'esm') {
         defaultOptions.module = true
-      } else {
+      } else if (!(format === 'iife' && globalName !== undefined)) {
         defaultOptions.toplevel = true
       }
 

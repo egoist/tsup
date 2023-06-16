@@ -50,7 +50,7 @@
       "markdownDescription": "Configuration options for [tsup](https://tsup.egoist.dev)",
       "properties": {
         "entry": {
-          "markdownDescription": "Files that each serve as an input to the bundling algorithm.\n\n---\nReferences:\n- [Entry Points](https://esbuild.github.io/api/#entry-points) - esbuild\n - [Multiple Entrypoints](https://tsup.egoist.sh/#multiple-entrypoints) - tsup",
+          "markdownDescription": "Files that each serve as an input to the bundling algorithm.\n\n---\nReferences:\n- [Entry Points](https://esbuild.github.io/api/#entry-points) - esbuild\n - [Multiple Entrypoints](https://tsup.egoist.dev/#multiple-entrypoints) - tsup",
           "oneOf": [
             {
               "type": "array",

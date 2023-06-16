@@ -1295,6 +1295,21 @@ test('custom inject style function', async () => {
   )
 })
 
+test('preserve top-level variable for IIFE format', async () => {
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `export default 'foo'`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          globalName: 'globalFoo',
+          minify: 'terser',
+          format: ['iife']
+        }`,
+  })
+  expect(outFiles).toEqual(['input.global.js'])
+  expect(await getFileContent('dist/input.global.js')).toMatch(/globalFoo\s*=/)
+})
+
 test('should load postcss esm config', async () => {
   const { outFiles, getFileContent } = await run(getTestName(), {
     'input.ts': `
