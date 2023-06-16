@@ -13,21 +13,21 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [14.x, 16.x]
+        node-version: [16.x, 18.x]
 
     runs-on: ${{ matrix.os }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Cache ~/.pnpm-store
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-pnpm-store
         with:
@@ -52,12 +52,12 @@ jobs:
     needs: ['test']
     if: "!contains(github.event.head_commit.message, 'skip-release') && !contains(github.event.head_commit.message, 'skip-ci') && github.event_name != 'pull_request'"
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18.x
       - name: Cache ~/.pnpm-store
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-pnpm-store
         with:

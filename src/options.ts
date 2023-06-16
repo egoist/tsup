@@ -97,7 +97,7 @@ export type Options = {
   /**
    * Compile target
    *
-   * default to `node14`
+   * default to `node16`
    */
   target?: Target | Target[]
   minify?: boolean | 'terser'
