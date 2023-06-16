@@ -97,6 +97,14 @@ test('simple', async () => {
   expect(outFiles).toEqual(['input.js'])
 })
 
+test('should not filter unknown directives during bundle', async () => {
+  const { output, outFiles } = await run(getTestName(), {
+    'input.ts': `'use client'\nexport default 'foo'`,
+  })
+  expect(output).toContain('use client')
+  expect(outFiles).toEqual(['input.js'])
+})
+
 test('bundle graphql-tools with --dts flag', async () => {
   await run(
     getTestName(),
