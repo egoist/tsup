@@ -32,11 +32,11 @@
     "cac": "^6.7.12",
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
-    "esbuild": "^0.17.6",
+    "esbuild": "^0.18.2",
     "execa": "^5.0.0",
     "globby": "^11.0.3",
     "joycon": "^3.0.1",
-    "postcss-load-config": "^3.0.1",
+    "postcss-load-config": "^4.0.1",
     "resolve-from": "^5.0.0",
     "rollup": "^3.2.5",
     "source-map": "0.8.0-beta.0",
@@ -88,6 +88,6 @@
     }
   },
   "engines": {
-    "node": ">=14.18"
+    "node": ">=16.14"
   }
 }

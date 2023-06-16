@@ -97,6 +97,14 @@ test('simple', async () => {
   expect(outFiles).toEqual(['input.js'])
 })
 
+test('should not filter unknown directives during bundle', async () => {
+  const { output, outFiles } = await run(getTestName(), {
+    'input.ts': `'use client'\nexport default 'foo'`,
+  })
+  expect(output).toContain('use client')
+  expect(outFiles).toEqual(['input.js'])
+})
+
 test('bundle graphql-tools with --dts flag', async () => {
   await run(
     getTestName(),
@@ -1247,12 +1255,10 @@ test(`should generate export {} when there are no exports in source file`, async
 })
 
 test('custom inject style function', async () => {
-  const { outFiles, getFileContent } = await run(
-    getTestName(),
-    {
-      'input.ts': `import './style.css'`,
-      'style.css': `.hello { color: red }`,
-      'tsup.config.ts': `
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `import './style.css'`,
+    'style.css': `.hello { color: red }`,
+    'tsup.config.ts': `
         export default {
           entry: ['src/input.ts'],
           minify: true,
@@ -1261,11 +1267,14 @@ test('custom inject style function', async () => {
             return "__custom_inject_style__(" + css +")";
           }
         }`,
-    },
-  )
+  })
   expect(outFiles).toEqual(['input.js', 'input.mjs'])
-  expect(await getFileContent('dist/input.mjs')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
-  expect(await getFileContent('dist/input.js')).toContain('__custom_inject_style__(`.hello{color:red}\n`)')
+  expect(await getFileContent('dist/input.mjs')).toContain(
+    '__custom_inject_style__(`.hello{color:red}\n`)'
+  )
+  expect(await getFileContent('dist/input.js')).toContain(
+    '__custom_inject_style__(`.hello{color:red}\n`)'
+  )
 })
 
 test('preserve top-level variable for IIFE format', async () => {
@@ -1281,4 +1290,30 @@ test('preserve top-level variable for IIFE format', async () => {
   })
   expect(outFiles).toEqual(['input.global.js'])
   expect(await getFileContent('dist/input.global.js')).toMatch(/globalFoo\s*=/)
+})
+
+test('should load postcss esm config', async () => {
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `
+    import './foo.css'
+    `,
+    'package.json': `{
+      "type": "module"
+    }`,
+    'postcss.config.js': `
+    export default {
+      plugins: {'postcss-simple-vars': {}}
+    }
+    `,
+    'foo.css': `
+  $color: blue;
+
+  .foo {
+    color: $color;
+  }
+    `,
+  })
+
+  expect(outFiles).toEqual(['input.cjs', 'input.css'])
+  expect(await getFileContent('dist/input.css')).toContain('color: blue;')
 })

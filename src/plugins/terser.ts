@@ -1,22 +1,22 @@
 import { MinifyOptions } from 'terser'
 import { PrettyError } from '../errors'
-import { createLogger } from '../log'
+import { Logger } from '../log'
 import { Format, Options } from '../options'
 import { Plugin } from '../plugin'
 import { localRequire } from '../utils'
-
-const logger = createLogger()
 
 export const terserPlugin = ({
   minifyOptions,
   format,
   terserOptions = {},
-  globalName
+  globalName,
+  logger,
 }: {
   minifyOptions: Options['minify']
   format: Format
-  terserOptions?: MinifyOptions,
+  terserOptions?: MinifyOptions
   globalName?: string
+  logger: Logger
 }): Plugin => {
   return {
     name: 'terser',

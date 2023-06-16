@@ -1,8 +1,8 @@
 import { Plugin } from 'esbuild'
 import { tsconfigPathsToRegExp, match } from 'bundle-require'
 
-// Must not start with "/" or "./" or "../"
-const NON_NODE_MODULE_RE = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/
+// Must not start with "/" or "./" or "../" or "C:\" or be the exact strings ".." or "."
+const NON_NODE_MODULE_RE = /^[A-Z]:[\\\/]|^\.{0,2}[\/]|^\.{1,2}$/
 
 export const externalPlugin = ({
   external,
@@ -36,7 +36,7 @@ export const externalPlugin = ({
             return { external: true }
           }
           // Exclude any other import that looks like a Node module
-          if (NON_NODE_MODULE_RE.test(args.path)) {
+          if (!NON_NODE_MODULE_RE.test(args.path)) {
             return {
               path: args.path,
               external: true,
