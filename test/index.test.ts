@@ -499,6 +499,24 @@ test('svelte: typescript support', async () => {
   expect(output).toContain('// Component.svelte')
 })
 
+test('svelte: sass support', async () => {
+  const { outFiles, output, getFileContent } = await run(getTestName(), {
+    'input.ts': `import App from './App.svelte'
+      export { App }
+      `,
+    'App.svelte': `
+      <div class="test">Hello</div>
+      <style lang="scss">
+      .test { &:hover { color: red } }
+      </style>
+      `,
+  })
+
+  expect(outFiles).toEqual(['input.css', 'input.js'])
+  const outputCss = await getFileContent('dist/input.css')
+  expect(outputCss).toMatch(/\.svelte-\w+:hover/)
+})
+
 test('onSuccess', async () => {
   const { logs } = await run(
     getTestName(),

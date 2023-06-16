@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-test-
             ${{ runner.os }}-
       - name: Install pnpm
-        run: npm i -g pnpm
+        run: corepack enable
 
       - name: Install deps
         run: pnpm i
@@ -67,7 +67,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-release-${{ env.cache-name }}-
             ${{ runner.os }}-${{ matrix.node-version }}-release-
             ${{ runner.os }}-
-      - run: npm i -g pnpm
+      - run: corepack enable
       - run: pnpm i
       - run: pnpx semantic-release --branches main
         env:

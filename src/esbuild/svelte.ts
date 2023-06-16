@@ -16,6 +16,7 @@ export const sveltePlugin = ({
 
     setup(build) {
       let svelte: typeof import('svelte/compiler')
+      let sveltePreprocessor: typeof import('svelte-preprocess').default
 
       build.onResolve({ filter: /\.svelte\.css$/ }, (args) => {
         return {
@@ -29,6 +30,8 @@ export const sveltePlugin = ({
 
       build.onLoad({ filter: /\.svelte$/ }, async (args) => {
         svelte = svelte || localRequire('svelte/compiler')
+        sveltePreprocessor =
+          sveltePreprocessor || localRequire('svelte-preprocess')
 
         if (!svelte) {
           return {
@@ -60,27 +63,42 @@ export const sveltePlugin = ({
 
         // Convert Svelte syntax to JavaScript
         try {
-          const preprocess = await svelte.preprocess(source, {
-            async script({ content, attributes }) {
-              if (attributes.lang !== 'ts') return { code: content }
+          const preprocess = await svelte.preprocess(
+            source,
+            sveltePreprocessor
+              ? sveltePreprocessor({
+                  sourceMap: true,
+                  typescript: {
+                    compilerOptions: {
+                      preserveValueImports: true,
+                    },
+                  },
+                })
+              : {
+                  async script({ content, attributes }) {
+                    if (attributes.lang !== 'ts') return { code: content }
 
-              const { code, map } = await transform(content, {
-                sourcefile: args.path,
-                loader: 'ts',
-                sourcemap: true,
-                tsconfigRaw: {
-                  compilerOptions: {
-                    preserveValueImports: true,
+                    const { code, map } = await transform(content, {
+                      sourcefile: args.path,
+                      loader: 'ts',
+                      sourcemap: true,
+                      tsconfigRaw: {
+                        compilerOptions: {
+                          preserveValueImports: true,
+                        },
+                      },
+                      logLevel: build.initialOptions.logLevel,
+                    })
+                    return {
+                      code,
+                      map,
+                    }
                   },
                 },
-                logLevel: build.initialOptions.logLevel,
-              })
-              return {
-                code,
-                map,
-              }
-            },
-          })
+            {
+              filename: args.path,
+            }
+          )
           const result = svelte.compile(preprocess.code, {
             filename,
             css: false,
