@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-test-
             ${{ runner.os }}-
       - name: Install pnpm
-        run: npm i -g pnpm@7
+        run: npm i -g pnpm
 
       - name: Install deps
         run: pnpm i
