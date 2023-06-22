@@ -257,6 +257,7 @@ export async function runEsbuild(
       write: false,
       splitting,
       logLevel: 'error',
+      logOverride: options.logOverride,
       minify: options.minify === 'terser' ? false : options.minify,
       minifyWhitespace: options.minifyWhitespace,
       minifyIdentifiers: options.minifyIdentifiers,

@@ -1,4 +1,4 @@
-import type { BuildOptions, Plugin as EsbuildPlugin, Loader } from 'esbuild'
+import type { BuildOptions, Plugin as EsbuildPlugin, Loader, LogLevel } from 'esbuild'
 import type { InputOption } from 'rollup'
 import { MarkRequired } from 'ts-essentials'
 import type { Plugin } from './plugin'
@@ -221,6 +221,13 @@ export type Options = {
    * Copy the files inside `publicDir` to output directory
    */
   publicDir?: string | boolean
+
+  /**
+   * Change the log level of individual esbuild types of log messages.
+   * 
+   * @see https://esbuild.github.io/api/#log-override
+   */
+  logOverride?: Record<string, LogLevel>
 }
 
 export type NormalizedOptions = Omit<
