@@ -5,10 +5,10 @@ import ts from 'typescript'
 import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { handleError } from './errors'
-import { removeFiles } from './utils'
+import { defaultOutExtension, removeFiles } from './utils'
 import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 import { createLogger, setSilent } from './log'
-import { getProductionDeps } from './load'
+import { getProductionDeps, loadPkg } from './load'
 import path from 'path'
 import { reportSize } from './lib/report-size'
 import resolveFrom from 'resolve-from'
@@ -32,7 +32,7 @@ const dtsPlugin: typeof import('rollup-plugin-dts') = require('rollup-plugin-dts
 
 type RollupConfig = {
   inputConfig: InputOptions
-  outputConfig: OutputOptions
+  outputConfig: OutputOptions[]
 }
 
 const findLowestCommonAncestor = (filepaths: string[]) => {
@@ -111,6 +111,7 @@ const getRollupConfig = async (
     }
   }
 
+  const pkg = await loadPkg(process.cwd())
   const deps = await getProductionDeps(process.cwd())
 
   const tsupCleanPlugin: Plugin = {
@@ -188,13 +189,19 @@ const getRollupConfig = async (
         ...(options.external || []),
       ],
     },
-    outputConfig: {
-      dir: options.outDir || 'dist',
-      format: 'esm',
-      exports: 'named',
-      banner: dtsOptions.banner,
-      footer: dtsOptions.footer,
-    },
+    outputConfig: options.format.map((format) => {
+      const outputExtension =
+        options.outExtension?.({ format, options, pkgType: pkg.type }).dts ||
+        defaultOutExtension({ format, pkgType: pkg.type }).dts
+      return {
+        dir: options.outDir || 'dist',
+        format: 'esm',
+        exports: 'named',
+        banner: dtsOptions.banner,
+        footer: dtsOptions.footer,
+        entryFileNames: `[name]${outputExtension}`,
+      }
+    }),
   }
 }
 
@@ -207,15 +214,16 @@ async function runRollup(options: RollupConfig) {
     }
     logger.info('dts', 'Build start')
     const bundle = await rollup(options.inputConfig)
-    const result = await bundle.write(options.outputConfig)
+    const results = await Promise.all(options.outputConfig.map(bundle.write))
+    const outputs = results.flatMap((result) => result.output);
     logger.success('dts', `⚡️ Build success in ${getDuration()}`)
     reportSize(
       logger,
       'dts',
-      result.output.reduce((res, info) => {
+      outputs.reduce((res, info) => {
         const name = path.relative(
           process.cwd(),
-          path.join(options.outputConfig.dir || '.', info.fileName)
+          path.join(options.outputConfig[0].dir || '.', info.fileName)
         )
         return {
           ...res,
@@ -231,7 +239,7 @@ async function runRollup(options: RollupConfig) {
 
 async function watchRollup(options: {
   inputConfig: InputOptions
-  outputConfig: OutputOptions
+  outputConfig: OutputOptions[]
 }) {
   const { watch } = await import('rollup')
 

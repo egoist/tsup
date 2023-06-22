@@ -14,7 +14,7 @@ export type ContextForOutPathGeneration = {
   pkgType?: string
 }
 
-export type OutExtensionObject = { js?: string }
+export type OutExtensionObject = { js?: string, dts?: string }
 
 export type OutExtensionFactory = (
   ctx: ContextForOutPathGeneration

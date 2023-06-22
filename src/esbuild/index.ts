@@ -14,34 +14,11 @@ import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
 import { sveltePlugin } from './svelte'
 import consola from 'consola'
-import { truthy } from '../utils'
+import { defaultOutExtension, truthy } from '../utils'
 import { swcPlugin } from './swc'
 import { nativeNodeModulesPlugin } from './native-node-module'
 import { PluginContainer } from '../plugin'
 import { OutExtensionFactory } from '../options'
-
-const defaultOutExtension = ({
-  format,
-  pkgType,
-}: {
-  format: Format
-  pkgType?: string
-}): { js: string } => {
-  let jsExtension = '.js'
-  const isModule = pkgType === 'module'
-  if (isModule && format === 'cjs') {
-    jsExtension = '.cjs'
-  }
-  if (!isModule && format === 'esm') {
-    jsExtension = '.mjs'
-  }
-  if (format === 'iife') {
-    jsExtension = '.global.js'
-  }
-  return {
-    js: jsExtension,
-  }
-}
 
 const getOutputExtensionMap = (
   options: NormalizedOptions,
