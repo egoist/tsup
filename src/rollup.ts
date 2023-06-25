@@ -118,7 +118,7 @@ const getRollupConfig = async (
     name: 'tsup:clean',
     async buildStart() {
       if (options.clean) {
-        await removeFiles(['**/*.d.ts'], options.outDir)
+        await removeFiles(['**/*.d.{ts,mts,cts}'], options.outDir)
       }
     },
   }
@@ -215,7 +215,7 @@ async function runRollup(options: RollupConfig) {
     logger.info('dts', 'Build start')
     const bundle = await rollup(options.inputConfig)
     const results = await Promise.all(options.outputConfig.map(bundle.write))
-    const outputs = results.flatMap((result) => result.output);
+    const outputs = results.flatMap((result) => result.output)
     logger.success('dts', `⚡️ Build success in ${getDuration()}`)
     reportSize(
       logger,
