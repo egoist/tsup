@@ -91,6 +91,10 @@ export async function main(options: Options = {}) {
       'Using Rollup for treeshaking instead, "recommended" or "smallest" or "safest"'
     )
     .option('--publicDir [dir]', 'Copy public directory to output directory')
+    .option(
+      '--killSignal <signal>',
+      'Signal to kill child process, "SIGINT" or "SIGTERM"'
+    )
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
       Object.assign(options, {

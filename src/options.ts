@@ -5,6 +5,8 @@ import type { Plugin } from './plugin'
 import type { TreeshakingStrategy } from './plugins/tree-shaking'
 import type { MinifyOptions } from 'terser'
 
+export type KILL_SIGNAL = 'SIGKILL' | 'SIGTERM'
+
 export type Format = 'cjs' | 'esm' | 'iife'
 
 export type ContextForOutPathGeneration = {
@@ -14,7 +16,7 @@ export type ContextForOutPathGeneration = {
   pkgType?: string
 }
 
-export type OutExtensionObject = { js?: string, dts?: string }
+export type OutExtensionObject = { js?: string; dts?: string }
 
 export type OutExtensionFactory = (
   ctx: ContextForOutPathGeneration
@@ -221,6 +223,7 @@ export type Options = {
    * Copy the files inside `publicDir` to output directory
    */
   publicDir?: string | boolean
+  killSignal?: KILL_SIGNAL
 }
 
 export type NormalizedOptions = Omit<

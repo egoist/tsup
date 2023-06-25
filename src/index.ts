@@ -11,7 +11,7 @@ import execa from 'execa'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { createLogger, setSilent } from './log'
-import { NormalizedOptions, Format, Options } from './options'
+import { NormalizedOptions, Format, Options, KILL_SIGNAL } from './options'
 import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
@@ -34,15 +34,12 @@ export const defineConfig = (
       ) => MaybePromise<Options | Options[]>)
 ) => options
 
-const killProcess = ({
-  pid,
-  signal = 'SIGTERM',
-}: {
-  pid: number
-  signal?: string | number
-}) =>
-  new Promise<unknown>((resolve) => {
-    kill(pid, signal, resolve)
+const killProcess = ({ pid, signal }: { pid: number; signal: KILL_SIGNAL }) =>
+  new Promise<void>((resolve, reject) => {
+    kill(pid, signal, (err) => {
+      if (err) return reject(err)
+      resolve()
+    })
   })
 
 const normalizeOptions = async (
@@ -207,6 +204,7 @@ export async function build(_options: Options) {
               if (onSuccessProcess) {
                 await killProcess({
                   pid: onSuccessProcess.pid,
+                  signal: options.killSignal || 'SIGTERM',
                 })
               } else if (onSuccessCleanup) {
                 await onSuccessCleanup()
