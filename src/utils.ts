@@ -2,6 +2,7 @@ import fs from 'fs'
 import glob from 'globby'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
+import { Format } from './options'
 
 export type MaybePromise<T> = T | Promise<T>
 
@@ -127,5 +128,32 @@ export function jsoncParse(data: string) {
     // Silently ignore any error
     // That's what tsc/jsonc-parser did after all
     return {}
+  }
+}
+
+export function defaultOutExtension({
+  format,
+  pkgType,
+}: {
+  format: Format
+  pkgType?: string
+}): { js: string, dts: string } {
+  let jsExtension = '.js'
+  let dtsExtension = '.d.ts'
+  const isModule = pkgType === 'module'
+  if (isModule && format === 'cjs') {
+    jsExtension = '.cjs'
+    dtsExtension = '.d.cts'
+  }
+  if (!isModule && format === 'esm') {
+    jsExtension = '.mjs'
+    dtsExtension = '.d.mts'
+  }
+  if (format === 'iife') {
+    jsExtension = '.global.js'
+  }
+  return {
+    js: jsExtension,
+    dts: dtsExtension,
   }
 }

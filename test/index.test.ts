@@ -1248,7 +1248,7 @@ test(`custom tsconfig should pass to dts plugin`, async () => {
         }
       `,
   })
-  expect(outFiles).toEqual(['input.d.ts'])
+  expect(outFiles).toEqual(['input.d.mts'])
 })
 
 test(`should generate export {} when there are no exports in source file`, async () => {
@@ -1268,8 +1268,8 @@ test(`should generate export {} when there are no exports in source file`, async
         }
       `,
   })
-  expect(outFiles).toEqual(['input.d.ts', 'input.mjs'])
-  expect(await getFileContent('dist/input.d.ts')).toContain('export { }')
+  expect(outFiles).toEqual(['input.d.mts', 'input.mjs'])
+  expect(await getFileContent('dist/input.d.mts')).toContain('export { }')
 })
 
 test('custom inject style function', async () => {
@@ -1335,3 +1335,32 @@ test('should load postcss esm config', async () => {
   expect(outFiles).toEqual(['input.cjs', 'input.css'])
   expect(await getFileContent('dist/input.css')).toContain('color: blue;')
 })
+
+test('should emit a declaration file per format', async () => {
+  const { outFiles } = await run(getTestName(), {
+    'input.ts': `export default 'foo'`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: ['esm', 'cjs'],
+          dts: true
+        }`,
+  });
+  expect(outFiles).toEqual(['input.d.mts', 'input.d.ts', 'input.js', 'input.mjs'])
+});
+
+test('should emit a declaration file per format (type: module)', async () => {
+  const { outFiles } = await run(getTestName(), {
+    'input.ts': `export default 'foo'`,
+    'package.json': `{
+      "type": "module"
+    }`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: ['esm', 'cjs'],
+          dts: true
+        }`,
+  });
+  expect(outFiles).toEqual(['input.cjs', 'input.d.cts', 'input.d.ts', 'input.js'])
+});
