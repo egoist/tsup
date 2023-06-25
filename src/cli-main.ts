@@ -93,7 +93,7 @@ export async function main(options: Options = {}) {
     .option('--publicDir [dir]', 'Copy public directory to output directory')
     .option(
       '--killSignal <signal>',
-      'Signal to kill child process, "SIGINT" or "SIGTERM"'
+      'Signal to kill child process, "SIGTERM" or "SIGKILL"'
     )
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
