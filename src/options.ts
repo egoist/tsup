@@ -224,6 +224,10 @@ export type Options = {
    */
   publicDir?: string | boolean
   killSignal?: KILL_SIGNAL
+  /**
+   * Interop default within `module.exports` in cjs
+   * @default false
+   */
   cjsInterop?: boolean
 }
 
