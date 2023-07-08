@@ -224,6 +224,7 @@ export type Options = {
    */
   publicDir?: string | boolean
   killSignal?: KILL_SIGNAL
+  cjsInterop?: boolean
 }
 
 export type NormalizedOptions = Omit<

@@ -21,6 +21,7 @@ import { sizeReporter } from './plugins/size-reporter'
 import { treeShakingPlugin } from './plugins/tree-shaking'
 import { copyPublicDir, isInPublicDir } from './lib/public-dir'
 import { terserPlugin } from './plugins/terser'
+import { cjsInterop } from './plugins/cjs-interop'
 
 export type { Format, Options, NormalizedOptions }
 
@@ -254,6 +255,7 @@ export async function build(_options: Options) {
                       silent: options.silent,
                     }),
                     cjsSplitting(),
+                    cjsInterop(),
                     es5(),
                     sizeReporter(),
                     terserPlugin({

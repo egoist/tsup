@@ -132,6 +132,25 @@ const getRollupConfig = async (
     },
   }
 
+  const fixCjsExport: Plugin = {
+    name: 'tsup:fix-cjs-export',
+    renderChunk(code, info) {
+      if (
+        info.type !== 'chunk' ||
+        !/\.(ts|cts)$/.test(info.fileName) ||
+        !info.isEntry ||
+        info.exports?.length !== 1 ||
+        info.exports[0] !== 'default'
+      )
+        return
+
+      return code.replace(
+        /(;|^)\s*export\s*{\s*([\w$]+)\s*as\s+default\s};?/,
+        (_, __, i) => `\nexport = ${i};`
+      )
+    },
+  }
+
   return {
     inputConfig: {
       input: dtsOptions.entry,
@@ -179,7 +198,7 @@ const getRollupConfig = async (
         ...(options.external || []),
       ],
     },
-    outputConfig: options.format.map((format) => {
+    outputConfig: options.format.map((format): OutputOptions => {
       const outputExtension =
         options.outExtension?.({ format, options, pkgType: pkg.type }).dts ||
         defaultOutExtension({ format, pkgType: pkg.type }).dts
@@ -190,6 +209,9 @@ const getRollupConfig = async (
         banner: dtsOptions.banner,
         footer: dtsOptions.footer,
         entryFileNames: `[name]${outputExtension}`,
+        plugins: [
+          format === 'cjs' && options.cjsInterop && fixCjsExport,
+        ].filter(Boolean),
       }
     }),
   }
