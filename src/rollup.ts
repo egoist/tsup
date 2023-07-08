@@ -132,15 +132,6 @@ const getRollupConfig = async (
     },
   }
 
-  const fixEnumDeclaration: Plugin = {
-    name: 'tsup:fix-enum-declaration',
-    renderChunk(code) {
-      // make sure enum declaration starts with `declare`
-      // #834
-      return code.replace(/^(\s*)enum\s/gm, '$1declare enum ')
-    },
-  }
-
   return {
     inputConfig: {
       input: dtsOptions.entry,
@@ -181,7 +172,6 @@ const getRollupConfig = async (
             target: ts.ScriptTarget.ESNext,
           },
         }),
-        fixEnumDeclaration,
       ].filter(Boolean),
       external: [
         // Exclude dependencies, e.g. `lodash`, `lodash/get`
