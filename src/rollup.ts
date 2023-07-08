@@ -145,8 +145,8 @@ const getRollupConfig = async (
         return
 
       return code.replace(
-        /(;|^)\s*export\s*{\s*([\w$]+)\s*as\s+default\s};?/,
-        (_, __, i) => `\nexport = ${i};`
+        /(?<=(?<=[;}]|^)\s*export\s*){\s*([\w$]+)\s*as\s+default\s*}/,
+        `= $1`
       )
     },
   }
