@@ -33,7 +33,7 @@ export const treeShakingPlugin = ({
               return false
             },
             load(id) {
-              if (id === info.path) return code
+              if (id === info.path) return { code, map: info.map }
             },
           },
         ],
@@ -47,7 +47,7 @@ export const treeShakingPlugin = ({
         interop: 'auto',
         format: this.format,
         file: 'out.js',
-        sourcemap: !!this.options.sourcemap,
+        sourcemap: this.options.sourcemap ? 'hidden' : false,
         name
       })
 
