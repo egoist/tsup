@@ -1365,7 +1365,7 @@ test('should emit a declaration file per format (type: module)', async () => {
   expect(outFiles).toEqual(['input.cjs', 'input.d.cts', 'input.d.ts', 'input.js'])
 });
 
-test.only('should emit correct sourcemap when enabled treeshake', async () => {
+test('should emit correct sourcemap when enabled treeshake', async () => {
   const { getFileContent } = await run(getTestName(), {
     'input.ts': `if (true) function foo() { return 1 }; foo()`,
     'tsup.config.ts': `
