@@ -95,6 +95,7 @@ export async function main(options: Options = {}) {
       '--killSignal <signal>',
       'Signal to kill child process, "SIGTERM" or "SIGKILL"'
     )
+    .option('--cjsInterop', 'Enable cjs interop')
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
       Object.assign(options, {
