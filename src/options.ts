@@ -63,7 +63,6 @@ export type BrowserTargetWithVersion =
   | `${BrowserTarget}${number}.${number}`
   | `${BrowserTarget}${number}.${number}.${number}`
 export type EsTarget =
-  | 'es3'
   | 'es5'
   | 'es6'
   | 'es2015'
