@@ -145,15 +145,11 @@ Provide the following configuration in your `.vscode/settings.json` (or global) 
   "json.schemas": [
     {
       "url": "https://cdn.jsdelivr.net/npm/tsup/schema.json",
-      "fileMatch": [
-        "package.json",
-        "tsup.config.json"
-      ]
+      "fileMatch": ["package.json", "tsup.config.json"]
     }
   ]
 }
 ```
-
 
 ### Multiple entrypoints
 
@@ -164,7 +160,7 @@ Beside using positional arguments `tsup [...files]` to specify multiple entrypoi
 tsup --entry src/a.ts --entry src/b.ts
 ```
 
-The associated output file names can be defined as follows: 
+The associated output file names can be defined as follows:
 
 ```bash
 # Outputs `dist/foo.js` and `dist/bar.js`.
@@ -349,6 +345,14 @@ tsup src/index.ts --env.NODE_ENV production
 ### Building CLI app
 
 When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the output file executable, so you don't have to run `chmod +x dist/cli.js`.
+
+### Interop with CommonJS
+
+By default, esbuild will transform `export default x` to `module.exports.default = x` in CommonJS, but you can change this behavior by using the `--cjsInterop` flag: If there are only default exports and no named exports, it will be transformed to `module.exports = x` instead.
+
+```bash
+tsup src/index.ts --cjsInterop
+```
 
 ### Watch mode
 
