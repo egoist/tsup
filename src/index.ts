@@ -16,7 +16,7 @@ import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
 import { PluginContainer } from './plugin'
-import { es5 } from './plugins/es5'
+import { swcTarget } from './plugins/swc-target'
 import { sizeReporter } from './plugins/size-reporter'
 import { treeShakingPlugin } from './plugins/tree-shaking'
 import { copyPublicDir, isInPublicDir } from './lib/public-dir'
@@ -256,7 +256,7 @@ export async function build(_options: Options) {
                     }),
                     cjsSplitting(),
                     cjsInterop(),
-                    es5(),
+                    swcTarget(),
                     sizeReporter(),
                     terserPlugin({
                       minifyOptions: options.minify,
