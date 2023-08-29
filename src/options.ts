@@ -138,8 +138,9 @@ export type Options = {
   replaceNodeEnv?: boolean
   /**
    * Code splitting
-   * Default to `true`
-   * You may want to disable code splitting sometimes: [`#255`](https://github.com/egoist/tsup/issues/255)
+   * Default to `true` for ESM, `false` for CJS.
+   * 
+   * You can set it to `true` explicitly, and may want to disable code splitting sometimes: [`#255`](https://github.com/egoist/tsup/issues/255)
    */
   splitting?: boolean
   /**
