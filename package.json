@@ -28,6 +28,7 @@
     "build-fast": "npm run build -- --no-dts"
   },
   "dependencies": {
+    "@microsoft/api-extractor": "^7.36.4",
     "bundle-require": "^4.0.0",
     "cac": "^6.7.12",
     "chokidar": "^3.5.1",

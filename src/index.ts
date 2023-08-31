@@ -21,6 +21,8 @@ import { sizeReporter } from './plugins/size-reporter'
 import { treeShakingPlugin } from './plugins/tree-shaking'
 import { copyPublicDir, isInPublicDir } from './lib/public-dir'
 import { terserPlugin } from './plugins/terser'
+import { runTypeScriptCompiler } from './tsc'
+import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
 
 export type { Format, Options, NormalizedOptions }
@@ -52,6 +54,7 @@ const normalizeOptions = async (
     ...optionsFromConfigFile,
     ...optionsOverride,
   }
+
   const options: Partial<NormalizedOptions> = {
     outDir: 'dist',
     ..._options,
@@ -67,6 +70,14 @@ const normalizeOptions = async (
         : typeof _options.dts === 'string'
         ? { entry: _options.dts }
         : _options.dts,
+    experimentalDts:
+      typeof _options.experimentalDts === 'boolean'
+        ? _options.experimentalDts
+          ? {}
+          : undefined
+        : typeof _options.experimentalDts === 'string'
+        ? { entry: _options.experimentalDts }
+        : _options.experimentalDts,
   }
 
   setSilent(options.silent)
@@ -110,6 +121,12 @@ const normalizeOptions = async (
       options.dts.compilerOptions = {
         ...(tsconfig.data.compilerOptions || {}),
         ...(options.dts.compilerOptions || {}),
+      }
+    }
+    if (options.experimentalDts) {
+      options.experimentalDts.compilerOptions = {
+        ...(tsconfig.data.compilerOptions || {}),
+        ...(options.experimentalDts.compilerOptions || {}),
       }
     }
     if (!options.target) {
@@ -157,6 +174,17 @@ export async function build(_options: Options) {
         }
 
         const dtsTask = async () => {
+          if (options.dts && options.experimentalDts) {
+            throw new Error(
+              "You can't use both `dts` and `experimentalDts` at the same time"
+            )
+          }
+
+          if (options.experimentalDts) {
+            const exports = runTypeScriptCompiler(options)
+            await runDtsRollup(options, exports)
+          }
+
           if (options.dts) {
             await new Promise<void>((resolve, reject) => {
               const worker = new Worker(path.join(__dirname, './rollup.js'))

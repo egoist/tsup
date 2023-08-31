@@ -39,6 +39,15 @@ export type DtsConfig = {
   compilerOptions?: any
 }
 
+export type ExperimentalDtsConfig = {
+  entry?: InputOption
+  /**
+   * Overrides `compilerOptions`
+   * This option takes higher priority than `compilerOptions` in tsconfig.json
+   */
+  compilerOptions?: any
+}
+
 export type BannerOrFooter =
   | {
       js?: string
@@ -126,6 +135,7 @@ export type Options = {
     [k: string]: string
   }
   dts?: boolean | string | DtsConfig
+  experimentalDts?: boolean | string | ExperimentalDtsConfig
   sourcemap?: boolean | 'inline'
   /** Always bundle modules matching given patterns */
   noExternal?: (string | RegExp)[]
@@ -237,6 +247,7 @@ export type NormalizedOptions = Omit<
   'dts' | 'format'
 > & {
   dts?: DtsConfig
+  experimentalDts?: ExperimentalDtsConfig
   tsconfigResolvePaths: Record<string, string[]>
   tsconfigDecoratorMetadata?: boolean
   format: Format[]
