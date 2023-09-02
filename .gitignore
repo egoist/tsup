@@ -4,3 +4,4 @@ dist
 .cache
 playground
 .idea
+.DS_Store
