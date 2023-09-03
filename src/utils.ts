@@ -1,9 +1,9 @@
 import fs from 'fs'
 import glob from 'globby'
+import path from 'path'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
-import { Format } from './options'
-import path from 'path'
+import { Entry, Format } from './options'
 
 export type MaybePromise<T> = T | Promise<T>
 
@@ -179,7 +179,13 @@ export function ensureTempDeclarationDir(): string {
 // We use the base path (without extension) as the entry name
 // To make declaration files work with multiple entrypoints
 // See #316
-export const toObjectEntry = (entry: string[]) => {
+export const toObjectEntry = (entry: string | Entry) => {
+  if (typeof entry === 'string') {
+    entry = [entry]
+  }
+  if (!Array.isArray(entry)) {
+    return entry
+  }
   entry = entry.map((e) => e.replace(/\\/g, '/'))
   const ancestor = findLowestCommonAncestor(entry)
   return entry.reduce((result, item) => {

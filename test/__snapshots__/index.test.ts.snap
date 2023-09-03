@@ -242,6 +242,7 @@ declare function sharedFunction<T>(value: T): T | null;
 export { sharedFunction }
 export { sharedFunction as sharedFunction_alias_1 }
 export { sharedFunction as sharedFunction_alias_2 }
+export { sharedFunction as sharedFunction_alias_3 }
 
 declare type sharedType = {
     shared: boolean;
@@ -249,6 +250,7 @@ declare type sharedType = {
 export { sharedType }
 export { sharedType as sharedType_alias_1 }
 export { sharedType as sharedType_alias_2 }
+export { sharedType as sharedType_alias_3 }
 
 export declare const VERSION: \\"0.0.0\\";
 
@@ -317,6 +319,7 @@ declare function sharedFunction<T>(value: T): T | null;
 export { sharedFunction }
 export { sharedFunction as sharedFunction_alias_1 }
 export { sharedFunction as sharedFunction_alias_2 }
+export { sharedFunction as sharedFunction_alias_3 }
 
 declare type sharedType = {
     shared: boolean;
@@ -324,6 +327,7 @@ declare type sharedType = {
 export { sharedType }
 export { sharedType as sharedType_alias_1 }
 export { sharedType as sharedType_alias_2 }
+export { sharedType as sharedType_alias_3 }
 
 export declare const VERSION: \\"0.0.0\\";
 
@@ -337,10 +341,10 @@ export { }
 //////////////////////////////////////////////////////////////////////
 
 export { VERSION } from './_tsup-dts-rollup';
-export { render } from './_tsup-dts-rollup';
-export { ClientRenderOptions } from './_tsup-dts-rollup';
-export { sharedFunction } from './_tsup-dts-rollup';
-export { sharedType } from './_tsup-dts-rollup';
+export { render_alias_1 as render } from './_tsup-dts-rollup';
+export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
 
 
 //////////////////////////////////////////////////////////////////////
@@ -348,6 +352,16 @@ export { sharedType } from './_tsup-dts-rollup';
 //////////////////////////////////////////////////////////////////////
 
 export { VERSION } from './_tsup-dts-rollup';
+export { render_alias_1 as render } from './_tsup-dts-rollup';
+export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
+
+
+//////////////////////////////////////////////////////////////////////
+// dist/my-lib-client.d.mts
+//////////////////////////////////////////////////////////////////////
+
 export { render } from './_tsup-dts-rollup';
 export { ClientRenderOptions } from './_tsup-dts-rollup';
 export { sharedFunction } from './_tsup-dts-rollup';
@@ -355,23 +369,13 @@ export { sharedType } from './_tsup-dts-rollup';
 
 
 //////////////////////////////////////////////////////////////////////
-// dist/my-lib-client.d.mts
-//////////////////////////////////////////////////////////////////////
-
-export { render_alias_1 as render } from './_tsup-dts-rollup';
-export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
-export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
-export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
-
-
-//////////////////////////////////////////////////////////////////////
 // dist/my-lib-client.d.ts
 //////////////////////////////////////////////////////////////////////
 
-export { render_alias_1 as render } from './_tsup-dts-rollup';
-export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
-export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
-export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
+export { render } from './_tsup-dts-rollup';
+export { ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction } from './_tsup-dts-rollup';
+export { sharedType } from './_tsup-dts-rollup';
 
 
 //////////////////////////////////////////////////////////////////////

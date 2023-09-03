@@ -1,9 +1,9 @@
 import type { BuildOptions, Plugin as EsbuildPlugin, Loader } from 'esbuild'
 import type { InputOption } from 'rollup'
+import type { MinifyOptions } from 'terser'
 import { MarkRequired } from 'ts-essentials'
 import type { Plugin } from './plugin'
 import type { TreeshakingStrategy } from './plugins/tree-shaking'
-import type { MinifyOptions } from 'terser'
 
 export type KILL_SIGNAL = 'SIGKILL' | 'SIGTERM'
 
@@ -149,7 +149,7 @@ export type Options = {
   /**
    * Code splitting
    * Default to `true` for ESM, `false` for CJS.
-   * 
+   *
    * You can set it to `true` explicitly, and may want to disable code splitting sometimes: [`#255`](https://github.com/egoist/tsup/issues/255)
    */
   splitting?: boolean
@@ -242,12 +242,17 @@ export type Options = {
   cjsInterop?: boolean
 }
 
+export interface NormalizedExperimentalDtsConfig {
+  entry: { [entryAlias: string]: string }
+  compilerOptions?: any
+}
+
 export type NormalizedOptions = Omit<
   MarkRequired<Options, 'entry' | 'outDir'>,
-  'dts' | 'format'
+  'dts' | 'experimentalDts' | 'format'
 > & {
   dts?: DtsConfig
-  experimentalDts?: ExperimentalDtsConfig
+  experimentalDts?: NormalizedExperimentalDtsConfig
   tsconfigResolvePaths: Record<string, string[]>
   tsconfigDecoratorMetadata?: boolean
   format: Format[]

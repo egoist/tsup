@@ -1,8 +1,9 @@
+import { loadTsConfig } from 'bundle-require'
 import ts from 'typescript'
 import { handleError } from './errors'
 import { ExportDeclaration } from './exports'
 import { createLogger } from './log'
-import { Entry, ExperimentalDtsConfig, NormalizedOptions } from './options'
+import { NormalizedOptions } from './options'
 import { ensureTempDeclarationDir, toAbsolutePath } from './utils'
 
 const logger = createLogger()
@@ -169,13 +170,23 @@ const parseCompilerOptions = (
   return parsed.options
 }
 
-function emit(entry: Entry, dts?: ExperimentalDtsConfig) {
+function emit(compilerOptions?: any, tsconfig?: string) {
+  let cwd = process.cwd()
+  let rawTsconfig = loadTsConfig(cwd, tsconfig)
+  if (!rawTsconfig) {
+    throw new Error(`Unable to find ${tsconfig || 'tsconfig.json'} in ${cwd}`)
+  }
+
   let declarationDir = ensureTempDeclarationDir()
 
-  let fileNames: string[] = Array.isArray(entry) ? entry : Object.values(entry)
+  let parsedTsconfig = ts.parseJsonConfigFileContent(
+    rawTsconfig.data,
+    ts.sys,
+    cwd
+  )
 
   let options: ts.CompilerOptions = parseCompilerOptions({
-    ...dts?.compilerOptions,
+    ...compilerOptions,
 
     // Enable declaration emit and disable javascript emit
     noEmit: false,
@@ -185,7 +196,11 @@ function emit(entry: Entry, dts?: ExperimentalDtsConfig) {
     emitDeclarationOnly: true,
   })
   let host: ts.CompilerHost = ts.createCompilerHost(options)
-  let program: ts.Program = ts.createProgram(fileNames, options, host)
+  let program: ts.Program = ts.createProgram(
+    parsedTsconfig.fileNames,
+    options,
+    host
+  )
 
   let fileMapping = emitDtsFiles(program, host)
   return getExports(program, fileMapping)
@@ -198,7 +213,8 @@ export function runTypeScriptCompiler(options: NormalizedOptions) {
       return `${Math.floor(Date.now() - start)}ms`
     }
     logger.info('tsc', 'Build start')
-    const exports = emit(options.entry, options.experimentalDts)
+    const dtsOptions = options.experimentalDts!
+    const exports = emit(dtsOptions.compilerOptions, options.tsconfig)
     logger.success('tsc', `⚡️ Build success in ${getDuration()}`)
     return exports
   } catch (error) {

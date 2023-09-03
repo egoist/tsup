@@ -12,17 +12,15 @@ import {
   formatDistributionExports,
   type ExportDeclaration,
 } from './exports'
+import { loadPkg } from './load'
 import { createLogger } from './log'
 import { Format, NormalizedOptions } from './options'
 import {
   defaultOutExtension,
   ensureTempDeclarationDir,
   toAbsolutePath,
-  toObjectEntry,
-  trimDtsExtension,
   writeFileSync,
 } from './utils'
-import { loadPkg } from './load'
 
 const logger = createLogger()
 
@@ -81,13 +79,6 @@ async function rollupDtsFiles(
   exports: ExportDeclaration[],
   format: Format
 ) {
-  const dtsOptions = options.experimentalDts || {}
-  dtsOptions.entry = dtsOptions.entry || options.entry
-
-  if (Array.isArray(dtsOptions.entry) && dtsOptions.entry.length > 1) {
-    dtsOptions.entry = toObjectEntry(dtsOptions.entry)
-  }
-
   let declarationDir = ensureTempDeclarationDir()
   let outDir = options.outDir || 'dist'
   let pkg = await loadPkg(process.cwd())
@@ -110,7 +101,9 @@ async function rollupDtsFiles(
     options.tsconfig || 'tsconfig.json'
   )
 
-  for (let [out, sourceFileName] of Object.entries(dtsOptions.entry)) {
+  for (let [out, sourceFileName] of Object.entries(
+    options.experimentalDts!.entry
+  )) {
     sourceFileName = toAbsolutePath(sourceFileName)
     const outFileName = path.join(outDir, out + dtsExtension)
 

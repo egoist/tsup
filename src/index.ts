@@ -1,7 +1,13 @@
 import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
-import { removeFiles, debouncePromise, slash, MaybePromise } from './utils'
+import {
+  removeFiles,
+  debouncePromise,
+  slash,
+  MaybePromise,
+  toObjectEntry,
+} from './utils'
 import { getAllDepsHash, loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
@@ -70,14 +76,20 @@ const normalizeOptions = async (
         : typeof _options.dts === 'string'
         ? { entry: _options.dts }
         : _options.dts,
-    experimentalDts:
-      typeof _options.experimentalDts === 'boolean'
+    experimentalDts: _options.experimentalDts
+      ? typeof _options.experimentalDts === 'boolean'
         ? _options.experimentalDts
-          ? {}
+          ? { entry: {} }
           : undefined
         : typeof _options.experimentalDts === 'string'
-        ? { entry: _options.experimentalDts }
-        : _options.experimentalDts,
+        ? {
+            entry: toObjectEntry(_options.experimentalDts),
+          }
+        : {
+            ..._options.experimentalDts,
+            entry: toObjectEntry(_options.experimentalDts.entry || {}),
+          }
+      : undefined,
   }
 
   setSilent(options.silent)
@@ -128,6 +140,11 @@ const normalizeOptions = async (
         ...(tsconfig.data.compilerOptions || {}),
         ...(options.experimentalDts.compilerOptions || {}),
       }
+      options.experimentalDts.entry = toObjectEntry(
+        Object.keys(options.experimentalDts.entry).length > 0
+          ? options.experimentalDts.entry
+          : options.entry
+      )
     }
     if (!options.target) {
       options.target = tsconfig.data?.compilerOptions?.target?.toLowerCase()
