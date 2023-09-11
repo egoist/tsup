@@ -45,7 +45,7 @@ exports[`enable --dts-resolve for specific module 1`] = `
 
 type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> & Required<Pick<T, RK>>
 
-export { MarkRequired };
+export type { MarkRequired };
 "
 `;
 

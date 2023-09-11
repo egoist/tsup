@@ -24,7 +24,7 @@
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
     "prepublishOnly": "npm run build",
     "test": "npm run build && npm run test-only",
-    "test-only": "vitest run",
+    "test-only": "vitest run -u",
     "build-fast": "npm run build -- --no-dts"
   },
   "dependencies": {
@@ -59,7 +59,7 @@
     "postcss-simple-vars": "6.0.3",
     "prettier": "2.5.1",
     "resolve": "1.20.0",
-    "rollup-plugin-dts": "5.3.0",
+    "rollup-plugin-dts": "^6.0.2",
     "rollup-plugin-hashbang": "3.0.0",
     "sass": "1.62.1",
     "strip-json-comments": "4.0.0",
