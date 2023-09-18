@@ -176,7 +176,7 @@ export async function build(_options: Options) {
               })
               worker.on('message', (data) => {
                 if (data === 'error') {
-                  reject(new Error('error occured in dts build'))
+                  reject(new Error('error occurred in dts build'))
                 } else if (data === 'success') {
                   resolve()
                 } else {
