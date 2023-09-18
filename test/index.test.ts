@@ -881,7 +881,7 @@ test('shebang', async () => {
  * which fails the build with an error:
  * https://github.com/egoist/tsup/issues/1001
  */
-test('shebang ignores dts files', async () => {
+test('do not chmod +x dts files', async () => {
   const { outDir, logs } = await run(
     getTestName(),
     {
