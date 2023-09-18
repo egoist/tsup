@@ -542,7 +542,7 @@ test('onSuccess: use a function from config file', async () => {
             await new Promise((resolve) => {
               setTimeout(() => {
                 console.log('world')
-                resolve('')  
+                resolve('')
               }, 1_000)
             })
           }
@@ -872,6 +872,38 @@ test('shebang', async () => {
   }).toThrow()
 })
 
+/**
+ * tsup should not attempt to `chmod +x` type definition files in the output,
+ * even when their corresponding module starts with a shebang.
+ * It might be harmless for it to do it anyway, except that
+ * rollup-plugin-hashbang seems to suffer from a race condition where it may
+ * attempt to chmod type definition files before they are written to disk,
+ * which fails the build with an error:
+ * https://github.com/egoist/tsup/issues/1001
+ */
+test('shebang ignores dts files', async () => {
+  const { outDir, logs } = await run(
+    getTestName(),
+    {
+      'a.ts': `#!/usr/bin/env node\bconsole.log('a')`,
+    },
+    {
+      entry: ['a.ts'],
+      flags: ['--dts'],
+    }
+  )
+
+  if (process.platform === 'win32') {
+    return
+  }
+
+  console.log(`LOGS: ${logs}`)
+
+  expect(() => {
+    fs.accessSync(path.join(outDir, 'a.d.ts'), fs.constants.X_OK)
+  }).toThrow()
+})
+
 test('es5 target', async () => {
   const { output, outFiles } = await run(
     getTestName(),
@@ -1037,7 +1069,7 @@ test('use rollup for treeshaking --format cjs', async () => {
       }`,
       'input.tsx': `
       import ReactSelect from 'react-select'
-      
+
       export const Component = (props: {}) => {
         return <ReactSelect {...props} />
       };
@@ -1345,9 +1377,14 @@ test('should emit a declaration file per format', async () => {
           format: ['esm', 'cjs'],
           dts: true
         }`,
-  });
-  expect(outFiles).toEqual(['input.d.mts', 'input.d.ts', 'input.js', 'input.mjs'])
-});
+  })
+  expect(outFiles).toEqual([
+    'input.d.mts',
+    'input.d.ts',
+    'input.js',
+    'input.mjs',
+  ])
+})
 
 test('should emit a declaration file per format (type: module)', async () => {
   const { outFiles } = await run(getTestName(), {
@@ -1361,6 +1398,11 @@ test('should emit a declaration file per format (type: module)', async () => {
           format: ['esm', 'cjs'],
           dts: true
         }`,
-  });
-  expect(outFiles).toEqual(['input.cjs', 'input.d.cts', 'input.d.ts', 'input.js'])
-});
+  })
+  expect(outFiles).toEqual([
+    'input.cjs',
+    'input.d.cts',
+    'input.d.ts',
+    'input.js',
+  ])
+})
