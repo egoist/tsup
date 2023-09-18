@@ -897,8 +897,6 @@ test('shebang ignores dts files', async () => {
     return
   }
 
-  console.log(`LOGS: ${logs}`)
-
   expect(() => {
     fs.accessSync(path.join(outDir, 'a.d.ts'), fs.constants.X_OK)
   }).toThrow()
