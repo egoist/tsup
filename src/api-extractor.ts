@@ -91,6 +91,13 @@ async function rollupDtsFiles(
   let pkg = await loadPkg(process.cwd())
   let dtsExtension = defaultOutExtension({ format, pkgType: pkg.type }).dts
 
+  // @microsoft/api-extractor doesn't support `.d.mts` and `.d.cts` yet. So we
+  // replace the extension here as a temporary workaround.
+  //
+  // See the issue for more details:
+  // https://github.com/microsoft/rushstack/pull/4196
+  dtsExtension = dtsExtension.replace(/\.d\.mts$/, '.dmts.d.ts').replace('\.d\.cts', '.dcts.d.ts')
+
   let dtsInputFilePath = path.join(
     declarationDir,
     '_tsup-dts-aggregation' + dtsExtension
