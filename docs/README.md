@@ -193,11 +193,19 @@ If you have multiple entry files, each entry will get a corresponding `.d.ts` fi
 
 Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file, if that's somehow a requirement, try the experimental `--dts-resolve` flag instead.
 
-Since tsup version 7.3.0, you can also use `--experimental-dts` flag to generate declaration files. This flag use [@microsoft/api-extractor](https://www.npmjs.com/package/@microsoft/api-extractor) to generate declaration files, which is more reliable than the previous `--dts` flag. It's still experimental and we are looking for feedbacks.
+Since tsup version 7.3.0, you can also use `--experimental-dts` flag to generate declaration files. This flag use [@microsoft/api-extractor](https://www.npmjs.com/package/@microsoft/api-extractor) to generate declaration files, which is more reliable than the previous `--dts` flag. It's still experimental and we are looking for feedbacks. 
+
+To use `--experimental-dts`, you would need to install `@microsoft/api-extractor`, as it's a peer dependency if tsup:
+
+```bash
+npm i @microsoft/api-extractor -D
+# Or Yarn
+yarn add @microsoft/api-extractor --dev
+```
 
 #### Emit declaration file only
 
-The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `tsc`. Using this flag will only emit the declaration file, without the JavaScript files.
+The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `tsc`. Using this flag will only emit the declaration file, without the JavaScript files. 
 
 #### Generate TypeScript declaration maps (.d.ts.map)
 
@@ -502,6 +510,8 @@ esbuild has [experimental CSS support](https://esbuild.github.io/content-types/#
 To use PostCSS, you need to install PostCSS:
 
 ```bash
+npm i postcss -D
+# Or Yarn
 yarn add postcss --dev
 ```
 

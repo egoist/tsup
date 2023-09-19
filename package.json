@@ -28,7 +28,6 @@
     "build-fast": "npm run build -- --no-dts"
   },
   "dependencies": {
-    "@microsoft/api-extractor": "^7.36.4",
     "bundle-require": "^4.0.0",
     "cac": "^6.7.12",
     "chokidar": "^3.5.1",
@@ -45,6 +44,7 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.37.0",
     "@rollup/plugin-json": "5.0.1",
     "@swc/core": "1.2.218",
     "@types/debug": "4.1.7",
@@ -76,6 +76,7 @@
   },
   "peerDependencies": {
     "@swc/core": "^1",
+    "@microsoft/api-extractor": "^7.36.0",
     "postcss": "^8.4.12",
     "typescript": ">=4.1.0"
   },
@@ -87,6 +88,9 @@
       "optional": true
     },
     "@swc/core": {
+      "optional": true
+    },
+    "@microsoft/api-extractor": {
       "optional": true
     }
   },
