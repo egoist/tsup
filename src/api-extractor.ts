@@ -1,9 +1,9 @@
 import {
   Extractor,
   ExtractorConfig,
-  ExtractorResult,
-  IConfigFile,
-  IExtractorConfigPrepareOptions,
+  type ExtractorResult,
+  type IConfigFile,
+  type IExtractorConfigPrepareOptions,
 } from '@microsoft/api-extractor'
 import path from 'path'
 import { handleError } from './errors'

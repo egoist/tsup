@@ -28,7 +28,6 @@ import { treeShakingPlugin } from './plugins/tree-shaking'
 import { copyPublicDir, isInPublicDir } from './lib/public-dir'
 import { terserPlugin } from './plugins/terser'
 import { runTypeScriptCompiler } from './tsc'
-import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
 
 export type { Format, Options, NormalizedOptions }
@@ -198,6 +197,8 @@ export async function build(_options: Options) {
           }
 
           if (options.experimentalDts) {
+            const { runDtsRollup } = await import('./api-extractor')
+
             const exports = runTypeScriptCompiler(options)
             await runDtsRollup(options, exports)
           }
