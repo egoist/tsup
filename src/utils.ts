@@ -45,9 +45,14 @@ export function isExternal(
   return false
 }
 
-export function getPostcss(): null | typeof import('postcss') {
-  const p = resolveFrom.silent(process.cwd(), 'postcss')
-  return p && require(p)
+export function getPostcss(): null | Awaited<typeof import('postcss')> {
+  return localRequire('postcss')
+}
+
+export function getApiExtractor(): null | Awaited<
+  typeof import('@microsoft/api-extractor')
+> {
+  return localRequire('@microsoft/api-extractor')
 }
 
 export function localRequire(moduleName: string) {

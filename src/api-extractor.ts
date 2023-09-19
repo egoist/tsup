@@ -1,9 +1,7 @@
-import {
-  Extractor,
-  ExtractorConfig,
-  type ExtractorResult,
-  type IConfigFile,
-  type IExtractorConfigPrepareOptions,
+import type {
+  ExtractorResult,
+  IConfigFile,
+  IExtractorConfigPrepareOptions,
 } from '@microsoft/api-extractor'
 import path from 'path'
 import { handleError } from './errors'
@@ -18,6 +16,7 @@ import { Format, NormalizedOptions } from './options'
 import {
   defaultOutExtension,
   ensureTempDeclarationDir,
+  getApiExtractor,
   toAbsolutePath,
   writeFileSync,
 } from './utils'
@@ -55,8 +54,16 @@ function rollupDtsFile(
     configObjectFullPath: undefined,
     packageJsonFullPath,
   }
-  const extractorConfig: ExtractorConfig =
-    ExtractorConfig.prepare(prepareOptions)
+
+  const imported = getApiExtractor()
+  if (!imported) {
+    throw new Error(
+      `@microsoft/api-extractor is not installed. Please install it first.`
+    )
+  }
+  const { ExtractorConfig, Extractor } = imported
+
+  const extractorConfig = ExtractorConfig.prepare(prepareOptions)
 
   // Invoke API Extractor
   const extractorResult: ExtractorResult = Extractor.invoke(extractorConfig, {
