@@ -195,7 +195,7 @@ Note that `--dts` does not resolve external (aka in `node_modules`) types used i
 
 Since tsup version 7.3.0, you can also use `--experimental-dts` flag to generate declaration files. This flag use [@microsoft/api-extractor](https://www.npmjs.com/package/@microsoft/api-extractor) to generate declaration files, which is more reliable than the previous `--dts` flag. It's still experimental and we are looking for feedbacks. 
 
-To use `--experimental-dts`, you would need to install `@microsoft/api-extractor`, as it's a peer dependency if tsup:
+To use `--experimental-dts`, you would need to install `@microsoft/api-extractor`, as it's a peer dependency of tsup:
 
 ```bash
 npm i @microsoft/api-extractor -D
@@ -205,7 +205,7 @@ yarn add @microsoft/api-extractor --dev
 
 #### Emit declaration file only
 
-The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `tsc`. Using this flag will only emit the declaration file, without the JavaScript files. 
+The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `tsc`. Using this flag will only emit the declaration file, without the JavaScript files.
 
 #### Generate TypeScript declaration maps (.d.ts.map)
 
