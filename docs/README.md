@@ -28,6 +28,8 @@ Install it locally in your project folder:
 npm i tsup -D
 # Or Yarn
 yarn add tsup --dev
+# Or pnpm
+pnpm add tsup -D
 ```
 
 You can also install it globally but it's not recommended.
