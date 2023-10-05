@@ -100,7 +100,9 @@ async function rollupDtsFiles(
   //
   // See the issue for more details:
   // https://github.com/microsoft/rushstack/pull/4196
-  dtsInputFilePath = dtsInputFilePath.replace(/\.d\.mts$/, '.dmts.d.ts').replace('\.d\.cts$', '.dcts.d.ts')
+  dtsInputFilePath = dtsInputFilePath
+    .replace(/\.d\.mts$/, '.dmts.d.ts')
+    .replace(/\.d\.cts$/, '.dcts.d.ts')
 
   let dtsOutputFilePath = path.join(outDir, '_tsup-dts-rollup' + dtsExtension)
 
@@ -121,13 +123,9 @@ async function rollupDtsFiles(
     sourceFileName = toAbsolutePath(sourceFileName)
     const outFileName = path.join(outDir, out + dtsExtension)
 
-    const declarations = exports.filter(
-      (declaration) => declaration.sourceFileName === sourceFileName
-    )
-
     writeFileSync(
       outFileName,
-      formatDistributionExports(declarations, outFileName, dtsOutputFilePath)
+      formatDistributionExports(exports, outFileName, dtsOutputFilePath)
     )
   }
 }

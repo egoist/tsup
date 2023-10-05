@@ -5,6 +5,7 @@ import { ExportDeclaration } from './exports'
 import { createLogger } from './log'
 import { NormalizedOptions } from './options'
 import { ensureTempDeclarationDir, toAbsolutePath } from './utils'
+import { dirname } from 'path'
 
 const logger = createLogger()
 
@@ -159,17 +160,6 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
   return fileMapping
 }
 
-const parseCompilerOptions = (
-  compilerOptions: ts.CompilerOptions
-): ts.CompilerOptions => {
-  const parsed = ts.parseJsonConfigFileContent(
-    { compilerOptions },
-    ts.sys,
-    './'
-  )
-  return parsed.options
-}
-
 function emit(compilerOptions?: any, tsconfig?: string) {
   let cwd = process.cwd()
   let rawTsconfig = loadTsConfig(cwd, tsconfig)
@@ -180,21 +170,25 @@ function emit(compilerOptions?: any, tsconfig?: string) {
   let declarationDir = ensureTempDeclarationDir()
 
   let parsedTsconfig = ts.parseJsonConfigFileContent(
-    rawTsconfig.data,
+    {
+      ...rawTsconfig.data,
+      compilerOptions: {
+        ...rawTsconfig.data?.compilerOptions,
+
+        // Enable declaration emit and disable javascript emit
+        noEmit: false,
+        declaration: true,
+        declarationMap: true,
+        declarationDir: declarationDir,
+        emitDeclarationOnly: true,
+      },
+    },
     ts.sys,
-    cwd
+    tsconfig ? dirname(tsconfig) : './'
   )
 
-  let options: ts.CompilerOptions = parseCompilerOptions({
-    ...compilerOptions,
+  let options: ts.CompilerOptions = parsedTsconfig.options
 
-    // Enable declaration emit and disable javascript emit
-    noEmit: false,
-    declaration: true,
-    declarationMap: true,
-    declarationDir: declarationDir,
-    emitDeclarationOnly: true,
-  })
   let host: ts.CompilerHost = ts.createCompilerHost(options)
   let program: ts.Program = ts.createProgram(
     parsedTsconfig.fileNames,
