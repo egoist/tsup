@@ -82,8 +82,30 @@ export function formatDistributionExports(
   if (!importPath.match(/^\.+\//)) {
     importPath = './' + importPath
   }
+  
+  let seen = {
+    named: new Set<string>(),
+    module: new Set<string>(),
+  }
 
   const lines = exports
+    .filter((declaration) => {
+      if (declaration.kind === 'module') {
+        if (seen.module.has(declaration.moduleName)) {
+          return false
+        }
+        seen.module.add(declaration.moduleName)
+        return true
+      } else if (declaration.kind === 'named') {
+        if (seen.named.has(declaration.name)) {
+          return false
+        }
+        seen.named.add(declaration.name)
+        return true
+      } else {
+        return false
+      }
+    })
     .map((declaration) => formatDistributionExport(declaration, importPath))
     .filter(truthy)
 
@@ -110,8 +132,7 @@ function formatDistributionExport(
     ]
       .filter(truthy)
       .join(' ')
-  }
-  if (declaration.kind === 'module') {
+  } else if (declaration.kind === 'module') {
     return `export * from '${declaration.moduleName}';`
   }
   return ''
