@@ -340,22 +340,62 @@ export { }
 // dist/index.d.mts
 //////////////////////////////////////////////////////////////////////
 
+export { render } from './_tsup-dts-rollup';
+export { ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction } from './_tsup-dts-rollup';
+export { sharedType } from './_tsup-dts-rollup';
 export { VERSION } from './_tsup-dts-rollup';
 export { render_alias_1 as render } from './_tsup-dts-rollup';
 export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
 export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
 export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
+export { render_alias_2 as render } from './_tsup-dts-rollup';
+export { default_alias as default } from './_tsup-dts-rollup';
+export { ServerRenderOptions } from './_tsup-dts-rollup';
+export { serverConstant } from './_tsup-dts-rollup';
+export { serverConstantAlias } from './_tsup-dts-rollup';
+export { ServerClass } from './_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from './_tsup-dts-rollup';
+export { sharedFunction_alias_2 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_2 as sharedType } from './_tsup-dts-rollup';
+export { renderToString } from './_tsup-dts-rollup';
+export { renderToNodeStream } from './_tsup-dts-rollup';
+export { renderToStaticMarkup } from './_tsup-dts-rollup';
+export { renderToStaticNodeStream } from './_tsup-dts-rollup';
+export { version } from './_tsup-dts-rollup';
+export { sharedFunction_alias_3 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_3 as sharedType } from './_tsup-dts-rollup';
 
 
 //////////////////////////////////////////////////////////////////////
 // dist/index.d.ts
 //////////////////////////////////////////////////////////////////////
 
+export { render } from './_tsup-dts-rollup';
+export { ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction } from './_tsup-dts-rollup';
+export { sharedType } from './_tsup-dts-rollup';
 export { VERSION } from './_tsup-dts-rollup';
 export { render_alias_1 as render } from './_tsup-dts-rollup';
 export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
 export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
 export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
+export { render_alias_2 as render } from './_tsup-dts-rollup';
+export { default_alias as default } from './_tsup-dts-rollup';
+export { ServerRenderOptions } from './_tsup-dts-rollup';
+export { serverConstant } from './_tsup-dts-rollup';
+export { serverConstantAlias } from './_tsup-dts-rollup';
+export { ServerClass } from './_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from './_tsup-dts-rollup';
+export { sharedFunction_alias_2 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_2 as sharedType } from './_tsup-dts-rollup';
+export { renderToString } from './_tsup-dts-rollup';
+export { renderToNodeStream } from './_tsup-dts-rollup';
+export { renderToStaticMarkup } from './_tsup-dts-rollup';
+export { renderToStaticNodeStream } from './_tsup-dts-rollup';
+export { version } from './_tsup-dts-rollup';
+export { sharedFunction_alias_3 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_3 as sharedType } from './_tsup-dts-rollup';
 
 
 //////////////////////////////////////////////////////////////////////
@@ -366,6 +406,27 @@ export { render } from './_tsup-dts-rollup';
 export { ClientRenderOptions } from './_tsup-dts-rollup';
 export { sharedFunction } from './_tsup-dts-rollup';
 export { sharedType } from './_tsup-dts-rollup';
+export { VERSION } from './_tsup-dts-rollup';
+export { render_alias_1 as render } from './_tsup-dts-rollup';
+export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
+export { render_alias_2 as render } from './_tsup-dts-rollup';
+export { default_alias as default } from './_tsup-dts-rollup';
+export { ServerRenderOptions } from './_tsup-dts-rollup';
+export { serverConstant } from './_tsup-dts-rollup';
+export { serverConstantAlias } from './_tsup-dts-rollup';
+export { ServerClass } from './_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from './_tsup-dts-rollup';
+export { sharedFunction_alias_2 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_2 as sharedType } from './_tsup-dts-rollup';
+export { renderToString } from './_tsup-dts-rollup';
+export { renderToNodeStream } from './_tsup-dts-rollup';
+export { renderToStaticMarkup } from './_tsup-dts-rollup';
+export { renderToStaticNodeStream } from './_tsup-dts-rollup';
+export { version } from './_tsup-dts-rollup';
+export { sharedFunction_alias_3 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_3 as sharedType } from './_tsup-dts-rollup';
 
 
 //////////////////////////////////////////////////////////////////////
@@ -376,12 +437,42 @@ export { render } from './_tsup-dts-rollup';
 export { ClientRenderOptions } from './_tsup-dts-rollup';
 export { sharedFunction } from './_tsup-dts-rollup';
 export { sharedType } from './_tsup-dts-rollup';
+export { VERSION } from './_tsup-dts-rollup';
+export { render_alias_1 as render } from './_tsup-dts-rollup';
+export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
+export { render_alias_2 as render } from './_tsup-dts-rollup';
+export { default_alias as default } from './_tsup-dts-rollup';
+export { ServerRenderOptions } from './_tsup-dts-rollup';
+export { serverConstant } from './_tsup-dts-rollup';
+export { serverConstantAlias } from './_tsup-dts-rollup';
+export { ServerClass } from './_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from './_tsup-dts-rollup';
+export { sharedFunction_alias_2 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_2 as sharedType } from './_tsup-dts-rollup';
+export { renderToString } from './_tsup-dts-rollup';
+export { renderToNodeStream } from './_tsup-dts-rollup';
+export { renderToStaticMarkup } from './_tsup-dts-rollup';
+export { renderToStaticNodeStream } from './_tsup-dts-rollup';
+export { version } from './_tsup-dts-rollup';
+export { sharedFunction_alias_3 as sharedFunction } from './_tsup-dts-rollup';
+export { sharedType_alias_3 as sharedType } from './_tsup-dts-rollup';
 
 
 //////////////////////////////////////////////////////////////////////
 // dist/server/index.d.mts
 //////////////////////////////////////////////////////////////////////
 
+export { render } from '../_tsup-dts-rollup';
+export { ClientRenderOptions } from '../_tsup-dts-rollup';
+export { sharedFunction } from '../_tsup-dts-rollup';
+export { sharedType } from '../_tsup-dts-rollup';
+export { VERSION } from '../_tsup-dts-rollup';
+export { render_alias_1 as render } from '../_tsup-dts-rollup';
+export { ClientRenderOptions_alias_1 as ClientRenderOptions } from '../_tsup-dts-rollup';
+export { sharedFunction_alias_1 as sharedFunction } from '../_tsup-dts-rollup';
+export { sharedType_alias_1 as sharedType } from '../_tsup-dts-rollup';
 export { render_alias_2 as render } from '../_tsup-dts-rollup';
 export { default_alias as default } from '../_tsup-dts-rollup';
 export { ServerRenderOptions } from '../_tsup-dts-rollup';
@@ -396,12 +487,23 @@ export { renderToNodeStream } from '../_tsup-dts-rollup';
 export { renderToStaticMarkup } from '../_tsup-dts-rollup';
 export { renderToStaticNodeStream } from '../_tsup-dts-rollup';
 export { version } from '../_tsup-dts-rollup';
+export { sharedFunction_alias_3 as sharedFunction } from '../_tsup-dts-rollup';
+export { sharedType_alias_3 as sharedType } from '../_tsup-dts-rollup';
 
 
 //////////////////////////////////////////////////////////////////////
 // dist/server/index.d.ts
 //////////////////////////////////////////////////////////////////////
 
+export { render } from '../_tsup-dts-rollup';
+export { ClientRenderOptions } from '../_tsup-dts-rollup';
+export { sharedFunction } from '../_tsup-dts-rollup';
+export { sharedType } from '../_tsup-dts-rollup';
+export { VERSION } from '../_tsup-dts-rollup';
+export { render_alias_1 as render } from '../_tsup-dts-rollup';
+export { ClientRenderOptions_alias_1 as ClientRenderOptions } from '../_tsup-dts-rollup';
+export { sharedFunction_alias_1 as sharedFunction } from '../_tsup-dts-rollup';
+export { sharedType_alias_1 as sharedType } from '../_tsup-dts-rollup';
 export { render_alias_2 as render } from '../_tsup-dts-rollup';
 export { default_alias as default } from '../_tsup-dts-rollup';
 export { ServerRenderOptions } from '../_tsup-dts-rollup';
@@ -416,6 +518,8 @@ export { renderToNodeStream } from '../_tsup-dts-rollup';
 export { renderToStaticMarkup } from '../_tsup-dts-rollup';
 export { renderToStaticNodeStream } from '../_tsup-dts-rollup';
 export { version } from '../_tsup-dts-rollup';
+export { sharedFunction_alias_3 as sharedFunction } from '../_tsup-dts-rollup';
+export { sharedType_alias_3 as sharedType } from '../_tsup-dts-rollup';
 "
 `;
 

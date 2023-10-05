@@ -1493,6 +1493,7 @@ test('should emit declaration files with experimentalDts', async () => {
     `,
     'src/index.ts': `
         export * from './client'
+        export * from './shared'
 
         export const VERSION = '0.0.0' as const
     `,
