@@ -1269,7 +1269,7 @@ test(`should generate export {} when there are no exports in source file`, async
       `,
   })
   expect(outFiles).toEqual(['input.d.mts', 'input.mjs'])
-  expect(await getFileContent('dist/input.d.mts')).toContain('export { }')
+  expect(await getFileContent('dist/input.d.mts')).toMatch(/export {\s*}/)
 })
 
 test('custom inject style function', async () => {
@@ -1345,9 +1345,14 @@ test('should emit a declaration file per format', async () => {
           format: ['esm', 'cjs'],
           dts: true
         }`,
-  });
-  expect(outFiles).toEqual(['input.d.mts', 'input.d.ts', 'input.js', 'input.mjs'])
-});
+  })
+  expect(outFiles).toEqual([
+    'input.d.mts',
+    'input.d.ts',
+    'input.js',
+    'input.mjs',
+  ])
+})
 
 test('should emit a declaration file per format (type: module)', async () => {
   const { outFiles } = await run(getTestName(), {
@@ -1361,6 +1366,11 @@ test('should emit a declaration file per format (type: module)', async () => {
           format: ['esm', 'cjs'],
           dts: true
         }`,
-  });
-  expect(outFiles).toEqual(['input.cjs', 'input.d.cts', 'input.d.ts', 'input.js'])
-});
+  })
+  expect(outFiles).toEqual([
+    'input.cjs',
+    'input.d.cts',
+    'input.d.ts',
+    'input.js',
+  ])
+})
