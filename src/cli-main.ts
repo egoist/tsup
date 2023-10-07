@@ -96,6 +96,10 @@ export async function main(options: Options = {}) {
       'Signal to kill child process, "SIGTERM" or "SIGKILL"'
     )
     .option('--cjsInterop', 'Enable cjs interop')
+    .option(
+      '--environment <value>',
+      'Pass additional settings to the config file via process.env'
+    )
     .action(async (files: string[], flags) => {
       const { build } = await import('.')
       Object.assign(options, {
@@ -147,6 +151,13 @@ export async function main(options: Options = {}) {
             [parts[0]]: parts[1],
           }
         }, {})
+      }
+      if (flags.environment) {
+        const environment = flags.environment as string
+        environment.split(',').forEach((v) => {
+          const [key, value] = v.split(':')
+          process.env[key] = value || 'true'
+        })
       }
       await build(options)
     })
