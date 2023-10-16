@@ -1,5 +1,4 @@
 import { rollup, TreeshakingOptions, TreeshakingPreset } from 'rollup'
-import hashbang from 'rollup-plugin-hashbang'
 import { Plugin } from '../plugin'
 
 export type TreeshakingStrategy =
@@ -25,7 +24,6 @@ export const treeShakingPlugin = ({
       const bundle = await rollup({
         input: [info.path],
         plugins: [
-          hashbang(),
           {
             name: 'tsup',
             resolveId(source) {
