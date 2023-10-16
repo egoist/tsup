@@ -2,7 +2,7 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
   name: 'tsup',
-  target: 'node16.14',
+  target: 'node18',
   dts: {
     resolve: true,
     // build types for `src/index.ts` only
