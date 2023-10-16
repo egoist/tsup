@@ -1269,7 +1269,7 @@ test(`should generate export {} when there are no exports in source file`, async
       `,
   })
   expect(outFiles).toEqual(['input.d.mts', 'input.mjs'])
-  expect(await getFileContent('dist/input.d.mts')).toContain('export { }')
+  expect(await getFileContent('dist/input.d.mts')).toMatch(/export {\s*}/)
 })
 
 test('custom inject style function', async () => {
