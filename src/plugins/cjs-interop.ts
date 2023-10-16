@@ -18,7 +18,7 @@ export const cjsInterop = (): Plugin => {
       }
 
       return {
-        code: code + '\nmodule.exports = exports.default',
+        code: code + '\nmodule.exports = exports.default;\n',
         map: info.map,
       }
     },
