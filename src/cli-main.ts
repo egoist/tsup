@@ -51,6 +51,10 @@ export async function main(options: Options = {}) {
       '--onSuccess <command>',
       'Execute command after successful build, specially useful for watch mode'
     )
+    .option(
+      '--onDTSSuccess <command>',
+      'Execute command after successful build of the typings, specially useful for watch mode'
+    )
     .option('--env.* <value>', 'Define compile-time env variables')
     .option(
       '--inject <file>',

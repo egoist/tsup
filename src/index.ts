@@ -172,8 +172,27 @@ export async function build(_options: Options) {
           logger.info('CLI', 'Running in watch mode')
         }
 
+        let onDTSSuccessProcess: ChildProcess | undefined
+        let onDTSSuccessCleanup: (() => any) | undefined | void
+
+        const doonDTSSuccessCleanup = async () => {
+          if (onDTSSuccessProcess) {
+            await killProcess({
+              pid: onDTSSuccessProcess.pid,
+              signal: options.killSignal || 'SIGTERM',
+            })
+          } else if (onDTSSuccessCleanup) {
+            await onDTSSuccessCleanup()
+          }
+          // reset them in all occasions anyway
+          onDTSSuccessProcess = undefined
+          onDTSSuccessCleanup = undefined
+        }
+
         const dtsTask = async () => {
           if (options.dts) {
+            doonDTSSuccessCleanup();
+            
             await new Promise<void>((resolve, reject) => {
               const worker = new Worker(path.join(__dirname, './rollup.js'))
               worker.postMessage({
@@ -187,6 +206,7 @@ export async function build(_options: Options) {
                   plugins: undefined,
                   treeshake: undefined,
                   onSuccess: undefined,
+                  onDTSSuccess: undefined,
                   outExtension: undefined,
                 },
               })
@@ -194,16 +214,32 @@ export async function build(_options: Options) {
                 if (data === 'error') {
                   reject(new Error('error occured in dts build'))
                 } else if (data === 'success') {
-                  resolve()
-                } else {
-                  const { type, text } = data
-                  if (type === 'log') {
-                    console.log(text)
-                  } else if (type === 'error') {
-                    console.error(text)
+
+                  if (options.onDTSSuccess) {
+                    if (typeof options.onDTSSuccess === 'function') {
+                      options.onDTSSuccess().then((v) => onDTSSuccessCleanup = v)
+                    } else {
+                      onDTSSuccessProcess = execa(options.onDTSSuccess, {
+                        shell: true,
+                        stdio: 'inherit',
+                      })
+                      onDTSSuccessProcess.on('exit', (code) => {
+                        if (code && code !== 0) {
+                          process.exitCode = code
+                        }
+                      })
+                    }
                   }
-                }
-              })
+                      resolve()
+                    } else {
+                      const { type, text } = data
+                      if (type === 'log') {
+                        console.log(text)
+                      } else if (type === 'error') {
+                        console.error(text)
+                      }
+                    }
+                  })
             })
           }
         }

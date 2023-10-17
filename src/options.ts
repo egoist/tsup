@@ -113,6 +113,9 @@ export type Options = {
   onSuccess?:
     | string
     | (() => Promise<void | undefined | (() => void | Promise<void>)>)
+  onDTSSuccess?:
+    | string
+    | (() => Promise<void | undefined | (() => void | Promise<void>)>)
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string
@@ -139,7 +142,7 @@ export type Options = {
   /**
    * Code splitting
    * Default to `true` for ESM, `false` for CJS.
-   * 
+   *
    * You can set it to `true` explicitly, and may want to disable code splitting sometimes: [`#255`](https://github.com/egoist/tsup/issues/255)
    */
   splitting?: boolean

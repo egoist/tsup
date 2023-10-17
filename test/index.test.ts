@@ -553,6 +553,89 @@ test('onSuccess: use a function from config file', async () => {
   expect(logs.includes('world')).toEqual(true)
 })
 
+test('onDTSSuccess', async () => {
+  const { logs } = await run(
+    getTestName(),
+    {
+      'input.ts': "console.log('test');",
+    },
+    {
+      flags: [
+        '--dts',
+        '--onDTSSuccess', 'echo foo && echo bar'
+      ],
+    }
+  )
+
+  expect(logs.includes('foo')).toEqual(true)
+  expect(logs.includes('bar')).toEqual(true)
+})
+
+test('onDTSSuccess: use a function from config file', async () => {
+  const { logs } = await run(getTestName(), {
+    'input.ts': "console.log('test');",
+    'tsup.config.ts': `
+        export default {
+          onDTSSuccess: async () => {
+            console.log('hello')
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                console.log('world')
+                resolve('')  
+              }, 1_000)
+            })
+          }
+        }`,
+  }, {
+    'flags': ['--dts']
+  })
+
+  expect(logs.includes('hello')).toEqual(true)
+  expect(logs.includes('world')).toEqual(true)
+})
+
+test('onSuccess and onDTSSuccess run separately: use a function from config file', async () => {
+  const { logs } = await run(getTestName(), {
+    'input.ts': "console.log('test');",
+    'tsup.config.ts': `
+        export default {
+          onSuccess: async () => {
+            console.log("onSuccess Called");
+          },
+          onDTSSuccess: async () => {
+            console.log("onDTSSuccess Called");
+          },
+          esbuildPlugins: [
+            {
+              name: "delay-success",
+              setup(build) {
+                build.onEnd(async (result) => {
+                  console.log("delay plugin start");
+                  await new Promise((resolve) => {
+                    setTimeout(() => {
+                      console.log("delay plugin end");
+                      resolve("");
+                    }, 2_000);
+                  });
+                });
+              },
+            },
+          ],
+        };
+        `,
+  }, {
+    'flags': ['--dts']
+  })
+
+  const dtsSuccessIndex = logs.indexOf('onDTSSuccess Called');
+  const onSuccessIndex = logs.indexOf('onSuccess Called');
+  const delayPluginStartIndex = logs.indexOf('delay plugin start');
+  const delayPluginEndIndex = logs.indexOf('delay plugin end');
+  expect(dtsSuccessIndex).toBeLessThan(onSuccessIndex)
+  expect(delayPluginStartIndex).toBeLessThan(delayPluginEndIndex)
+  expect(delayPluginEndIndex).toBeLessThan(onSuccessIndex)
+})
+
 test('custom tsconfig', async () => {
   await run(
     getTestName(),

@@ -149,6 +149,9 @@
         "onSuccess": {
           "type": "string"
         },
+        "onDTSSuccess": {
+          "type": "string"
+        },
         "jsxFactory": {
           "type": "string"
         },
@@ -264,7 +267,7 @@
         },
         "silent": {
           "type": "boolean",
-          "description": "Suppress non-error logs (excluding \"onSuccess\" process output)"
+          "description": "Suppress non-error logs (excluding \"onSuccess\" and \"onDTSSuccess\" process output)"
         },
         "skipNodeModulesBundle": {
           "type": "boolean",
