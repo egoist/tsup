@@ -19,6 +19,7 @@ import { swcPlugin } from './swc'
 import { nativeNodeModulesPlugin } from './native-node-module'
 import { PluginContainer } from '../plugin'
 import { OutExtensionFactory } from '../options'
+import { importRawPlugin } from './import-raw'
 
 const getOutputExtensionMap = (
   options: NormalizedOptions,
@@ -146,6 +147,7 @@ export async function runEsbuild(
       cssLoader: loader['.css'],
     }),
     sveltePlugin({ css }),
+    importRawPlugin(),
     ...(options.esbuildPlugins || []),
   ]
 

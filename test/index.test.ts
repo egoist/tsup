@@ -1345,9 +1345,14 @@ test('should emit a declaration file per format', async () => {
           format: ['esm', 'cjs'],
           dts: true
         }`,
-  });
-  expect(outFiles).toEqual(['input.d.mts', 'input.d.ts', 'input.js', 'input.mjs'])
-});
+  })
+  expect(outFiles).toEqual([
+    'input.d.mts',
+    'input.d.ts',
+    'input.js',
+    'input.mjs',
+  ])
+})
 
 test('should emit a declaration file per format (type: module)', async () => {
   const { outFiles } = await run(getTestName(), {
@@ -1361,6 +1366,38 @@ test('should emit a declaration file per format (type: module)', async () => {
           format: ['esm', 'cjs'],
           dts: true
         }`,
-  });
-  expect(outFiles).toEqual(['input.cjs', 'input.d.cts', 'input.d.ts', 'input.js'])
-});
+  })
+  expect(outFiles).toEqual([
+    'input.cjs',
+    'input.d.cts',
+    'input.d.ts',
+    'input.js',
+  ])
+})
+
+test('should importing a resource as a string', async () => {
+  const { outFiles } = await run(getTestName(), {
+    'input.ts': `
+    import fragText from "./frag.glsl?raw"
+    console.log(fragText)
+    `,
+    'frag.glsl': `void main() {
+      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }`,
+    'package.json': `{
+      "type": "module"
+    }`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: ['esm', 'cjs'],
+          dts: true
+        }`,
+  })
+  expect(outFiles).toEqual([
+    'input.cjs',
+    'input.d.cts',
+    'input.d.ts',
+    'input.js',
+  ])
+})
