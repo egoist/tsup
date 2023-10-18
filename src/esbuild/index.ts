@@ -216,6 +216,8 @@ export async function runEsbuild(
             [`import.meta.env.${key}`]: value,
           }
         }, {}),
+        'import.meta.env.': `({}).`,
+        'import.meta.env': JSON.stringify(env),
       },
       inject: [
         format === 'cjs' && injectShims
