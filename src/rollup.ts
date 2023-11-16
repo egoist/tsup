@@ -207,6 +207,7 @@ const getRollupConfig = async (
         banner: dtsOptions.banner,
         footer: dtsOptions.footer,
         entryFileNames: `[name]${outputExtension}`,
+        chunkFileNames: `[name]-[hash]${outputExtension}`,
         plugins: [
           format === 'cjs' && options.cjsInterop && fixCjsExport,
         ].filter(Boolean),
