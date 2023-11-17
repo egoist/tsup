@@ -2,7 +2,6 @@ import { parentPort } from 'worker_threads'
 import { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { NormalizedOptions } from './'
 import ts from 'typescript'
-import hashbangPlugin from 'rollup-plugin-hashbang'
 import jsonPlugin from '@rollup/plugin-json'
 import { handleError } from './errors'
 import { defaultOutExtension, removeFiles, toObjectEntry } from './utils'
@@ -125,7 +124,6 @@ const getRollupConfig = async (
       plugins: [
         tsupCleanPlugin,
         tsResolveOptions && tsResolvePlugin(tsResolveOptions),
-        hashbangPlugin(),
         jsonPlugin(),
         ignoreFiles,
         dtsPlugin.default({

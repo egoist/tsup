@@ -1,9 +1,7 @@
-import { UserConfig } from 'vitest'
+import { defineConfig } from 'vitest/config'
 
-const config: { test: UserConfig } = {
+export default defineConfig({
   test: {
     testTimeout: 50000,
   },
-}
-
-export default config
+})
