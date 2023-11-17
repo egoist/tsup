@@ -1,0 +1,50 @@
+name: Fix
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+      - 'dev'
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache ~/.pnpm-store
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-pnpm-store
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ matrix.node-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ matrix.node-version }}-test-
+            ${{ runner.os }}-
+
+      - name: Install pnpm
+        run: corepack enable
+
+      - name: Install deps
+        run: pnpm i
+
+      - name: Format
+        run: pnpm run format 
+
+      - name: Commit files and push
+        continue-on-error: true
+        if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/dev' }}
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add --all
+          git commit -m "chore(ci): [bot] format code"
+          git push

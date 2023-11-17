@@ -24,6 +24,7 @@
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
     "prepublishOnly": "npm run build",
     "test": "npm run build && npm run test-only",
+    "format": "prettier --write .",
     "test-only": "vitest run",
     "build-fast": "npm run build -- --no-dts"
   },
