@@ -38,7 +38,10 @@ export async function main(options: Options = {}) {
     .option('--dts [entry]', 'Generate declaration file')
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
     .option('--dts-only', 'Emit declaration files only')
-    .option('--experimental-dts [entry]', 'Generate declaration file (experimental)')
+    .option(
+      '--experimental-dts [entry]',
+      'Generate declaration file (experimental)'
+    )
     .option(
       '--sourcemap [inline]',
       'Generate external sourcemap, or inline source: --sourcemap inline'
