@@ -44,7 +44,7 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.37.0",
+    "@microsoft/api-extractor": "^7.38.3",
     "@rollup/plugin-json": "6.0.1",
     "@swc/core": "1.2.218",
     "@types/debug": "4.1.7",
