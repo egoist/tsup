@@ -581,7 +581,7 @@ You can also specify a custom directory using `--publicDir another-directory`.
 
 ### JavaScript API
 
-If you want to use tsup in your Node.js program, you can use the JavaScript API:
+If you want to use `tsup` in your Node.js program, you can use the JavaScript API:
 
 ```js
 import { build } from 'tsup'
