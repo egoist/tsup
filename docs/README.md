@@ -193,7 +193,7 @@ If you have multiple entry files, each entry will get a corresponding `.d.ts` fi
 
 Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file, if that's somehow a requirement, try the experimental `--dts-resolve` flag instead.
 
-Since tsup version 7.4.0, you can also use `--experimental-dts` flag to generate declaration files. This flag use [@microsoft/api-extractor](https://www.npmjs.com/package/@microsoft/api-extractor) to generate declaration files, which is more reliable than the previous `--dts` flag. It's still experimental and we are looking for feedbacks.
+Since tsup version 7.4.0, you can also use `--experimental-dts` flag to generate declaration files. This flag use [@microsoft/api-extractor](https://www.npmjs.com/package/@microsoft/api-extractor) to generate declaration files, which is more reliable than the previous `--dts` flag. It's still experimental and we are looking for feedbacks. 
 
 To use `--experimental-dts`, you would need to install `@microsoft/api-extractor`, as it's a peer dependency of tsup:
 

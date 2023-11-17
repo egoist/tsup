@@ -50,6 +50,7 @@ Head over to the [discussions](https://github.com/egoist/tsup/discussions) to sh
 
 ## Sponsors
 
+
 <p align="center">
   <a href="https://chromatic.com" target="_blank"><picture>
   <source media="(prefers-color-scheme: dark)" width="500" srcset="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Group 2 (2).png">

@@ -82,7 +82,7 @@ export function formatDistributionExports(
   if (!importPath.match(/^\.+\//)) {
     importPath = './' + importPath
   }
-
+  
   let seen = {
     named: new Set<string>(),
     module: new Set<string>(),
