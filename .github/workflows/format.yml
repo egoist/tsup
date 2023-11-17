@@ -37,7 +37,7 @@ jobs:
         run: pnpm i
 
       - name: Format
-        run: pnpm run format 
+        run: pnpm run format
 
       - name: Commit files and push
         continue-on-error: true
