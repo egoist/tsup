@@ -552,3 +552,8 @@ exports[`support baseUrl and paths in tsconfig.json in --dts-resolve build 1`] =
 export { foo };
 "
 `;
+
+exports[`support tailwindcss postcss plugin 1`] = `
+"\\"use strict\\";
+"
+`;
