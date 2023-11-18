@@ -5,7 +5,7 @@ import fs from 'fs-extra'
 import glob from 'globby'
 import waitForExpect from 'wait-for-expect'
 import { fileURLToPath } from 'url'
-import { debouncePromise } from '../src/utils'
+import { debouncePromise, slash } from '../src/utils'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -1345,9 +1345,14 @@ test('should emit a declaration file per format', async () => {
           format: ['esm', 'cjs'],
           dts: true
         }`,
-  });
-  expect(outFiles).toEqual(['input.d.mts', 'input.d.ts', 'input.js', 'input.mjs'])
-});
+  })
+  expect(outFiles).toEqual([
+    'input.d.mts',
+    'input.d.ts',
+    'input.js',
+    'input.mjs',
+  ])
+})
 
 test('should emit a declaration file per format (type: module)', async () => {
   const { outFiles } = await run(getTestName(), {
@@ -1361,6 +1366,160 @@ test('should emit a declaration file per format (type: module)', async () => {
           format: ['esm', 'cjs'],
           dts: true
         }`,
-  });
-  expect(outFiles).toEqual(['input.cjs', 'input.d.cts', 'input.d.ts', 'input.js'])
-});
+  })
+  expect(outFiles).toEqual([
+    'input.cjs',
+    'input.d.cts',
+    'input.d.ts',
+    'input.js',
+  ])
+})
+
+test('should emit declaration files with experimentalDts', async () => {
+  const files = {
+    'package.json': `
+        {
+          "name": "tsup-playground",
+          "private": true,
+          "version": "0.0.0",
+          "main": "dist/index.js",
+          "module": "dist/index.mjs",
+          "types": "dist/index.d.ts",
+          "exports": {
+              ".": {
+                  "types": "./dist/index.d.ts",
+                  "require": "./dist/index.js",
+                  "import": "./dist/index.mjs",
+                  "default": "./dist/index.js"
+              },
+              "./client": {
+                  "types": "./dist/my-lib-client.d.ts",
+                  "require": "./dist/my-lib-client.js",
+                  "import": "./dist/my-lib-client.mjs",
+                  "default": "./dist/my-lib-client.js"
+              },
+              "./server": {
+                  "types": "./dist/server/index.d.ts",
+                  "require": "./dist/server/index.js",
+                  "import": "./dist/server/index.mjs",
+                  "default": "./dist/server/index.js"
+              }
+          }
+        }
+    `,
+    'tsconfig.json': `
+        {
+          "compilerOptions": {
+              "target": "ES2020",
+              "skipLibCheck": true,
+              "noEmit": true
+          },
+          "include": ["./src"]
+        }
+    `,
+    'tsup.config.ts': `
+        export default {
+          name: 'tsup',
+          target: 'es2022',
+          format: [
+            'esm',
+            'cjs'
+          ],
+          entry: {
+            index: './src/index.ts',
+            'my-lib-client': './src/client.ts',
+            'server/index': './src/server.ts',
+          },
+        }
+    `,
+    'src/shared.ts': `
+        export function sharedFunction<T>(value: T): T | null {
+          return value || null
+        }
+        
+        type sharedType = {
+          shared: boolean
+        }
+        
+        export type { sharedType }
+    `,
+    'src/server.ts': `
+        export * from './shared'
+
+        /**
+         * Comment for server render function 
+         */
+        export function render(options: ServerRenderOptions): string {
+          return JSON.stringify(options)
+        }
+        
+        export interface ServerRenderOptions {
+          /**
+           * Comment for ServerRenderOptions.stream
+           * 
+           * @public
+           * 
+           * @my_custom_tag
+           */
+          stream: boolean
+        }
+
+        export const serverConstant = 1
+
+        export { serverConstant as serverConstantAlias }
+
+        export class ServerClass {};
+
+        export default function serverDefaultExport(options: ServerRenderOptions): void {};
+
+        // Export a third party module as a namespace
+        import * as ServerThirdPartyNamespace from 'react-dom';
+        export { ServerThirdPartyNamespace }
+
+        // Export a third party module 
+        export * from 'react-dom/server';
+
+    `,
+    'src/client.ts': `
+        export * from './shared'
+
+        export function render(options: ClientRenderOptions): string {
+          return JSON.stringify(options)
+        }
+        
+        export interface ClientRenderOptions {
+          document: boolean
+        }
+    `,
+    'src/index.ts': `
+        export * from './client'
+        export * from './shared'
+
+        export const VERSION = '0.0.0' as const
+    `,
+  }
+  const { outFiles, getFileContent } = await run(getTestName(), files, {
+    entry: [],
+    flags: ['--experimental-dts'],
+  })
+  const snapshots: string[] = []
+  await Promise.all(
+    outFiles
+      .filter((outFile) => outFile.includes('.d.'))
+      .map(async (outFile) => {
+        const filePath = path.join('dist', outFile)
+        const content = await getFileContent(filePath)
+        snapshots.push(
+          [
+            '',
+            '/'.repeat(70),
+            `// ${path.posix.normalize(slash(filePath))}`,
+            '/'.repeat(70),
+            '',
+            content,
+          ].join('\n')
+        )
+      })
+  )
+  expect(snapshots.sort().join('\n')).toMatchSnapshot()
+})

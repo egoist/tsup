@@ -28,6 +28,8 @@ Install it locally in your project folder:
 npm i tsup -D
 # Or Yarn
 yarn add tsup --dev
+# Or pnpm
+pnpm add tsup -D
 ```
 
 You can also install it globally but it's not recommended.
@@ -192,6 +194,16 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`. When emitting multiple
 If you have multiple entry files, each entry will get a corresponding `.d.ts` file. So when you only want to generate declaration file for a single entry, use `--dts <entry>` format, e.g. `--dts src/index.ts`.
 
 Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file, if that's somehow a requirement, try the experimental `--dts-resolve` flag instead.
+
+Since tsup version 7.4.0, you can also use `--experimental-dts` flag to generate declaration files. This flag use [@microsoft/api-extractor](https://www.npmjs.com/package/@microsoft/api-extractor) to generate declaration files, which is more reliable than the previous `--dts` flag. It's still experimental and we are looking for feedbacks.
+
+To use `--experimental-dts`, you would need to install `@microsoft/api-extractor`, as it's a peer dependency of tsup:
+
+```bash
+npm i @microsoft/api-extractor -D
+# Or Yarn
+yarn add @microsoft/api-extractor --dev
+```
 
 #### Emit declaration file only
 
@@ -500,6 +512,8 @@ esbuild has [experimental CSS support](https://esbuild.github.io/content-types/#
 To use PostCSS, you need to install PostCSS:
 
 ```bash
+npm i postcss -D
+# Or Yarn
 yarn add postcss --dev
 ```
 
@@ -566,6 +580,22 @@ export default defineConfig({
 Use `--publicDir` flag to copy files inside `./public` folder to the output directory.
 
 You can also specify a custom directory using `--publicDir another-directory`.
+
+### JavaScript API
+
+If you want to use `tsup` in your Node.js program, you can use the JavaScript API:
+
+```js
+import { build } from 'tsup'
+
+await build({
+  entry: ['src/index.ts'],
+  sourcemap: true,
+  dts: true,
+})
+```
+
+For all available options for the `build` function, please see [the API docs](https://paka.dev/npm/tsup).
 
 ## Troubleshooting
 

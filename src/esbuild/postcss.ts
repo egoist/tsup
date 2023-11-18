@@ -1,8 +1,7 @@
-import fs from 'fs'
-import path from 'path'
 import { Loader, Plugin, transform } from 'esbuild'
-import { getPostcss } from '../utils'
+import fs from 'fs'
 import type { Result } from 'postcss-load-config'
+import { getPostcss } from '../utils'
 
 export const postcssPlugin = ({
   css,
@@ -104,7 +103,7 @@ export const postcssPlugin = ({
           }
 
           // Transform CSS
-          const result = await postcss
+          const result = postcss
             ?.default(plugins)
             .process(contents, { ...options, from: args.path })
 

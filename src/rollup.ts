@@ -4,7 +4,7 @@ import { NormalizedOptions } from './'
 import ts from 'typescript'
 import jsonPlugin from '@rollup/plugin-json'
 import { handleError } from './errors'
-import { defaultOutExtension, removeFiles } from './utils'
+import { defaultOutExtension, removeFiles, toObjectEntry } from './utils'
 import { TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 import { createLogger, setSilent } from './log'
 import { getProductionDeps, loadPkg } from './load'
@@ -32,48 +32,6 @@ const dtsPlugin: typeof import('rollup-plugin-dts') = require('rollup-plugin-dts
 type RollupConfig = {
   inputConfig: InputOptions
   outputConfig: OutputOptions[]
-}
-
-const findLowestCommonAncestor = (filepaths: string[]) => {
-  if (filepaths.length <= 1) return ''
-  const [first, ...rest] = filepaths
-  let ancestor = first.split('/')
-  for (const filepath of rest) {
-    const directories = filepath.split('/', ancestor.length)
-    let index = 0
-    for (const directory of directories) {
-      if (directory === ancestor[index]) {
-        index += 1
-      } else {
-        ancestor = ancestor.slice(0, index)
-        break
-      }
-    }
-    ancestor = ancestor.slice(0, index)
-  }
-
-  return ancestor.length <= 1 && ancestor[0] === ''
-    ? '/' + ancestor[0]
-    : ancestor.join('/')
-}
-
-// Make sure the Rollup entry is an object
-// We use the base path (without extension) as the entry name
-// To make declaration files work with multiple entrypoints
-// See #316
-const toObjectEntry = (entry: string[]) => {
-  entry = entry.map((e) => e.replace(/\\/g, '/'))
-  const ancestor = findLowestCommonAncestor(entry)
-  return entry.reduce((result, item) => {
-    const key = item
-      .replace(ancestor, '')
-      .replace(/^\//, '')
-      .replace(/\.[a-z]+$/, '')
-    return {
-      ...result,
-      [key]: item,
-    }
-  }, {})
 }
 
 const getRollupConfig = async (

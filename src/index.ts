@@ -1,7 +1,13 @@
 import path from 'path'
 import fs from 'fs'
 import { Worker } from 'worker_threads'
-import { removeFiles, debouncePromise, slash, MaybePromise } from './utils'
+import {
+  removeFiles,
+  debouncePromise,
+  slash,
+  MaybePromise,
+  toObjectEntry,
+} from './utils'
 import { getAllDepsHash, loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
@@ -21,6 +27,8 @@ import { sizeReporter } from './plugins/size-reporter'
 import { treeShakingPlugin } from './plugins/tree-shaking'
 import { copyPublicDir, isInPublicDir } from './lib/public-dir'
 import { terserPlugin } from './plugins/terser'
+import { runTypeScriptCompiler } from './tsc'
+import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
 
 export type { Format, Options, NormalizedOptions }
@@ -68,6 +76,7 @@ const normalizeOptions = async (
     ...optionsFromConfigFile,
     ...optionsOverride,
   }
+
   const options: Partial<NormalizedOptions> = {
     outDir: 'dist',
     ..._options,
@@ -83,6 +92,20 @@ const normalizeOptions = async (
         : typeof _options.dts === 'string'
         ? { entry: _options.dts }
         : _options.dts,
+    experimentalDts: _options.experimentalDts
+      ? typeof _options.experimentalDts === 'boolean'
+        ? _options.experimentalDts
+          ? { entry: {} }
+          : undefined
+        : typeof _options.experimentalDts === 'string'
+        ? {
+            entry: toObjectEntry(_options.experimentalDts),
+          }
+        : {
+            ..._options.experimentalDts,
+            entry: toObjectEntry(_options.experimentalDts.entry || {}),
+          }
+      : undefined,
   }
 
   setSilent(options.silent)
@@ -127,6 +150,17 @@ const normalizeOptions = async (
         ...(tsconfig.data.compilerOptions || {}),
         ...(options.dts.compilerOptions || {}),
       }
+    }
+    if (options.experimentalDts) {
+      options.experimentalDts.compilerOptions = {
+        ...(tsconfig.data.compilerOptions || {}),
+        ...(options.experimentalDts.compilerOptions || {}),
+      }
+      options.experimentalDts.entry = toObjectEntry(
+        Object.keys(options.experimentalDts.entry).length > 0
+          ? options.experimentalDts.entry
+          : options.entry
+      )
     }
     if (!options.target) {
       options.target = tsconfig.data?.compilerOptions?.target?.toLowerCase()
@@ -173,6 +207,17 @@ export async function build(_options: Options) {
         }
 
         const dtsTask = async () => {
+          if (options.dts && options.experimentalDts) {
+            throw new Error(
+              "You can't use both `dts` and `experimentalDts` at the same time"
+            )
+          }
+
+          if (options.experimentalDts) {
+            const exports = runTypeScriptCompiler(options)
+            await runDtsRollup(options, exports)
+          }
+
           if (options.dts) {
             await new Promise<void>((resolve, reject) => {
               const worker = new Worker(path.join(__dirname, './rollup.js'))

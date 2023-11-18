@@ -1,8 +1,9 @@
 import fs from 'fs'
 import glob from 'globby'
+import path from 'path'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
-import { Format } from './options'
+import { Entry, Format } from './options'
 
 export type MaybePromise<T> = T | Promise<T>
 
@@ -44,9 +45,14 @@ export function isExternal(
   return false
 }
 
-export function getPostcss(): null | typeof import('postcss') {
-  const p = resolveFrom.silent(process.cwd(), 'postcss')
-  return p && require(p)
+export function getPostcss(): null | Awaited<typeof import('postcss')> {
+  return localRequire('postcss')
+}
+
+export function getApiExtractor(): null | Awaited<
+  typeof import('@microsoft/api-extractor')
+> {
+  return localRequire('@microsoft/api-extractor')
 }
 
 export function localRequire(moduleName: string) {
@@ -137,7 +143,7 @@ export function defaultOutExtension({
 }: {
   format: Format
   pkgType?: string
-}): { js: string, dts: string } {
+}): { js: string; dts: string } {
   let jsExtension = '.js'
   let dtsExtension = '.d.ts'
   const isModule = pkgType === 'module'
@@ -156,4 +162,85 @@ export function defaultOutExtension({
     js: jsExtension,
     dts: dtsExtension,
   }
+}
+
+export function ensureTempDeclarationDir(): string {
+  const cwd = process.cwd()
+  const dirPath = path.join(cwd, '.tsup', 'declaration')
+
+  if (fs.existsSync(dirPath)) {
+    return dirPath
+  }
+
+  fs.mkdirSync(dirPath, { recursive: true })
+
+  const gitIgnorePath = path.join(cwd, '.tsup', '.gitignore')
+  writeFileSync(gitIgnorePath, '**/*\n')
+
+  return dirPath
+}
+
+// Make sure the entry is an object
+// We use the base path (without extension) as the entry name
+// To make declaration files work with multiple entrypoints
+// See #316
+export const toObjectEntry = (entry: string | Entry) => {
+  if (typeof entry === 'string') {
+    entry = [entry]
+  }
+  if (!Array.isArray(entry)) {
+    return entry
+  }
+  entry = entry.map((e) => e.replace(/\\/g, '/'))
+  const ancestor = findLowestCommonAncestor(entry)
+  return entry.reduce((result, item) => {
+    const key = item
+      .replace(ancestor, '')
+      .replace(/^\//, '')
+      .replace(/\.[a-z]+$/, '')
+    return {
+      ...result,
+      [key]: item,
+    }
+  }, {} as Record<string, string>)
+}
+
+const findLowestCommonAncestor = (filepaths: string[]) => {
+  if (filepaths.length <= 1) return ''
+  const [first, ...rest] = filepaths
+  let ancestor = first.split('/')
+  for (const filepath of rest) {
+    const directories = filepath.split('/', ancestor.length)
+    let index = 0
+    for (const directory of directories) {
+      if (directory === ancestor[index]) {
+        index += 1
+      } else {
+        ancestor = ancestor.slice(0, index)
+        break
+      }
+    }
+    ancestor = ancestor.slice(0, index)
+  }
+
+  return ancestor.length <= 1 && ancestor[0] === ''
+    ? '/' + ancestor[0]
+    : ancestor.join('/')
+}
+
+export function toAbsolutePath(p: string, cwd?: string): string {
+  if (path.isAbsolute(p)) {
+    return p
+  }
+
+  return slash(path.normalize(path.join(cwd || process.cwd(), p)))
+}
+
+export function trimDtsExtension(fileName: string) {
+  return fileName.replace(/\.d\.(ts|mts|cts)x?$/, '')
+}
+
+export function writeFileSync(filePath: string, content: string) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true })
+  fs.writeFileSync(filePath, content)
 }

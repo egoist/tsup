@@ -180,6 +180,295 @@ export { stuff };
 "
 `;
 
+exports[`should emit declaration files with experimentalDts 1`] = `
+"
+//////////////////////////////////////////////////////////////////////
+// dist/_tsup-dts-rollup.d.mts
+//////////////////////////////////////////////////////////////////////
+
+import { renderToNodeStream } from 'react-dom/server';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToStaticNodeStream } from 'react-dom/server';
+import { renderToString } from 'react-dom/server';
+import * as ServerThirdPartyNamespace from 'react-dom';
+import { version } from 'react-dom/server';
+
+declare interface ClientRenderOptions {
+    document: boolean;
+}
+export { ClientRenderOptions }
+export { ClientRenderOptions as ClientRenderOptions_alias_1 }
+
+export declare function default_alias(options: ServerRenderOptions): void;
+
+declare function render(options: ClientRenderOptions): string;
+export { render }
+export { render as render_alias_1 }
+
+/**
+ * Comment for server render function
+ */
+export declare function render_alias_2(options: ServerRenderOptions): string;
+
+export { renderToNodeStream }
+
+export { renderToStaticMarkup }
+
+export { renderToStaticNodeStream }
+
+export { renderToString }
+
+export declare class ServerClass {
+}
+
+declare const serverConstant = 1;
+export { serverConstant }
+export { serverConstant as serverConstantAlias }
+
+export declare interface ServerRenderOptions {
+    /**
+     * Comment for ServerRenderOptions.stream
+     *
+     * @public
+     *
+     * @my_custom_tag
+     */
+    stream: boolean;
+}
+
+export { ServerThirdPartyNamespace }
+
+declare function sharedFunction<T>(value: T): T | null;
+export { sharedFunction }
+export { sharedFunction as sharedFunction_alias_1 }
+export { sharedFunction as sharedFunction_alias_2 }
+export { sharedFunction as sharedFunction_alias_3 }
+
+declare type sharedType = {
+    shared: boolean;
+};
+export { sharedType }
+export { sharedType as sharedType_alias_1 }
+export { sharedType as sharedType_alias_2 }
+export { sharedType as sharedType_alias_3 }
+
+export declare const VERSION: \\"0.0.0\\";
+
+export { version }
+
+export { }
+
+
+//////////////////////////////////////////////////////////////////////
+// dist/_tsup-dts-rollup.d.ts
+//////////////////////////////////////////////////////////////////////
+
+import { renderToNodeStream } from 'react-dom/server';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToStaticNodeStream } from 'react-dom/server';
+import { renderToString } from 'react-dom/server';
+import * as ServerThirdPartyNamespace from 'react-dom';
+import { version } from 'react-dom/server';
+
+declare interface ClientRenderOptions {
+    document: boolean;
+}
+export { ClientRenderOptions }
+export { ClientRenderOptions as ClientRenderOptions_alias_1 }
+
+export declare function default_alias(options: ServerRenderOptions): void;
+
+declare function render(options: ClientRenderOptions): string;
+export { render }
+export { render as render_alias_1 }
+
+/**
+ * Comment for server render function
+ */
+export declare function render_alias_2(options: ServerRenderOptions): string;
+
+export { renderToNodeStream }
+
+export { renderToStaticMarkup }
+
+export { renderToStaticNodeStream }
+
+export { renderToString }
+
+export declare class ServerClass {
+}
+
+declare const serverConstant = 1;
+export { serverConstant }
+export { serverConstant as serverConstantAlias }
+
+export declare interface ServerRenderOptions {
+    /**
+     * Comment for ServerRenderOptions.stream
+     *
+     * @public
+     *
+     * @my_custom_tag
+     */
+    stream: boolean;
+}
+
+export { ServerThirdPartyNamespace }
+
+declare function sharedFunction<T>(value: T): T | null;
+export { sharedFunction }
+export { sharedFunction as sharedFunction_alias_1 }
+export { sharedFunction as sharedFunction_alias_2 }
+export { sharedFunction as sharedFunction_alias_3 }
+
+declare type sharedType = {
+    shared: boolean;
+};
+export { sharedType }
+export { sharedType as sharedType_alias_1 }
+export { sharedType as sharedType_alias_2 }
+export { sharedType as sharedType_alias_3 }
+
+export declare const VERSION: \\"0.0.0\\";
+
+export { version }
+
+export { }
+
+
+//////////////////////////////////////////////////////////////////////
+// dist/index.d.mts
+//////////////////////////////////////////////////////////////////////
+
+export { render } from './_tsup-dts-rollup';
+export { ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction } from './_tsup-dts-rollup';
+export { sharedType } from './_tsup-dts-rollup';
+export { VERSION } from './_tsup-dts-rollup';
+export { default_alias as default } from './_tsup-dts-rollup';
+export { ServerRenderOptions } from './_tsup-dts-rollup';
+export { serverConstant } from './_tsup-dts-rollup';
+export { serverConstantAlias } from './_tsup-dts-rollup';
+export { ServerClass } from './_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from './_tsup-dts-rollup';
+export { renderToString } from './_tsup-dts-rollup';
+export { renderToNodeStream } from './_tsup-dts-rollup';
+export { renderToStaticMarkup } from './_tsup-dts-rollup';
+export { renderToStaticNodeStream } from './_tsup-dts-rollup';
+export { version } from './_tsup-dts-rollup';
+
+
+//////////////////////////////////////////////////////////////////////
+// dist/index.d.ts
+//////////////////////////////////////////////////////////////////////
+
+export { render } from './_tsup-dts-rollup';
+export { ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction } from './_tsup-dts-rollup';
+export { sharedType } from './_tsup-dts-rollup';
+export { VERSION } from './_tsup-dts-rollup';
+export { default_alias as default } from './_tsup-dts-rollup';
+export { ServerRenderOptions } from './_tsup-dts-rollup';
+export { serverConstant } from './_tsup-dts-rollup';
+export { serverConstantAlias } from './_tsup-dts-rollup';
+export { ServerClass } from './_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from './_tsup-dts-rollup';
+export { renderToString } from './_tsup-dts-rollup';
+export { renderToNodeStream } from './_tsup-dts-rollup';
+export { renderToStaticMarkup } from './_tsup-dts-rollup';
+export { renderToStaticNodeStream } from './_tsup-dts-rollup';
+export { version } from './_tsup-dts-rollup';
+
+
+//////////////////////////////////////////////////////////////////////
+// dist/my-lib-client.d.mts
+//////////////////////////////////////////////////////////////////////
+
+export { render } from './_tsup-dts-rollup';
+export { ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction } from './_tsup-dts-rollup';
+export { sharedType } from './_tsup-dts-rollup';
+export { VERSION } from './_tsup-dts-rollup';
+export { default_alias as default } from './_tsup-dts-rollup';
+export { ServerRenderOptions } from './_tsup-dts-rollup';
+export { serverConstant } from './_tsup-dts-rollup';
+export { serverConstantAlias } from './_tsup-dts-rollup';
+export { ServerClass } from './_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from './_tsup-dts-rollup';
+export { renderToString } from './_tsup-dts-rollup';
+export { renderToNodeStream } from './_tsup-dts-rollup';
+export { renderToStaticMarkup } from './_tsup-dts-rollup';
+export { renderToStaticNodeStream } from './_tsup-dts-rollup';
+export { version } from './_tsup-dts-rollup';
+
+
+//////////////////////////////////////////////////////////////////////
+// dist/my-lib-client.d.ts
+//////////////////////////////////////////////////////////////////////
+
+export { render } from './_tsup-dts-rollup';
+export { ClientRenderOptions } from './_tsup-dts-rollup';
+export { sharedFunction } from './_tsup-dts-rollup';
+export { sharedType } from './_tsup-dts-rollup';
+export { VERSION } from './_tsup-dts-rollup';
+export { default_alias as default } from './_tsup-dts-rollup';
+export { ServerRenderOptions } from './_tsup-dts-rollup';
+export { serverConstant } from './_tsup-dts-rollup';
+export { serverConstantAlias } from './_tsup-dts-rollup';
+export { ServerClass } from './_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from './_tsup-dts-rollup';
+export { renderToString } from './_tsup-dts-rollup';
+export { renderToNodeStream } from './_tsup-dts-rollup';
+export { renderToStaticMarkup } from './_tsup-dts-rollup';
+export { renderToStaticNodeStream } from './_tsup-dts-rollup';
+export { version } from './_tsup-dts-rollup';
+
+
+//////////////////////////////////////////////////////////////////////
+// dist/server/index.d.mts
+//////////////////////////////////////////////////////////////////////
+
+export { render } from '../_tsup-dts-rollup';
+export { ClientRenderOptions } from '../_tsup-dts-rollup';
+export { sharedFunction } from '../_tsup-dts-rollup';
+export { sharedType } from '../_tsup-dts-rollup';
+export { VERSION } from '../_tsup-dts-rollup';
+export { default_alias as default } from '../_tsup-dts-rollup';
+export { ServerRenderOptions } from '../_tsup-dts-rollup';
+export { serverConstant } from '../_tsup-dts-rollup';
+export { serverConstantAlias } from '../_tsup-dts-rollup';
+export { ServerClass } from '../_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from '../_tsup-dts-rollup';
+export { renderToString } from '../_tsup-dts-rollup';
+export { renderToNodeStream } from '../_tsup-dts-rollup';
+export { renderToStaticMarkup } from '../_tsup-dts-rollup';
+export { renderToStaticNodeStream } from '../_tsup-dts-rollup';
+export { version } from '../_tsup-dts-rollup';
+
+
+//////////////////////////////////////////////////////////////////////
+// dist/server/index.d.ts
+//////////////////////////////////////////////////////////////////////
+
+export { render } from '../_tsup-dts-rollup';
+export { ClientRenderOptions } from '../_tsup-dts-rollup';
+export { sharedFunction } from '../_tsup-dts-rollup';
+export { sharedType } from '../_tsup-dts-rollup';
+export { VERSION } from '../_tsup-dts-rollup';
+export { default_alias as default } from '../_tsup-dts-rollup';
+export { ServerRenderOptions } from '../_tsup-dts-rollup';
+export { serverConstant } from '../_tsup-dts-rollup';
+export { serverConstantAlias } from '../_tsup-dts-rollup';
+export { ServerClass } from '../_tsup-dts-rollup';
+export { ServerThirdPartyNamespace } from '../_tsup-dts-rollup';
+export { renderToString } from '../_tsup-dts-rollup';
+export { renderToNodeStream } from '../_tsup-dts-rollup';
+export { renderToStaticMarkup } from '../_tsup-dts-rollup';
+export { renderToStaticNodeStream } from '../_tsup-dts-rollup';
+export { version } from '../_tsup-dts-rollup';
+"
+`;
+
 exports[`simple 1`] = `
 "\\"use strict\\";
 var __defProp = Object.defineProperty;
