@@ -8,12 +8,10 @@ on:
 
 jobs:
   test:
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
-
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x]
 
     runs-on: ${{ matrix.os }}
 
@@ -35,7 +33,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Build and Test
-        run: npm test
+        run: pnpm test
 
   release:
     runs-on: ubuntu-latest
