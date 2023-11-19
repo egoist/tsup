@@ -1398,6 +1398,93 @@ test('should emit a declaration file per format (type: module)', async () => {
   ])
 })
 
+test('should emit dts chunks per format', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/input1.ts': `
+          import type { InternalType } from './shared.js'
+
+          export function getValue(value: InternalType) {
+            return value;
+          }
+      `,
+      'src/input2.ts': `
+          import type { InternalType } from './shared.js'
+
+          export function getValue(value: InternalType) {
+            return value;
+          }
+      `,
+      'src/shared.ts': `export type InternalType = 'foo'`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['./src/input1.ts', './src/input2.ts'],
+          format: ['esm', 'cjs'],
+          dts: true
+        }`,
+    },
+    { entry: [] }
+  )
+  expect(outFiles).toEqual([
+    'input1.d.mts',
+    'input1.d.ts',
+    'input1.js',
+    'input1.mjs',
+    'input2.d.mts',
+    'input2.d.ts',
+    'input2.js',
+    'input2.mjs',
+    'shared-qBqaX8Tr.d.mts',
+    'shared-qBqaX8Tr.d.ts',
+  ])
+})
+
+test('should emit dts chunks per format (type: module)', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/input1.ts': `
+          import type { InternalType } from './shared.js'
+
+          export function getValue(value: InternalType) {
+            return value;
+          }
+      `,
+      'src/input2.ts': `
+          import type { InternalType } from './shared.js'
+
+          export function getValue(value: InternalType) {
+            return value;
+          }
+      `,
+      'src/shared.ts': `export type InternalType = 'foo'`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['./src/input1.ts', './src/input2.ts'],
+          format: ['esm', 'cjs'],
+          dts: true
+        }`,
+      'package.json': `{
+          "type": "module"
+        }`,
+    },
+    { entry: [] }
+  )
+  expect(outFiles).toEqual([
+    'input1.cjs',
+    'input1.d.cts',
+    'input1.d.ts',
+    'input1.js',
+    'input2.cjs',
+    'input2.d.cts',
+    'input2.d.ts',
+    'input2.js',
+    'shared-qBqaX8Tr.d.cts',
+    'shared-qBqaX8Tr.d.ts',
+  ])
+})
+
 test('should emit declaration files with experimentalDts', async () => {
   const files = {
     'package.json': `
