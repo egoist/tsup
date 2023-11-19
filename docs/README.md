@@ -28,6 +28,8 @@ Install it locally in your project folder:
 npm i tsup -D
 # Or Yarn
 yarn add tsup --dev
+# Or pnpm
+pnpm add tsup -D
 ```
 
 You can also install it globally but it's not recommended.
@@ -578,6 +580,22 @@ export default defineConfig({
 Use `--publicDir` flag to copy files inside `./public` folder to the output directory.
 
 You can also specify a custom directory using `--publicDir another-directory`.
+
+### JavaScript API
+
+If you want to use `tsup` in your Node.js program, you can use the JavaScript API:
+
+```js
+import { build } from 'tsup'
+
+await build({
+  entry: ['src/index.ts'],
+  sourcemap: true,
+  dts: true,
+})
+```
+
+For all available options for the `build` function, please see [the API docs](https://paka.dev/npm/tsup).
 
 ## Troubleshooting
 

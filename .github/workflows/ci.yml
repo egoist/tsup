@@ -8,68 +8,57 @@ on:
 
 jobs:
   test:
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
-
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [16.x, 18.x]
+        node-version: [18.x, 20.x]
 
     runs-on: ${{ matrix.os }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Cache ~/.pnpm-store
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-pnpm-store
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-${{ matrix.node-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-test-${{ env.cache-name }}-
-            ${{ runner.os }}-${{ matrix.node-version }}-test-
-            ${{ runner.os }}-
-      - name: Install pnpm
-        run: corepack enable
+          cache: pnpm
 
       - name: Install deps
         run: pnpm i
 
       # Runs a set of commands using the runners shell
       - name: Build and Test
-        run: npm test
+        run: pnpm test
 
   release:
     runs-on: ubuntu-latest
     needs: ['test']
     if: "!contains(github.event.head_commit.message, 'skip-release') && !contains(github.event.head_commit.message, 'skip-ci') && github.event_name != 'pull_request'"
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
-      - name: Cache ~/.pnpm-store
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-pnpm-store
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-${{ matrix.node-version }}-release-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-release-${{ env.cache-name }}-
-            ${{ runner.os }}-${{ matrix.node-version }}-release-
-            ${{ runner.os }}-
-      - run: corepack enable
+          node-version: lts/*
+          cache: pnpm
+
       - run: pnpm i
+
       - run: pnpx semantic-release --branches main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

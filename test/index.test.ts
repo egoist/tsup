@@ -337,6 +337,29 @@ test('import css', async () => {
   expect(outFiles).toEqual(['input.css', 'input.js'])
 })
 
+test('support tailwindcss postcss plugin', async () => {
+  const { output, outFiles } = await run(getTestName(), {
+    'input.ts': `
+      import './foo.css'
+    `,
+    'postcss.config.js': `
+      module.exports = {
+        plugins: {
+          tailwindcss: {},
+          autoprefixer: {},
+        }
+      }
+    `,
+    'foo.css': `
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+    `,
+  })
+  expect(output).toMatchSnapshot()
+  expect(outFiles).toEqual(['input.css', 'input.js'])
+})
+
 test('import css in --dts', async () => {
   const { output, outFiles } = await run(
     getTestName(),
