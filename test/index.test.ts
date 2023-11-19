@@ -1683,7 +1683,7 @@ test('should only include exported declarations with experimentalDts', async () 
         export { declare2 } from './shared'
     `,
   }
-  const {  getFileContent } = await run(getTestName(), files, {
+  const { getFileContent } = await run(getTestName(), files, {
     entry: [],
     flags: ['--experimental-dts'],
   })
