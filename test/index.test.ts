@@ -1636,40 +1636,11 @@ test('should emit declaration files with experimentalDts', async () => {
 
 test('should only include exported declarations with experimentalDts', async () => {
   const files = {
-    'package.json': `
-        {
-          "name": "tsup-playground",
-          "private": true,
-          "version": "0.0.0",
-          "exports": {
-              "./entry1": {
-                  "types": "./dist/entry1.d.ts",
-                  "default": "./dist/entry1.js"
-              },
-              "./entry2": {
-                  "types": "./dist/entry2.d.ts",
-                  "default": "./dist/entry2.js"
-              }
-          }
-        }
-    `,
-    'tsconfig.json': `
-        {
-          "compilerOptions": {
-              "target": "ES2020",
-              "skipLibCheck": true,
-              "noEmit": true
-          },
-          "include": ["./src"]
-        }
-    `,
+    'package.json': `{ "name": "tsup-playground", "private": true }`,
+    'tsconfig.json': `{ "compilerOptions": { "skipLibCheck": true } }`,
     'tsup.config.ts': `
         export default {
-          name: 'tsup',
-          entry: {
-            'entry1': './src/entry1.ts',
-            'entry2': './src/entry2.ts',
-          },
+          entry: ['./src/entry1.ts', './src/entry2.ts']
         }
     `,
     'src/shared.ts': `
