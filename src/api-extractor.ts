@@ -123,9 +123,14 @@ async function rollupDtsFiles(
     sourceFileName = toAbsolutePath(sourceFileName)
     const outFileName = path.join(outDir, out + dtsExtension)
 
+    // Find all declarations that are exported from the current source file
+    const currentExports = exports.filter(
+      (declaration) => declaration.sourceFileName === sourceFileName
+    )
+
     writeFileSync(
       outFileName,
-      formatDistributionExports(exports, outFileName, dtsOutputFilePath)
+      formatDistributionExports(currentExports, outFileName, dtsOutputFilePath)
     )
   }
 }

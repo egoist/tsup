@@ -1633,3 +1633,38 @@ test('should emit declaration files with experimentalDts', async () => {
   )
   expect(snapshots.sort().join('\n')).toMatchSnapshot()
 })
+
+test('should only include exported declarations with experimentalDts', async () => {
+  const files = {
+    'package.json': `{ "name": "tsup-playground", "private": true }`,
+    'tsconfig.json': `{ "compilerOptions": { "skipLibCheck": true } }`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['./src/entry1.ts', './src/entry2.ts']
+        }
+    `,
+    'src/shared.ts': `
+        export const declare1 = 'declare1'
+        export const declare2 = 'declare2'
+    `,
+    'src/entry1.ts': `
+        export { declare1 } from './shared'
+    `,
+    'src/entry2.ts': `
+        export { declare2 } from './shared'
+    `,
+  }
+  const { getFileContent } = await run(getTestName(), files, {
+    entry: [],
+    flags: ['--experimental-dts'],
+  })
+
+  let entry1dts = await getFileContent('dist/entry1.d.ts')
+  let entry2dts = await getFileContent('dist/entry2.d.ts')
+
+  expect(entry1dts).toContain('declare1')
+  expect(entry1dts).not.toContain('declare2')
+
+  expect(entry2dts).toContain('declare2')
+  expect(entry2dts).not.toContain('declare1')
+})
