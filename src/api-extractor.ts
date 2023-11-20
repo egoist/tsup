@@ -17,6 +17,7 @@ import {
   defaultOutExtension,
   ensureTempDeclarationDir,
   getApiExtractor,
+  removeFiles,
   toAbsolutePath,
   writeFileSync,
 } from './utils'
@@ -135,6 +136,12 @@ async function rollupDtsFiles(
   }
 }
 
+function cleanDtsFiles(options: NormalizedOptions) {
+  if (options.clean) {
+    removeFiles(['**/*.d.{ts,mts,cts}'], options.outDir)
+  }
+}
+
 export async function runDtsRollup(
   options: NormalizedOptions,
   exports?: ExportDeclaration[]
@@ -149,6 +156,7 @@ export async function runDtsRollup(
     if (!exports) {
       throw new Error('Unexpected internal error: dts exports is not define')
     }
+    cleanDtsFiles(options)
     for (const format of options.format) {
       await rollupDtsFiles(options, exports, format)
     }

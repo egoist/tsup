@@ -1668,3 +1668,50 @@ test('should only include exported declarations with experimentalDts', async () 
   expect(entry2dts).toContain('declare2')
   expect(entry2dts).not.toContain('declare1')
 })
+
+test('.d.ts files should be cleaned when --clean and --experimental-dts are provided', async () => {
+  const filesFoo = {
+    'package.json': `{ "name": "tsup-playground", "private": true }`,
+    'foo.ts': `export const foo = 1`,
+  }
+
+  const filesFooBar = {
+    ...filesFoo,
+    'bar.ts': `export const bar = 2`,
+  }
+
+  // First run with both foo and bar
+  const result1 = await run(getTestName(), filesFooBar, {
+    entry: ['foo.ts', 'bar.ts'],
+    flags: ['--experimental-dts'],
+  })
+
+  expect(result1.outFiles).toContain('foo.d.ts')
+  expect(result1.outFiles).toContain('foo.js')
+  expect(result1.outFiles).toContain('bar.d.ts')
+  expect(result1.outFiles).toContain('bar.js')
+
+  // Second run with only foo
+  const result2 = await run(getTestName(), filesFoo, {
+    entry: ['foo.ts'],
+    flags: ['--experimental-dts'],
+  })
+
+  // When --clean is not provided, the previous bar.* files should still exist
+  expect(result2.outFiles).toContain('foo.d.ts')
+  expect(result2.outFiles).toContain('foo.js')
+  expect(result2.outFiles).toContain('bar.d.ts')
+  expect(result2.outFiles).toContain('bar.js')
+
+  // Third run with only foo and --clean
+  const result3 = await run(getTestName(), filesFoo, {
+    entry: ['foo.ts'],
+    flags: ['--experimental-dts', '--clean'],
+  })
+
+  // When --clean is provided, the previous bar.* files should be deleted
+  expect(result3.outFiles).toContain('foo.d.ts')
+  expect(result3.outFiles).toContain('foo.js')
+  expect(result3.outFiles).not.toContain('bar.d.ts')
+  expect(result3.outFiles).not.toContain('bar.js')
+})
