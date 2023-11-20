@@ -297,7 +297,7 @@ export async function build(_options: Options) {
                   : []
                 // .d.ts files are removed in the `dtsTask` instead
                 // `dtsTask` is a separate process, which might start before `mainTasks`
-                if (options.dts) {
+                if (options.dts || options.experimentalDts) {
                   extraPatterns.unshift('!**/*.d.{ts,cts,mts}')
                 }
                 await removeFiles(['**/*', ...extraPatterns], options.outDir)

@@ -1668,3 +1668,36 @@ test('should only include exported declarations with experimentalDts', async () 
   expect(entry2dts).toContain('declare2')
   expect(entry2dts).not.toContain('declare1')
 })
+
+test('should only include exported declarations with experimentalDts', async () => {
+  const files = {
+    'package.json': `{ "name": "tsup-playground", "private": true }`,
+    'tsconfig.json': `{ "compilerOptions": { "skipLibCheck": true } }`,
+    'src/index.ts': `export const foo = 1`,
+  }
+  const withoutClean = await run(getTestName(), files, {
+    entry: ['src/index.ts'],
+    flags: ['--experimental-dts'],
+  })
+
+  const withClean = await run(getTestName(), files, {
+    entry: ['src/index.ts'],
+    flags: ['--experimental-dts', '--clean'],
+  })
+
+  expect(withoutClean.outFiles).toMatchInlineSnapshot(`
+    [
+      "_tsup-dts-rollup.d.ts",
+      "index.js",
+      "src/index.d.ts",
+    ]
+  `)
+  expect(withClean.outFiles).toMatchInlineSnapshot(`
+    [
+      "_tsup-dts-rollup.d.ts",
+      "index.js",
+      "src/index.d.ts",
+    ]
+  `)
+  expect(withClean.outFiles).toEqual(withoutClean.outFiles)
+})
