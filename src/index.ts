@@ -7,8 +7,9 @@ import {
   slash,
   MaybePromise,
   toObjectEntry,
+  defaultOutExtension,
 } from './utils'
-import { getAllDepsHash, loadTsupConfig } from './load'
+import { getAllDepsHash, loadPkg, loadTsupConfig } from './load'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
 import { handleError, PrettyError } from './errors'
@@ -77,13 +78,15 @@ const normalizeOptions = async (
     ...optionsOverride,
   }
 
+  const formats =
+    typeof _options.format === 'string'
+      ? [_options.format as Format]
+      : _options.format || ['cjs']
+
   const options: Partial<NormalizedOptions> = {
     outDir: 'dist',
     ..._options,
-    format:
-      typeof _options.format === 'string'
-        ? [_options.format as Format]
-        : _options.format || ['cjs'],
+    format: formats,
     dts:
       typeof _options.dts === 'boolean'
         ? _options.dts
@@ -107,6 +110,7 @@ const normalizeOptions = async (
           }
       : undefined,
   }
+  
 
   setSilent(options.silent)
 
@@ -173,7 +177,19 @@ const normalizeOptions = async (
     options.target = 'node16'
   }
 
-  return options as NormalizedOptions
+  const normalizedOptions = options as NormalizedOptions
+  
+  const pkg = await loadPkg(process.cwd())
+  const formatOutExtension = formats.map((format) => {
+    const exts = _options.outExtension?.({ format, options: normalizedOptions, pkgType: pkg.type });
+    return {
+      ...defaultOutExtension({ format, pkgType: pkg.type }),
+      ...(exts || {})
+    }
+  });
+  normalizedOptions.formatOutExtension = formatOutExtension;
+
+  return normalizedOptions
 }
 
 export async function build(_options: Options) {

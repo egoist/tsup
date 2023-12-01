@@ -256,4 +256,6 @@ export type NormalizedOptions = Omit<
   tsconfigResolvePaths: Record<string, string[]>
   tsconfigDecoratorMetadata?: boolean
   format: Format[]
+  // OutExtensionObject array for each format
+  formatOutExtension: OutExtensionObject[]
 }

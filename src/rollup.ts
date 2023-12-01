@@ -154,9 +154,9 @@ const getRollupConfig = async (
         ...(options.external || []),
       ],
     },
-    outputConfig: options.format.map((format): OutputOptions => {
-      const outputExtension =
-        options.outExtension?.({ format, options, pkgType: pkg.type }).dts ||
+    outputConfig: options.format.map((format, i): OutputOptions => {
+      const outputExtension = 
+        options.formatOutExtension?.[i]?.dts ||
         defaultOutExtension({ format, pkgType: pkg.type }).dts
       return {
         dir: options.outDir || 'dist',
