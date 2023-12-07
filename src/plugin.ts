@@ -125,7 +125,10 @@ export class PluginContainer {
       .map((file): ChunkInfo | AssetInfo => {
         if (isJS(file.path) || isCSS(file.path)) {
           const relativePath = path.relative(process.cwd(), file.path)
-          const meta = metafile?.outputs[relativePath]
+          const meta =
+            metafile?.outputs[relativePath] ||
+            // esbuild is using "/" as a separator in Windows as well
+            metafile?.outputs[relativePath.replaceAll(path.sep, path.posix.sep)]
           return {
             type: 'chunk',
             path: file.path,
