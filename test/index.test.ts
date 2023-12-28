@@ -1715,3 +1715,36 @@ test('.d.ts files should be cleaned when --clean and --experimental-dts are prov
   expect(result3.outFiles).not.toContain('bar.d.ts')
   expect(result3.outFiles).not.toContain('bar.js')
 })
+
+test('generate sourcemap with --treeshake', async () => {
+  const { outFiles, getFileContent } = await run(
+    getTestName(),
+    {
+      'src/input.ts': 'export function getValue(val: any){ return val; }',
+    },
+    {
+      entry: ['src/input.ts'],
+      flags: ['--treeshake', '--sourcemap', '--format=cjs,esm,iife'],
+    }
+  )
+
+  expect(outFiles.length).toBe(6)
+
+  await Promise.all(
+    outFiles
+      .filter((fileName) => fileName.endsWith('.map'))
+      .map(async (sourceMapFile) => {
+        const sourceMap = await getFileContent(`dist/${sourceMapFile}`).then(
+          (rawContent) => JSON.parse(rawContent)
+        )
+
+        expect(sourceMap.sources[0]).toBe('../src/input.ts')
+        expect(sourceMap.sourcesContent[0]).toBe(
+          'export function getValue(val: any){ return val; }'
+        )
+
+        const outputFileName = sourceMapFile.replace('.map', '')
+        expect(sourceMap.file).toBe(outputFileName)
+      })
+  )
+})
