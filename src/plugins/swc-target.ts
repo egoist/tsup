@@ -1,3 +1,4 @@
+import type { ModuleConfig } from '@swc/core/types';
 import { PrettyError } from '../errors'
 import { Plugin } from '../plugin'
 import { localRequire } from '../utils'
@@ -23,7 +24,7 @@ export const swcTarget = (): Plugin => {
     },
 
     async renderChunk(code, info) {
-      if (!enabled || !/\.(cjs|js)$/.test(info.path) || this.format !== 'cjs') {
+      if (!enabled || !/\.(cjs|mjs|js)$/.test(info.path)) {
         return
       }
       const swc: typeof import('@swc/core') = localRequire('@swc/core')
@@ -55,6 +56,9 @@ export const swcTarget = (): Plugin => {
                 }
               : undefined,
         },
+        module: {
+          type: this.format === 'cjs' ? 'commonjs' : 'es6'
+        } as ModuleConfig,
       })
       return {
         code: result.code,
