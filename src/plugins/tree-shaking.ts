@@ -1,5 +1,6 @@
 import { rollup, TreeshakingOptions, TreeshakingPreset } from 'rollup'
 import { Plugin } from '../plugin'
+import path from 'path'
 
 export type TreeshakingStrategy =
   | boolean
@@ -44,14 +45,14 @@ export const treeShakingPlugin = ({
       const result = await bundle.generate({
         interop: 'auto',
         format: this.format,
-        file: 'out.js',
+        file: info.path,
         sourcemap: !!this.options.sourcemap,
         name,
       })
 
       for (const file of result.output) {
         if (file.type === 'chunk') {
-          if (file.fileName.endsWith('out.js')) {
+          if (file.fileName === path.basename(info.path)) {
             return {
               code: file.code,
               map: file.map,
