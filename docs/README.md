@@ -597,6 +597,16 @@ await build({
 
 For all available options for the `build` function, please see [the API docs](https://paka.dev/npm/tsup).
 
+### Using custom tsconfig.json
+
+You can also use custom tsconfig.json file configurations by using the `--tsconfig` flag:
+
+```bash
+tsup --tsconfig tsconfig.prod.json
+```
+
+By default, tsup try to find the `tsconfig.json` file in the current directory, if it's not found, it will use the default tsup config.
+
 ## Troubleshooting
 
 ### error: No matching export in "xxx.ts" for import "xxx"
