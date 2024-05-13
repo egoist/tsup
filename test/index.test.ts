@@ -198,8 +198,19 @@ test('enable --dts-resolve for specific module', async () => {
   expect(content).toMatchSnapshot()
 })
 
+test('bundle graphql-tools without sourcemaps', async () => {
+  const { output, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
+    }
+  )
+  expect(output).not.toContain('//# sourceMappingURL')
+  expect(outFiles).toEqual(['input.js'])
+})
+
 test('bundle graphql-tools with --sourcemap flag', async () => {
-  const { outFiles } = await run(
+  const { output, outFiles } = await run(
     getTestName(),
     {
       'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
@@ -208,6 +219,22 @@ test('bundle graphql-tools with --sourcemap flag', async () => {
       flags: ['--sourcemap'],
     }
   )
+  expect(output).toContain('//# sourceMappingURL=input.js.map')
+  expect(outFiles).toEqual(['input.js', 'input.js.map'])
+})
+
+test('bundle graphql-tools with --sourcemap linked flag', async () => {
+  const { output, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
+    },
+    {
+      flags: ['--sourcemap', 'linked'],
+    }
+  )
+
+  expect(output).toContain('//# sourceMappingURL=input.js.map')
   expect(outFiles).toEqual(['input.js', 'input.js.map'])
 })
 
@@ -224,6 +251,36 @@ test('bundle graphql-tools with --sourcemap inline flag', async () => {
 
   expect(output).toContain('//# sourceMappingURL=data:application/json;base64')
   expect(outFiles).toEqual(['input.js'])
+})
+
+test('bundle graphql-tools with --sourcemap external flag', async () => {
+  const { output, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
+    },
+    {
+      flags: ['--sourcemap', 'external'],
+    }
+  )
+
+  expect(output).toContain('//# sourceMappingURL=input.js.map')
+  expect(outFiles).toEqual(['input.js', 'input.js.map'])
+})
+
+test('bundle graphql-tools with --sourcemap both flag', async () => {
+  const { output, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export { makeExecutableSchema } from 'graphql-tools'`,
+    },
+    {
+      flags: ['--sourcemap', 'both'],
+    }
+  )
+
+  expect(output).toContain('//# sourceMappingURL=data:application/json;base64')
+  expect(outFiles).toEqual(['input.js', 'input.js.map'])
 })
 
 test('multiple formats', async () => {

@@ -149,6 +149,11 @@ export async function runEsbuild(
     ...(options.esbuildPlugins || []),
   ]
 
+  const sourcemap = options.sourcemap === true 
+    ? "external" 
+    : typeof options.sourcemap === 'string' 
+      ? options.sourcemap 
+      : false;
   const banner =
     typeof options.banner === 'function'
       ? options.banner({ format })
@@ -168,7 +173,7 @@ export async function runEsbuild(
       globalName: options.globalName,
       jsxFactory: options.jsxFactory,
       jsxFragment: options.jsxFragment,
-      sourcemap: options.sourcemap ? 'external' : false,
+      sourcemap,
       target: options.target,
       banner,
       footer,
