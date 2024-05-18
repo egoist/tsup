@@ -34,7 +34,7 @@
     "chokidar": "^3.5.1",
     "debug": "^4.3.1",
     "esbuild": "^0.19.2",
-    "execa": "^5.0.0",
+    "execa": "^8.0.1",
     "globby": "^11.0.3",
     "joycon": "^3.0.1",
     "postcss-load-config": "^4.0.1",
@@ -97,5 +97,5 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@8.10.5"
+  "packageManager": "pnpm@8.15.7"
 }
