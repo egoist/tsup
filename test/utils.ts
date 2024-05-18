@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { expect } from 'vitest'
-import execa from 'execa'
+import { execa } from 'execa'
 import fs from 'fs-extra'
 import { glob } from 'tinyglobby'
 
