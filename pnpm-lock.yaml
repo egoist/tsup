@@ -15,7 +15,7 @@ dependencies:
     specifier: ^3.5.1
     version: 3.5.2
   debug:
-    specifier: ^4.3.1
+    specifier: ^4.3.4
     version: 4.3.4
   esbuild:
     specifier: ^0.19.2

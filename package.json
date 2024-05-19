@@ -33,7 +33,7 @@
     "bundle-require": "^4.0.0",
     "cac": "^6.7.12",
     "chokidar": "^3.5.1",
-    "debug": "^4.3.1",
+    "debug": "^4.3.4",
     "esbuild": "^0.19.2",
     "execa": "^8.0.1",
     "globby": "^11.0.3",
