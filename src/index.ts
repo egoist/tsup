@@ -1,5 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { Worker } from 'node:worker_threads'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
@@ -32,6 +33,8 @@ import type { ChildProcess } from 'node:child_process'
 import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
 
 export type { Format, Options, NormalizedOptions }
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export const defineConfig = (
   options:

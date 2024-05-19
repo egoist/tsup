@@ -1,5 +1,6 @@
 {
   "name": "tsup",
+  "type": "module",
   "version": "0.0.0-semantic-release",
   "packageManager": "pnpm@9.5.0",
   "description": "Bundle your TypeScript library with no config, powered by esbuild",
