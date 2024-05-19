@@ -1,6 +1,6 @@
 import { test, expect, beforeAll } from 'vitest'
 import path from 'path'
-import execa from 'execa'
+import { execa } from 'execa'
 import fs from 'fs-extra'
 import glob from 'globby'
 import waitForExpect from 'wait-for-expect'
