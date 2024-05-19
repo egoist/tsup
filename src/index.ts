@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import { fileURLToPath } from 'url'
 import { Worker } from 'worker_threads'
 import {
   removeFiles,
@@ -32,6 +33,8 @@ import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
 
 export type { Format, Options, NormalizedOptions }
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export const defineConfig = (
   options:
@@ -265,7 +268,7 @@ export async function build(_options: Options) {
             const doOnSuccessCleanup = async () => {
               if (onSuccessProcess) {
                 await killProcess({
-                  pid: onSuccessProcess.pid,
+                  pid: onSuccessProcess.pid!,
                   signal: options.killSignal || 'SIGTERM',
                 })
               } else if (onSuccessCleanup) {
