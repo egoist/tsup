@@ -5,6 +5,7 @@ import fs from 'fs-extra'
 import glob from 'globby'
 import waitForExpect from 'wait-for-expect'
 import { fileURLToPath } from 'url'
+import { runInNewContext } from 'vm'
 import { debouncePromise, slash } from '../src/utils'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -1714,4 +1715,81 @@ test('.d.ts files should be cleaned when --clean and --experimental-dts are prov
   expect(result3.outFiles).toContain('foo.js')
   expect(result3.outFiles).not.toContain('bar.d.ts')
   expect(result3.outFiles).not.toContain('bar.js')
+})
+
+test('cjsInterop', async () => {
+  async function runCjsInteropTest(
+    name: string,
+    files: Record<string, string>,
+    entry?: string
+  ) {
+    const { output } = await run(`${getTestName()}-${name}`, files, {
+      flags: [
+        ['--format', 'cjs'],
+        '--cjsInterop',
+        ...(entry ? ['--entry.index', entry] : []),
+      ].flat(),
+    })
+    const exp = {}
+    const mod = { exports: exp }
+    runInNewContext(output, { module: mod, exports: exp })
+    return mod.exports
+  }
+
+  await expect(
+    runCjsInteropTest('simple', {
+      'input.ts': `export default { hello: 'world' }`,
+    })
+  ).resolves.toEqual({ hello: 'world' })
+
+  await expect(
+    runCjsInteropTest('non-default', {
+      'input.ts': `export const a = { hello: 'world' }`,
+    })
+  ).resolves.toEqual(expect.objectContaining({ a: { hello: 'world' } }))
+
+  await expect(
+    runCjsInteropTest('multiple-export', {
+      'input.ts': `
+        export const a = 1
+        export default { hello: 'world' }
+      `,
+    })
+  ).resolves.toEqual(
+    expect.objectContaining({ a: 1, default: { hello: 'world' } })
+  )
+
+  await expect(
+    runCjsInteropTest('multiple-files', {
+      'input.ts': `
+        export * as a from './a'
+        export default { hello: 'world' }
+      `,
+      'a.ts': 'export const a = 1',
+    })
+  ).resolves.toEqual(
+    expect.objectContaining({ a: { a: 1 }, default: { hello: 'world' } })
+  )
+
+  await expect(
+    runCjsInteropTest('no-export', {
+      'input.ts': `console.log()`,
+    })
+  ).resolves.toEqual({})
+
+  const tsAssertion = `
+    const b = 1;
+    export const a = <string>b;
+  `
+  await expect(
+    runCjsInteropTest('file-extension-1', { 'input.ts': tsAssertion })
+  ).resolves.toEqual(expect.objectContaining({ a: 1 }))
+
+  await expect(
+    runCjsInteropTest(
+      'file-extension-2',
+      { 'input.tsx': tsAssertion },
+      'input.tsx'
+    )
+  ).rejects.toThrowError('Unexpected end of file before a closing "string" tag')
 })

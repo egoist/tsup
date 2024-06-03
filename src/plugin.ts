@@ -4,7 +4,7 @@ import { SourceMapConsumer, SourceMapGenerator, RawSourceMap } from 'source-map'
 import { Format, NormalizedOptions } from '.'
 import { outputFile } from './fs'
 import { Logger } from './log'
-import { MaybePromise } from './utils'
+import { MaybePromise, slash } from './utils'
 import { SourceMap } from 'rollup'
 
 export type ChunkInfo = {
@@ -124,7 +124,8 @@ export class PluginContainer {
       .filter((file) => !file.path.endsWith('.map'))
       .map((file): ChunkInfo | AssetInfo => {
         if (isJS(file.path) || isCSS(file.path)) {
-          const relativePath = path.relative(process.cwd(), file.path)
+          // esbuild is using "/" as a separator in Windows as well
+          const relativePath = slash(path.relative(process.cwd(), file.path))
           const meta = metafile?.outputs[relativePath]
           return {
             type: 'chunk',
