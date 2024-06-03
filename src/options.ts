@@ -136,7 +136,7 @@ export type Options = {
   }
   dts?: boolean | string | DtsConfig
   experimentalDts?: boolean | string | ExperimentalDtsConfig
-  sourcemap?: boolean | 'inline'
+  sourcemap?: boolean | 'linked' | 'inline' | 'external' | 'both'
   /** Always bundle modules matching given patterns */
   noExternal?: (string | RegExp)[]
   /** Don't bundle these modules */

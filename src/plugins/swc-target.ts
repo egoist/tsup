@@ -34,10 +34,13 @@ export const swcTarget = (): Plugin => {
           `@swc/core is required for ${target} target. Please install it with \`npm install @swc/core -D\``
         )
       }
+      const sourceMaps = typeof this.options.sourcemap === 'string'
+        ? this.options.sourcemap === 'inline' ? 'inline' : true
+        : this.options.sourcemap;
 
       const result = await swc.transform(code, {
         filename: info.path,
-        sourceMaps: this.options.sourcemap,
+        sourceMaps,
         minify: Boolean(this.options.minify),
         jsc: {
           target,

@@ -43,8 +43,8 @@ export async function main(options: Options = {}) {
       'Generate declaration file (experimental)'
     )
     .option(
-      '--sourcemap [inline]',
-      'Generate external sourcemap, or inline source: --sourcemap inline'
+      '--sourcemap [type]',
+      'Generate a sourcemap, defaults to `external` or use a valid esbuild sourcemap type: `--sourcemap linked | inline | external | both`'
     )
     .option(
       '--watch [path]',
