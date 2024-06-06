@@ -240,7 +240,7 @@ const startRollup = async (options: NormalizedOptions) => {
     } catch (error) {
       parentPort?.postMessage('error')
     }
-    parentPort?.close()
+    process.exit()
   }
 }
 
