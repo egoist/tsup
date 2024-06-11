@@ -240,7 +240,6 @@ const startRollup = async (options: NormalizedOptions) => {
     } catch {
       parentPort?.postMessage('error')
     }
-    parentPort?.close()
   }
 }
 
@@ -250,7 +249,6 @@ parentPort?.on('message', (data) => {
   if (!hasTypescript) {
     logger.error('dts', `You need to install "typescript" in your project`)
     parentPort?.postMessage('error')
-    parentPort?.close()
     return
   }
   startRollup(data.options)
