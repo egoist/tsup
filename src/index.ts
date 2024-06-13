@@ -244,10 +244,10 @@ export async function build(_options: Options) {
               })
               worker.on('message', (data) => {
                 if (data === 'error') {
-                  worker.terminate();
+                  worker.terminate()
                   reject(new Error('error occured in dts build'))
                 } else if (data === 'success') {
-                  worker.terminate();
+                  worker.terminate()
                   resolve()
                 } else {
                   const { type, text } = data
