@@ -35,7 +35,7 @@ export const treeShakingPlugin = ({
             },
           },
         ],
-        treeshake: treeshake,
+        treeshake,
         makeAbsoluteExternalsRelative: false,
         preserveEntrySignatures: 'exports-only',
         onwarn: silent ? () => {} : undefined,
