@@ -43,7 +43,7 @@ async function run(
     entry?: string[]
     flags?: string[]
     env?: Record<string, string>
-  } = {}
+  } = {},
 ) {
   const testDir = path.resolve(cacheDir, filenamify(title))
 
@@ -51,7 +51,7 @@ async function run(
   await Promise.all(
     Object.keys(files).map((name) => {
       return fs.outputFile(path.resolve(testDir, name), files[name], 'utf8')
-    })
+    }),
   )
 
   const entry = options.entry || ['input.ts']
@@ -63,7 +63,7 @@ async function run(
     {
       cwd: testDir,
       env: { ...process.env, ...options.env },
-    }
+    },
   )
   const logs = stdout + stderr
   if (exitCode !== 0) {
@@ -113,7 +113,7 @@ test('bundle graphql-tools with --dts flag', async () => {
     },
     {
       flags: ['--dts'],
-    }
+    },
   )
 })
 
@@ -125,7 +125,7 @@ test('bundle graphql-tools with --dts-resolve flag', async () => {
     },
     {
       flags: ['--dts-resolve'],
-    }
+    },
   )
 })
 
@@ -139,7 +139,7 @@ test('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
     },
     {
       flags: ['--dts', '--dts-resolve'],
-    }
+    },
   )
 })
 
@@ -156,7 +156,7 @@ test('bundle @egoist/path-parser with --dts --dts-resolve flag', async () => {
     },
     {
       flags: ['--dts', '--dts-resolve'],
-    }
+    },
   )
 })
 
@@ -171,7 +171,7 @@ test('not bundle `package/subpath` in dts (resolve)', async () => {
     },
     {
       flags: ['--dts', '--dts-resolve'],
-    }
+    },
   )
   const content = await getFileContent('dist/input.d.ts')
   expect(content).toMatchSnapshot()
@@ -206,7 +206,7 @@ test('bundle graphql-tools with --sourcemap flag', async () => {
     },
     {
       flags: ['--sourcemap'],
-    }
+    },
   )
   expect(outFiles).toEqual(['input.js', 'input.js.map'])
 })
@@ -219,7 +219,7 @@ test('bundle graphql-tools with --sourcemap inline flag', async () => {
     },
     {
       flags: ['--sourcemap', 'inline'],
-    }
+    },
   )
 
   expect(output).toContain('//# sourceMappingURL=data:application/json;base64')
@@ -236,7 +236,7 @@ test('multiple formats', async () => {
     },
     {
       flags: ['--format', 'esm,cjs,iife'],
-    }
+    },
   )
 
   expect(outFiles).toEqual(['input.global.js', 'input.js', 'input.mjs'])
@@ -253,7 +253,7 @@ test('multiple formats and pkg.type is module', async () => {
     },
     {
       flags: ['--format', 'esm,cjs,iife'],
-    }
+    },
   )
 
   expect(outFiles).toEqual(['input.cjs', 'input.global.js', 'input.js'])
@@ -271,7 +271,7 @@ test('minify', async () => {
     },
     {
       flags: ['--minify'],
-    }
+    },
   )
 
   expect(output).toContain(`return"foo"`)
@@ -290,7 +290,7 @@ test('minify with es5 target', async () => {
     },
     {
       flags: ['--minify', '--target', 'es5'],
-    }
+    },
   )
 
   expect(output).toContain(`return"foo"`)
@@ -307,7 +307,7 @@ test('env flag', async () => {
     },
     {
       flags: ['--env.NODE_ENV', 'production'],
-    }
+    },
   )
 
   expect(output).toContain('var env = "production"')
@@ -373,7 +373,7 @@ test('import css in --dts', async () => {
   }
     `,
     },
-    { flags: ['--dts'] }
+    { flags: ['--dts'] },
   )
 
   expect(output).toMatchSnapshot()
@@ -444,7 +444,7 @@ test('disable code splitting to get proper module.exports =', async () => {
     },
     {
       flags: ['--no-splitting'],
-    }
+    },
   )
   expect(output).toMatchSnapshot()
 })
@@ -471,7 +471,7 @@ test('bundle svelte', async () => {
     {
       // To make the snapshot leaner
       flags: ['--external', 'svelte/internal'],
-    }
+    },
   )
   expect(output).not.toContain('<script>')
   const css = await getFileContent('dist/input.css')
@@ -548,7 +548,7 @@ test('onSuccess', async () => {
     },
     {
       flags: ['--onSuccess', 'echo hello && echo world'],
-    }
+    },
   )
 
   expect(logs.includes('hello')).toEqual(true)
@@ -587,7 +587,7 @@ test('custom tsconfig', async () => {
       }
     }`,
     },
-    { flags: ['--tsconfig', 'tsconfig.build.json'] }
+    { flags: ['--tsconfig', 'tsconfig.build.json'] },
   )
 })
 
@@ -618,7 +618,7 @@ test('support baseUrl and paths in tsconfig.json in --dts build', async () => {
       }
     }`,
     },
-    { flags: ['--dts'] }
+    { flags: ['--dts'] },
   )
   expect(await getFileContent('dist/input.d.ts')).toMatchSnapshot()
 })
@@ -636,7 +636,7 @@ test('support baseUrl and paths in tsconfig.json in --dts-resolve build', async 
       }
     }`,
     },
-    { flags: ['--dts-resolve'] }
+    { flags: ['--dts-resolve'] },
   )
   expect(await getFileContent('dist/input.d.ts')).toMatchSnapshot()
 })
@@ -649,7 +649,7 @@ test(`transform import.meta.url in cjs format`, async () => {
     },
     {
       flags: ['--shims'],
-    }
+    },
   )
   expect(await getFileContent('dist/input.js')).toContain('getImportMetaUrl')
 })
@@ -664,7 +664,7 @@ test(`transform __dirname and __filename in esm format`, async () => {
     },
     {
       flags: ['--format', 'esm', '--shims'],
-    }
+    },
   )
   const code = await getFileContent('dist/input.mjs')
 
@@ -692,7 +692,7 @@ test('debounce promise', async () => {
       100,
       (err: any) => {
         expect.fail(err.message)
-      }
+      },
     )
 
     expect(n).toEqual(0)
@@ -739,7 +739,7 @@ test('code splitting in cjs format', async () => {
       'another-input.ts': `const foo = () => import('./foo');export {foo}`,
       'foo.ts': `export const foo = 'bar'`,
     },
-    { flags: ['another-input.ts', '--splitting'] }
+    { flags: ['another-input.ts', '--splitting'] },
   )
   expect(await getFileContent('dist/input.js')).toMatchSnapshot()
   expect(await getFileContent('dist/another-input.js')).toMatchSnapshot()
@@ -752,15 +752,15 @@ test('declaration files with multiple entrypoints #316', async () => {
       'src/index.ts': `export const foo = 1`,
       'src/bar/index.ts': `export const bar = 'bar'`,
     },
-    { flags: ['--dts'], entry: ['src/index.ts', 'src/bar/index.ts'] }
+    { flags: ['--dts'], entry: ['src/index.ts', 'src/bar/index.ts'] },
   )
   expect(
     await getFileContent('dist/index.d.ts'),
-    'dist/index.d.ts'
+    'dist/index.d.ts',
   ).toMatchSnapshot()
   expect(
     await getFileContent('dist/bar/index.d.ts'),
-    'dist/bar/index.d.ts'
+    'dist/bar/index.d.ts',
   ).toMatchSnapshot()
 })
 
@@ -770,7 +770,7 @@ test('esbuild metafile', async () => {
     { 'input.ts': `export const foo = 1` },
     {
       flags: ['--metafile'],
-    }
+    },
   )
   expect(outFiles).toEqual(['input.js', 'metafile-cjs.json'])
 })
@@ -784,7 +784,7 @@ test('multiple entry with the same base name', async () => {
     },
     {
       entry: ['src/input.ts', 'src/bar/input.ts'],
-    }
+    },
   )
   expect(outFiles).toEqual(['bar/input.js', 'input.js'])
 })
@@ -795,7 +795,7 @@ test('windows: backslash in entry', async () => {
     { 'src/input.ts': `export const foo = 1` },
     {
       entry: ['src\\input.ts'],
-    }
+    },
   )
   expect(outFiles).toEqual(['input.js'])
 })
@@ -808,7 +808,7 @@ test('emit declaration files only', async () => {
     },
     {
       flags: ['--dts-only'],
-    }
+    },
   )
   expect(outFiles).toEqual(['input.d.ts'])
 })
@@ -843,7 +843,7 @@ test('inject style', async () => {
     },
     {
       flags: ['--inject-style', '--minify'],
-    }
+    },
   )
   expect(outFiles).toEqual(['input.js'])
   expect(output).toContain('.hello{color:red}')
@@ -863,7 +863,7 @@ test('inject style in multi formats', async () => {
     },
     {
       flags: ['--inject-style', '--minify', '--format', 'esm,cjs,iife'],
-    }
+    },
   )
   expect(outFiles).toEqual(['input.global.js', 'input.js', 'input.mjs'])
   for (const file of outFiles) {
@@ -880,7 +880,7 @@ test('shebang', async () => {
     },
     {
       entry: ['a.ts', 'b.ts'],
-    }
+    },
   )
 
   if (process.platform === 'win32') {
@@ -911,7 +911,7 @@ test('es5 target', async () => {
     },
     {
       flags: ['--target', 'es5'],
-    }
+    },
   )
   expect(output).toMatch(/createClass/)
   expect(outFiles).toEqual(['input.js'])
@@ -941,7 +941,7 @@ test('es5 minify', async () => {
         'FooAPI',
         '--minify',
       ],
-    }
+    },
   )
   expect(outFiles).toEqual(['input.global.js'])
   const iifeBundle = await getFileContent('dist/input.global.js')
@@ -960,7 +960,7 @@ test('multiple targets', async () => {
     {
       entry: ['input.ts'],
       flags: ['--target', 'es2020,chrome58,firefox57,safari11,edge16'],
-    }
+    },
   )
   expect(output).toMatchSnapshot()
   expect(outFiles).toEqual(['input.js'])
@@ -984,7 +984,7 @@ test('dts only: ignore files', async () => {
     {
       entry: ['input.ts'],
       flags: ['--dts-only'],
-    }
+    },
   )
   expect(outFiles).toMatchInlineSnapshot(`
     [
@@ -1002,7 +1002,7 @@ test('native-node-module plugin should handle *.node(.js) import properly', asyn
     },
     {
       entry: ['input.tsx'],
-    }
+    },
   )
 })
 
@@ -1020,7 +1020,7 @@ test('proper sourcemap sources path when swc is enabled', async () => {
     {
       entry: ['input.ts'],
       flags: ['--sourcemap'],
-    }
+    },
   )
   const map = await getFileContent('dist/input.js.map')
   expect(map).toContain(`["../input.ts"]`)
@@ -1038,12 +1038,12 @@ test('use rollup for treeshaking', async () => {
     {
       entry: ['input.ts'],
       flags: ['--treeshake', '--external', 'vue', '--format', 'esm'],
-    }
+    },
   )
   expect(await getFileContent('dist/input.mjs')).toContain(
     `function useRoute() {
   return inject(routeLocationKey);
-}`
+}`,
   )
 })
 
@@ -1088,11 +1088,11 @@ test('use rollup for treeshaking --format cjs', async () => {
     {
       entry: ['input.tsx'],
       flags: ['--treeshake', '--target', 'es2022', '--format', 'cjs'],
-    }
+    },
   )
 
   expect(await getFileContent('dist/input.js')).toContain(
-    `jsxRuntime.jsx(ReactSelect__default.default`
+    `jsxRuntime.jsx(ReactSelect__default.default`,
   )
 })
 
@@ -1112,7 +1112,7 @@ test('custom output extension', async () => {
     {
       entry: ['input.ts'],
       flags: ['--format', 'esm,cjs'],
-    }
+    },
   )
   expect(outFiles).toMatchInlineSnapshot(`
     [
@@ -1134,7 +1134,7 @@ test('custom config file', async () => {
     {
       entry: ['input.ts'],
       flags: ['--config', 'custom.config.ts'],
-    }
+    },
   )
   expect(outFiles).toMatchInlineSnapshot(`
     [
@@ -1151,7 +1151,7 @@ test('use an object as entry from cli flag', async () => {
     },
     {
       flags: ['--entry.foo', 'input.ts'],
-    }
+    },
   )
   expect(outFiles).toMatchInlineSnapshot(`
     [
@@ -1176,7 +1176,7 @@ test('remove unused code', async () => {
         treeshake: true
       }`,
     },
-    {}
+    {},
   )
   expect(await getFileContent('dist/input.js')).not.toContain('console.log(1)')
 })
@@ -1189,7 +1189,7 @@ test('treeshake should work with hashbang', async () => {
     },
     {
       flags: ['--treeshake'],
-    }
+    },
   )
   expect(await getFileContent('dist/input.js')).toMatchInlineSnapshot(`
     "#!/usr/bin/node
@@ -1216,7 +1216,7 @@ test('support target in tsconfig.json', async () => {
     },
     {
       flags: ['--format', 'esm'],
-    }
+    },
   )
   expect(await getFileContent('dist/input.mjs')).contains('await import(')
 })
@@ -1237,10 +1237,10 @@ test('override target in tsconfig.json', async () => {
       },
       {
         flags: ['--format', 'esm', '--target', 'es2018'],
-      }
-    )
+      },
+    ),
   ).rejects.toThrowError(
-    `Top-level await is not available in the configured target environment ("es2018")`
+    `Top-level await is not available in the configured target environment ("es2018")`,
   )
 })
 
@@ -1311,10 +1311,10 @@ test('custom inject style function', async () => {
   })
   expect(outFiles).toEqual(['input.js', 'input.mjs'])
   expect(await getFileContent('dist/input.mjs')).toContain(
-    '__custom_inject_style__(`.hello{color:red}\n`)'
+    '__custom_inject_style__(`.hello{color:red}\n`)',
   )
   expect(await getFileContent('dist/input.js')).toContain(
-    '__custom_inject_style__(`.hello{color:red}\n`)'
+    '__custom_inject_style__(`.hello{color:red}\n`)',
   )
 })
 
@@ -1424,7 +1424,7 @@ test('should emit dts chunks per format', async () => {
           dts: true
         }`,
     },
-    { entry: [] }
+    { entry: [] },
   )
   expect(outFiles).toEqual([
     'input1.d.mts',
@@ -1469,7 +1469,7 @@ test('should emit dts chunks per format (type: module)', async () => {
           "type": "module"
         }`,
     },
-    { entry: [] }
+    { entry: [] },
   )
   expect(outFiles).toEqual([
     'input1.cjs',
@@ -1627,9 +1627,9 @@ test('should emit declaration files with experimentalDts', async () => {
             '/'.repeat(70),
             '',
             content,
-          ].join('\n')
+          ].join('\n'),
         )
-      })
+      }),
   )
   expect(snapshots.sort().join('\n')).toMatchSnapshot()
 })

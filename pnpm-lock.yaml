@@ -92,8 +92,8 @@ devDependencies:
     specifier: 6.0.3
     version: 6.0.3(postcss@8.4.12)
   prettier:
-    specifier: 2.5.1
-    version: 2.5.1
+    specifier: 3.3.3
+    version: 3.3.3
   resolve:
     specifier: 1.20.0
     version: 1.20.0
@@ -2134,9 +2134,9 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /prettier@2.5.1:
-    resolution: {integrity: sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==}
-    engines: {node: '>=10.13.0'}
+  /prettier@3.3.3:
+    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
+    engines: {node: '>=14'}
     hasBin: true
     dev: true
 

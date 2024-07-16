@@ -39,8 +39,8 @@ export const defineConfig = (
     | Options[]
     | ((
         /** The options derived from CLI flags */
-        overrideOptions: Options
-      ) => MaybePromise<Options | Options[]>)
+        overrideOptions: Options,
+      ) => MaybePromise<Options | Options[]>),
 ) => options
 
 /**
@@ -70,7 +70,7 @@ const killProcess = ({ pid, signal }: { pid: number; signal: KILL_SIGNAL }) =>
 const normalizeOptions = async (
   logger: ReturnType<typeof createLogger>,
   optionsFromConfigFile: Options | undefined,
-  optionsOverride: Options
+  optionsOverride: Options,
 ) => {
   const _options = {
     ...optionsFromConfigFile,
@@ -90,21 +90,21 @@ const normalizeOptions = async (
           ? {}
           : undefined
         : typeof _options.dts === 'string'
-        ? { entry: _options.dts }
-        : _options.dts,
+          ? { entry: _options.dts }
+          : _options.dts,
     experimentalDts: _options.experimentalDts
       ? typeof _options.experimentalDts === 'boolean'
         ? _options.experimentalDts
           ? { entry: {} }
           : undefined
         : typeof _options.experimentalDts === 'string'
-        ? {
-            entry: toObjectEntry(_options.experimentalDts),
-          }
-        : {
-            ..._options.experimentalDts,
-            entry: toObjectEntry(_options.experimentalDts.entry || {}),
-          }
+          ? {
+              entry: toObjectEntry(_options.experimentalDts),
+            }
+          : {
+              ..._options.experimentalDts,
+              entry: toObjectEntry(_options.experimentalDts.entry || {}),
+            }
       : undefined,
   }
 
@@ -139,7 +139,7 @@ const normalizeOptions = async (
   if (tsconfig) {
     logger.info(
       'CLI',
-      `Using tsconfig: ${path.relative(process.cwd(), tsconfig.path)}`
+      `Using tsconfig: ${path.relative(process.cwd(), tsconfig.path)}`,
     )
     options.tsconfig = tsconfig.path
     options.tsconfigResolvePaths = tsconfig.data?.compilerOptions?.paths || {}
@@ -159,7 +159,7 @@ const normalizeOptions = async (
       options.experimentalDts.entry = toObjectEntry(
         Object.keys(options.experimentalDts.entry).length > 0
           ? options.experimentalDts.entry
-          : options.entry
+          : options.entry,
       )
     }
     if (!options.target) {
@@ -182,7 +182,7 @@ export async function build(_options: Options) {
       ? {}
       : await loadTsupConfig(
           process.cwd(),
-          _options.config === true ? undefined : _options.config
+          _options.config === true ? undefined : _options.config,
         )
 
   const configData =
@@ -209,7 +209,7 @@ export async function build(_options: Options) {
         const dtsTask = async () => {
           if (options.dts && options.experimentalDts) {
             throw new Error(
-              "You can't use both `dts` and `experimentalDts` at the same time"
+              "You can't use both `dts` and `experimentalDts` at the same time",
             )
           }
 
@@ -281,7 +281,7 @@ export async function build(_options: Options) {
                 return buildAll()
               },
               100,
-              handleError
+              handleError,
             )
 
             const buildAll = async () => {
@@ -335,7 +335,7 @@ export async function build(_options: Options) {
                     buildDependencies,
                   }).catch((error) => {
                     previousBuildDependencies.forEach((v) =>
-                      buildDependencies.add(v)
+                      buildDependencies.add(v),
                     )
                     throw error
                   })
@@ -380,10 +380,10 @@ export async function build(_options: Options) {
                 typeof options.watch === 'boolean'
                   ? '.'
                   : Array.isArray(options.watch)
-                  ? options.watch.filter(
-                      (path): path is string => typeof path === 'string'
-                    )
-                  : options.watch
+                    ? options.watch.filter(
+                        (path): path is string => typeof path === 'string',
+                      )
+                    : options.watch
 
               logger.info(
                 'CLI',
@@ -391,13 +391,13 @@ export async function build(_options: Options) {
                   Array.isArray(watchPaths)
                     ? watchPaths.map((v) => '"' + v + '"').join(' | ')
                     : '"' + watchPaths + '"'
-                }`
+                }`,
               )
               logger.info(
                 'CLI',
                 `Ignoring changes in ${ignored
                   .map((v) => '"' + v + '"')
-                  .join(' | ')}`
+                  .join(' | ')}`,
               )
 
               const watcher = watch(watchPaths, {
@@ -451,7 +451,7 @@ export async function build(_options: Options) {
         }
 
         await Promise.all([dtsTask(), mainTasks()])
-      }
-    )
+      },
+    ),
   )
 }

@@ -22,11 +22,11 @@ interface NamedExport {
 
 export function formatAggregationExports(
   exports: ExportDeclaration[],
-  declarationDirPath: string
+  declarationDirPath: string,
 ): string {
   const lines = exports
     .map((declaration) =>
-      formatAggregationExport(declaration, declarationDirPath)
+      formatAggregationExport(declaration, declarationDirPath),
     )
     .filter(truthy)
 
@@ -39,13 +39,13 @@ export function formatAggregationExports(
 
 function formatAggregationExport(
   declaration: ExportDeclaration,
-  declarationDirPath: string
+  declarationDirPath: string,
 ): string {
   let dest = trimDtsExtension(
     './' +
       path.posix.normalize(
-        slash(path.relative(declarationDirPath, declaration.destFileName))
-      )
+        slash(path.relative(declarationDirPath, declaration.destFileName)),
+      ),
   )
 
   if (declaration.kind === 'module') {
@@ -71,13 +71,13 @@ function formatAggregationExport(
 export function formatDistributionExports(
   exports: ExportDeclaration[],
   fromFilePath: string,
-  toFilePath: string
+  toFilePath: string,
 ) {
   let importPath = trimDtsExtension(
     path.posix.relative(
       path.posix.dirname(path.posix.normalize(slash(fromFilePath))),
-      path.posix.normalize(slash(toFilePath))
-    )
+      path.posix.normalize(slash(toFilePath)),
+    ),
   )
   if (!importPath.match(/^\.+\//)) {
     importPath = './' + importPath
@@ -118,7 +118,7 @@ export function formatDistributionExports(
 
 function formatDistributionExport(
   declaration: ExportDeclaration,
-  dest: string
+  dest: string,
 ): string {
   if (declaration.kind === 'named') {
     return [

@@ -9,7 +9,7 @@ const debug = createDebug('tsup:ts-resolve')
 
 const resolveModule = (
   id: string,
-  opts: _resolve.AsyncOpts
+  opts: _resolve.AsyncOpts,
 ): Promise<string | null> =>
   new Promise((resolve, reject) => {
     _resolve(id, opts, (err, res) => {

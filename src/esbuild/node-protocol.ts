@@ -17,7 +17,7 @@ export const nodeProtocolPlugin = (): Plugin => {
         ({ path }) => ({
           path: path.slice(nodeProtocol.length),
           external: true,
-        })
+        }),
       )
     },
   }

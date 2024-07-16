@@ -21,7 +21,7 @@ const padRight = (str: string, maxLength: number) => {
 export const reportSize = (
   logger: Logger,
   format: string,
-  files: { [name: string]: number }
+  files: { [name: string]: number },
 ) => {
   const filenames = Object.keys(files)
   const maxLength = getLengthOfLongestString(filenames) + 1
@@ -29,8 +29,8 @@ export const reportSize = (
     logger.success(
       format,
       `${colors.bold(padRight(name, maxLength))}${colors.green(
-        prettyBytes(files[name])
-      )}`
+        prettyBytes(files[name]),
+      )}`,
     )
   }
 }

@@ -15,7 +15,7 @@ export type External =
 export function isExternal(
   externals: External | External[],
   id: string,
-  parentId?: string
+  parentId?: string,
 ) {
   id = slash(id)
 
@@ -79,7 +79,7 @@ export async function removeFiles(patterns: string[], dir: string) {
 export function debouncePromise<T extends unknown[]>(
   fn: (...args: T) => Promise<void>,
   delay: number,
-  onError: (err: unknown) => void
+  onError: (err: unknown) => void,
 ) {
   let timeout: ReturnType<typeof setTimeout> | undefined
 
@@ -193,16 +193,19 @@ export const toObjectEntry = (entry: string | Entry) => {
   }
   entry = entry.map((e) => e.replace(/\\/g, '/'))
   const ancestor = findLowestCommonAncestor(entry)
-  return entry.reduce((result, item) => {
-    const key = item
-      .replace(ancestor, '')
-      .replace(/^\//, '')
-      .replace(/\.[a-z]+$/, '')
-    return {
-      ...result,
-      [key]: item,
-    }
-  }, {} as Record<string, string>)
+  return entry.reduce(
+    (result, item) => {
+      const key = item
+        .replace(ancestor, '')
+        .replace(/^\//, '')
+        .replace(/\.[a-z]+$/, '')
+      return {
+        ...result,
+        [key]: item,
+      }
+    },
+    {} as Record<string, string>,
+  )
 }
 
 const findLowestCommonAncestor = (filepaths: string[]) => {

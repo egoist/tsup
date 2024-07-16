@@ -30,7 +30,7 @@ export type AssetInfo = {
 export type RenderChunk = (
   this: PluginContext,
   code: string,
-  chunkInfo: ChunkInfo
+  chunkInfo: ChunkInfo,
 ) => MaybePromise<
   | {
       code: string
@@ -44,12 +44,12 @@ export type RenderChunk = (
 export type BuildStart = (this: PluginContext) => MaybePromise<void>
 export type BuildEnd = (
   this: PluginContext,
-  ctx: { writtenFiles: WrittenFile[] }
+  ctx: { writtenFiles: WrittenFile[] },
 ) => MaybePromise<void>
 
 export type ModifyEsbuildOptions = (
   this: PluginContext,
-  options: EsbuildOptions
+  options: EsbuildOptions,
 ) => void
 
 export type Plugin = {
@@ -149,16 +149,16 @@ export class PluginContainer {
             const result = await plugin.renderChunk.call(
               this.getContext(),
               info.code,
-              info
+              info,
             )
             if (result) {
               info.code = result.code
               if (result.map) {
                 const originalConsumer = await new SourceMapConsumer(
-                  parseSourceMap(info.map)
+                  parseSourceMap(info.map),
                 )
                 const newConsumer = await new SourceMapConsumer(
-                  parseSourceMap(result.map)
+                  parseSourceMap(result.map),
                 )
                 const generator =
                   SourceMapGenerator.fromSourceMap(originalConsumer)
@@ -179,7 +179,7 @@ export class PluginContainer {
                 inlineSourceMap,
                 info.map,
                 info.path,
-                isCSS(info.path)
+                isCSS(info.path),
               )
             : info.contents
         await outputFile(info.path, contents, {
@@ -208,7 +208,7 @@ export class PluginContainer {
             },
           })
         }
-      })
+      }),
     )
 
     for (const plugin of this.plugins) {
@@ -223,14 +223,14 @@ const getSourcemapComment = (
   inline: boolean,
   map: RawSourceMap | string | null | undefined,
   filepath: string,
-  isCssFile: boolean
+  isCssFile: boolean,
 ) => {
   if (!map) return ''
   const prefix = isCssFile ? '/*' : '//'
   const suffix = isCssFile ? ' */' : ''
   const url = inline
     ? `data:application/json;base64,${Buffer.from(
-        typeof map === 'string' ? map : JSON.stringify(map)
+        typeof map === 'string' ? map : JSON.stringify(map),
       ).toString('base64')}`
     : `${path.basename(filepath)}.map`
   return `${prefix}# sourceMappingURL=${url}${suffix}`

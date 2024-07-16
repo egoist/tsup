@@ -27,7 +27,7 @@ const logger = createLogger()
 function rollupDtsFile(
   inputFilePath: string,
   outputFilePath: string,
-  tsconfigFilePath: string
+  tsconfigFilePath: string,
 ) {
   let cwd = process.cwd()
   let packageJsonFullPath = path.join(cwd, 'package.json')
@@ -59,7 +59,7 @@ function rollupDtsFile(
   const imported = getApiExtractor()
   if (!imported) {
     throw new Error(
-      `@microsoft/api-extractor is not installed. Please install it first.`
+      `@microsoft/api-extractor is not installed. Please install it first.`,
     )
   }
   const { ExtractorConfig, Extractor } = imported
@@ -77,7 +77,7 @@ function rollupDtsFile(
 
   if (!extractorResult.succeeded) {
     throw new Error(
-      `API Extractor completed with ${extractorResult.errorCount} errors and ${extractorResult.warningCount} warnings when processing ${inputFilePath}`
+      `API Extractor completed with ${extractorResult.errorCount} errors and ${extractorResult.warningCount} warnings when processing ${inputFilePath}`,
     )
   }
 }
@@ -85,7 +85,7 @@ function rollupDtsFile(
 async function rollupDtsFiles(
   options: NormalizedOptions,
   exports: ExportDeclaration[],
-  format: Format
+  format: Format,
 ) {
   let declarationDir = ensureTempDeclarationDir()
   let outDir = options.outDir || 'dist'
@@ -94,7 +94,7 @@ async function rollupDtsFiles(
 
   let dtsInputFilePath = path.join(
     declarationDir,
-    '_tsup-dts-aggregation' + dtsExtension
+    '_tsup-dts-aggregation' + dtsExtension,
   )
   // @microsoft/api-extractor doesn't support `.d.mts` and `.d.cts` file as a
   // entrypoint yet. So we replace the extension here as a temporary workaround.
@@ -109,29 +109,29 @@ async function rollupDtsFiles(
 
   writeFileSync(
     dtsInputFilePath,
-    formatAggregationExports(exports, declarationDir)
+    formatAggregationExports(exports, declarationDir),
   )
 
   rollupDtsFile(
     dtsInputFilePath,
     dtsOutputFilePath,
-    options.tsconfig || 'tsconfig.json'
+    options.tsconfig || 'tsconfig.json',
   )
 
   for (let [out, sourceFileName] of Object.entries(
-    options.experimentalDts!.entry
+    options.experimentalDts!.entry,
   )) {
     sourceFileName = toAbsolutePath(sourceFileName)
     const outFileName = path.join(outDir, out + dtsExtension)
 
     // Find all declarations that are exported from the current source file
     const currentExports = exports.filter(
-      (declaration) => declaration.sourceFileName === sourceFileName
+      (declaration) => declaration.sourceFileName === sourceFileName,
     )
 
     writeFileSync(
       outFileName,
-      formatDistributionExports(currentExports, outFileName, dtsOutputFilePath)
+      formatDistributionExports(currentExports, outFileName, dtsOutputFilePath),
     )
   }
 }
@@ -144,7 +144,7 @@ function cleanDtsFiles(options: NormalizedOptions) {
 
 export async function runDtsRollup(
   options: NormalizedOptions,
-  exports?: ExportDeclaration[]
+  exports?: ExportDeclaration[],
 ) {
   try {
     const start = Date.now()

@@ -20,7 +20,7 @@ class AliasPool {
       alias = `${name}_alias_${++suffix}`
       if (suffix >= 1000) {
         throw new Error(
-          'Alias generation exceeded limit. Possible infinite loop detected.'
+          'Alias generation exceeded limit. Possible infinite loop detected.',
         )
       }
     }
@@ -35,7 +35,7 @@ class AliasPool {
  */
 function getExports(
   program: ts.Program,
-  fileMapping: Map<string, string>
+  fileMapping: Map<string, string>,
 ): ExportDeclaration[] {
   let checker = program.getTypeChecker()
   let aliasPool = new AliasPool()
@@ -95,7 +95,7 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
     writeByteOrderMark,
     onError,
     sourceFiles,
-    data
+    data,
   ) => {
     const sourceFile = sourceFiles?.[0]
     let sourceFileName = sourceFile?.fileName
@@ -104,7 +104,7 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
       const cwd = program.getCurrentDirectory()
       fileMapping.set(
         toAbsolutePath(sourceFileName, cwd),
-        toAbsolutePath(fileName, cwd)
+        toAbsolutePath(fileName, cwd),
       )
     }
 
@@ -114,7 +114,7 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
       writeByteOrderMark,
       onError,
       sourceFiles,
-      data
+      data,
     )
   }
 
@@ -130,19 +130,19 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
     if (diagnostic.file) {
       let { line, character } = ts.getLineAndCharacterOfPosition(
         diagnostic.file,
-        diagnostic.start!
+        diagnostic.start!,
       )
       let message = ts.flattenDiagnosticMessageText(
         diagnostic.messageText,
-        '\n'
+        '\n',
       )
       diagnosticMessages.push(
-        `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`
+        `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`,
       )
     } else {
       let message = ts.flattenDiagnosticMessageText(
         diagnostic.messageText,
-        '\n'
+        '\n',
       )
       diagnosticMessages.push(message)
     }
@@ -152,7 +152,7 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
   if (diagnosticMessage) {
     logger.error(
       'TSC',
-      'Failed to emit declaration files.\n\n' + diagnosticMessage
+      'Failed to emit declaration files.\n\n' + diagnosticMessage,
     )
     throw new Error('TypeScript compilation failed')
   }
@@ -184,7 +184,7 @@ function emit(compilerOptions?: any, tsconfig?: string) {
       },
     },
     ts.sys,
-    tsconfig ? dirname(tsconfig) : './'
+    tsconfig ? dirname(tsconfig) : './',
   )
 
   let options: ts.CompilerOptions = parsedTsconfig.options
@@ -193,7 +193,7 @@ function emit(compilerOptions?: any, tsconfig?: string) {
   let program: ts.Program = ts.createProgram(
     parsedTsconfig.fileNames,
     options,
-    host
+    host,
   )
 
   let fileMapping = emitDtsFiles(program, host)

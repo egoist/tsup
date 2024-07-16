@@ -44,7 +44,7 @@ export const nativeNodeModulesPlugin = (): Plugin => {
         (args) => ({
           path: args.path,
           namespace: 'file',
-        })
+        }),
       )
 
       // Tell esbuild's default loading behavior to use the "file" loader for
