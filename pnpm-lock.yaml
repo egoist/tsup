@@ -17,6 +17,9 @@ importers:
       chokidar:
         specifier: ^3.6.0
         version: 3.6.0
+      consola:
+        specifier: ^3.2.3
+        version: 3.2.3
       debug:
         specifier: ^4.3.5
         version: 4.3.5
@@ -75,9 +78,6 @@ importers:
       colorette:
         specifier: 2.0.20
         version: 2.0.20
-      consola:
-        specifier: 3.2.3
-        version: 3.2.3
       flat:
         specifier: 6.0.1
         version: 6.0.1
