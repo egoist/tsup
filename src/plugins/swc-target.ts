@@ -1,4 +1,4 @@
-import type { ModuleConfig } from '@swc/core/types'
+import type { ModuleConfig } from '@swc/core'
 import { PrettyError } from '../errors'
 import type { Plugin } from '../plugin'
 import { localRequire } from '../utils'

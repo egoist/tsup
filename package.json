@@ -31,7 +31,7 @@
   "dependencies": {
     "bundle-require": "^4.0.0",
     "cac": "^6.7.14",
-    "chokidar": "^3.5.1",
+    "chokidar": "^3.6.0",
     "debug": "^4.3.5",
     "esbuild": "^0.21.4",
     "execa": "^5.0.0",
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@microsoft/api-extractor": "^7.38.3",
     "@rollup/plugin-json": "6.0.1",
-    "@swc/core": "1.2.218",
+    "@swc/core": "1.6.13",
     "@types/debug": "4.1.12",
     "@types/fs-extra": "11.0.4",
     "@types/node": "20.14.11",
@@ -59,7 +59,7 @@
     "postcss": "8.4.12",
     "postcss-simple-vars": "6.0.3",
     "prettier": "3.3.3",
-    "resolve": "1.20.0",
+    "resolve": "1.22.8",
     "rollup-plugin-dts": "6.1.0",
     "sass": "1.62.1",
     "strip-json-comments": "4.0.0",

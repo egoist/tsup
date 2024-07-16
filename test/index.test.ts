@@ -386,7 +386,7 @@ test('decorator metadata', async () => {
       }`,
   })
   const contents = await getFileContent('dist/input.js')
-  expect(contents).toContain(`__metadata("design:type", Function)`)
+  expect(contents).toContain(`_ts_metadata("design:type", Function)`)
 })
 
 test('inject style', async () => {
@@ -468,7 +468,7 @@ test('es5 target', async () => {
       flags: ['--target', 'es5'],
     },
   )
-  expect(output).toMatch(/createClass/)
+  expect(output).toMatch(/_create_class/)
   expect(outFiles).toEqual(['input.js'])
 })
 
