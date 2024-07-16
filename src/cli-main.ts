@@ -1,5 +1,5 @@
 import { cac } from 'cac'
-import flat from 'flat'
+import { flatten } from 'flat'
 import type { Format, Options } from '.'
 import { version } from '../package.json'
 import { slash } from './utils'
@@ -139,7 +139,7 @@ export async function main(options: Options = {}) {
         options.inject = inject
       }
       if (flags.define) {
-        const define: Record<string, string> = flat(flags.define)
+        const define: Record<string, string> = flatten(flags.define)
         options.define = define
       }
       if (flags.loader) {
