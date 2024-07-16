@@ -122,6 +122,9 @@ export type Options = {
   onSuccess?:
     | string
     | (() => Promise<void | undefined | (() => void | Promise<void>)>)
+  onDTSSuccess?:
+    | string
+    | (() => Promise<void | undefined | (() => void | Promise<void>)>)
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string
