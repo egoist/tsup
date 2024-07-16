@@ -18,20 +18,6 @@ exports.foo = foo;
 "
 `;
 
-exports[`declaration files with multiple entrypoints #316 1`] = `
-"declare const foo = 1;
-
-export { foo };
-"
-`;
-
-exports[`declaration files with multiple entrypoints #316 2`] = `
-"declare const bar = "bar";
-
-export { bar };
-"
-`;
-
 exports[`disable code splitting to get proper module.exports = 1`] = `
 ""use strict";
 
