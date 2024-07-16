@@ -18,9 +18,9 @@ export function handleError(error: any) {
     console.error(
       colors.bold(
         colors.red(
-          `Error parsing: ${error.loc.file}:${error.loc.line}:${error.loc.column}`
-        )
-      )
+          `Error parsing: ${error.loc.file}:${error.loc.line}:${error.loc.column}`,
+        ),
+      ),
     )
   }
   if (error.frame) {

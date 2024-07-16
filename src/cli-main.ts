@@ -26,44 +26,44 @@ export async function main(options: Options = {}) {
     .option('--minify-syntax', 'Minify syntax')
     .option(
       '--keep-names',
-      'Keep original function and class names in minified code'
+      'Keep original function and class names in minified code',
     )
     .option('--target <target>', 'Bundle target, "es20XX" or "esnext"', {
       default: 'es2017',
     })
     .option(
       '--legacy-output',
-      'Output different formats to different folder instead of using different extensions'
+      'Output different formats to different folder instead of using different extensions',
     )
     .option('--dts [entry]', 'Generate declaration file')
     .option('--dts-resolve', 'Resolve externals types used for d.ts files')
     .option('--dts-only', 'Emit declaration files only')
     .option(
       '--experimental-dts [entry]',
-      'Generate declaration file (experimental)'
+      'Generate declaration file (experimental)',
     )
     .option(
       '--sourcemap [inline]',
-      'Generate external sourcemap, or inline source: --sourcemap inline'
+      'Generate external sourcemap, or inline source: --sourcemap inline',
     )
     .option(
       '--watch [path]',
-      'Watch mode, if path is not specified, it watches the current folder ".". Repeat "--watch" for more than one path'
+      'Watch mode, if path is not specified, it watches the current folder ".". Repeat "--watch" for more than one path',
     )
     .option('--ignore-watch <path>', 'Ignore custom paths in watch mode')
     .option(
       '--onSuccess <command>',
-      'Execute command after successful build, specially useful for watch mode'
+      'Execute command after successful build, specially useful for watch mode',
     )
     .option('--env.* <value>', 'Define compile-time env variables')
     .option(
       '--inject <file>',
-      'Replace a global variable with an import from another file'
+      'Replace a global variable with an import from another file',
     )
     .option('--define.* <value>', 'Define compile-time constants')
     .option(
       '--external <name>',
-      'Mark specific packages / package.json (dependencies and peerDependencies) as external'
+      'Mark specific packages / package.json (dependencies and peerDependencies) as external',
     )
     .option('--global-name <name>', 'Global variable name for iife format')
     .option('--jsxFactory <jsxFactory>', 'Name of JSX factory function', {
@@ -77,7 +77,7 @@ export async function main(options: Options = {}) {
     .option('--clean', 'Clean output directory')
     .option(
       '--silent',
-      'Suppress non-error logs (excluding "onSuccess" process output)'
+      'Suppress non-error logs (excluding "onSuccess" process output)',
     )
     .option('--pure <express>', 'Mark specific expressions as pure')
     .option('--metafile', 'Emit esbuild metafile (a JSON file)')
@@ -92,12 +92,12 @@ export async function main(options: Options = {}) {
     .option('--inject-style', 'Inject style tag to document head')
     .option(
       '--treeshake [strategy]',
-      'Using Rollup for treeshaking instead, "recommended" or "smallest" or "safest"'
+      'Using Rollup for treeshaking instead, "recommended" or "smallest" or "safest"',
     )
     .option('--publicDir [dir]', 'Copy public directory to output directory')
     .option(
       '--killSignal <signal>',
-      'Signal to kill child process, "SIGTERM" or "SIGKILL"'
+      'Signal to kill child process, "SIGTERM" or "SIGKILL"',
     )
     .option('--cjsInterop', 'Enable cjs interop')
     .action(async (files: string[], flags) => {

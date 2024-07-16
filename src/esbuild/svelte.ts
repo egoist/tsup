@@ -22,7 +22,7 @@ export const sveltePlugin = ({
         return {
           path: path.relative(
             process.cwd(),
-            path.join(args.resolveDir, args.path)
+            path.join(args.resolveDir, args.path),
           ),
           namespace: 'svelte-css',
         }
@@ -97,7 +97,7 @@ export const sveltePlugin = ({
                 },
             {
               filename: args.path,
-            }
+            },
           )
           const result = svelte.compile(preprocess.code, {
             filename,

@@ -21,7 +21,7 @@ export const externalPlugin = ({
     setup(build) {
       if (skipNodeModulesBundle) {
         const resolvePatterns = tsconfigPathsToRegExp(
-          tsconfigResolvePaths || {}
+          tsconfigResolvePaths || {},
         )
         build.onResolve({ filter: /.*/ }, (args) => {
           // Resolve `paths` from tsconfig

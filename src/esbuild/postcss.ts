@@ -74,7 +74,7 @@ export const postcssPlugin = ({
           `,
             loader: 'js',
           }
-        }
+        },
       )
 
       build.onLoad({ filter: /\.css$/ }, async (args) => {
@@ -126,7 +126,7 @@ export const postcssPlugin = ({
             typeof inject === 'function'
               ? inject(JSON.stringify(contents), args.path)
               : `import styleInject from '#style-inject';styleInject(${JSON.stringify(
-                  contents
+                  contents,
                 )})`
 
           return {

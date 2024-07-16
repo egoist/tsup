@@ -17,7 +17,7 @@ export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
       if (!swc) {
         logger.warn(
           build.initialOptions.format!,
-          `You have emitDecoratorMetadata enabled but @swc/core was not installed, skipping swc plugin`
+          `You have emitDecoratorMetadata enabled but @swc/core was not installed, skipping swc plugin`,
         )
         return
       }
@@ -58,7 +58,7 @@ export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
               : source
           })
           code += `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
-            JSON.stringify(map)
+            JSON.stringify(map),
           ).toString('base64')}`
         }
         return {

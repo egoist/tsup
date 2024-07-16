@@ -19,7 +19,7 @@ export type ContextForOutPathGeneration = {
 export type OutExtensionObject = { js?: string; dts?: string }
 
 export type OutExtensionFactory = (
-  ctx: ContextForOutPathGeneration
+  ctx: ContextForOutPathGeneration,
 ) => OutExtensionObject
 
 export type DtsConfig = {

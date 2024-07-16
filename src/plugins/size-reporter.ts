@@ -14,7 +14,7 @@ export const sizeReporter = (): Plugin => {
             ...res,
             [file.name]: file.size,
           }
-        }, {})
+        }, {}),
       )
     },
   }

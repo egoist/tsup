@@ -15,7 +15,7 @@ const loadJson = async (filepath: string) => {
       throw new Error(
         `Failed to parse ${path.relative(process.cwd(), filepath)}: ${
           error.message
-        }`
+        }`,
       )
     } else {
       throw error
@@ -34,7 +34,7 @@ joycon.addLoader(jsonLoader)
 
 export async function loadTsupConfig(
   cwd: string,
-  configFile?: string
+  configFile?: string,
 ): Promise<{ path?: string; data?: ReturnType<typeof defineConfig> }> {
   const configJoycon = new JoyCon()
   const configPath = await configJoycon.resolve({
@@ -90,7 +90,7 @@ export async function loadPkg(cwd: string, clearCache: boolean = false) {
  */
 export async function getProductionDeps(
   cwd: string,
-  clearCache: boolean = false
+  clearCache: boolean = false,
 ) {
   const data = await loadPkg(cwd, clearCache)
 
@@ -98,7 +98,7 @@ export async function getProductionDeps(
     new Set([
       ...Object.keys(data.dependencies || {}),
       ...Object.keys(data.peerDependencies || {}),
-    ])
+    ]),
   )
 
   return deps

@@ -29,7 +29,7 @@ export const terserPlugin = ({
 
       if (!terser) {
         throw new PrettyError(
-          'terser is required for terser minification. Please install it with `npm install terser -D`'
+          'terser is required for terser minification. Please install it with `npm install terser -D`',
         )
       }
 
@@ -46,7 +46,7 @@ export const terserPlugin = ({
       try {
         const minifiedOutput = await minify(
           { [info.path]: code },
-          { ...defaultOptions, ...terserOptions }
+          { ...defaultOptions, ...terserOptions },
         )
 
         logger.info('TERSER', 'Minifying with Terser')

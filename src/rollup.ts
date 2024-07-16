@@ -19,7 +19,7 @@ const parseCompilerOptions = (compilerOptions?: any) => {
   const { options } = ts.parseJsonConfigFileContent(
     { compilerOptions },
     ts.sys,
-    './'
+    './',
   )
   return options
 }
@@ -35,7 +35,7 @@ type RollupConfig = {
 }
 
 const getRollupConfig = async (
-  options: NormalizedOptions
+  options: NormalizedOptions,
 ): Promise<RollupConfig> => {
   setSilent(options.silent)
 
@@ -60,7 +60,7 @@ const getRollupConfig = async (
     // `paths` should be handled by rollup-plugin-dts
     if (compilerOptions.paths) {
       const res = Object.keys(compilerOptions.paths).map(
-        (p) => new RegExp(`^${p.replace('*', '.+')}$`)
+        (p) => new RegExp(`^${p.replace('*', '.+')}$`),
       )
       tsResolveOptions.ignore = (source) => {
         return res.some((re) => re.test(source))
@@ -103,7 +103,7 @@ const getRollupConfig = async (
 
       return code.replace(
         /(?<=(?<=[;}]|^)\s*export\s*){\s*([\w$]+)\s*as\s+default\s*}/,
-        `= $1`
+        `= $1`,
       )
     },
   }
@@ -192,13 +192,13 @@ async function runRollup(options: RollupConfig) {
       outputs.reduce((res, info) => {
         const name = path.relative(
           process.cwd(),
-          path.join(options.outputConfig[0].dir || '.', info.fileName)
+          path.join(options.outputConfig[0].dir || '.', info.fileName),
         )
         return {
           ...res,
           [name]: info.type === 'chunk' ? info.code.length : info.source.length,
         }
-      }, {})
+      }, {}),
     )
   } catch (error) {
     handleError(error)

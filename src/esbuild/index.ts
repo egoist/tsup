@@ -23,7 +23,7 @@ import { OutExtensionFactory } from '../options'
 const getOutputExtensionMap = (
   options: NormalizedOptions,
   format: Format,
-  pkgType: string | undefined
+  pkgType: string | undefined,
 ) => {
   const outExtension: OutExtensionFactory =
     options.outExtension || defaultOutExtension
@@ -72,7 +72,7 @@ export async function runEsbuild(
     buildDependencies: Set<string>
     logger: Logger
     pluginContainer: PluginContainer
-  }
+  },
 ) {
   const pkg = await loadPkg(process.cwd())
   const deps = await getProductionDeps(process.cwd())
@@ -103,8 +103,8 @@ export async function runEsbuild(
     format === 'iife'
       ? false
       : typeof options.splitting === 'boolean'
-      ? options.splitting
-      : format === 'esm'
+        ? options.splitting
+        : format === 'esm'
 
   const platform = options.platform || 'node'
   const loader = options.loader || {}
@@ -251,7 +251,7 @@ export async function runEsbuild(
     const messages = result.warnings.filter((warning) => {
       if (
         warning.text.includes(
-          `This call to "require" will not be bundled because`
+          `This call to "require" will not be bundled because`,
         ) ||
         warning.text.includes(`Indirect calls to "require" will not be bundled`)
       )
@@ -290,7 +290,7 @@ export async function runEsbuild(
       await fs.promises.writeFile(
         outPath,
         JSON.stringify(result.metafile),
-        'utf8'
+        'utf8',
       )
     }
   }

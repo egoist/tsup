@@ -1,4 +1,4 @@
-import type { ModuleConfig } from '@swc/core/types';
+import type { ModuleConfig } from '@swc/core/types'
 import { PrettyError } from '../errors'
 import { Plugin } from '../plugin'
 import { localRequire } from '../utils'
@@ -7,7 +7,7 @@ const TARGETS = ['es5', 'es3'] as const
 
 export const swcTarget = (): Plugin => {
   let enabled = false
-  let target: typeof TARGETS[number]
+  let target: (typeof TARGETS)[number]
 
   return {
     name: 'swc-target',
@@ -31,7 +31,7 @@ export const swcTarget = (): Plugin => {
 
       if (!swc) {
         throw new PrettyError(
-          `@swc/core is required for ${target} target. Please install it with \`npm install @swc/core -D\``
+          `@swc/core is required for ${target} target. Please install it with \`npm install @swc/core -D\``,
         )
       }
 
@@ -57,7 +57,7 @@ export const swcTarget = (): Plugin => {
               : undefined,
         },
         module: {
-          type: this.format === 'cjs' ? 'commonjs' : 'es6'
+          type: this.format === 'cjs' ? 'commonjs' : 'es6',
         } as ModuleConfig,
       })
       return {
