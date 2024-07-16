@@ -1,8 +1,8 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`code splitting in cjs format 1`] = `
-"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// input.ts
-var foo = () => Promise.resolve().then(() => require(\\"./foo-D62QZYUQ.js\\"));
+""use strict";Object.defineProperty(exports, "__esModule", {value: true});// input.ts
+var foo = () => Promise.resolve().then(() => require("./foo-D62QZYUQ.js"));
 
 
 exports.foo = foo;
@@ -10,8 +10,8 @@ exports.foo = foo;
 `;
 
 exports[`code splitting in cjs format 2`] = `
-"\\"use strict\\";Object.defineProperty(exports, \\"__esModule\\", {value: true});// another-input.ts
-var foo = () => Promise.resolve().then(() => require(\\"./foo-D62QZYUQ.js\\"));
+""use strict";Object.defineProperty(exports, "__esModule", {value: true});// another-input.ts
+var foo = () => Promise.resolve().then(() => require("./foo-D62QZYUQ.js"));
 
 
 exports.foo = foo;
@@ -26,31 +26,22 @@ export { foo };
 `;
 
 exports[`declaration files with multiple entrypoints #316 2`] = `
-"declare const bar = \\"bar\\";
+"declare const bar = "bar";
 
 export { bar };
 "
 `;
 
 exports[`disable code splitting to get proper module.exports = 1`] = `
-"\\"use strict\\";
+""use strict";
 
 // input.ts
 module.exports = 123;
 "
 `;
 
-exports[`enable --dts-resolve for specific module 1`] = `
-"export * from 'vue';
-
-type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> & Required<Pick<T, RK>>
-
-export type { MarkRequired };
-"
-`;
-
 exports[`external 1`] = `
-"\\"use strict\\";
+""use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -60,14 +51,14 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === \\"object\\" || typeof from === \\"function\\") {
+  if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
         __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, \\"__esModule\\", { value: true }), mod);
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // input.ts
 var input_exports = {};
@@ -78,14 +69,14 @@ __export(input_exports, {
   qux: () => import_qux.qux
 });
 module.exports = __toCommonJS(input_exports);
-var import_foo = require(\\"foo\\");
-var import_bar = require(\\"bar\\");
+var import_foo = require("foo");
+var import_bar = require("bar");
 
 // node_modules/baz/index.ts
-var baz = \\"baz\\";
+var baz = "baz";
 
 // input.ts
-var import_qux = require(\\"qux\\");
+var import_qux = require("qux");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   bar,
@@ -96,18 +87,8 @@ var import_qux = require(\\"qux\\");
 "
 `;
 
-exports[`import css 1`] = `
-"\\"use strict\\";
-"
-`;
-
-exports[`import css in --dts 1`] = `
-"\\"use strict\\";
-"
-`;
-
 exports[`multiple targets 1`] = `
-"\\"use strict\\";
+""use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -117,14 +98,14 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === \\"object\\" || typeof from === \\"function\\") {
+  if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
         __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, \\"__esModule\\", { value: true }), mod);
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // input.ts
 var input_exports = {};
@@ -141,7 +122,7 @@ var answer = 42;
 `;
 
 exports[`node protocol 1`] = `
-"\\"use strict\\";
+""use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -149,7 +130,7 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === \\"object\\" || typeof from === \\"function\\") {
+  if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
         __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
@@ -159,268 +140,20 @@ var __copyProps = (to, from, except, desc) => {
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
   // If the importer is in node compatibility mode or this is not an ESM
   // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. \\"__esModule\\" has not been set), then set
-  // \\"default\\" to the CommonJS \\"module.exports\\" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, \\"default\\", { value: mod, enumerable: true }) : target,
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
 
 // input.ts
-var import_node_fs = __toESM(require(\\"fs\\"));
+var import_node_fs = __toESM(require("fs"));
 console.log(import_node_fs.default);
 "
 `;
 
-exports[`not bundle \`package/subpath\` in dts (resolve) 1`] = `
-"import * as foo_bar from 'foo/bar';
-
-declare const stuff: foo_bar.Foobar;
-
-export { stuff };
-"
-`;
-
-exports[`should emit declaration files with experimentalDts 1`] = `
-"
-//////////////////////////////////////////////////////////////////////
-// dist/_tsup-dts-rollup.d.mts
-//////////////////////////////////////////////////////////////////////
-
-import { renderToNodeStream } from 'react-dom/server';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { renderToStaticNodeStream } from 'react-dom/server';
-import { renderToString } from 'react-dom/server';
-import * as ServerThirdPartyNamespace from 'react-dom';
-import { version } from 'react-dom/server';
-
-declare interface ClientRenderOptions {
-    document: boolean;
-}
-export { ClientRenderOptions }
-export { ClientRenderOptions as ClientRenderOptions_alias_1 }
-
-export declare function default_alias(options: ServerRenderOptions): void;
-
-declare function render(options: ClientRenderOptions): string;
-export { render }
-export { render as render_alias_1 }
-
-/**
- * Comment for server render function
- */
-export declare function render_alias_2(options: ServerRenderOptions): string;
-
-export { renderToNodeStream }
-
-export { renderToStaticMarkup }
-
-export { renderToStaticNodeStream }
-
-export { renderToString }
-
-export declare class ServerClass {
-}
-
-declare const serverConstant = 1;
-export { serverConstant }
-export { serverConstant as serverConstantAlias }
-
-export declare interface ServerRenderOptions {
-    /**
-     * Comment for ServerRenderOptions.stream
-     *
-     * @public
-     *
-     * @my_custom_tag
-     */
-    stream: boolean;
-}
-
-export { ServerThirdPartyNamespace }
-
-declare function sharedFunction<T>(value: T): T | null;
-export { sharedFunction }
-export { sharedFunction as sharedFunction_alias_1 }
-export { sharedFunction as sharedFunction_alias_2 }
-export { sharedFunction as sharedFunction_alias_3 }
-
-declare type sharedType = {
-    shared: boolean;
-};
-export { sharedType }
-export { sharedType as sharedType_alias_1 }
-export { sharedType as sharedType_alias_2 }
-export { sharedType as sharedType_alias_3 }
-
-export declare const VERSION: \\"0.0.0\\";
-
-export { version }
-
-export { }
-
-
-//////////////////////////////////////////////////////////////////////
-// dist/_tsup-dts-rollup.d.ts
-//////////////////////////////////////////////////////////////////////
-
-import { renderToNodeStream } from 'react-dom/server';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { renderToStaticNodeStream } from 'react-dom/server';
-import { renderToString } from 'react-dom/server';
-import * as ServerThirdPartyNamespace from 'react-dom';
-import { version } from 'react-dom/server';
-
-declare interface ClientRenderOptions {
-    document: boolean;
-}
-export { ClientRenderOptions }
-export { ClientRenderOptions as ClientRenderOptions_alias_1 }
-
-export declare function default_alias(options: ServerRenderOptions): void;
-
-declare function render(options: ClientRenderOptions): string;
-export { render }
-export { render as render_alias_1 }
-
-/**
- * Comment for server render function
- */
-export declare function render_alias_2(options: ServerRenderOptions): string;
-
-export { renderToNodeStream }
-
-export { renderToStaticMarkup }
-
-export { renderToStaticNodeStream }
-
-export { renderToString }
-
-export declare class ServerClass {
-}
-
-declare const serverConstant = 1;
-export { serverConstant }
-export { serverConstant as serverConstantAlias }
-
-export declare interface ServerRenderOptions {
-    /**
-     * Comment for ServerRenderOptions.stream
-     *
-     * @public
-     *
-     * @my_custom_tag
-     */
-    stream: boolean;
-}
-
-export { ServerThirdPartyNamespace }
-
-declare function sharedFunction<T>(value: T): T | null;
-export { sharedFunction }
-export { sharedFunction as sharedFunction_alias_1 }
-export { sharedFunction as sharedFunction_alias_2 }
-export { sharedFunction as sharedFunction_alias_3 }
-
-declare type sharedType = {
-    shared: boolean;
-};
-export { sharedType }
-export { sharedType as sharedType_alias_1 }
-export { sharedType as sharedType_alias_2 }
-export { sharedType as sharedType_alias_3 }
-
-export declare const VERSION: \\"0.0.0\\";
-
-export { version }
-
-export { }
-
-
-//////////////////////////////////////////////////////////////////////
-// dist/index.d.mts
-//////////////////////////////////////////////////////////////////////
-
-export { VERSION } from './_tsup-dts-rollup';
-export { render_alias_1 as render } from './_tsup-dts-rollup';
-export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
-export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
-export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
-
-
-//////////////////////////////////////////////////////////////////////
-// dist/index.d.ts
-//////////////////////////////////////////////////////////////////////
-
-export { VERSION } from './_tsup-dts-rollup';
-export { render_alias_1 as render } from './_tsup-dts-rollup';
-export { ClientRenderOptions_alias_1 as ClientRenderOptions } from './_tsup-dts-rollup';
-export { sharedFunction_alias_1 as sharedFunction } from './_tsup-dts-rollup';
-export { sharedType_alias_1 as sharedType } from './_tsup-dts-rollup';
-
-
-//////////////////////////////////////////////////////////////////////
-// dist/my-lib-client.d.mts
-//////////////////////////////////////////////////////////////////////
-
-export { render } from './_tsup-dts-rollup';
-export { ClientRenderOptions } from './_tsup-dts-rollup';
-export { sharedFunction } from './_tsup-dts-rollup';
-export { sharedType } from './_tsup-dts-rollup';
-
-
-//////////////////////////////////////////////////////////////////////
-// dist/my-lib-client.d.ts
-//////////////////////////////////////////////////////////////////////
-
-export { render } from './_tsup-dts-rollup';
-export { ClientRenderOptions } from './_tsup-dts-rollup';
-export { sharedFunction } from './_tsup-dts-rollup';
-export { sharedType } from './_tsup-dts-rollup';
-
-
-//////////////////////////////////////////////////////////////////////
-// dist/server/index.d.mts
-//////////////////////////////////////////////////////////////////////
-
-export { render_alias_2 as render } from '../_tsup-dts-rollup';
-export { default_alias as default } from '../_tsup-dts-rollup';
-export { ServerRenderOptions } from '../_tsup-dts-rollup';
-export { serverConstant } from '../_tsup-dts-rollup';
-export { serverConstantAlias } from '../_tsup-dts-rollup';
-export { ServerClass } from '../_tsup-dts-rollup';
-export { ServerThirdPartyNamespace } from '../_tsup-dts-rollup';
-export { sharedFunction_alias_2 as sharedFunction } from '../_tsup-dts-rollup';
-export { sharedType_alias_2 as sharedType } from '../_tsup-dts-rollup';
-export { renderToString } from '../_tsup-dts-rollup';
-export { renderToNodeStream } from '../_tsup-dts-rollup';
-export { renderToStaticMarkup } from '../_tsup-dts-rollup';
-export { renderToStaticNodeStream } from '../_tsup-dts-rollup';
-export { version } from '../_tsup-dts-rollup';
-
-
-//////////////////////////////////////////////////////////////////////
-// dist/server/index.d.ts
-//////////////////////////////////////////////////////////////////////
-
-export { render_alias_2 as render } from '../_tsup-dts-rollup';
-export { default_alias as default } from '../_tsup-dts-rollup';
-export { ServerRenderOptions } from '../_tsup-dts-rollup';
-export { serverConstant } from '../_tsup-dts-rollup';
-export { serverConstantAlias } from '../_tsup-dts-rollup';
-export { ServerClass } from '../_tsup-dts-rollup';
-export { ServerThirdPartyNamespace } from '../_tsup-dts-rollup';
-export { sharedFunction_alias_2 as sharedFunction } from '../_tsup-dts-rollup';
-export { sharedType_alias_2 as sharedType } from '../_tsup-dts-rollup';
-export { renderToString } from '../_tsup-dts-rollup';
-export { renderToNodeStream } from '../_tsup-dts-rollup';
-export { renderToStaticMarkup } from '../_tsup-dts-rollup';
-export { renderToStaticNodeStream } from '../_tsup-dts-rollup';
-export { version } from '../_tsup-dts-rollup';
-"
-`;
-
 exports[`simple 1`] = `
-"\\"use strict\\";
+""use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -430,14 +163,14 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === \\"object\\" || typeof from === \\"function\\") {
+  if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
         __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, \\"__esModule\\", { value: true }), mod);
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // input.ts
 var input_exports = {};
@@ -447,63 +180,9 @@ __export(input_exports, {
 module.exports = __toCommonJS(input_exports);
 
 // foo.ts
-var foo_default = \\"foo\\";
+var foo_default = "foo";
 
 // input.ts
 var input_default = foo_default;
-"
-`;
-
-exports[`support baseUrl and paths in tsconfig.json 1`] = `
-"var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === \\"object\\" || typeof from === \\"function\\") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toCommonJS = (mod) => __copyProps(__defProp({}, \\"__esModule\\", { value: true }), mod);
-
-// input.ts
-var input_exports = {};
-__export(input_exports, {
-  foo: () => foo
-});
-module.exports = __toCommonJS(input_exports);
-
-// foo.ts
-var foo = \\"foo\\";
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  foo
-});
-"
-`;
-
-exports[`support baseUrl and paths in tsconfig.json in --dts build 1`] = `
-"declare const foo = \\"foo\\";
-
-export { foo };
-"
-`;
-
-exports[`support baseUrl and paths in tsconfig.json in --dts-resolve build 1`] = `
-"declare const foo = \\"foo\\";
-
-export { foo };
-"
-`;
-
-exports[`support tailwindcss postcss plugin 1`] = `
-"\\"use strict\\";
 "
 `;

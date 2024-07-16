@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`import css 1`] = `
+""use strict";
+"
+`;
+
+exports[`import css in --dts 1`] = `
+""use strict";
+"
+`;
+
+exports[`support tailwindcss postcss plugin 1`] = `
+""use strict";
+"
+`;
