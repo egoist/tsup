@@ -38,10 +38,17 @@ exports[`should emit declaration files with experimentalDts 1`] = `
 // dist/_tsup-dts-rollup.d.mts
 //////////////////////////////////////////////////////////////////////
 
+import { PipeableStream } from 'react-dom/server';
+import { ReactDOMServerReadableStream } from 'react-dom/server';
 import { renderToNodeStream } from 'react-dom/server';
+import { renderToPipeableStream } from 'react-dom/server';
+import { RenderToPipeableStreamOptions } from 'react-dom/server';
+import { renderToReadableStream } from 'react-dom/server';
+import { RenderToReadableStreamOptions } from 'react-dom/server';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { renderToStaticNodeStream } from 'react-dom/server';
 import { renderToString } from 'react-dom/server';
+import { ServerOptions } from 'react-dom/server';
 import * as ServerThirdPartyNamespace from 'react-dom';
 import { version } from 'react-dom/server';
 
@@ -53,6 +60,10 @@ export { ClientRenderOptions as ClientRenderOptions_alias_1 }
 
 export declare function default_alias(options: ServerRenderOptions): void;
 
+export { PipeableStream }
+
+export { ReactDOMServerReadableStream }
+
 declare function render(options: ClientRenderOptions): string;
 export { render }
 export { render as render_alias_1 }
@@ -63,6 +74,14 @@ export { render as render_alias_1 }
 export declare function render_alias_2(options: ServerRenderOptions): string;
 
 export { renderToNodeStream }
+
+export { renderToPipeableStream }
+
+export { RenderToPipeableStreamOptions }
+
+export { renderToReadableStream }
+
+export { RenderToReadableStreamOptions }
 
 export { renderToStaticMarkup }
 
@@ -76,6 +95,8 @@ export declare class ServerClass {
 declare const serverConstant = 1;
 export { serverConstant }
 export { serverConstant as serverConstantAlias }
+
+export { ServerOptions }
 
 export declare interface ServerRenderOptions {
     /**
@@ -115,10 +136,17 @@ export { }
 // dist/_tsup-dts-rollup.d.ts
 //////////////////////////////////////////////////////////////////////
 
+import { PipeableStream } from 'react-dom/server';
+import { ReactDOMServerReadableStream } from 'react-dom/server';
 import { renderToNodeStream } from 'react-dom/server';
+import { renderToPipeableStream } from 'react-dom/server';
+import { RenderToPipeableStreamOptions } from 'react-dom/server';
+import { renderToReadableStream } from 'react-dom/server';
+import { RenderToReadableStreamOptions } from 'react-dom/server';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { renderToStaticNodeStream } from 'react-dom/server';
 import { renderToString } from 'react-dom/server';
+import { ServerOptions } from 'react-dom/server';
 import * as ServerThirdPartyNamespace from 'react-dom';
 import { version } from 'react-dom/server';
 
@@ -130,6 +158,10 @@ export { ClientRenderOptions as ClientRenderOptions_alias_1 }
 
 export declare function default_alias(options: ServerRenderOptions): void;
 
+export { PipeableStream }
+
+export { ReactDOMServerReadableStream }
+
 declare function render(options: ClientRenderOptions): string;
 export { render }
 export { render as render_alias_1 }
@@ -140,6 +172,14 @@ export { render as render_alias_1 }
 export declare function render_alias_2(options: ServerRenderOptions): string;
 
 export { renderToNodeStream }
+
+export { renderToPipeableStream }
+
+export { RenderToPipeableStreamOptions }
+
+export { renderToReadableStream }
+
+export { RenderToReadableStreamOptions }
 
 export { renderToStaticMarkup }
 
@@ -153,6 +193,8 @@ export declare class ServerClass {
 declare const serverConstant = 1;
 export { serverConstant }
 export { serverConstant as serverConstantAlias }
+
+export { ServerOptions }
 
 export declare interface ServerRenderOptions {
     /**
@@ -243,10 +285,17 @@ export { ServerClass } from '../_tsup-dts-rollup';
 export { ServerThirdPartyNamespace } from '../_tsup-dts-rollup';
 export { sharedFunction_alias_2 as sharedFunction } from '../_tsup-dts-rollup';
 export { sharedType_alias_2 as sharedType } from '../_tsup-dts-rollup';
+export { renderToPipeableStream } from '../_tsup-dts-rollup';
 export { renderToString } from '../_tsup-dts-rollup';
 export { renderToNodeStream } from '../_tsup-dts-rollup';
 export { renderToStaticMarkup } from '../_tsup-dts-rollup';
 export { renderToStaticNodeStream } from '../_tsup-dts-rollup';
+export { renderToReadableStream } from '../_tsup-dts-rollup';
+export { RenderToPipeableStreamOptions } from '../_tsup-dts-rollup';
+export { PipeableStream } from '../_tsup-dts-rollup';
+export { ServerOptions } from '../_tsup-dts-rollup';
+export { RenderToReadableStreamOptions } from '../_tsup-dts-rollup';
+export { ReactDOMServerReadableStream } from '../_tsup-dts-rollup';
 export { version } from '../_tsup-dts-rollup';
 
 
@@ -263,10 +312,17 @@ export { ServerClass } from '../_tsup-dts-rollup';
 export { ServerThirdPartyNamespace } from '../_tsup-dts-rollup';
 export { sharedFunction_alias_2 as sharedFunction } from '../_tsup-dts-rollup';
 export { sharedType_alias_2 as sharedType } from '../_tsup-dts-rollup';
+export { renderToPipeableStream } from '../_tsup-dts-rollup';
 export { renderToString } from '../_tsup-dts-rollup';
 export { renderToNodeStream } from '../_tsup-dts-rollup';
 export { renderToStaticMarkup } from '../_tsup-dts-rollup';
 export { renderToStaticNodeStream } from '../_tsup-dts-rollup';
+export { renderToReadableStream } from '../_tsup-dts-rollup';
+export { RenderToPipeableStreamOptions } from '../_tsup-dts-rollup';
+export { PipeableStream } from '../_tsup-dts-rollup';
+export { ServerOptions } from '../_tsup-dts-rollup';
+export { RenderToReadableStreamOptions } from '../_tsup-dts-rollup';
+export { ReactDOMServerReadableStream } from '../_tsup-dts-rollup';
 export { version } from '../_tsup-dts-rollup';
 "
 `;

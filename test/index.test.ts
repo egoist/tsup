@@ -569,7 +569,7 @@ test('use rollup for treeshaking', async () => {
     },
   )
   expect(await getFileContent('dist/input.mjs')).toContain(
-    `function useRoute() {
+    `function useRoute(_name) {
   return inject(routeLocationKey);
 }`,
   )
