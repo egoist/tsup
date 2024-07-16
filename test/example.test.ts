@@ -1,7 +1,7 @@
 import { test } from 'vitest'
 import { getTestName, run } from './utils'
 
-test.concurrent('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
+test('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
   await run(
     getTestName(),
     {
@@ -15,7 +15,7 @@ test.concurrent('bundle vue and ts-essentials with --dts --dts-resolve flag', as
   )
 })
 
-test.concurrent('bundle @egoist/path-parser with --dts --dts-resolve flag', async () => {
+test('bundle @egoist/path-parser with --dts --dts-resolve flag', async () => {
   await run(
     getTestName(),
     {

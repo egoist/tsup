@@ -147,8 +147,8 @@ test('should emit dts chunks per format', async () => {
     'input2.d.ts',
     'input2.js',
     'input2.mjs',
-    'shared-qBqaX8Tr.d.mts',
-    'shared-qBqaX8Tr.d.ts',
+    'shared-jWa9aNVo.d.mts',
+    'shared-jWa9aNVo.d.ts',
   ])
 })
 
@@ -192,8 +192,8 @@ test('should emit dts chunks per format (type: module)', async () => {
     'input2.d.cts',
     'input2.d.ts',
     'input2.js',
-    'shared-qBqaX8Tr.d.cts',
-    'shared-qBqaX8Tr.d.ts',
+    'shared-jWa9aNVo.d.cts',
+    'shared-jWa9aNVo.d.ts',
   ])
 })
 

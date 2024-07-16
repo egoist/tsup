@@ -39,7 +39,7 @@
     "joycon": "^3.0.1",
     "postcss-load-config": "^4.0.1",
     "resolve-from": "^5.0.0",
-    "rollup": "^4.0.2",
+    "rollup": "^4.18.1",
     "source-map": "0.8.0-beta.0",
     "sucrase": "^3.35.0",
     "tree-kill": "^1.2.2"
