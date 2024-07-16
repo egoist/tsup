@@ -1,8 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`code splitting in cjs format 1`] = `
-""use strict";Object.defineProperty(exports, "__esModule", {value: true});// input.ts
-var foo = () => Promise.resolve().then(() => require("./foo-D62QZYUQ.js"));
+""use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }// input.ts
+var foo = () => Promise.resolve().then(() => _interopRequireWildcard(require("./foo-D62QZYUQ.js")));
 
 
 exports.foo = foo;
@@ -10,8 +10,8 @@ exports.foo = foo;
 `;
 
 exports[`code splitting in cjs format 2`] = `
-""use strict";Object.defineProperty(exports, "__esModule", {value: true});// another-input.ts
-var foo = () => Promise.resolve().then(() => require("./foo-D62QZYUQ.js"));
+""use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }// another-input.ts
+var foo = () => Promise.resolve().then(() => _interopRequireWildcard(require("./foo-D62QZYUQ.js")));
 
 
 exports.foo = foo;

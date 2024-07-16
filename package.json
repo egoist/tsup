@@ -41,7 +41,7 @@
     "resolve-from": "^5.0.0",
     "rollup": "^4.0.2",
     "source-map": "0.8.0-beta.0",
-    "sucrase": "^3.20.3",
+    "sucrase": "^3.35.0",
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
