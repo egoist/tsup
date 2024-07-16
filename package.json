@@ -69,8 +69,8 @@
     "terser": "^5.16.0",
     "ts-essentials": "9.1.2",
     "tsconfig-paths": "3.12.0",
-    "tsup": "7.1.0",
-    "typescript": "5.0.2",
+    "tsup": "8.1.0",
+    "typescript": "5.5.3",
     "vitest": "2.0.3",
     "wait-for-expect": "3.0.2"
   },

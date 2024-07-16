@@ -5,7 +5,7 @@ import {
   removeFiles,
   debouncePromise,
   slash,
-  MaybePromise,
+  type MaybePromise,
   toObjectEntry,
 } from './utils'
 import { getAllDepsHash, loadTsupConfig } from './load'
@@ -17,7 +17,7 @@ import execa from 'execa'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { createLogger, setSilent } from './log'
-import { NormalizedOptions, Format, Options, KILL_SIGNAL } from './options'
+import type { NormalizedOptions, Format, Options, KILL_SIGNAL } from './options'
 import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
@@ -265,7 +265,7 @@ export async function build(_options: Options) {
             const doOnSuccessCleanup = async () => {
               if (onSuccessProcess) {
                 await killProcess({
-                  pid: onSuccessProcess.pid,
+                  pid: onSuccessProcess.pid!,
                   signal: options.killSignal || 'SIGTERM',
                 })
               } else if (onSuccessCleanup) {

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { Plugin, transform } from 'esbuild'
+import { type Plugin, transform } from 'esbuild'
 import { localRequire } from '../utils'
 
 const useSvelteCssExtension = (p: string) =>

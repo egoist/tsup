@@ -12,7 +12,7 @@ import {
 } from './exports'
 import { loadPkg } from './load'
 import { createLogger } from './log'
-import { Format, NormalizedOptions } from './options'
+import type { Format, NormalizedOptions } from './options'
 import {
   defaultOutExtension,
   ensureTempDeclarationDir,

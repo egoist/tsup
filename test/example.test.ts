@@ -1,7 +1,7 @@
 import { test } from 'vitest'
 import { getTestName, run } from './utils'
 
-test('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
+test.concurrent('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
   await run(
     getTestName(),
     {
@@ -15,11 +15,11 @@ test('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
   )
 })
 
-test('bundle @egoist/path-parser with --dts --dts-resolve flag', async () => {
+test.concurrent('bundle @egoist/path-parser with --dts --dts-resolve flag', async () => {
   await run(
     getTestName(),
     {
-      'input.ts': `import { PathParser } from '@egoist/path-parser'
+      'input.ts': `import type { PathParser } from '@egoist/path-parser'
       export type Opts = {
         parser: PathParser
         route: string

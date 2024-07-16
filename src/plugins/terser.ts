@@ -1,8 +1,8 @@
-import { MinifyOptions } from 'terser'
+import type { MinifyOptions } from 'terser'
 import { PrettyError } from '../errors'
-import { Logger } from '../log'
-import { Format, Options } from '../options'
-import { Plugin } from '../plugin'
+import type { Logger } from '../log'
+import type { Format, Options } from '../options'
+import type { Plugin } from '../plugin'
 import { localRequire } from '../utils'
 
 export const terserPlugin = ({

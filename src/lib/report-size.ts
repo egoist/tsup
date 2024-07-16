@@ -1,5 +1,5 @@
 import * as colors from 'colorette'
-import { Logger } from '../log'
+import type { Logger } from '../log'
 
 const prettyBytes = (bytes: number) => {
   if (bytes === 0) return '0 B'

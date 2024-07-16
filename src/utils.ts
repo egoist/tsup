@@ -3,7 +3,7 @@ import glob from 'globby'
 import path from 'path'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
-import { Entry, Format } from './options'
+import type { Entry, Format } from './options'
 
 export type MaybePromise<T> = T | Promise<T>
 

@@ -1,11 +1,19 @@
 import path from 'path'
-import { OutputFile, BuildOptions as EsbuildOptions, Metafile } from 'esbuild'
-import { SourceMapConsumer, SourceMapGenerator, RawSourceMap } from 'source-map'
-import { Format, NormalizedOptions } from '.'
+import type {
+  OutputFile,
+  BuildOptions as EsbuildOptions,
+  Metafile,
+} from 'esbuild'
+import {
+  SourceMapConsumer,
+  SourceMapGenerator,
+  type RawSourceMap,
+} from 'source-map'
+import type { Format, NormalizedOptions } from '.'
 import { outputFile } from './fs'
-import { Logger } from './log'
-import { MaybePromise } from './utils'
-import { SourceMap } from 'rollup'
+import type { Logger } from './log'
+import type { MaybePromise } from './utils'
+import type { SourceMap } from 'rollup'
 
 export type ChunkInfo = {
   type: 'chunk'

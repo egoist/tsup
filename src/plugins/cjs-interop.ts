@@ -1,4 +1,4 @@
-import { Plugin } from '../plugin'
+import type { Plugin } from '../plugin'
 
 export const cjsInterop = (): Plugin => {
   return {

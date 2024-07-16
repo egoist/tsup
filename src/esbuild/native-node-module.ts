@@ -1,5 +1,5 @@
 import path from 'path'
-import { Plugin } from 'esbuild'
+import type { Plugin } from 'esbuild'
 
 // Copied from https://github.com/evanw/esbuild/issues/1051#issuecomment-806325487
 export const nativeNodeModulesPlugin = (): Plugin => {

@@ -1,4 +1,4 @@
-import { Plugin } from 'esbuild'
+import type { Plugin } from 'esbuild'
 import { tsconfigPathsToRegExp, match } from 'bundle-require'
 
 // Must not start with "/" or "./" or "../" or "C:\" or be the exact strings ".." or "."

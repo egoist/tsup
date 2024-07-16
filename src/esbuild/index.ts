@@ -2,13 +2,13 @@ import fs from 'fs'
 import path from 'path'
 import {
   build as esbuild,
-  BuildResult,
+  type BuildResult,
   formatMessages,
-  Plugin as EsbuildPlugin,
+  type Plugin as EsbuildPlugin,
 } from 'esbuild'
-import { NormalizedOptions, Format } from '..'
+import type { NormalizedOptions, Format } from '..'
 import { getProductionDeps, loadPkg } from '../load'
-import { Logger, getSilent } from '../log'
+import { type Logger, getSilent } from '../log'
 import { nodeProtocolPlugin } from './node-protocol'
 import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
@@ -18,7 +18,7 @@ import { defaultOutExtension, truthy } from '../utils'
 import { swcPlugin } from './swc'
 import { nativeNodeModulesPlugin } from './native-node-module'
 import { PluginContainer } from '../plugin'
-import { OutExtensionFactory } from '../options'
+import type { OutExtensionFactory } from '../options'
 
 const getOutputExtensionMap = (
   options: NormalizedOptions,

@@ -1,6 +1,6 @@
 import { cac } from 'cac'
 import flat from 'flat'
-import { Format, Options } from '.'
+import type { Format, Options } from '.'
 import { version } from '../package.json'
 import { slash } from './utils'
 

@@ -1,7 +1,7 @@
 import type { BuildOptions, Plugin as EsbuildPlugin, Loader } from 'esbuild'
 import type { InputOption } from 'rollup'
 import type { MinifyOptions } from 'terser'
-import { MarkRequired } from 'ts-essentials'
+import type { MarkRequired } from 'ts-essentials'
 import type { Plugin } from './plugin'
 import type { TreeshakingStrategy } from './plugins/tree-shaking'
 

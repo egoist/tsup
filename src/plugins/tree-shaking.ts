@@ -1,5 +1,5 @@
-import { rollup, TreeshakingOptions, TreeshakingPreset } from 'rollup'
-import { Plugin } from '../plugin'
+import { rollup, type TreeshakingOptions, type TreeshakingPreset } from 'rollup'
+import type { Plugin } from '../plugin'
 
 export type TreeshakingStrategy =
   | boolean

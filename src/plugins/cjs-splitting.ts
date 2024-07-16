@@ -1,7 +1,7 @@
 // Workaround to enable code splitting for cjs format
 // Manually transform esm to cjs
 // TODO: remove this once esbuild supports code splitting for cjs natively
-import { Plugin } from '../plugin'
+import type { Plugin } from '../plugin'
 
 export const cjsSplitting = (): Plugin => {
   return {

@@ -1,9 +1,9 @@
 import { loadTsConfig } from 'bundle-require'
 import ts from 'typescript'
 import { handleError } from './errors'
-import { ExportDeclaration } from './exports'
+import type { ExportDeclaration } from './exports'
 import { createLogger } from './log'
-import { NormalizedOptions } from './options'
+import type { NormalizedOptions } from './options'
 import { ensureTempDeclarationDir, toAbsolutePath } from './utils'
 import { dirname } from 'path'
 

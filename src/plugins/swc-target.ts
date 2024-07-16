@@ -1,6 +1,6 @@
 import type { ModuleConfig } from '@swc/core/types'
 import { PrettyError } from '../errors'
-import { Plugin } from '../plugin'
+import type { Plugin } from '../plugin'
 import { localRequire } from '../utils'
 
 const TARGETS = ['es5', 'es3'] as const

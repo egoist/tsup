@@ -1,4 +1,4 @@
-import { Loader, Plugin, transform } from 'esbuild'
+import { type Loader, type Plugin, transform } from 'esbuild'
 import fs from 'fs'
 import type { Result } from 'postcss-load-config'
 import { getPostcss } from '../utils'

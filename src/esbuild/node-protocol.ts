@@ -1,4 +1,4 @@
-import { Plugin } from 'esbuild'
+import type { Plugin } from 'esbuild'
 
 /**
  * The node: protocol was added to require in Node v14.18.0
