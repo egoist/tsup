@@ -33,8 +33,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1
       postcss-load-config:
-        specifier: ^4.0.1
-        version: 4.0.2(postcss@8.4.39)
+        specifier: ^6.0.1
+        version: 6.0.1(postcss@8.4.39)(yaml@2.4.5)
       resolve-from:
         specifier: ^5.0.0
         version: 5.0.0
@@ -88,8 +88,8 @@ importers:
         specifier: 8.4.39
         version: 8.4.39
       postcss-simple-vars:
-        specifier: 6.0.3
-        version: 6.0.3(postcss@8.4.39)
+        specifier: 7.0.1
+        version: 7.0.1(postcss@8.4.39)
       prettier:
         specifier: 3.3.3
         version: 3.3.3
@@ -103,14 +103,14 @@ importers:
         specifier: 1.77.8
         version: 1.77.8
       strip-json-comments:
-        specifier: 4.0.0
-        version: 4.0.0
+        specifier: 5.0.1
+        version: 5.0.1
       svelte:
         specifier: 3.46.4
         version: 3.46.4
       svelte-preprocess:
         specifier: 5.0.3
-        version: 5.0.3(postcss-load-config@4.0.2(postcss@8.4.39))(postcss@8.4.39)(sass@1.77.8)(svelte@3.46.4)(typescript@5.5.3)
+        version: 5.0.3(postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.46.4)(typescript@5.5.3)
       terser:
         specifier: ^5.31.3
         version: 5.31.3
@@ -1279,9 +1279,27 @@ packages:
       ts-node:
         optional: true
 
-  postcss-simple-vars@6.0.3:
-    resolution: {integrity: sha512-fkNn4Zio8vN4vIig9IFdb8lVlxWnYR769RgvxCM6YWlFKie/nQaOcaMMMFz/s4gsfHW4/5bJW+i57zD67mQU7g==}
-    engines: {node: '>=10.0'}
+  postcss-load-config@6.0.1:
+    resolution: {integrity: sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      jiti: '>=1.21.0'
+      postcss: '>=8.0.9'
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      jiti:
+        optional: true
+      postcss:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
+  postcss-simple-vars@7.0.1:
+    resolution: {integrity: sha512-5GLLXaS8qmzHMOjVxqkk1TZPf1jMqesiI7qLhnlyERalG0sMbHIbJqrcnrpmZdKCLglHnRHoEBB61RtGTsj++A==}
+    engines: {node: '>=14.0'}
     peerDependencies:
       postcss: ^8.2.1
 
@@ -1440,9 +1458,9 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  strip-json-comments@4.0.0:
-    resolution: {integrity: sha512-LzWcbfMbAsEDTRmhjWIioe8GcDRl0fa35YMXFoJKDdiD/quGFmjJjdgPjFJJNwCMaLyQqFIDqCdHD2V4HfLgYA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+  strip-json-comments@5.0.1:
+    resolution: {integrity: sha512-0fk9zBqO67Nq5M/m45qHCJxylV/DhBlIOVExqgOMiCCrzrhU6tCibRXNqE3jwJLftzE9SNuZtYbpzcO+i9FiKw==}
+    engines: {node: '>=14.16'}
 
   sucrase@3.35.0:
     resolution: {integrity: sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==}
@@ -2685,7 +2703,14 @@ snapshots:
     optionalDependencies:
       postcss: 8.4.39
 
-  postcss-simple-vars@6.0.3(postcss@8.4.39):
+  postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5):
+    dependencies:
+      lilconfig: 3.1.2
+    optionalDependencies:
+      postcss: 8.4.39
+      yaml: 2.4.5
+
+  postcss-simple-vars@7.0.1(postcss@8.4.39):
     dependencies:
       postcss: 8.4.39
 
@@ -2844,7 +2869,7 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  strip-json-comments@4.0.0: {}
+  strip-json-comments@5.0.1: {}
 
   sucrase@3.35.0:
     dependencies:
@@ -2867,7 +2892,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-preprocess@5.0.3(postcss-load-config@4.0.2(postcss@8.4.39))(postcss@8.4.39)(sass@1.77.8)(svelte@3.46.4)(typescript@5.5.3):
+  svelte-preprocess@5.0.3(postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.46.4)(typescript@5.5.3):
     dependencies:
       '@types/pug': 2.0.10
       detect-indent: 6.1.0
@@ -2877,7 +2902,7 @@ snapshots:
       svelte: 3.46.4
     optionalDependencies:
       postcss: 8.4.39
-      postcss-load-config: 4.0.2(postcss@8.4.39)
+      postcss-load-config: 6.0.1(postcss@8.4.39)(yaml@2.4.5)
       sass: 1.77.8
       typescript: 5.5.3
 
