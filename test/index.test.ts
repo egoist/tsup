@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import path from 'path'
-import fs from 'fs-extra'
+import fs from 'fs'
 import waitForExpect from 'wait-for-expect'
 import { debouncePromise } from '../src/utils'
 import { getTestName, run } from './utils'
