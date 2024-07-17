@@ -858,10 +858,11 @@ test('should load postcss esm config', async () => {
 })
 
 test('generate sourcemap with --treeshake', async () => {
+  const sourceCode = 'export function getValue(val: any){ return val; }'
   const { outFiles, getFileContent } = await run(
     getTestName(),
     {
-      'src/input.ts': 'export function getValue(val: any){ return val; }',
+      'src/input.ts': sourceCode,
     },
     {
       entry: ['src/input.ts'],
@@ -880,9 +881,7 @@ test('generate sourcemap with --treeshake', async () => {
         )
 
         expect(sourceMap.sources[0]).toBe('../src/input.ts')
-        expect(sourceMap.sourcesContent[0]).toBe(
-          'export function getValue(val: any){ return val; }',
-        )
+        expect(sourceMap.sourcesContent[0]).toBe(sourceCode)
 
         const outputFileName = sourceMapFile.replace('.map', '')
         expect(sourceMap.file).toBe(outputFileName)
