@@ -32,7 +32,7 @@ export const treeShakingPlugin = ({
               return false
             },
             load(id) {
-              if (id === info.path) return code
+              if (id === info.path) return { code, map: info.map }
             },
           },
         ],
