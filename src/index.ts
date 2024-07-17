@@ -119,7 +119,7 @@ const normalizeOptions = async (
   }
 
   if (Array.isArray(entry)) {
-    const matcher = picomatch(entry)
+    const matcher = picomatch(entry, { windows: process.platform === 'win32' })
     options.entry = await new fdir()
       .withRelativePaths()
       .filter((file) => matcher(file))

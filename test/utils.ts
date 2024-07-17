@@ -61,7 +61,7 @@ export async function run(
     .withRelativePaths()
     .crawl(path.resolve(testDir, 'dist'))
     .withPromise()
-    .then((res) => res.sort())
+    .then((res) => res.map((f) => f.replaceAll('\\', '/')).sort())
 
   return {
     get output() {

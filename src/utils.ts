@@ -79,6 +79,7 @@ export async function removeFiles(patterns: string[], dir: string) {
   const matcher = picomatch(matchPatterns, {
     dot: true,
     ignore: ignorePatterns,
+    windows: process.platform === 'win32',
   })
 
   const files = await new fdir()
