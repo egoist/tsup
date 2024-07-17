@@ -27,10 +27,10 @@ importers:
         specifier: ^0.23.0
         version: 0.23.0
       execa:
-        specifier: ^5.0.0
+        specifier: ^5.1.1
         version: 5.1.1
       globby:
-        specifier: ^11.0.3
+        specifier: ^11.1.0
         version: 11.1.0
       joycon:
         specifier: ^3.1.1
@@ -55,8 +55,8 @@ importers:
         version: 1.2.2
     devDependencies:
       '@microsoft/api-extractor':
-        specifier: ^7.47.1
-        version: 7.47.1(@types/node@20.14.11)
+        specifier: ^7.47.2
+        version: 7.47.2(@types/node@20.14.11)
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.18.1)
@@ -118,8 +118,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1(typescript@5.5.3)
       tsup:
-        specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.47.1(@types/node@20.14.11))(@swc/core@1.6.13)(postcss@8.4.39)(typescript@5.5.3)
+        specifier: 8.1.2
+        version: 8.1.2(@microsoft/api-extractor@7.47.2(@types/node@20.14.11))(@swc/core@1.6.13)(jiti@1.21.6)(postcss@8.4.39)(typescript@5.5.3)(yaml@2.4.5)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -458,8 +458,8 @@ packages:
   '@microsoft/api-extractor-model@7.29.3':
     resolution: {integrity: sha512-kEWjLr2ygL3ku9EGyjeTnL2S5IxyH9NaF1k1UoI0Nzwr4xEJBSWCVsWuF2+0lPUrRPA6mTY95fR264SJ5ETKQA==}
 
-  '@microsoft/api-extractor@7.47.1':
-    resolution: {integrity: sha512-xfChgcNU5EBx5jayyOdl48xSP3na46TAPvnOZxvqfWOXUKa4Lz+iWiCZPTOgjw8NcrrD9a420cl6rSVYGwj5EA==}
+  '@microsoft/api-extractor@7.47.2':
+    resolution: {integrity: sha512-YWE2HGrSTZaPPSr7xiNizSuViZpC7Jsa7+DwRW5rYVgrMXNbfX/PpBOoSkl5uaz9I2sv2JKLJ75kVNt64BvS3g==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.17.0':
@@ -593,16 +593,16 @@ packages:
   '@rushstack/rig-package@0.5.2':
     resolution: {integrity: sha512-mUDecIJeH3yYGZs2a48k+pbhM6JYwWlgjs2Ca5f2n1G2/kgdgP9D/07oglEGf6mRyXEnazhEENeYTSNDRCwdqA==}
 
-  '@rushstack/terminal@0.13.1':
-    resolution: {integrity: sha512-RfJcpEYfCzEM/8dgRm4xVs8g4x+AdGdZZGa+XmZRWEKbKkVJSHxKmoe5z0f8gFNip0bnlxNavB9cxNaTSY/JRQ==}
+  '@rushstack/terminal@0.13.2':
+    resolution: {integrity: sha512-t8i0PsGvBHmFBY8pryO3badqFlxQsm2rw3KYrzjcmVkG/WGklKg1qVkr9beAS1Oe8XWDRgj6SkoHkpNjs7aaNw==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
 
-  '@rushstack/ts-command-line@4.22.1':
-    resolution: {integrity: sha512-wU/igKNFRPmQvxiRAM9lEx/5xcFRK72zBp+fbykPKIm83bOmVE0WWQ+ZhX/pcJJqQiodcr0DDzOMw4O8SwpMSQ==}
+  '@rushstack/ts-command-line@4.22.2':
+    resolution: {integrity: sha512-xkvrGd6D9dPlI3I401Thc640WNsEPB1sGEmy12a2VJaPQPwhE6Ik0gEVPZJ/2G1w213eaCAdxUY1xpiTulsmpA==}
 
   '@swc/core-darwin-arm64@1.6.13':
     resolution: {integrity: sha512-SOF4buAis72K22BGJ3N8y88mLNfxLNprTuJUpzikyMGrvkuBFNcxYtMhmomO0XHsgLDzOJ+hWzcgjRNzjMsUcQ==}
@@ -812,12 +812,6 @@ packages:
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
-
-  bundle-require@4.2.1:
-    resolution: {integrity: sha512-7Q/6vkyYAwOmQNRw75x+4yRtZCZJXUDmHHlFdkiV0wgv/reNjtJwpu1jPJ0w2kbEpIM0uoKI3S4/f39dU7AjSA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    peerDependencies:
-      esbuild: '>=0.17'
 
   bundle-require@5.0.0:
     resolution: {integrity: sha512-GuziW3fSSmopcx4KRymQEJVbZUfqlCqcq7dvs6TYwKRZiegK/2buMxQTPs6MGlNv50wms1699qYO54R8XfRX4w==}
@@ -1271,18 +1265,6 @@ packages:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
 
-  postcss-load-config@4.0.2:
-    resolution: {integrity: sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==}
-    engines: {node: '>= 14'}
-    peerDependencies:
-      postcss: '>=8.0.9'
-      ts-node: '>=9.0.0'
-    peerDependenciesMeta:
-      postcss:
-        optional: true
-      ts-node:
-        optional: true
-
   postcss-load-config@6.0.1:
     resolution: {integrity: sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==}
     engines: {node: '>= 18'}
@@ -1573,8 +1555,8 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
-  tsup@8.1.0:
-    resolution: {integrity: sha512-UFdfCAXukax+U6KzeTNO2kAARHcWxmKsnvSPXUcfA1D+kU05XDccCrkffCQpFaWDsZfV0jMyTsxU39VfCp6EOg==}
+  tsup@8.1.2:
+    resolution: {integrity: sha512-Gzw/PXSX/z0aYMNmkcI54bKKFVFJQbLne+EqTJZeQ3lNT3QpumjtMU4rl+ZwTTp8oRF3ahMbEAxT2sZPJLFSrg==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -1916,15 +1898,15 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.47.1(@types/node@20.14.11)':
+  '@microsoft/api-extractor@7.47.2(@types/node@20.14.11)':
     dependencies:
       '@microsoft/api-extractor-model': 7.29.3(@types/node@20.14.11)
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
       '@rushstack/node-core-library': 5.5.0(@types/node@20.14.11)
       '@rushstack/rig-package': 0.5.2
-      '@rushstack/terminal': 0.13.1(@types/node@20.14.11)
-      '@rushstack/ts-command-line': 4.22.1(@types/node@20.14.11)
+      '@rushstack/terminal': 0.13.2(@types/node@20.14.11)
+      '@rushstack/ts-command-line': 4.22.2(@types/node@20.14.11)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.8
@@ -2038,16 +2020,16 @@ snapshots:
       resolve: 1.22.8
       strip-json-comments: 3.1.1
 
-  '@rushstack/terminal@0.13.1(@types/node@20.14.11)':
+  '@rushstack/terminal@0.13.2(@types/node@20.14.11)':
     dependencies:
       '@rushstack/node-core-library': 5.5.0(@types/node@20.14.11)
       supports-color: 8.1.1
     optionalDependencies:
       '@types/node': 20.14.11
 
-  '@rushstack/ts-command-line@4.22.1(@types/node@20.14.11)':
+  '@rushstack/ts-command-line@4.22.2(@types/node@20.14.11)':
     dependencies:
-      '@rushstack/terminal': 0.13.1(@types/node@20.14.11)
+      '@rushstack/terminal': 0.13.2(@types/node@20.14.11)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -2240,11 +2222,6 @@ snapshots:
   buffer-crc32@1.0.0: {}
 
   buffer-from@1.1.2: {}
-
-  bundle-require@4.2.1(esbuild@0.21.5):
-    dependencies:
-      esbuild: 0.21.5
-      load-tsconfig: 0.2.5
 
   bundle-require@5.0.0(esbuild@0.23.0):
     dependencies:
@@ -2703,13 +2680,6 @@ snapshots:
 
   pirates@4.0.6: {}
 
-  postcss-load-config@4.0.2(postcss@8.4.39):
-    dependencies:
-      lilconfig: 3.1.2
-      yaml: 2.4.5
-    optionalDependencies:
-      postcss: 8.4.39
-
   postcss-load-config@6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5):
     dependencies:
       lilconfig: 3.1.2
@@ -2955,30 +2925,33 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  tsup@8.1.0(@microsoft/api-extractor@7.47.1(@types/node@20.14.11))(@swc/core@1.6.13)(postcss@8.4.39)(typescript@5.5.3):
+  tsup@8.1.2(@microsoft/api-extractor@7.47.2(@types/node@20.14.11))(@swc/core@1.6.13)(jiti@1.21.6)(postcss@8.4.39)(typescript@5.5.3)(yaml@2.4.5):
     dependencies:
-      bundle-require: 4.2.1(esbuild@0.21.5)
+      bundle-require: 5.0.0(esbuild@0.23.0)
       cac: 6.7.14
       chokidar: 3.6.0
+      consola: 3.2.3
       debug: 4.3.5
-      esbuild: 0.21.5
+      esbuild: 0.23.0
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      postcss-load-config: 4.0.2(postcss@8.4.39)
+      postcss-load-config: 6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5)
       resolve-from: 5.0.0
       rollup: 4.18.1
       source-map: 0.8.0-beta.0
       sucrase: 3.35.0
       tree-kill: 1.2.2
     optionalDependencies:
-      '@microsoft/api-extractor': 7.47.1(@types/node@20.14.11)
+      '@microsoft/api-extractor': 7.47.2(@types/node@20.14.11)
       '@swc/core': 1.6.13
       postcss: 8.4.39
       typescript: 5.5.3
     transitivePeerDependencies:
+      - jiti
       - supports-color
-      - ts-node
+      - tsx
+      - yaml
 
   typescript@5.4.2: {}
 
@@ -3089,4 +3062,5 @@ snapshots:
 
   yallist@4.0.0: {}
 
-  yaml@2.4.5: {}
+  yaml@2.4.5:
+    optional: true

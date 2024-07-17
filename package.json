@@ -56,8 +56,8 @@
     "consola": "^3.2.3",
     "debug": "^4.3.5",
     "esbuild": "^0.23.0",
-    "execa": "^5.0.0",
-    "globby": "^11.0.3",
+    "execa": "^5.1.1",
+    "globby": "^11.1.0",
     "joycon": "^3.1.1",
     "postcss-load-config": "^6.0.1",
     "resolve-from": "^5.0.0",
@@ -67,7 +67,7 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.47.1",
+    "@microsoft/api-extractor": "^7.47.2",
     "@rollup/plugin-json": "6.1.0",
     "@swc/core": "1.6.13",
     "@types/debug": "4.1.12",
@@ -88,7 +88,7 @@
     "svelte-preprocess": "5.0.3",
     "terser": "^5.31.3",
     "ts-essentials": "10.0.1",
-    "tsup": "8.1.0",
+    "tsup": "8.1.2",
     "typescript": "5.5.3",
     "vitest": "2.0.3",
     "wait-for-expect": "3.0.2"
