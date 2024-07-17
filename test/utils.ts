@@ -2,8 +2,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { expect } from 'vitest'
 import execa from 'execa'
+import { fdir } from 'fdir'
 import fs from 'fs-extra'
-import glob from 'globby'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const cacheDir = path.resolve(__dirname, '.cache')
@@ -57,9 +57,11 @@ export async function run(
   }
 
   // Get output
-  const outFiles = await glob('**/*', {
-    cwd: path.resolve(testDir, 'dist'),
-  }).then((res) => res.sort())
+  const outFiles = await new fdir()
+    .withRelativePaths()
+    .crawl(path.resolve(testDir, 'dist'))
+    .withPromise()
+    .then((res) => res.sort())
 
   return {
     get output() {

@@ -1,9 +1,10 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import { Worker } from 'node:worker_threads'
-import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
 import execa from 'execa'
+import { fdir } from 'fdir'
+import picomatch from 'picomatch'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { PrettyError, handleError } from './errors'
@@ -118,7 +119,12 @@ const normalizeOptions = async (
   }
 
   if (Array.isArray(entry)) {
-    options.entry = await glob(entry)
+    const matcher = picomatch(entry)
+    options.entry = await new fdir()
+      .withRelativePaths()
+      .filter((file) => matcher(file))
+      .crawl(process.cwd())
+      .withPromise()
     // Ensure entry exists
     if (!options.entry || options.entry.length === 0) {
       throw new PrettyError(`Cannot find ${entry}`)
