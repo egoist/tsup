@@ -240,6 +240,14 @@ export type Options = {
    * @default false
    */
   cjsInterop?: boolean
+
+  /**
+   * Remove `node:` protocol from imports
+   *
+   * The default value will be flipped to `false` in the next major release
+   * @default true
+   */
+  removeNodeProtocol?: boolean
 }
 
 export interface NormalizedExperimentalDtsConfig {

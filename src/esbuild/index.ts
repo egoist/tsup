@@ -119,7 +119,7 @@ export async function runEsbuild(
 
   await pluginContainer.buildStarted()
   const esbuildPlugins: Array<EsbuildPlugin | false | undefined> = [
-    format === 'cjs' && nodeProtocolPlugin(),
+    format === 'cjs' && options.removeNodeProtocol && nodeProtocolPlugin(),
     {
       name: 'modify-options',
       setup(build) {

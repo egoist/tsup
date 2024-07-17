@@ -79,6 +79,7 @@ const normalizeOptions = async (
 
   const options: Partial<NormalizedOptions> = {
     outDir: 'dist',
+    removeNodeProtocol: true,
     ..._options,
     format:
       typeof _options.format === 'string'

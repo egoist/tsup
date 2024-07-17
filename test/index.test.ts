@@ -115,6 +115,19 @@ test('node protocol', async () => {
     'input.ts': `import fs from 'node:fs'; console.log(fs)`,
   })
   expect(output).toMatchSnapshot()
+  expect(output).not.contain('node:fs')
+})
+
+test("don't remove node protocol", async () => {
+  const { output } = await run(getTestName(), {
+    'input.ts': `import fs from 'node:fs'; console.log(fs)`,
+    'tsup.config.ts': `
+    export default {
+      removeNodeProtocol: false,
+    }`,
+  })
+  expect(output).toMatchSnapshot()
+  expect(output).contain('node:fs')
 })
 
 test('external', async () => {
