@@ -1,6 +1,6 @@
+import path from 'node:path'
+import fs from 'node:fs/promises'
 import execa from 'execa'
-import path from 'path'
-import fs from 'fs/promises'
 
 export default async function setup() {
   const testDir = path.resolve(__dirname, 'test')

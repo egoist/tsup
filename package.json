@@ -1,23 +1,24 @@
 {
   "name": "tsup",
   "version": "0.0.0-semantic-release",
+  "packageManager": "pnpm@9.5.0",
   "description": "Bundle your TypeScript library with no config, powered by esbuild",
-  "main": "dist/index.js",
-  "bin": {
-    "tsup": "dist/cli-default.js",
-    "tsup-node": "dist/cli-node.js"
-  },
-  "types": "dist/index.d.ts",
-  "files": [
-    "/dist",
-    "/assets",
-    "/schema.json"
-  ],
-  "author": "EGOIST",
   "license": "MIT",
   "homepage": "https://tsup.egoist.dev/",
   "repository": {
     "url": "https://github.com/egoist/tsup.git"
+  },
+  "author": "EGOIST",
+  "files": [
+    "/assets",
+    "/dist",
+    "/schema.json"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "tsup": "dist/cli-default.js",
+    "tsup-node": "dist/cli-node.js"
   },
   "scripts": {
     "dev": "npm run build-fast -- --watch",
@@ -27,6 +28,26 @@
     "format": "prettier --write .",
     "test-only": "vitest run",
     "build-fast": "npm run build -- --no-dts"
+  },
+  "peerDependencies": {
+    "@microsoft/api-extractor": "^7.36.0",
+    "@swc/core": "^1",
+    "postcss": "^8.4.12",
+    "typescript": ">=4.5.0"
+  },
+  "peerDependenciesMeta": {
+    "@microsoft/api-extractor": {
+      "optional": true
+    },
+    "@swc/core": {
+      "optional": true
+    },
+    "postcss": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    }
   },
   "dependencies": {
     "bundle-require": "^5.0.0",
@@ -72,28 +93,7 @@
     "vitest": "2.0.3",
     "wait-for-expect": "3.0.2"
   },
-  "peerDependencies": {
-    "@microsoft/api-extractor": "^7.36.0",
-    "@swc/core": "^1",
-    "postcss": "^8.4.12",
-    "typescript": ">=4.5.0"
-  },
-  "peerDependenciesMeta": {
-    "typescript": {
-      "optional": true
-    },
-    "postcss": {
-      "optional": true
-    },
-    "@swc/core": {
-      "optional": true
-    },
-    "@microsoft/api-extractor": {
-      "optional": true
-    }
-  },
   "engines": {
     "node": ">=18"
-  },
-  "packageManager": "pnpm@9.5.0"
+  }
 }

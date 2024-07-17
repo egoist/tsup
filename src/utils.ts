@@ -1,6 +1,6 @@
-import fs from 'fs'
+import fs from 'node:fs'
+import path from 'node:path'
 import glob from 'globby'
-import path from 'path'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
 import type { Entry, Format } from './options'
@@ -30,15 +30,11 @@ export function isExternal(
     ) {
       return true
     }
-    if (external instanceof RegExp) {
-      if (external.test(id)) {
-        return true
-      }
+    if (external instanceof RegExp && external.test(id)) {
+      return true
     }
-    if (typeof external === 'function') {
-      if (external(id, parentId)) {
-        return true
-      }
+    if (typeof external === 'function' && external(id, parentId)) {
+      return true
     }
   }
 
@@ -111,10 +107,9 @@ export function debouncePromise<T extends unknown[]>(
 
 // Taken from https://github.com/sindresorhus/slash/blob/main/index.js (MIT)
 export function slash(path: string) {
-  const isExtendedLengthPath = /^\\\\\?\\/.test(path)
-  const hasNonAscii = /[^\u0000-\u0080]+/.test(path)
+  const isExtendedLengthPath = path.startsWith('\\\\?\\')
 
-  if (isExtendedLengthPath || hasNonAscii) {
+  if (isExtendedLengthPath) {
     return path
   }
 
@@ -129,7 +124,7 @@ export function truthy<T>(value: T): value is Truthy<T> {
 
 export function jsoncParse(data: string) {
   try {
-    return new Function('return ' + strip(data).trim())()
+    return new Function(`return ${strip(data).trim()}`)()
   } catch {
     // Silently ignore any error
     // That's what tsc/jsonc-parser did after all
@@ -227,7 +222,7 @@ const findLowestCommonAncestor = (filepaths: string[]) => {
   }
 
   return ancestor.length <= 1 && ancestor[0] === ''
-    ? '/' + ancestor[0]
+    ? `/${ancestor[0]}`
     : ancestor.join('/')
 }
 

@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { slash, trimDtsExtension, truthy } from './utils'
 
 export type ExportDeclaration = ModuleExport | NamedExport
@@ -34,18 +34,17 @@ export function formatAggregationExports(
     lines.push('export {};')
   }
 
-  return lines.join('\n') + '\n'
+  return `${lines.join('\n')}\n`
 }
 
 function formatAggregationExport(
   declaration: ExportDeclaration,
   declarationDirPath: string,
 ): string {
-  let dest = trimDtsExtension(
-    './' +
-      path.posix.normalize(
-        slash(path.relative(declarationDirPath, declaration.destFileName)),
-      ),
+  const dest = trimDtsExtension(
+    `./${path.posix.normalize(
+      slash(path.relative(declarationDirPath, declaration.destFileName)),
+    )}`,
   )
 
   if (declaration.kind === 'module') {
@@ -79,11 +78,11 @@ export function formatDistributionExports(
       path.posix.normalize(slash(toFilePath)),
     ),
   )
-  if (!importPath.match(/^\.+\//)) {
-    importPath = './' + importPath
+  if (!/^\.+\//.test(importPath)) {
+    importPath = `./${importPath}`
   }
 
-  let seen = {
+  const seen = {
     named: new Set<string>(),
     module: new Set<string>(),
   }
@@ -113,7 +112,7 @@ export function formatDistributionExports(
     lines.push('export {};')
   }
 
-  return lines.join('\n') + '\n'
+  return `${lines.join('\n')}\n`
 }
 
 function formatDistributionExport(

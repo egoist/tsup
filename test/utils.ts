@@ -1,9 +1,9 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { expect } from 'vitest'
-import path from 'path'
 import execa from 'execa'
 import fs from 'fs-extra'
 import glob from 'globby'
-import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const cacheDir = path.resolve(__dirname, '.cache')

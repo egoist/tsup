@@ -1,8 +1,8 @@
 import { cac } from 'cac'
 import { flatten } from 'flat'
-import type { Format, Options } from '.'
 import { version } from '../package.json'
 import { slash } from './utils'
+import type { Format, Options } from '.'
 
 function ensureArray(input: string): string[] {
   return Array.isArray(input) ? input : input.split(',')
@@ -117,10 +117,9 @@ export async function main(options: Options = {}) {
         options.external = external
       }
       if (flags.target) {
-        options.target =
-          flags.target.indexOf(',') >= 0
-            ? flags.target.split(',')
-            : flags.target
+        options.target = flags.target.includes(',')
+          ? flags.target.split(',')
+          : flags.target
       }
       if (flags.dts || flags.dtsResolve || flags.dtsOnly) {
         options.dts = {}

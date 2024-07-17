@@ -1,9 +1,9 @@
-import type { MinifyOptions } from 'terser'
 import { PrettyError } from '../errors'
+import { localRequire } from '../utils'
+import type { MinifyOptions } from 'terser'
 import type { Logger } from '../log'
 import type { Format, Options } from '../options'
 import type { Plugin } from '../plugin'
-import { localRequire } from '../utils'
 
 export const terserPlugin = ({
   minifyOptions,
@@ -58,9 +58,9 @@ export const terserPlugin = ({
         logger.success('TERSER', 'Terser Minification success')
 
         return { code: minifiedOutput.code!, map: minifiedOutput.map }
-      } catch (e) {
+      } catch (error) {
         logger.error('TERSER', 'Failed to minify with terser')
-        logger.error('TERSER', e)
+        logger.error('TERSER', error)
       }
 
       return { code, map: info.map }

@@ -1,16 +1,16 @@
-import { parentPort } from 'worker_threads'
-import type { InputOptions, OutputOptions, Plugin } from 'rollup'
-import type { NormalizedOptions } from './'
+import { parentPort } from 'node:worker_threads'
+import path from 'node:path'
 import ts from 'typescript'
 import jsonPlugin from '@rollup/plugin-json'
+import resolveFrom from 'resolve-from'
 import { handleError } from './errors'
 import { defaultOutExtension, removeFiles, toObjectEntry } from './utils'
 import { type TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 import { createLogger, setSilent } from './log'
 import { getProductionDeps, loadPkg } from './load'
-import path from 'path'
 import { reportSize } from './lib/report-size'
-import resolveFrom from 'resolve-from'
+import type { NormalizedOptions } from './'
+import type { InputOptions, OutputOptions, Plugin } from 'rollup'
 
 const logger = createLogger()
 
@@ -237,7 +237,7 @@ const startRollup = async (options: NormalizedOptions) => {
     try {
       await runRollup(config)
       parentPort?.postMessage('success')
-    } catch (error) {
+    } catch {
       parentPort?.postMessage('error')
     }
     parentPort?.close()

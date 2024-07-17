@@ -3,8 +3,8 @@ name: Fix
 on:
   push:
     branches-ignore:
-      - 'main'
-      - 'dev'
+      - main
+      - dev
 
 jobs:
   format:

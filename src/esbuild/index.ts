@@ -1,23 +1,23 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import {
-  build as esbuild,
   type BuildResult,
-  formatMessages,
   type Plugin as EsbuildPlugin,
+  build as esbuild,
+  formatMessages,
 } from 'esbuild'
-import type { NormalizedOptions, Format } from '..'
+import consola from 'consola'
 import { getProductionDeps, loadPkg } from '../load'
 import { type Logger, getSilent } from '../log'
+import { defaultOutExtension, truthy } from '../utils'
 import { nodeProtocolPlugin } from './node-protocol'
 import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
 import { sveltePlugin } from './svelte'
-import consola from 'consola'
-import { defaultOutExtension, truthy } from '../utils'
 import { swcPlugin } from './swc'
 import { nativeNodeModulesPlugin } from './native-node-module'
-import { PluginContainer } from '../plugin'
+import type { PluginContainer } from '../plugin'
+import type { Format, NormalizedOptions } from '..'
 import type { OutExtensionFactory } from '../options'
 
 const getOutputExtensionMap = (
@@ -47,7 +47,7 @@ const generateExternal = async (external: (string | RegExp)[]) => {
       continue
     }
 
-    let pkgPath: string = path.isAbsolute(item)
+    const pkgPath: string = path.isAbsolute(item)
       ? path.dirname(item)
       : path.dirname(path.resolve(process.cwd(), item))
 

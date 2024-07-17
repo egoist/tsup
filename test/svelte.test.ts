@@ -75,7 +75,7 @@ test('svelte: typescript support', async () => {
 })
 
 test('svelte: sass support', async () => {
-  const { outFiles, output, getFileContent } = await run(getTestName(), {
+  const { outFiles, getFileContent } = await run(getTestName(), {
     'input.ts': `import App from './App.svelte'
       export { App }
       `,

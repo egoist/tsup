@@ -1,6 +1,6 @@
-import { test, expect } from 'vitest'
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
+import { expect, test } from 'vitest'
 import waitForExpect from 'wait-for-expect'
 import { debouncePromise } from '../src/utils'
 import { getTestName, run } from './utils'
@@ -253,7 +253,7 @@ test('debounce promise', async () => {
       if (!result) throw new Error(`${a} !== ${b}`)
     }
 
-    const sleep = (n: number = ~~(Math.random() * 50) + 20) =>
+    const sleep = (n: number = Math.trunc(Math.random() * 50) + 20) =>
       new Promise<void>((resolve) => setTimeout(resolve, n))
 
     let n = 0
@@ -288,8 +288,8 @@ test('debounce promise', async () => {
     await waitForExpect(() => {
       equal(n, 2)
     })
-  } catch (err: any) {
-    return expect.fail(err.message)
+  } catch (error: any) {
+    return expect.fail(error.message)
   }
 })
 
@@ -349,7 +349,7 @@ test('windows: backslash in entry', async () => {
     getTestName(),
     { 'src/input.ts': `export const foo = 1` },
     {
-      entry: ['src\\input.ts'],
+      entry: [String.raw`src\input.ts`],
     },
   )
   expect(outFiles).toEqual(['input.js'])

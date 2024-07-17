@@ -2,7 +2,7 @@
 import { html } from 'docup'
 
 export default () => {
-  let isPreview = location.hostname !== 'tsup.egoist.dev'
+  const isPreview = location.hostname !== 'tsup.egoist.dev'
 
   if (!isPreview) return null
 
@@ -409,7 +409,7 @@ You can return a cleanup function in `onSuccess`:
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  async onSuccess() {
+  onSuccess() {
     const server = http.createServer((req, res) => {
       res.end('Hello World!')
     })

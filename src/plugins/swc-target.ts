@@ -1,7 +1,7 @@
-import type { ModuleConfig } from '@swc/core'
 import { PrettyError } from '../errors'
-import type { Plugin } from '../plugin'
 import { localRequire } from '../utils'
+import type { ModuleConfig } from '@swc/core'
+import type { Plugin } from '../plugin'
 
 const TARGETS = ['es5', 'es3'] as const
 
@@ -58,7 +58,7 @@ export const swcTarget = (): Plugin => {
         },
         module: {
           type: this.format === 'cjs' ? 'commonjs' : 'es6',
-        } as ModuleConfig,
+        } satisfies ModuleConfig,
       })
       return {
         code: result.code,

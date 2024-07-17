@@ -37,7 +37,7 @@ importers:
         version: 3.1.1
       postcss-load-config:
         specifier: ^6.0.1
-        version: 6.0.1(postcss@8.4.39)(yaml@2.4.5)
+        version: 6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5)
       resolve-from:
         specifier: ^5.0.0
         version: 5.0.0
@@ -110,7 +110,7 @@ importers:
         version: 3.49.0
       svelte-preprocess:
         specifier: 5.0.3
-        version: 5.0.3(postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.49.0)(typescript@5.5.3)
+        version: 5.0.3(postcss-load-config@6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.49.0)(typescript@5.5.3)
       terser:
         specifier: ^5.31.3
         version: 5.31.3
@@ -1087,6 +1087,10 @@ packages:
 
   jackspeak@3.4.3:
     resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
+
+  jiti@1.21.6:
+    resolution: {integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==}
+    hasBin: true
 
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
@@ -2553,6 +2557,9 @@ snapshots:
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
 
+  jiti@1.21.6:
+    optional: true
+
   jju@1.4.0: {}
 
   joycon@3.1.1: {}
@@ -2703,10 +2710,11 @@ snapshots:
     optionalDependencies:
       postcss: 8.4.39
 
-  postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5):
+  postcss-load-config@6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5):
     dependencies:
       lilconfig: 3.1.2
     optionalDependencies:
+      jiti: 1.21.6
       postcss: 8.4.39
       yaml: 2.4.5
 
@@ -2892,7 +2900,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-preprocess@5.0.3(postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.49.0)(typescript@5.5.3):
+  svelte-preprocess@5.0.3(postcss-load-config@6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.49.0)(typescript@5.5.3):
     dependencies:
       '@types/pug': 2.0.10
       detect-indent: 6.1.0
@@ -2902,7 +2910,7 @@ snapshots:
       svelte: 3.49.0
     optionalDependencies:
       postcss: 8.4.39
-      postcss-load-config: 6.0.1(postcss@8.4.39)(yaml@2.4.5)
+      postcss-load-config: 6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5)
       sass: 1.77.8
       typescript: 5.5.3
 

@@ -1,5 +1,5 @@
-import { test, expect } from 'vitest'
-import path from 'path'
+import path from 'node:path'
+import { expect, test } from 'vitest'
 import { slash } from '../src/utils'
 import { getTestName, run } from './utils'
 
@@ -371,8 +371,8 @@ test('should only include exported declarations with experimentalDts', async () 
     flags: ['--experimental-dts'],
   })
 
-  let entry1dts = await getFileContent('dist/entry1.d.ts')
-  let entry2dts = await getFileContent('dist/entry2.d.ts')
+  const entry1dts = await getFileContent('dist/entry1.d.ts')
+  const entry2dts = await getFileContent('dist/entry2.d.ts')
 
   expect(entry1dts).toContain('declare1')
   expect(entry1dts).not.toContain('declare2')

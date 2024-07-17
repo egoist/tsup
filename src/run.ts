@@ -1,4 +1,4 @@
-import { spawn } from 'child_process'
+import { spawn } from 'node:child_process'
 
 export function runCode(filename: string, { args }: { args: string[] }) {
   const cmd = spawn('node', [filename, ...args], {

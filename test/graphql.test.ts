@@ -1,4 +1,4 @@
-import { test, expect } from 'vitest'
+import { expect, test } from 'vitest'
 import { getTestName, run } from './utils'
 
 test('bundle graphql-tools with --dts flag', async () => {

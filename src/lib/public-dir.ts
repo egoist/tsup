@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { copyDirSync } from '../fs'
 import { slash } from '../utils'
 

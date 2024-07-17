@@ -1,11 +1,11 @@
 /**
  * Use SWC to emit decorator metadata
  */
+import path from 'node:path'
+import { localRequire } from '../utils'
 import type { JscConfig } from '@swc/core'
 import type { Plugin } from 'esbuild'
-import path from 'path'
 import type { Logger } from '../log'
-import { localRequire } from '../utils'
 
 export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
   return {

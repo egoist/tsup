@@ -1,16 +1,16 @@
-import path from 'path'
-import type {
-  OutputFile,
-  BuildOptions as EsbuildOptions,
-  Metafile,
-} from 'esbuild'
+import path from 'node:path'
 import {
+  type RawSourceMap,
   SourceMapConsumer,
   SourceMapGenerator,
-  type RawSourceMap,
 } from 'source-map'
-import type { Format, NormalizedOptions } from '.'
 import { outputFile } from './fs'
+import type {
+  BuildOptions as EsbuildOptions,
+  Metafile,
+  OutputFile,
+} from 'esbuild'
+import type { Format, NormalizedOptions } from '.'
 import type { Logger } from './log'
 import type { MaybePromise } from './utils'
 import type { SourceMap } from 'rollup'

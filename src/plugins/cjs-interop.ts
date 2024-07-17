@@ -4,7 +4,7 @@ export const cjsInterop = (): Plugin => {
   return {
     name: 'cjs-interop',
 
-    async renderChunk(code, info) {
+    renderChunk(code, info) {
       if (
         !this.options.cjsInterop ||
         this.format !== 'cjs' ||
@@ -18,7 +18,7 @@ export const cjsInterop = (): Plugin => {
       }
 
       return {
-        code: code + '\nmodule.exports = exports.default;\n',
+        code: `${code}\nmodule.exports = exports.default;\n`,
         map: info.map,
       }
     },

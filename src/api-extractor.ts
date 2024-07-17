@@ -1,18 +1,12 @@
-import type {
-  ExtractorResult,
-  IConfigFile,
-  IExtractorConfigPrepareOptions,
-} from '@microsoft/api-extractor'
-import path from 'path'
+import path from 'node:path'
 import { handleError } from './errors'
 import {
+  type ExportDeclaration,
   formatAggregationExports,
   formatDistributionExports,
-  type ExportDeclaration,
 } from './exports'
 import { loadPkg } from './load'
 import { createLogger } from './log'
-import type { Format, NormalizedOptions } from './options'
 import {
   defaultOutExtension,
   ensureTempDeclarationDir,
@@ -21,6 +15,12 @@ import {
   toAbsolutePath,
   writeFileSync,
 } from './utils'
+import type { Format, NormalizedOptions } from './options'
+import type {
+  ExtractorResult,
+  IConfigFile,
+  IExtractorConfigPrepareOptions,
+} from '@microsoft/api-extractor'
 
 const logger = createLogger()
 
@@ -29,9 +29,9 @@ function rollupDtsFile(
   outputFilePath: string,
   tsconfigFilePath: string,
 ) {
-  let cwd = process.cwd()
-  let packageJsonFullPath = path.join(cwd, 'package.json')
-  let configObject: IConfigFile = {
+  const cwd = process.cwd()
+  const packageJsonFullPath = path.join(cwd, 'package.json')
+  const configObject: IConfigFile = {
     mainEntryPointFilePath: inputFilePath,
     apiReport: {
       enabled: false,
@@ -46,7 +46,7 @@ function rollupDtsFile(
     },
     tsdocMetadata: { enabled: false },
     compiler: {
-      tsconfigFilePath: tsconfigFilePath,
+      tsconfigFilePath,
     },
     projectFolder: cwd,
   }
@@ -87,14 +87,14 @@ async function rollupDtsFiles(
   exports: ExportDeclaration[],
   format: Format,
 ) {
-  let declarationDir = ensureTempDeclarationDir()
-  let outDir = options.outDir || 'dist'
-  let pkg = await loadPkg(process.cwd())
-  let dtsExtension = defaultOutExtension({ format, pkgType: pkg.type }).dts
+  const declarationDir = ensureTempDeclarationDir()
+  const outDir = options.outDir || 'dist'
+  const pkg = await loadPkg(process.cwd())
+  const dtsExtension = defaultOutExtension({ format, pkgType: pkg.type }).dts
 
   let dtsInputFilePath = path.join(
     declarationDir,
-    '_tsup-dts-aggregation' + dtsExtension,
+    `_tsup-dts-aggregation${dtsExtension}`,
   )
   // @microsoft/api-extractor doesn't support `.d.mts` and `.d.cts` file as a
   // entrypoint yet. So we replace the extension here as a temporary workaround.
@@ -105,7 +105,7 @@ async function rollupDtsFiles(
     .replace(/\.d\.mts$/, '.dmts.d.ts')
     .replace(/\.d\.cts$/, '.dcts.d.ts')
 
-  let dtsOutputFilePath = path.join(outDir, '_tsup-dts-rollup' + dtsExtension)
+  const dtsOutputFilePath = path.join(outDir, `_tsup-dts-rollup${dtsExtension}`)
 
   writeFileSync(
     dtsInputFilePath,

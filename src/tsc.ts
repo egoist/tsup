@@ -1,11 +1,11 @@
+import { dirname } from 'node:path'
 import { loadTsConfig } from 'bundle-require'
 import ts from 'typescript'
 import { handleError } from './errors'
-import type { ExportDeclaration } from './exports'
 import { createLogger } from './log'
-import type { NormalizedOptions } from './options'
 import { ensureTempDeclarationDir, toAbsolutePath } from './utils'
-import { dirname } from 'path'
+import type { ExportDeclaration } from './exports'
+import type { NormalizedOptions } from './options'
 
 const logger = createLogger()
 
@@ -37,9 +37,9 @@ function getExports(
   program: ts.Program,
   fileMapping: Map<string, string>,
 ): ExportDeclaration[] {
-  let checker = program.getTypeChecker()
-  let aliasPool = new AliasPool()
-  let assignAlias = aliasPool.assign.bind(aliasPool)
+  const checker = program.getTypeChecker()
+  const aliasPool = new AliasPool()
+  const assignAlias = aliasPool.assign.bind(aliasPool)
 
   function extractExports(sourceFileName: string): ExportDeclaration[] {
     const cwd = program.getCurrentDirectory()
@@ -87,9 +87,9 @@ function getExports(
  * @returns The mapping from source TS file paths to output declaration file paths
  */
 function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
-  let fileMapping = new Map<string, string>()
+  const fileMapping = new Map<string, string>()
 
-  let writeFile: ts.WriteFileCallback = (
+  const writeFile: ts.WriteFileCallback = (
     fileName,
     text,
     writeByteOrderMark,
@@ -98,7 +98,7 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
     data,
   ) => {
     const sourceFile = sourceFiles?.[0]
-    let sourceFileName = sourceFile?.fileName
+    const sourceFileName = sourceFile?.fileName
 
     if (sourceFileName && !fileName.endsWith('.map')) {
       const cwd = program.getCurrentDirectory()
@@ -118,21 +118,21 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
     )
   }
 
-  let emitResult = program.emit(undefined, writeFile, undefined, true)
+  const emitResult = program.emit(undefined, writeFile, undefined, true)
 
-  let diagnostics = ts
+  const diagnostics = ts
     .getPreEmitDiagnostics(program)
     .concat(emitResult.diagnostics)
 
-  let diagnosticMessages: string[] = []
+  const diagnosticMessages: string[] = []
 
   diagnostics.forEach((diagnostic) => {
     if (diagnostic.file) {
-      let { line, character } = ts.getLineAndCharacterOfPosition(
+      const { line, character } = ts.getLineAndCharacterOfPosition(
         diagnostic.file,
         diagnostic.start!,
       )
-      let message = ts.flattenDiagnosticMessageText(
+      const message = ts.flattenDiagnosticMessageText(
         diagnostic.messageText,
         '\n',
       )
@@ -140,7 +140,7 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
         `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`,
       )
     } else {
-      let message = ts.flattenDiagnosticMessageText(
+      const message = ts.flattenDiagnosticMessageText(
         diagnostic.messageText,
         '\n',
       )
@@ -148,11 +148,11 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
     }
   })
 
-  let diagnosticMessage = diagnosticMessages.join('\n')
+  const diagnosticMessage = diagnosticMessages.join('\n')
   if (diagnosticMessage) {
     logger.error(
       'TSC',
-      'Failed to emit declaration files.\n\n' + diagnosticMessage,
+      `Failed to emit declaration files.\n\n${diagnosticMessage}`,
     )
     throw new Error('TypeScript compilation failed')
   }
@@ -161,15 +161,15 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
 }
 
 function emit(compilerOptions?: any, tsconfig?: string) {
-  let cwd = process.cwd()
-  let rawTsconfig = loadTsConfig(cwd, tsconfig)
+  const cwd = process.cwd()
+  const rawTsconfig = loadTsConfig(cwd, tsconfig)
   if (!rawTsconfig) {
     throw new Error(`Unable to find ${tsconfig || 'tsconfig.json'} in ${cwd}`)
   }
 
-  let declarationDir = ensureTempDeclarationDir()
+  const declarationDir = ensureTempDeclarationDir()
 
-  let parsedTsconfig = ts.parseJsonConfigFileContent(
+  const parsedTsconfig = ts.parseJsonConfigFileContent(
     {
       ...rawTsconfig.data,
       compilerOptions: {
@@ -179,7 +179,7 @@ function emit(compilerOptions?: any, tsconfig?: string) {
         noEmit: false,
         declaration: true,
         declarationMap: true,
-        declarationDir: declarationDir,
+        declarationDir,
         emitDeclarationOnly: true,
       },
     },
@@ -187,16 +187,16 @@ function emit(compilerOptions?: any, tsconfig?: string) {
     tsconfig ? dirname(tsconfig) : './',
   )
 
-  let options: ts.CompilerOptions = parsedTsconfig.options
+  const options: ts.CompilerOptions = parsedTsconfig.options
 
-  let host: ts.CompilerHost = ts.createCompilerHost(options)
-  let program: ts.Program = ts.createProgram(
+  const host: ts.CompilerHost = ts.createCompilerHost(options)
+  const program: ts.Program = ts.createProgram(
     parsedTsconfig.fileNames,
     options,
     host,
   )
 
-  let fileMapping = emitDtsFiles(program, host)
+  const fileMapping = emitDtsFiles(program, host)
   return getExports(program, fileMapping)
 }
 

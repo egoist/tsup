@@ -1,5 +1,5 @@
-import type { Plugin } from '../plugin'
 import { reportSize } from '../lib/report-size'
+import type { Plugin } from '../plugin'
 
 export const sizeReporter = (): Plugin => {
   return {

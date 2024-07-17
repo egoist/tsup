@@ -1,4 +1,4 @@
-import { isMainThread, parentPort } from 'worker_threads'
+import { isMainThread, parentPort } from 'node:worker_threads'
 import * as colors from 'colorette'
 
 export class PrettyError extends Error {
@@ -26,12 +26,10 @@ export function handleError(error: any) {
   if (error.frame) {
     console.error(colors.red(error.message))
     console.error(colors.dim(error.frame))
+  } else if (error instanceof PrettyError) {
+    console.error(colors.red(error.message))
   } else {
-    if (error instanceof PrettyError) {
-      console.error(colors.red(error.message))
-    } else {
-      console.error(colors.red(error.stack))
-    }
+    console.error(colors.red(error.stack))
   }
   process.exitCode = 1
   if (!isMainThread && parentPort) {

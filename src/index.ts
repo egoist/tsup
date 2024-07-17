@@ -1,23 +1,21 @@
-import path from 'path'
-import fs from 'fs'
-import { Worker } from 'worker_threads'
-import {
-  removeFiles,
-  debouncePromise,
-  slash,
-  type MaybePromise,
-  toObjectEntry,
-} from './utils'
-import { getAllDepsHash, loadTsupConfig } from './load'
+import path from 'node:path'
+import fs from 'node:fs'
+import { Worker } from 'node:worker_threads'
 import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
-import { handleError, PrettyError } from './errors'
-import type { ChildProcess } from 'child_process'
 import execa from 'execa'
 import kill from 'tree-kill'
 import { version } from '../package.json'
+import { PrettyError, handleError } from './errors'
+import { getAllDepsHash, loadTsupConfig } from './load'
+import {
+  type MaybePromise,
+  debouncePromise,
+  removeFiles,
+  slash,
+  toObjectEntry,
+} from './utils'
 import { createLogger, setSilent } from './log'
-import type { NormalizedOptions, Format, Options, KILL_SIGNAL } from './options'
 import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
 import { cjsSplitting } from './plugins/cjs-splitting'
@@ -30,6 +28,8 @@ import { terserPlugin } from './plugins/terser'
 import { runTypeScriptCompiler } from './tsc'
 import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
+import type { ChildProcess } from 'node:child_process'
+import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
 
 export type { Format, Options, NormalizedOptions }
 
@@ -389,14 +389,14 @@ export async function build(_options: Options) {
                 'CLI',
                 `Watching for changes in ${
                   Array.isArray(watchPaths)
-                    ? watchPaths.map((v) => '"' + v + '"').join(' | ')
-                    : '"' + watchPaths + '"'
+                    ? watchPaths.map((v) => `"${v}"`).join(' | ')
+                    : `"${watchPaths}"`
                 }`,
               )
               logger.info(
                 'CLI',
                 `Ignoring changes in ${ignored
-                  .map((v) => '"' + v + '"')
+                  .map((v) => `"${v}"`)
                   .join(' | ')}`,
               )
 

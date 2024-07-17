@@ -1,5 +1,5 @@
-import util from 'util'
-import { parentPort, isMainThread } from 'worker_threads'
+import util from 'node:util'
+import { isMainThread, parentPort } from 'node:worker_threads'
 import * as colors from 'colorette'
 
 type LOG_TYPE = 'info' | 'success' | 'error' | 'warn'
