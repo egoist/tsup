@@ -106,11 +106,11 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       svelte:
-        specifier: 3.46.4
-        version: 3.46.4
+        specifier: 3.49.0
+        version: 3.49.0
       svelte-preprocess:
         specifier: 5.0.3
-        version: 5.0.3(postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.46.4)(typescript@5.5.3)
+        version: 5.0.3(postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.49.0)(typescript@5.5.3)
       terser:
         specifier: ^5.31.3
         version: 5.31.3
@@ -1516,8 +1516,8 @@ packages:
       typescript:
         optional: true
 
-  svelte@3.46.4:
-    resolution: {integrity: sha512-qKJzw6DpA33CIa+C/rGp4AUdSfii0DOTCzj/2YpSKKayw5WGSS624Et9L1nU1k2OVRS9vaENQXp2CVZNU+xvIg==}
+  svelte@3.49.0:
+    resolution: {integrity: sha512-+lmjic1pApJWDfPCpUUTc1m8azDqYCG1JN9YEngrx/hUyIcFJo6VZhj0A1Ai0wqoHcEIuQy+e9tk+4uDgdtsFA==}
     engines: {node: '>= 8'}
 
   terser@5.31.3:
@@ -2892,21 +2892,21 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-preprocess@5.0.3(postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.46.4)(typescript@5.5.3):
+  svelte-preprocess@5.0.3(postcss-load-config@6.0.1(postcss@8.4.39)(yaml@2.4.5))(postcss@8.4.39)(sass@1.77.8)(svelte@3.49.0)(typescript@5.5.3):
     dependencies:
       '@types/pug': 2.0.10
       detect-indent: 6.1.0
       magic-string: 0.27.0
       sorcery: 0.11.1
       strip-indent: 3.0.0
-      svelte: 3.46.4
+      svelte: 3.49.0
     optionalDependencies:
       postcss: 8.4.39
       postcss-load-config: 6.0.1(postcss@8.4.39)(yaml@2.4.5)
       sass: 1.77.8
       typescript: 5.5.3
 
-  svelte@3.46.4: {}
+  svelte@3.49.0: {}
 
   terser@5.31.3:
     dependencies:
