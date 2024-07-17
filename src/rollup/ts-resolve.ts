@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { type PluginImpl } from 'rollup'
+import type { PluginImpl } from 'rollup'
 import _resolve from 'resolve'
 import createDebug from 'debug'
 import { builtinModules } from 'module'
