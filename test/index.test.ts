@@ -856,3 +856,35 @@ test('should load postcss esm config', async () => {
   expect(outFiles).toEqual(['input.cjs', 'input.css'])
   expect(await getFileContent('dist/input.css')).toContain('color: blue;')
 })
+
+test('generate sourcemap with --treeshake', async () => {
+  const sourceCode = 'export function getValue(val: any){ return val; }'
+  const { outFiles, getFileContent } = await run(
+    getTestName(),
+    {
+      'src/input.ts': sourceCode,
+    },
+    {
+      entry: ['src/input.ts'],
+      flags: ['--treeshake', '--sourcemap', '--format=cjs,esm,iife'],
+    },
+  )
+
+  expect(outFiles.length).toBe(6)
+
+  await Promise.all(
+    outFiles
+      .filter((fileName) => fileName.endsWith('.map'))
+      .map(async (sourceMapFile) => {
+        const sourceMap = await getFileContent(`dist/${sourceMapFile}`).then(
+          (rawContent) => JSON.parse(rawContent),
+        )
+
+        expect(sourceMap.sources[0]).toBe('../src/input.ts')
+        expect(sourceMap.sourcesContent[0]).toBe(sourceCode)
+
+        const outputFileName = sourceMapFile.replace('.map', '')
+        expect(sourceMap.file).toBe(outputFileName)
+      }),
+  )
+})

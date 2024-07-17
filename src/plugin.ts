@@ -168,9 +168,8 @@ export class PluginContainer {
                 const newConsumer = await new SourceMapConsumer(
                   parseSourceMap(result.map),
                 )
-                const generator =
-                  SourceMapGenerator.fromSourceMap(originalConsumer)
-                generator.applySourceMap(newConsumer, info.path)
+                const generator = SourceMapGenerator.fromSourceMap(newConsumer)
+                generator.applySourceMap(originalConsumer, info.path)
                 info.map = generator.toJSON()
                 originalConsumer.destroy()
                 newConsumer.destroy()
