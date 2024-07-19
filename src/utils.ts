@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import glob from 'globby'
+import { fdir } from 'fdir'
+import picomatch from 'picomatch'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
 import type { Entry, Format } from './options'
@@ -65,10 +66,27 @@ export function pathExists(p: string) {
 }
 
 export async function removeFiles(patterns: string[], dir: string) {
-  const files = await glob(patterns, {
-    cwd: dir,
-    absolute: true,
+  const matchPatterns: string[] = []
+  const ignorePatterns: string[] = []
+  for (const pattern of patterns) {
+    if (pattern.startsWith('!') && pattern[1] !== '(') {
+      ignorePatterns.push(pattern.slice(1))
+    } else {
+      matchPatterns.push(pattern)
+    }
+  }
+
+  const matcher = picomatch(matchPatterns, {
+    dot: true,
+    ignore: ignorePatterns,
+    windows: process.platform === 'win32',
   })
+
+  const files = await new fdir()
+    .withFullPaths()
+    .filter((file) => matcher(file))
+    .crawl(dir)
+    .withPromise()
   files.forEach((file) => fs.existsSync(file) && fs.unlinkSync(file))
 }
 
