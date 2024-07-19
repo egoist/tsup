@@ -35,6 +35,9 @@ importers:
       joycon:
         specifier: ^3.1.1
         version: 3.1.1
+      picocolors:
+        specifier: ^1.0.1
+        version: 1.0.1
       postcss-load-config:
         specifier: ^6.0.1
         version: 6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5)
@@ -75,9 +78,6 @@ importers:
       '@types/resolve':
         specifier: 1.20.6
         version: 1.20.6
-      colorette:
-        specifier: 2.0.20
-        version: 2.0.20
       flat:
         specifier: 6.0.1
         version: 6.0.1
@@ -851,9 +851,6 @@ packages:
 
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
-
-  colorette@2.0.20:
-    resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -2272,8 +2269,6 @@ snapshots:
     optional: true
 
   color-name@1.1.4: {}
-
-  colorette@2.0.20: {}
 
   commander@2.20.3: {}
 
