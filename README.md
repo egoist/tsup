@@ -44,7 +44,7 @@ This will output `dist/index.js` and `dist/cli.js`.
 
 For complete usages, please dive into the [docs](https://tsup.egoist.dev).
 
-For all configuration options, please see [the API docs](https://paka.dev/npm/tsup#module-index-export-Options).
+For all configuration options, please see [the API docs](https://jsdocs.io/package/tsup).
 
 ## 💬 Discussions
 

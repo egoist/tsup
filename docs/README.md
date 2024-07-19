@@ -89,7 +89,7 @@ You can use any of these files:
 
 You can also specify a custom filename using the `--config` flag, or passing `--no-config` to disable config files.
 
-[Check out all available options](https://paka.dev/npm/tsup#module-index-export-Options).
+[Check out all available options](https://jsdocs.io/package/tsup).
 
 #### TypeScript / JavaScript
 
@@ -595,7 +595,7 @@ await build({
 })
 ```
 
-For all available options for the `build` function, please see [the API docs](https://paka.dev/npm/tsup).
+For all available options for the `build` function, please see [the API docs](https://jsdocs.io/package/tsup).
 
 ### Using custom tsconfig.json
 
