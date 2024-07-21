@@ -122,7 +122,7 @@ const normalizeOptions = async (
     // using a directory as entry should match all files inside it
     const expandedEntries = entry.map((pattern) => {
       if (!pattern.endsWith('**')) {
-        return path.join(pattern, '**')
+        return `${pattern}/**`
       }
       return pattern
     })
