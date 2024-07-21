@@ -31,7 +31,7 @@ importers:
         version: 5.1.1
       fdir:
         specifier: ^6.1.1
-        version: 6.1.1(picomatch@4.0.2)
+        version: 6.1.1(picomatch@3.0.1)
       joycon:
         specifier: ^3.1.1
         version: 3.1.1
@@ -39,8 +39,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       picomatch:
-        specifier: ^4.0.2
-        version: 4.0.2
+        specifier: ^3.0.1
+        version: 3.0.1
       postcss-load-config:
         specifier: ^6.0.1
         version: 6.0.1(jiti@1.21.6)(postcss@8.4.39)(yaml@2.4.5)
@@ -1275,9 +1275,9 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.2:
-    resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
-    engines: {node: '>=12'}
+  picomatch@3.0.1:
+    resolution: {integrity: sha512-I3EurrIQMlRc9IaAZnqRR044Phh2DXY+55o7uJ0V+hYZAcQYSuFWsc9q5PvyDHUSCe1Qxn/iBz+78s86zWnGag==}
+    engines: {node: '>=10'}
 
   pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
@@ -2427,9 +2427,9 @@ snapshots:
     dependencies:
       reusify: 1.0.4
 
-  fdir@6.1.1(picomatch@4.0.2):
+  fdir@6.1.1(picomatch@3.0.1):
     optionalDependencies:
-      picomatch: 4.0.2
+      picomatch: 3.0.1
 
   fill-range@7.1.1:
     dependencies:
@@ -2700,7 +2700,7 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  picomatch@4.0.2: {}
+  picomatch@3.0.1: {}
 
   pirates@4.0.6: {}
 
