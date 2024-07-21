@@ -126,7 +126,17 @@ const normalizeOptions = async (
       }
       return pattern
     })
-    const matcher = picomatch(expandedEntries, {
+    const matchPatterns: string[] = []
+    const ignorePatterns: string[] = []
+    for (const pattern of expandedEntries) {
+      if (pattern.startsWith('!') && pattern[1] !== '(') {
+        ignorePatterns.push(pattern.slice(1))
+      } else {
+        matchPatterns.push(pattern)
+      }
+    }
+    const matcher = picomatch(matchPatterns, {
+      ignore: ignorePatterns,
       dot: true,
       windows: process.platform === 'win32',
     })
