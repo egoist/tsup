@@ -119,7 +119,17 @@ const normalizeOptions = async (
   }
 
   if (Array.isArray(entry)) {
-    const matcher = picomatch(entry, { windows: process.platform === 'win32' })
+    // using a directory as entry should match all files inside it
+    const expandedEntries = entry.map((pattern) => {
+      if (!pattern.endsWith('**')) {
+        return path.join(pattern, '**')
+      }
+      return pattern
+    })
+    const matcher = picomatch(expandedEntries, {
+      dot: true,
+      windows: process.platform === 'win32',
+    })
     options.entry = await new fdir()
       .withRelativePaths()
       .filter((file) => matcher(file))
