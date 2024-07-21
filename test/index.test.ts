@@ -901,3 +901,19 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('should not throw when having directories as entry', async () => {
+  const sourceCode = 'export const h = "h"'
+
+  expect(
+    run(
+      getTestName(),
+      {
+        'src/input.ts': sourceCode,
+      },
+      {
+        entry: ['src'],
+      },
+    ),
+  ).resolves
+})
