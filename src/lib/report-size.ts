@@ -2,7 +2,7 @@ import * as colors from 'picocolors'
 import type { Logger } from '../log'
 
 const prettyBytes = (bytes: number) => {
-  if (bytes === 0) return '0 B'
+  if (bytes < 1024) return `${bytes} B`
   const unit = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
   const exp = Math.floor(Math.log(bytes) / Math.log(1024))
   return `${(bytes / 1024 ** exp).toFixed(2)} ${unit[exp]}`
