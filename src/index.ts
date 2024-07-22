@@ -1,7 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import { Worker } from 'node:worker_threads'
-import glob from 'globby'
 import { loadTsConfig } from 'bundle-require'
 import execa from 'execa'
 import kill from 'tree-kill'
@@ -11,6 +10,7 @@ import { getAllDepsHash, loadTsupConfig } from './load'
 import {
   type MaybePromise,
   debouncePromise,
+  glob,
   removeFiles,
   slash,
   toObjectEntry,
@@ -118,7 +118,7 @@ const normalizeOptions = async (
   }
 
   if (Array.isArray(entry)) {
-    options.entry = await glob(entry)
+    options.entry = await glob({ patterns: entry })
     // Ensure entry exists
     if (!options.entry || options.entry.length === 0) {
       throw new PrettyError(`Cannot find ${entry}`)

@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import glob from 'globby'
+import { fdir } from 'fdir'
+import picomatch from 'picomatch'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
 import type { Entry, Format } from './options'
@@ -64,11 +65,64 @@ export function pathExists(p: string) {
   })
 }
 
+function processPatterns(patterns?: string[]) {
+  if (!patterns) return null
+  const matchPatterns: string[] = []
+  const ignorePatterns: string[] = []
+  for (let pattern of patterns) {
+    // using a directory as entry should match all files inside it
+    if (!pattern.endsWith('*')) {
+      if (pattern.endsWith('/')) {
+        pattern += '**'
+      } else if (pattern.endsWith('\\')) {
+        pattern = `${pattern.slice(0, -1)}/**`
+      } else {
+        pattern += '/**'
+      }
+    }
+    if (pattern.startsWith('!') && pattern[1] !== '(') {
+      ignorePatterns.push(pattern.slice(1))
+    } else {
+      matchPatterns.push(pattern)
+    }
+  }
+
+  return { match: matchPatterns, ignore: ignorePatterns }
+}
+
+export interface GlobOptions {
+  absolute?: boolean
+  dir?: string
+  patterns?: string[]
+}
+export async function glob({
+  absolute = false,
+  dir = process.cwd(),
+  patterns,
+}: GlobOptions | undefined = {}) {
+  const processed = processPatterns(patterns)
+
+  const options = processed
+    ? {
+        filters: [
+          picomatch(processed.match, {
+            dot: true,
+            ignore: processed.ignore,
+            windows: process.platform === 'win32',
+          }),
+        ],
+      }
+    : undefined
+
+  const baseBuilder = absolute
+    ? new fdir(options).withFullPaths()
+    : new fdir(options).withRelativePaths()
+
+  return baseBuilder.crawl(dir).withPromise()
+}
+
 export async function removeFiles(patterns: string[], dir: string) {
-  const files = await glob(patterns, {
-    cwd: dir,
-    absolute: true,
-  })
+  const files = await glob({ patterns, dir, absolute: true })
   files.forEach((file) => fs.existsSync(file) && fs.unlinkSync(file))
 }
 
