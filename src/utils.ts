@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import glob from 'globby'
 import resolveFrom from 'resolve-from'
 import strip from 'strip-json-comments'
+import { glob } from 'tinyglobby'
 import type { Entry, Format } from './options'
 
 export type MaybePromise<T> = T | Promise<T>

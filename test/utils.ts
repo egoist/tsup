@@ -3,7 +3,8 @@ import { fileURLToPath } from 'node:url'
 import { expect } from 'vitest'
 import execa from 'execa'
 import fs from 'fs-extra'
-import glob from 'globby'
+import { glob } from 'tinyglobby'
+import { slash } from '../src/utils'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const cacheDir = path.resolve(__dirname, '.cache')
@@ -57,9 +58,9 @@ export async function run(
   }
 
   // Get output
-  const outFiles = await glob('**/*', {
+  const outFiles = await glob({
     cwd: path.resolve(testDir, 'dist'),
-  }).then((res) => res.sort())
+  }).then((res) => res.map((file) => slash(file)).sort())
 
   return {
     get output() {
