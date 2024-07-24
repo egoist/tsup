@@ -12,7 +12,7 @@ import type {
 } from 'esbuild'
 import type { Format, NormalizedOptions } from '.'
 import type { Logger } from './log'
-import type { MaybePromise } from './utils'
+import { slash, type MaybePromise } from './utils'
 import type { SourceMap } from 'rollup'
 
 export type ChunkInfo = {
@@ -132,7 +132,7 @@ export class PluginContainer {
       .filter((file) => !file.path.endsWith('.map'))
       .map((file): ChunkInfo | AssetInfo => {
         if (isJS(file.path) || isCSS(file.path)) {
-          const relativePath = path.relative(process.cwd(), file.path)
+          const relativePath = slash(path.relative(process.cwd(), file.path))
           const meta = metafile?.outputs[relativePath]
           return {
             type: 'chunk',
