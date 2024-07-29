@@ -12,6 +12,8 @@ export default defineConfig({
   },
 
   banner: {
+    // Fixes any potential issues from `require` calls in bundled code
+    // https://github.com/evanw/esbuild/issues/1921
     js: "import {createRequire} from 'module';const require=createRequire(import.meta.url);",
   },
 })
