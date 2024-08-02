@@ -98,8 +98,16 @@
           ]
         },
         "minify": {
-          "type": "boolean",
-          "description": "When enabled, the generated code will be minified instead of pretty-printed."
+          "description": "When enabled, the generated code will be minified instead of pretty-printed.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "enum": ["terser"]
+            }
+          ]
         },
         "minifyWhitespace": {
           "type": "boolean"
