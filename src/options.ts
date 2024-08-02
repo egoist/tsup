@@ -85,7 +85,7 @@ export type EsTarget =
   | 'es2022'
   | 'esnext'
 
-export type Target = BrowserTarget | BrowserTargetWithVersion | EsTarget
+export type Target = BrowserTarget | BrowserTargetWithVersion | EsTarget | (string & {})
 
 export type Entry = string[] | Record<string, string>
 
