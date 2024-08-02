@@ -222,6 +222,12 @@ export async function build(_options: Options) {
           if (options.dts) {
             await new Promise<void>((resolve, reject) => {
               const worker = new Worker(path.join(__dirname, './rollup.js'))
+
+              const terminateWorker = () => {
+                if (options.watch) return
+                worker.terminate()
+              }
+
               worker.postMessage({
                 configName: item?.name,
                 options: {
@@ -238,10 +244,10 @@ export async function build(_options: Options) {
               })
               worker.on('message', (data) => {
                 if (data === 'error') {
-                  worker.terminate()
+                  terminateWorker()
                   reject(new Error('error occured in dts build'))
                 } else if (data === 'success') {
-                  worker.terminate()
+                  terminateWorker()
                   resolve()
                 } else {
                   const { type, text } = data
