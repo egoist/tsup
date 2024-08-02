@@ -1,5 +1,6 @@
 {
   "name": "tsup",
+  "type": "module",
   "version": "0.0.0-semantic-release",
   "packageManager": "pnpm@9.5.0",
   "description": "Bundle your TypeScript library with no config, powered by esbuild",
@@ -56,7 +57,7 @@
     "consola": "^3.2.3",
     "debug": "^4.3.5",
     "esbuild": "^0.23.0",
-    "execa": "^5.1.1",
+    "execa": "^8.0.1",
     "globby": "^11.1.0",
     "joycon": "^3.1.1",
     "picocolors": "^1.0.1",
