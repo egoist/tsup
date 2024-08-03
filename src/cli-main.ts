@@ -47,6 +47,10 @@ export async function main(options: Options = {}) {
       'Generate external sourcemap, or inline source: --sourcemap inline',
     )
     .option(
+      '--sourceRoot [path]',
+      'Specify the location where a debugger should locate TypeScript files instead of relative source locations',
+    )
+    .option(
       '--watch [path]',
       'Watch mode, if path is not specified, it watches the current folder ".". Repeat "--watch" for more than one path',
     )
