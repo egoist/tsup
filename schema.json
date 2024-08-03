@@ -224,6 +224,9 @@
             }
           ]
         },
+        "sourceRoot": {
+          "type": "string"
+        },
         "noExternal": {
           "type": "array",
           "items": {

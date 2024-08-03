@@ -901,3 +901,21 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('include sourceRoot in sourcemap with --sourceRoot', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const hi = 'hi'`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--sourcemap', '--sourceRoot=/'],
+    },
+  )
+  const sourceMap = await getFileContent(`dist/input.js.map`).then(
+    (rawContent) => JSON.parse(rawContent),
+  )
+
+  expect(sourceMap.sourceRoot).toBe('/')
+})

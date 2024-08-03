@@ -137,6 +137,7 @@ export type Options = {
   dts?: boolean | string | DtsConfig
   experimentalDts?: boolean | string | ExperimentalDtsConfig
   sourcemap?: boolean | 'inline'
+  sourceRoot?: string
   /** Always bundle modules matching given patterns */
   noExternal?: (string | RegExp)[]
   /** Don't bundle these modules */
