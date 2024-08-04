@@ -64,7 +64,7 @@
     "rollup": "^4.19.0",
     "source-map": "0.8.0-beta.0",
     "sucrase": "^3.35.0",
-    "tinyglobby": "^0.2.0",
+    "tinyglobby": "^0.2.1",
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {

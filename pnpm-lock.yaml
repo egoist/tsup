@@ -51,8 +51,8 @@ importers:
         specifier: ^3.35.0
         version: 3.35.0
       tinyglobby:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.2.1
+        version: 0.2.1
       tree-kill:
         specifier: ^1.2.2
         version: 1.2.2
@@ -1469,8 +1469,8 @@ packages:
   tinybench@2.8.0:
     resolution: {integrity: sha512-1/eK7zUnIklz4JUUlL+658n58XO2hHLQfSk1Zf2LKieUjxidN16eKFEoDEfjHc3ohofSSqK3X5yO6VGb6iW8Lw==}
 
-  tinyglobby@0.2.0:
-    resolution: {integrity: sha512-+clyYQfAnNlt5a1x7CCQ6RLuTIztDfDAl6mAANvqRUlz6sVy5znCzJOhais8G6oyUyoeeaorLopO3HptVP8niA==}
+  tinyglobby@0.2.1:
+    resolution: {integrity: sha512-9P+ZLlLTDTjUxMw9aPgWJfBgYiUmW4Ki5XYoaFFwNPgXt4uRDdQOiatse8s/K64DjHNWE94FBe59lJ0oAeCWuQ==}
     engines: {node: '>=12.0.0'}
 
   tinypool@1.0.0:
@@ -2799,7 +2799,7 @@ snapshots:
 
   tinybench@2.8.0: {}
 
-  tinyglobby@0.2.0:
+  tinyglobby@0.2.1:
     dependencies:
       fdir: 6.2.0(picomatch@4.0.2)
       picomatch: 4.0.2
