@@ -42,6 +42,8 @@ export async function loadTsupConfig(
       ? [configFile]
       : [
           'tsup.config.ts',
+          'tsup.config.cts',
+          'tsup.config.mts',
           'tsup.config.js',
           'tsup.config.cjs',
           'tsup.config.mjs',
