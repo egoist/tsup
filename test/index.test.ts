@@ -806,7 +806,7 @@ test(`should generate export {} when there are no exports in source file`, async
   expect(await getFileContent('dist/input.d.mts')).toMatch(/export {\s*}/)
 })
 
-test('custom inject style function', async () => {
+test('custom inject style function - sync', async () => {
   const { outFiles, getFileContent } = await run(getTestName(), {
     'input.ts': `import './style.css'`,
     'style.css': `.hello { color: red }`,
@@ -826,6 +826,30 @@ test('custom inject style function', async () => {
   )
   expect(await getFileContent('dist/input.js')).toContain(
     '__custom_inject_style__(`.hello{color:red}\n`)',
+  )
+})
+
+test('custom inject style function - async', async () => {
+  const { outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `import './style.css'`,
+    'style.css': `.hello { color: red }`,
+    'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          minify: true,
+          format: ['esm', 'cjs'],
+          injectStyle: async (css) => {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            return "__custom_async_inject_style__(" + css +")";
+          }
+        }`,
+  })
+  expect(outFiles).toEqual(['input.js', 'input.mjs'])
+  expect(await getFileContent('dist/input.mjs')).toContain(
+    '__custom_async_inject_style__(`.hello{color:red}\n`)',
+  )
+  expect(await getFileContent('dist/input.js')).toContain(
+    '__custom_async_inject_style__(`.hello{color:red}\n`)',
   )
 })
 

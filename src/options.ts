@@ -210,7 +210,7 @@ export type Options = {
    * Inject CSS as style tags to document head
    * @default {false}
    */
-  injectStyle?: boolean | ((css: string, fileId: string) => Promise<string>)
+  injectStyle?: boolean | ((css: string, fileId: string) => string | Promise<string>)
   /**
    * Inject cjs and esm shims if needed
    * @default false
