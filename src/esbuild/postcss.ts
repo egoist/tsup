@@ -9,7 +9,7 @@ export const postcssPlugin = ({
   cssLoader,
 }: {
   css?: Map<string, string>
-  inject?: boolean | ((css: string, fileId: string) => string)
+  inject?: boolean | ((css: string, fileId: string) => Promise<string>)
   cssLoader?: Loader
 }): Plugin => {
   return {
@@ -124,7 +124,7 @@ export const postcssPlugin = ({
 
           contents =
             typeof inject === 'function'
-              ? inject(JSON.stringify(contents), args.path)
+              ? await inject(JSON.stringify(contents), args.path)
               : `import styleInject from '#style-inject';styleInject(${JSON.stringify(
                   contents,
                 )})`
