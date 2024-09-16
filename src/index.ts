@@ -215,6 +215,12 @@ export async function build(_options: Options) {
         }
 
         const dtsTask = async () => {
+          if (options.dts && options.experimentalDts) {
+            throw new Error(
+              "You can't use both `dts` and `experimentalDts` at the same time",
+            )
+          }
+          
           experimentalDtsTask();
 
           if (options.experimentalDts) {
