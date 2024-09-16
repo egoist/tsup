@@ -207,12 +207,15 @@ export async function build(_options: Options) {
           logger.info('CLI', 'Running in watch mode')
         }
 
-        const dtsTask = async () => {
-          if (options.dts && options.experimentalDts) {
-            throw new Error(
-              "You can't use both `dts` and `experimentalDts` at the same time",
-            )
+        const experimentalDtsTask = async () => {
+          if (!options.dts && options.experimentalDts) {
+            const exports = runTypeScriptCompiler(options);
+            await runDtsRollup(options, exports);
           }
+        }
+
+        const dtsTask = async () => {
+          experimentalDtsTask();
 
           if (options.experimentalDts) {
             const exports = runTypeScriptCompiler(options)
@@ -351,6 +354,8 @@ export async function build(_options: Options) {
                 }),
               ])
 
+              experimentalDtsTask()
+              
               if (options.onSuccess) {
                 if (typeof options.onSuccess === 'function') {
                   onSuccessCleanup = await options.onSuccess()

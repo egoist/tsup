@@ -136,9 +136,9 @@ async function rollupDtsFiles(
   }
 }
 
-function cleanDtsFiles(options: NormalizedOptions) {
+async function cleanDtsFiles(options: NormalizedOptions) {
   if (options.clean) {
-    removeFiles(['**/*.d.{ts,mts,cts}'], options.outDir)
+    await removeFiles(['**/*.d.{ts,mts,cts}'], options.outDir)
   }
 }
 
@@ -156,7 +156,7 @@ export async function runDtsRollup(
     if (!exports) {
       throw new Error('Unexpected internal error: dts exports is not define')
     }
-    cleanDtsFiles(options)
+    await cleanDtsFiles(options)
     for (const format of options.format) {
       await rollupDtsFiles(options, exports, format)
     }
