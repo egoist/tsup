@@ -207,6 +207,13 @@ export async function build(_options: Options) {
           logger.info('CLI', 'Running in watch mode')
         }
 
+        const experimentalDtsTask = async () => {
+          if (!options.dts && options.experimentalDts) {
+            const exports = runTypeScriptCompiler(options);
+            await runDtsRollup(options, exports);
+          }
+        }
+
         const dtsTask = async () => {
           if (options.dts && options.experimentalDts) {
             throw new Error(
@@ -214,10 +221,7 @@ export async function build(_options: Options) {
             )
           }
 
-          if (options.experimentalDts) {
-            const exports = runTypeScriptCompiler(options)
-            await runDtsRollup(options, exports)
-          }
+          experimentalDtsTask();
 
           if (options.dts) {
             await new Promise<void>((resolve, reject) => {
@@ -351,6 +355,8 @@ export async function build(_options: Options) {
                 }),
               ])
 
+              experimentalDtsTask()
+              
               if (options.onSuccess) {
                 if (typeof options.onSuccess === 'function') {
                   onSuccessCleanup = await options.onSuccess()
