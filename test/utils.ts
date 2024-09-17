@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { expect } from 'vitest'
-import { execa } from 'execa'
+import { exec } from 'tinyexec'
 import fs from 'fs-extra'
 import { glob } from 'tinyglobby'
 
@@ -43,16 +43,16 @@ export async function run(
   const entry = options.entry || ['input.ts']
 
   // Run tsup cli
-  const { exitCode, stdout, stderr } = await execa(
-    bin,
-    [...entry, ...(options.flags || [])],
-    {
+  const processPromise = exec(bin, [...entry, ...(options.flags || [])], {
+    nodeOptions: {
       cwd: testDir,
       env: { ...process.env, ...options.env },
     },
-  )
+  })
+  const { stdout, stderr } = await processPromise
+
   const logs = stdout + stderr
-  if (exitCode !== 0) {
+  if (process.exitCode !== 0) {
     throw new Error(logs)
   }
 
