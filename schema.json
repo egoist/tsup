@@ -325,7 +325,7 @@
           "description": "Target platform",
           "type": "string",
           "default": "node",
-          "enum": ["node", "browser"]
+          "enum": ["node", "browser", "neutral"]
         },
         "config": {
           "markdownDescription": "Disable config file with `false` or pass a custom config filename",
