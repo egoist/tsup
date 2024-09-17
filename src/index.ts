@@ -236,6 +236,7 @@ export async function build(_options: Options) {
                 configName: item?.name,
                 options: {
                   ...options, // functions cannot be cloned
+                  injectStyle: typeof options.injectStyle === 'function' ? undefined : options.injectStyle,
                   banner: undefined,
                   footer: undefined,
                   esbuildPlugins: undefined,
