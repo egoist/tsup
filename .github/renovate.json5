@@ -1,0 +1,13 @@
+{
+  extends: ['config:recommended', 'schedule:weekly', 'group:allNonMajor'],
+  labels: ['dependencies'],
+  rangeStrategy: 'bump',
+  packageRules: [
+    {
+      matchDepTypes: ['peerDependencies'],
+      enabled: false,
+    },
+  ],
+  ignoreDeps: ['node'],
+  postUpdateOptions: ['pnpmDedupe'],
+}
