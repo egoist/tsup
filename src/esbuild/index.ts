@@ -1,6 +1,5 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import {
   type BuildResult,
   type Plugin as EsbuildPlugin,
@@ -20,8 +19,6 @@ import { nativeNodeModulesPlugin } from './native-node-module'
 import type { PluginContainer } from '../plugin'
 import type { Format, NormalizedOptions } from '..'
 import type { OutExtensionFactory } from '../options'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const getOutputExtensionMap = (
   options: NormalizedOptions,
