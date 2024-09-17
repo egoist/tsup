@@ -1,4 +1,4 @@
-import * as colors from 'picocolors'
+import colors from 'picocolors'
 import type { Logger } from '../log'
 
 const prettyBytes = (bytes: number) => {
