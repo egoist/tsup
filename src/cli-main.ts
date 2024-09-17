@@ -47,7 +47,7 @@ export async function main(options: Options = {}) {
       'Generate external sourcemap, or inline source: --sourcemap inline',
     )
     .option(
-      '--sourceRoot [path]',
+      '--source-root [path]',
       'Specify the location where a debugger should locate TypeScript files instead of relative source locations',
     )
     .option(
