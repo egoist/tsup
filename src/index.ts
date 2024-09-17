@@ -209,8 +209,8 @@ export async function build(_options: Options) {
 
         const experimentalDtsTask = async () => {
           if (!options.dts && options.experimentalDts) {
-            const exports = runTypeScriptCompiler(options);
-            await runDtsRollup(options, exports);
+            const exports = runTypeScriptCompiler(options)
+            await runDtsRollup(options, exports)
           }
         }
 
@@ -221,7 +221,7 @@ export async function build(_options: Options) {
             )
           }
 
-          experimentalDtsTask();
+          experimentalDtsTask()
 
           if (options.dts) {
             await new Promise<void>((resolve, reject) => {
@@ -236,7 +236,10 @@ export async function build(_options: Options) {
                 configName: item?.name,
                 options: {
                   ...options, // functions cannot be cloned
-                  injectStyle: typeof options.injectStyle === 'function' ? undefined : options.injectStyle,
+                  injectStyle:
+                    typeof options.injectStyle === 'function'
+                      ? undefined
+                      : options.injectStyle,
                   banner: undefined,
                   footer: undefined,
                   esbuildPlugins: undefined,
@@ -357,7 +360,7 @@ export async function build(_options: Options) {
               ])
 
               experimentalDtsTask()
-              
+
               if (options.onSuccess) {
                 if (typeof options.onSuccess === 'function') {
                   onSuccessCleanup = await options.onSuccess()
