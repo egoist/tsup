@@ -70,7 +70,7 @@ export const sveltePlugin = ({
                   sourceMap: true,
                   typescript: {
                     compilerOptions: {
-                      preserveValueImports: true,
+                      verbatimModuleSyntax: true,
                     },
                   },
                 })
@@ -84,7 +84,7 @@ export const sveltePlugin = ({
                       sourcemap: true,
                       tsconfigRaw: {
                         compilerOptions: {
-                          preserveValueImports: true,
+                          verbatimModuleSyntax: true,
                         },
                       },
                       logLevel: build.initialOptions.logLevel,
