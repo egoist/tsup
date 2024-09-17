@@ -2,9 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [main, dev]
+    branches:
+      - main
+
   pull_request:
-    branches: [main, dev]
+    branches:
+      - main
 
 jobs:
   test:
@@ -20,7 +23,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
 
       - uses: actions/setup-node@v4
@@ -34,31 +37,3 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Build and Test
         run: pnpm test
-
-  release:
-    runs-on: ubuntu-latest
-    needs: [test]
-    if: "!contains(github.event.head_commit.message, 'skip-release') && !contains(github.event.head_commit.message, 'skip-ci') && github.event_name != 'pull_request'"
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: pnpm
-
-      - run: pnpm i
-
-      - run: pnpx semantic-release --branches main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
