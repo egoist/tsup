@@ -52,7 +52,7 @@ export async function run(
   const { stdout, stderr } = await processPromise
 
   const logs = stdout + stderr
-  if (process.exitCode !== 0) {
+  if (processPromise.exitCode !== 0) {
     throw new Error(logs)
   }
 
