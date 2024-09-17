@@ -84,6 +84,7 @@ export type EsTarget =
   | 'es2021'
   | 'es2022'
   | 'es2023'
+  | 'es2024'
   | 'esnext'
 
 export type Target =
