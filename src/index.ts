@@ -2,7 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { Worker } from 'node:worker_threads'
 import { loadTsConfig } from 'bundle-require'
-import execa from 'execa'
+import { x } from 'tinyexec'
 import { glob } from 'tinyglobby'
 import kill from 'tree-kill'
 import { version } from '../package.json'
@@ -365,11 +365,13 @@ export async function build(_options: Options) {
                 if (typeof options.onSuccess === 'function') {
                   onSuccessCleanup = await options.onSuccess()
                 } else {
-                  onSuccessProcess = execa(options.onSuccess, {
-                    shell: true,
-                    stdio: 'inherit',
-                  })
-                  onSuccessProcess.on('exit', (code) => {
+                  onSuccessProcess = x(options.onSuccess, [], {
+                    nodeOptions: {
+                      shell: true,
+                      stdio: 'inherit',
+                    },
+                  }).process
+                  onSuccessProcess?.on('exit', (code) => {
                     if (code && code !== 0) {
                       process.exitCode = code
                     }

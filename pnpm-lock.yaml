@@ -26,9 +26,6 @@ importers:
       esbuild:
         specifier: ^0.23.1
         version: 0.23.1
-      execa:
-        specifier: ^5.1.1
-        version: 5.1.1
       joycon:
         specifier: ^3.1.1
         version: 3.1.1
@@ -50,6 +47,9 @@ importers:
       sucrase:
         specifier: ^3.35.0
         version: 3.35.0
+      tinyexec:
+        specifier: ^0.3.0
+        version: 0.3.0
       tinyglobby:
         specifier: ^0.2.6
         version: 0.2.6
