@@ -124,9 +124,7 @@ export const postcssPlugin = ({
 
           contents =
             typeof inject === 'function'
-              ? await Promise.resolve(
-                  inject(JSON.stringify(contents), args.path),
-                )
+              ? await inject(JSON.stringify(contents), args.path)
               : `import styleInject from '#style-inject';styleInject(${JSON.stringify(
                   contents,
                 )})`
