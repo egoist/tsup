@@ -1,8 +1,9 @@
+import fs from 'node:fs'
+import fsp from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { expect } from 'vitest'
 import execa from 'execa'
-import fs from 'fs-extra'
 import { glob } from 'tinyglobby'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -35,8 +36,12 @@ export async function run(
 
   // Write entry files on disk
   await Promise.all(
-    Object.keys(files).map((name) => {
-      return fs.outputFile(path.resolve(testDir, name), files[name], 'utf8')
+    Object.keys(files).map(async (name) => {
+      const filePath = path.resolve(testDir, name)
+      const parentDir = path.dirname(filePath)
+      // Thanks to `recursive: true`, this doesn't fail even if the directory already exists.
+      await fsp.mkdir(parentDir, { recursive: true })
+      return fsp.writeFile(filePath, files[name], 'utf8')
     }),
   )
 
@@ -69,7 +74,7 @@ export async function run(
     logs,
     outDir: path.resolve(testDir, 'dist'),
     getFileContent(filename: string) {
-      return fs.readFile(path.resolve(testDir, filename), 'utf8')
+      return fsp.readFile(path.resolve(testDir, filename), 'utf8')
     },
   }
 }
