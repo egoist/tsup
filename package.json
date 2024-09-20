@@ -83,7 +83,7 @@
     "prettier": "3.3.3",
     "resolve": "1.22.8",
     "rollup-plugin-dts": "6.1.1",
-    "sass": "1.78.0",
+    "sass": "1.79.3",
     "strip-json-comments": "5.0.1",
     "svelte": "3.49.0",
     "svelte-preprocess": "5.0.3",
