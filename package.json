@@ -1,7 +1,7 @@
 {
   "name": "tsup",
   "version": "8.3.0",
-  "packageManager": "pnpm@9.10.0",
+  "packageManager": "pnpm@9.11.0",
   "description": "Bundle your TypeScript library with no config, powered by esbuild",
   "license": "MIT",
   "homepage": "https://tsup.egoist.dev/",
