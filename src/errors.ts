@@ -1,5 +1,5 @@
 import { isMainThread, parentPort } from 'node:worker_threads'
-import * as colors from 'picocolors'
+import colors from 'picocolors'
 
 export class PrettyError extends Error {
   constructor(message: string) {

@@ -2,7 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { Worker } from 'node:worker_threads'
 import { loadTsConfig } from 'bundle-require'
-import execa from 'execa'
+import { exec, type Result as ExecChild } from 'tinyexec'
 import { glob } from 'tinyglobby'
 import kill from 'tree-kill'
 import { version } from '../package.json'
@@ -28,7 +28,6 @@ import { terserPlugin } from './plugins/terser'
 import { runTypeScriptCompiler } from './tsc'
 import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
-import type { ChildProcess } from 'node:child_process'
 import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
 
 export type { Format, Options, NormalizedOptions }
@@ -272,7 +271,7 @@ export async function build(_options: Options) {
 
         const mainTasks = async () => {
           if (!options.dts?.only) {
-            let onSuccessProcess: ChildProcess | undefined
+            let onSuccessProcess: ExecChild | undefined
             let onSuccessCleanup: (() => any) | undefined | void
             /** Files imported by the entry */
             const buildDependencies: Set<string> = new Set()
@@ -365,15 +364,17 @@ export async function build(_options: Options) {
                 if (typeof options.onSuccess === 'function') {
                   onSuccessCleanup = await options.onSuccess()
                 } else {
-                  onSuccessProcess = execa(options.onSuccess, {
-                    shell: true,
-                    stdio: 'inherit',
+                  onSuccessProcess = exec(options.onSuccess, [], {
+                    nodeOptions: { shell: true, stdio: 'inherit' },
                   })
-                  onSuccessProcess.on('exit', (code) => {
-                    if (code && code !== 0) {
-                      process.exitCode = code
-                    }
-                  })
+
+                  await onSuccessProcess
+                  if (
+                    onSuccessProcess.exitCode &&
+                    onSuccessProcess.exitCode !== 0
+                  ) {
+                    process.exitCode = onSuccessProcess.exitCode
+                  }
                 }
               }
             }
