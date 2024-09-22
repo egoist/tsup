@@ -54,7 +54,7 @@
   "dependencies": {
     "bundle-require": "^5.0.0",
     "cac": "^6.7.14",
-    "chokidar": "^3.6.0",
+    "chokidar": "^4.0.1",
     "consola": "^3.2.3",
     "debug": "^4.3.7",
     "esbuild": "^0.23.1",
