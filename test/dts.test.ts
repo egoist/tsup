@@ -480,3 +480,58 @@ test('declaration files with multiple entrypoints #316', async () => {
     'dist/bar/index.d.ts',
   ).toMatchSnapshot()
 })
+
+test('custom dts output extension', async ({ expect, task }) => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/types.ts': `export type Person = { name: string }`,
+      'src/index.ts': `export const foo = [1, 2, 3]\nexport type { Person } from './types'`,
+      'tsup.config.ts': `export default {
+        name: '${task.name}',
+        entry: { index: 'src/index.ts' },
+        dts: true,
+        format: ['esm', 'cjs'],
+        outExtension({ format }) {
+          return {
+            js: format === 'esm' ? '.cjs' : '.mjs',
+            dts: format === 'esm' ? '.d.cts' : '.d.mts',
+          }
+        },
+    }`,
+      'package.json': JSON.stringify(
+        {
+          name: 'custom-dts-output-extension',
+          description: task.name,
+          type: 'module',
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            outDir: './dist',
+            rootDir: './src',
+            moduleResolution: 'Bundler',
+            module: 'ESNext',
+            strict: true,
+            skipLibCheck: true,
+          },
+          include: ['src'],
+        },
+        null,
+        2,
+      ),
+    },
+    {
+      entry: [],
+    },
+  )
+  expect(outFiles).toStrictEqual([
+    'index.cjs',
+    'index.d.cts',
+    'index.d.mts',
+    'index.mjs',
+  ])
+})
