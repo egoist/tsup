@@ -91,7 +91,9 @@ async function rollupDtsFiles(
   const declarationDir = ensureTempDeclarationDir()
   const outDir = options.outDir || 'dist'
   const pkg = await loadPkg(process.cwd())
-  const dtsExtension = defaultOutExtension({ format, pkgType: pkg.type }).dts
+  const dtsExtension =
+    options.formatOutExtension.get(format)?.dts ||
+    defaultOutExtension({ format, pkgType: pkg.type }).dts
 
   let dtsInputFilePath = path.join(
     declarationDir,

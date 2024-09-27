@@ -217,7 +217,7 @@ test('onSuccess: use a function from config file', async () => {
             await new Promise((resolve) => {
               setTimeout(() => {
                 console.log('world')
-                resolve('')  
+                resolve('')
               }, 1_000)
             })
           }
@@ -601,7 +601,7 @@ test('use rollup for treeshaking --format cjs', async () => {
       }`,
       'input.tsx': `
       import ReactSelect from 'react-select'
-      
+
       export const Component = (props: {}) => {
         return <ReactSelect {...props} />
       };
@@ -661,6 +661,79 @@ test('custom output extension', async () => {
       "input.esm.js",
     ]
   `)
+})
+
+test('custom dts output extension', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const foo = [1,2,3]`,
+      'tsup.config.ts': `export default {
+        dts: true,
+        outExtension({ format }) {
+          return {
+            js: format === 'cjs' ? '.cjs' : '.mjs',
+            dts: format === 'cjs' ? '.d.cts' : '.d.mts'
+          }
+        }
+      }`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--format', 'esm,cjs'],
+    },
+  )
+  expect(outFiles).toStrictEqual([
+    'input.cjs',
+    'input.d.cts',
+    'input.d.mts',
+    'input.mjs',
+  ])
+})
+
+test('custom dts output extension with api-extractor', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/index.ts': `export const foo = [1,2,3]`,
+      'tsup.config.ts': `export default {
+        entry: { index: 'src/index.ts' },
+        format: ['esm', 'cjs'],
+        experimentalDts: true,
+        outExtension({ format }) {
+          return {
+            js: format === 'cjs' ? '.cjs' : '.mjs',
+            dts: format === 'cjs' ? '.d.cts' : '.d.mts'
+          }
+        }
+      }`,
+      'package.json': JSON.stringify({
+        name: 'some-package',
+        type: 'module',
+      }),
+      'tsconfig.json': JSON.stringify({
+        compilerOptions: {
+          outDir: './dist',
+          rootDir: './src',
+          moduleResolution: 'NodeNext',
+          module: 'NodeNext',
+        },
+        include: ['src'],
+      }),
+    },
+    {
+      entry: [],
+    },
+  )
+
+  expect(outFiles).toStrictEqual([
+    '_tsup-dts-rollup.d.cts',
+    '_tsup-dts-rollup.d.mts',
+    'index.cjs',
+    'index.d.cts',
+    'index.d.mts',
+    'index.mjs',
+  ])
 })
 
 test('custom config file', async () => {
