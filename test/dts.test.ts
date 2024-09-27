@@ -258,29 +258,29 @@ test('should emit declaration files with experimentalDts', async () => {
         export function sharedFunction<T>(value: T): T | null {
           return value || null
         }
-        
+
         type sharedType = {
           shared: boolean
         }
-        
+
         export type { sharedType }
     `,
     'src/server.ts': `
         export * from './shared'
 
         /**
-         * Comment for server render function 
+         * Comment for server render function
          */
         export function render(options: ServerRenderOptions): string {
           return JSON.stringify(options)
         }
-        
+
         export interface ServerRenderOptions {
           /**
            * Comment for ServerRenderOptions.stream
-           * 
+           *
            * @public
-           * 
+           *
            * @my_custom_tag
            */
           stream: boolean
@@ -298,7 +298,7 @@ test('should emit declaration files with experimentalDts', async () => {
         import * as ServerThirdPartyNamespace from 'react-dom';
         export { ServerThirdPartyNamespace }
 
-        // Export a third party module 
+        // Export a third party module
         export * from 'react-dom/server';
 
     `,
@@ -308,7 +308,7 @@ test('should emit declaration files with experimentalDts', async () => {
         export function render(options: ClientRenderOptions): string {
           return JSON.stringify(options)
         }
-        
+
         export interface ClientRenderOptions {
           document: boolean
         }
@@ -473,3 +473,68 @@ test('declaration files with multiple entrypoints #316', async () => {
     'dist/bar/index.d.ts',
   ).toMatchSnapshot()
 })
+
+test.for([
+  { moduleResolution: 'NodeNext', module: 'NodeNext' },
+  { moduleResolution: 'Node16', module: 'Node16' },
+  { moduleResolution: 'Bundler', module: 'ESNext' },
+  { moduleResolution: 'Node10', module: 'ESNext' },
+])(
+  "experimentalDts works with TypeScript's $moduleResolution module resolution and module set to $module",
+  async ({ moduleResolution, module }, { expect }) => {
+    const { getFileContent, outFiles } = await run(
+      getTestName(),
+      {
+        'src/index.ts': `export const foo = [1, 2, 3]`,
+        'tsup.config.ts': `export default {
+        entry: { index: 'src/index.ts' },
+        format: ['esm', 'cjs'],
+        experimentalDts: true,
+      }`,
+        'package.json': JSON.stringify({
+          name: 'testing-experimental-dts',
+          type: 'module',
+        }),
+        'tsconfig.json': JSON.stringify({
+          compilerOptions: {
+            module,
+            moduleResolution,
+            outDir: './dist',
+            rootDir: './src',
+            skipLibCheck: true,
+            strict: true,
+          },
+          include: ['src'],
+        }),
+      },
+      {
+        entry: [],
+      },
+    )
+
+    expect(outFiles).toStrictEqual([
+      '_tsup-dts-rollup.d.cts',
+      '_tsup-dts-rollup.d.ts',
+      'index.cjs',
+      'index.d.cts',
+      'index.d.ts',
+      'index.js',
+    ])
+
+    expect(await getFileContent('dist/index.d.ts')).toStrictEqual(
+      `export { foo } from './_tsup-dts-rollup.js';\n`,
+    )
+
+    expect(await getFileContent('dist/index.d.cts')).toStrictEqual(
+      `export { foo } from './_tsup-dts-rollup.cjs';\n`,
+    )
+
+    expect(await getFileContent('dist/_tsup-dts-rollup.d.cts')).toStrictEqual(
+      `export declare const foo: number[];\r\n\r\nexport { }\r\n`,
+    )
+
+    expect(await getFileContent('dist/_tsup-dts-rollup.d.ts')).toStrictEqual(
+      `export declare const foo: number[];\r\n\r\nexport { }\r\n`,
+    )
+  },
+)
