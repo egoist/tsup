@@ -7,10 +7,11 @@ import { glob, globSync } from 'tinyglobby'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { PrettyError, handleError } from './errors'
-import { getAllDepsHash, loadTsupConfig } from './load'
+import { getAllDepsHash, loadPkg, loadTsupConfig } from './load'
 import {
   type MaybePromise,
   debouncePromise,
+  defaultOutExtension,
   removeFiles,
   slash,
   toObjectEntry,
@@ -76,14 +77,17 @@ const normalizeOptions = async (
     ...optionsOverride,
   }
 
+  const formats =
+    typeof _options.format === 'string'
+      ? [_options.format as Format]
+      : _options.format || ['cjs']
+
   const options: Partial<NormalizedOptions> = {
     outDir: 'dist',
     removeNodeProtocol: true,
     ..._options,
-    format:
-      typeof _options.format === 'string'
-        ? [_options.format as Format]
-        : _options.format || ['cjs'],
+    format: formats,
+
     dts:
       typeof _options.dts === 'boolean'
         ? _options.dts
@@ -172,6 +176,28 @@ const normalizeOptions = async (
   if (!options.target) {
     options.target = 'node16'
   }
+
+  const pkg = await loadPkg(process.cwd())
+
+  const formatOutExtension = new Map(
+    formats.map((format) => {
+      const outputExtensions = options.outExtension?.({
+        format,
+        options: options as NormalizedOptions,
+        pkgType: pkg.type,
+      })
+
+      return [
+        format,
+        {
+          ...defaultOutExtension({ format, pkgType: pkg.type }),
+          ...(outputExtensions || {}),
+        },
+      ] as const
+    }),
+  )
+
+  options.formatOutExtension = formatOutExtension
 
   return options as NormalizedOptions
 }
