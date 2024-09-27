@@ -12,8 +12,9 @@ import {
   type MaybePromise,
   debouncePromise,
   removeFiles,
+  resolveExperimentalDtsConfig,
+  resolveInitialExperimentalDtsConfig,
   slash,
-  toObjectEntry,
 } from './utils'
 import { createLogger, setSilent } from './log'
 import { runEsbuild } from './esbuild'
@@ -92,20 +93,10 @@ const normalizeOptions = async (
         : typeof _options.dts === 'string'
           ? { entry: _options.dts }
           : _options.dts,
-    experimentalDts: _options.experimentalDts
-      ? typeof _options.experimentalDts === 'boolean'
-        ? _options.experimentalDts
-          ? { entry: {} }
-          : undefined
-        : typeof _options.experimentalDts === 'string'
-          ? {
-              entry: toObjectEntry(_options.experimentalDts),
-            }
-          : {
-              ..._options.experimentalDts,
-              entry: toObjectEntry(_options.experimentalDts.entry || {}),
-            }
-      : undefined,
+
+    experimentalDts: await resolveInitialExperimentalDtsConfig(
+      _options.experimentalDts,
+    ),
   }
 
   setSilent(options.silent)
@@ -151,17 +142,14 @@ const normalizeOptions = async (
         ...(options.dts.compilerOptions || {}),
       }
     }
+
     if (options.experimentalDts) {
-      options.experimentalDts.compilerOptions = {
-        ...(tsconfig.data.compilerOptions || {}),
-        ...(options.experimentalDts.compilerOptions || {}),
-      }
-      options.experimentalDts.entry = toObjectEntry(
-        Object.keys(options.experimentalDts.entry).length > 0
-          ? options.experimentalDts.entry
-          : options.entry,
+      options.experimentalDts = await resolveExperimentalDtsConfig(
+        options as NormalizedOptions,
+        tsconfig,
       )
     }
+
     if (!options.target) {
       options.target = tsconfig.data?.compilerOptions?.target?.toLowerCase()
     }

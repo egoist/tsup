@@ -88,10 +88,18 @@ async function rollupDtsFiles(
   exports: ExportDeclaration[],
   format: Format,
 ) {
+  if (!options.experimentalDts || !options.experimentalDts?.entry) {
+    return
+  }
+
+  /**
+   * **`.tsup/declaration`** directory
+   */
   const declarationDir = ensureTempDeclarationDir()
   const outDir = options.outDir || 'dist'
   const pkg = await loadPkg(process.cwd())
   const dtsExtension = defaultOutExtension({ format, pkgType: pkg.type }).dts
+  const tsconfig = options.tsconfig || 'tsconfig.json'
 
   let dtsInputFilePath = path.join(
     declarationDir,
@@ -113,16 +121,40 @@ async function rollupDtsFiles(
     formatAggregationExports(exports, declarationDir),
   )
 
-  rollupDtsFile(
-    dtsInputFilePath,
-    dtsOutputFilePath,
-    options.tsconfig || 'tsconfig.json',
-  )
+  rollupDtsFile(dtsInputFilePath, dtsOutputFilePath, tsconfig)
 
   for (let [out, sourceFileName] of Object.entries(
-    options.experimentalDts!.entry,
+    options.experimentalDts.entry,
   )) {
+    /**
+     * **Source file name** (`src/index.ts`)
+     *
+     * @example
+     *
+     * ```ts
+     * import { defineConfig } from 'tsup'
+     *
+     * export default defineConfig({
+     *   entry: { index: 'src/index.ts' },
+     *   // Here `src/index.ts` is our `sourceFileName`.
+     * })
+     * ```
+     */
     sourceFileName = toAbsolutePath(sourceFileName)
+    /**
+     * **Output file name** (`dist/index.d.ts`)
+     *
+     * @example
+     *
+     * ```ts
+     * import { defineConfig } from 'tsup'
+     *
+     * export default defineConfig({
+     *  entry: { index: 'src/index.ts' },
+     * // Here `dist/index.d.ts` is our `outFileName`.
+     * })
+     * ```
+     */
     const outFileName = path.join(outDir, out + dtsExtension)
 
     // Find all declarations that are exported from the current source file

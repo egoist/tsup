@@ -258,29 +258,29 @@ test('should emit declaration files with experimentalDts', async () => {
         export function sharedFunction<T>(value: T): T | null {
           return value || null
         }
-        
+
         type sharedType = {
           shared: boolean
         }
-        
+
         export type { sharedType }
     `,
     'src/server.ts': `
         export * from './shared'
 
         /**
-         * Comment for server render function 
+         * Comment for server render function
          */
         export function render(options: ServerRenderOptions): string {
           return JSON.stringify(options)
         }
-        
+
         export interface ServerRenderOptions {
           /**
            * Comment for ServerRenderOptions.stream
-           * 
+           *
            * @public
-           * 
+           *
            * @my_custom_tag
            */
           stream: boolean
@@ -298,7 +298,7 @@ test('should emit declaration files with experimentalDts', async () => {
         import * as ServerThirdPartyNamespace from 'react-dom';
         export { ServerThirdPartyNamespace }
 
-        // Export a third party module 
+        // Export a third party module
         export * from 'react-dom/server';
 
     `,
@@ -308,7 +308,7 @@ test('should emit declaration files with experimentalDts', async () => {
         export function render(options: ClientRenderOptions): string {
           return JSON.stringify(options)
         }
-        
+
         export interface ClientRenderOptions {
           document: boolean
         }

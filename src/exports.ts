@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { slash, trimDtsExtension, truthy } from './utils'
+import { replaceDtsWithJsExtensions, slash, truthy } from './utils'
 
 export type ExportDeclaration = ModuleExport | NamedExport
 
@@ -41,7 +41,7 @@ function formatAggregationExport(
   declaration: ExportDeclaration,
   declarationDirPath: string,
 ): string {
-  const dest = trimDtsExtension(
+  const dest = replaceDtsWithJsExtensions(
     `./${path.posix.normalize(
       slash(path.relative(declarationDirPath, declaration.destFileName)),
     )}`,
@@ -72,7 +72,7 @@ export function formatDistributionExports(
   fromFilePath: string,
   toFilePath: string,
 ) {
-  let importPath = trimDtsExtension(
+  let importPath = replaceDtsWithJsExtensions(
     path.posix.relative(
       path.posix.dirname(path.posix.normalize(slash(fromFilePath))),
       path.posix.normalize(slash(toFilePath)),
