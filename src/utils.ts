@@ -242,3 +242,31 @@ export function writeFileSync(filePath: string, content: string) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true })
   fs.writeFileSync(filePath, content)
 }
+
+/**
+ * Replaces TypeScript declaration file
+ * extensions (`.d.ts`, `.d.mts`, `.d.cts`)
+ * with their corresponding JavaScript variants (`.js`, `.mjs`, `.cjs`).
+ *
+ * @param dtsFilePath - The file path to be transformed.
+ * @returns The updated file path with the JavaScript extension.
+ *
+ * @internal
+ */
+export function replaceDtsWithJsExtensions(dtsFilePath: string) {
+  return dtsFilePath.replace(
+    /\.d\.(ts|mts|cts)$/,
+    (_, fileExtension: string) => {
+      switch (fileExtension) {
+        case 'ts':
+          return '.js'
+        case 'mts':
+          return '.mjs'
+        case 'cts':
+          return '.cjs'
+        default:
+          return ''
+      }
+    },
+  )
+}
