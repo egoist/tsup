@@ -400,9 +400,7 @@ export async function build(_options: Options) {
                 typeof options.watch === 'boolean'
                   ? '.'
                   : Array.isArray(options.watch)
-                    ? options.watch.filter(
-                        (path) => typeof path === 'string',
-                      )
+                    ? options.watch.filter((path) => typeof path === 'string')
                     : options.watch
 
               logger.info(
