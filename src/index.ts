@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { Worker } from 'node:worker_threads'
 import { loadTsConfig } from 'bundle-require'
 import { exec, type Result as ExecChild } from 'tinyexec'
-import { glob } from 'tinyglobby'
+import { glob, globSync } from 'tinyglobby'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { PrettyError, handleError } from './errors'
@@ -400,9 +400,7 @@ export async function build(_options: Options) {
                 typeof options.watch === 'boolean'
                   ? '.'
                   : Array.isArray(options.watch)
-                    ? options.watch.filter(
-                        (path): path is string => typeof path === 'string',
-                      )
+                    ? options.watch.filter((path) => typeof path === 'string')
                     : options.watch
 
               logger.info(
@@ -420,10 +418,10 @@ export async function build(_options: Options) {
                   .join(' | ')}`,
               )
 
-              const watcher = watch(watchPaths, {
+              const watcher = watch(await glob(watchPaths), {
                 ignoreInitial: true,
                 ignorePermissionErrors: true,
-                ignored,
+                ignored: (p) => globSync(p, { ignore: ignored }).length === 0,
               })
               watcher.on('all', async (type, file) => {
                 file = slash(file)
