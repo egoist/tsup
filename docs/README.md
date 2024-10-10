@@ -354,7 +354,7 @@ You can use `--env` flag to define compile-time environment variables:
 tsup src/index.ts --env.NODE_ENV production
 ```
 
-Note that `--env.VAR_NAME` only recognizes `process.env.VAR_NAME` and `import.meta.env.VAR_NAME`.
+Note that `--env.VAR_NAME` only recognizes `process.env.VAR_NAME` and `import.meta.env.VAR_NAME`. If you use `process.env`, it will only take effect when it is used as a built-in global variable. Therefore, do not import `process` from `node:process`.
 
 ### Building CLI app
 
