@@ -354,6 +354,8 @@ You can use `--env` flag to define compile-time environment variables:
 tsup src/index.ts --env.NODE_ENV production
 ```
 
+Note that `--env.VAR_NAME` only recognizes `process.env.VAR_NAME` and `import.meta.env.VAR_NAME`.
+
 ### Building CLI app
 
 When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the output file executable, so you don't have to run `chmod +x dist/cli.js`.
