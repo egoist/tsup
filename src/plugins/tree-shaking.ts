@@ -47,6 +47,7 @@ export const treeShakingPlugin = ({
         format: this.format,
         file: info.path,
         sourcemap: !!this.options.sourcemap,
+        compact: !!this.options.minify,
         name,
       })
 
