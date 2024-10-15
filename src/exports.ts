@@ -48,7 +48,7 @@ function formatAggregationExport(
   )
 
   if (declaration.kind === 'module') {
-    // No implemeted
+    // Not implemented
     return ''
   } else if (declaration.kind === 'named') {
     return [
