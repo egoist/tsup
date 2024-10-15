@@ -28,7 +28,13 @@ import { terserPlugin } from './plugins/terser'
 import { runTypeScriptCompiler } from './tsc'
 import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
-import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
+import type {
+  Format,
+  KILL_SIGNAL,
+  NormalizedExperimentalDtsConfig,
+  NormalizedOptions,
+  Options,
+} from './options'
 
 export type { Format, Options, NormalizedOptions }
 
@@ -92,20 +98,15 @@ const normalizeOptions = async (
         : typeof _options.dts === 'string'
           ? { entry: _options.dts }
           : _options.dts,
-    experimentalDts: _options.experimentalDts
-      ? typeof _options.experimentalDts === 'boolean'
+
+    experimentalDts:
+      typeof _options.experimentalDts === 'boolean'
         ? _options.experimentalDts
           ? { entry: {} }
           : undefined
         : typeof _options.experimentalDts === 'string'
-          ? {
-              entry: toObjectEntry(_options.experimentalDts),
-            }
-          : {
-              ..._options.experimentalDts,
-              entry: toObjectEntry(_options.experimentalDts.entry || {}),
-            }
-      : undefined,
+          ? { entry: _options.experimentalDts }
+          : _options.experimentalDts,
   }
 
   setSilent(options.silent)
@@ -151,16 +152,27 @@ const normalizeOptions = async (
         ...(options.dts.compilerOptions || {}),
       }
     }
+
     if (options.experimentalDts) {
-      options.experimentalDts.compilerOptions = {
-        ...(tsconfig.data.compilerOptions || {}),
-        ...(options.experimentalDts.compilerOptions || {}),
-      }
-      options.experimentalDts.entry = toObjectEntry(
-        Object.keys(options.experimentalDts.entry).length > 0
-          ? options.experimentalDts.entry
-          : options.entry,
-      )
+      const experimentalDtsEntry =
+        options.experimentalDts.entry || options.entry
+
+      const experimentalDtsObjectEntry =
+        Object.keys(toObjectEntry(experimentalDtsEntry)).length === 0
+          ? toObjectEntry(options.entry)
+          : toObjectEntry(experimentalDtsEntry)
+
+      const normalizedExperimentalDtsOptions: NormalizedExperimentalDtsConfig =
+        {
+          compilerOptions: {
+            ...(tsconfig.data.compilerOptions || {}),
+            ...(options.experimentalDts.compilerOptions || {}),
+          },
+
+          entry: experimentalDtsObjectEntry,
+        }
+
+      options.experimentalDts = normalizedExperimentalDtsOptions
     }
     if (!options.target) {
       options.target = tsconfig.data?.compilerOptions?.target?.toLowerCase()
