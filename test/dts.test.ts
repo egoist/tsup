@@ -385,6 +385,13 @@ test('.d.ts files should be cleaned when --clean and --experimental-dts are prov
   const filesFoo = {
     'package.json': `{ "name": "tsup-playground", "private": true }`,
     'foo.ts': `export const foo = 1`,
+    'tsconfig.json': JSON.stringify(
+      {
+        compilerOptions: { skipLibCheck: true },
+      },
+      null,
+      2,
+    ),
   }
 
   const filesFooBar = {
