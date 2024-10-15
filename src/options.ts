@@ -259,7 +259,7 @@ export type Options = {
 }
 
 export interface NormalizedExperimentalDtsConfig {
-  entry: { [entryAlias: string]: string }
+  entry?: InputOption
   compilerOptions?: any
 }
 

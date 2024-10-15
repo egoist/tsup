@@ -154,7 +154,7 @@ export async function runDtsRollup(
     logger.info('dts', 'Build start')
 
     if (!exports) {
-      throw new Error('Unexpected internal error: dts exports is not define')
+      throw new Error('Unexpected internal error: dts exports is not defined')
     }
     await cleanDtsFiles(options)
     for (const format of options.format) {
