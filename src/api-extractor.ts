@@ -1,10 +1,5 @@
 import path from 'node:path'
 import { handleError } from './errors'
-import {
-  type ExportDeclaration,
-  formatAggregationExports,
-  formatDistributionExports,
-} from './exports'
 import { loadPkg } from './load'
 import { createLogger } from './log'
 import {
@@ -13,7 +8,6 @@ import {
   getApiExtractor,
   removeFiles,
   toAbsolutePath,
-  writeFileSync,
 } from './utils'
 import type { Format, NormalizedOptions } from './options'
 import type {
@@ -84,55 +78,71 @@ function rollupDtsFile(
 
 async function rollupDtsFiles(
   options: NormalizedOptions,
-  exports: ExportDeclaration[],
+  exports: {
+    /**
+     * **Source file name** to **Output file name** mapping.
+     * (`src/index.ts` \=> `.tsup/declaration/index.d.ts`)
+     */
+    fileMapping: Map<string, string>
+  },
   format: Format,
 ) {
+  if (!options.experimentalDts || !options.experimentalDts?.entry) {
+    return
+  }
+
+  /**
+   * **`.tsup/declaration`** directory
+   */
   const declarationDir = ensureTempDeclarationDir()
   const outDir = options.outDir || 'dist'
   const pkg = await loadPkg(process.cwd())
   const dtsExtension = defaultOutExtension({ format, pkgType: pkg.type }).dts
-
-  let dtsInputFilePath = path.join(
-    declarationDir,
-    `_tsup-dts-aggregation${dtsExtension}`,
-  )
-  // @microsoft/api-extractor doesn't support `.d.mts` and `.d.cts` file as a
-  // entrypoint yet. So we replace the extension here as a temporary workaround.
-  //
-  // See the issue for more details:
-  // https://github.com/microsoft/rushstack/pull/4196
-  dtsInputFilePath = dtsInputFilePath
-    .replace(/\.d\.mts$/, '.dmts.d.ts')
-    .replace(/\.d\.cts$/, '.dcts.d.ts')
-
-  const dtsOutputFilePath = path.join(outDir, `_tsup-dts-rollup${dtsExtension}`)
-
-  writeFileSync(
-    dtsInputFilePath,
-    formatAggregationExports(exports, declarationDir),
-  )
-
-  rollupDtsFile(
-    dtsInputFilePath,
-    dtsOutputFilePath,
-    options.tsconfig || 'tsconfig.json',
-  )
+  const tsconfig = options.tsconfig || 'tsconfig.json'
 
   for (let [out, sourceFileName] of Object.entries(
-    options.experimentalDts!.entry,
+    options.experimentalDts.entry,
   )) {
+    out = path.basename(out)
+    /**
+     * **Source file name** (`src/index.ts`)
+     *
+     * @example
+     *
+     * ```ts
+     * import { defineConfig } from 'tsup'
+     *
+     * export default defineConfig({
+     *   entry: { index: 'src/index.ts' },
+     *   // Here `src/index.ts` is our `sourceFileName`.
+     * })
+     * ```
+     */
     sourceFileName = toAbsolutePath(sourceFileName)
+    /**
+     * **Output file name** (`dist/index.d.ts`)
+     *
+     * @example
+     *
+     * ```ts
+     * import { defineConfig } from 'tsup'
+     *
+     * export default defineConfig({
+     *  entry: { index: 'src/index.ts' },
+     * // Here `dist/index.d.ts` is our `outFileName`.
+     * })
+     * ```
+     */
     const outFileName = path.join(outDir, out + dtsExtension)
 
-    // Find all declarations that are exported from the current source file
-    const currentExports = exports.filter(
-      (declaration) => declaration.sourceFileName === sourceFileName,
-    )
+    /**
+     * **Input file path** (`.tsup/declaration/index.d.ts`)
+     */
+    const inputFilePath =
+      exports.fileMapping.get(sourceFileName) ||
+      `${path.join(declarationDir, out)}.d.ts`
 
-    writeFileSync(
-      outFileName,
-      formatDistributionExports(currentExports, outFileName, dtsOutputFilePath),
-    )
+    rollupDtsFile(inputFilePath, outFileName, tsconfig)
   }
 }
 
@@ -144,7 +154,13 @@ async function cleanDtsFiles(options: NormalizedOptions) {
 
 export async function runDtsRollup(
   options: NormalizedOptions,
-  exports?: ExportDeclaration[],
+  exports?: {
+    /**
+     * **Source file name** to **Output file name** mapping.
+     * (`src/index.ts` \=> `.tsup/declaration/index.d.ts`)
+     */
+    fileMapping: Map<string, string>
+  },
 ) {
   try {
     const start = Date.now()
