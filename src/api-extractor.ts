@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { glob } from 'tinyglobby'
 import { handleError } from './errors'
 import { loadPkg } from './load'
 import { createLogger } from './log'
@@ -8,8 +9,14 @@ import {
   getApiExtractor,
   removeFiles,
   toAbsolutePath,
+  toObjectEntry,
 } from './utils'
-import type { Format, NormalizedOptions } from './options'
+import type {
+  ExperimentalDtsConfig,
+  Format,
+  NormalizedExperimentalDtsConfig,
+  NormalizedOptions,
+} from './options'
 import type {
   ExtractorResult,
   IConfigFile,
@@ -181,5 +188,114 @@ export async function runDtsRollup(
   } catch (error) {
     handleError(error)
     logger.error('dts', 'Build error')
+  }
+}
+
+/**
+ * Normalizes the
+ * {@linkcode NormalizedExperimentalDtsConfig | experimental DTS options}
+ * by resolving entry paths and merging the provided
+ * TypeScript configuration options.
+ *
+ * @param options - The options containing entry points and experimental DTS configuration.
+ * @param tsconfig - The loaded TypeScript configuration data.
+ * @returns The normalized experimental DTS configuration.
+ *
+ * @internal
+ */
+export const normalizeExperimentalDtsOptions = async (
+  options: Partial<NormalizedOptions>,
+  tsconfig: any,
+) => {
+  if (options.entry == null) {
+    return
+  }
+
+  const experimentalDtsEntry = options.experimentalDts?.entry || options.entry
+
+  /**
+   * Resolves the entry paths for the experimental DTS configuration.
+   * If the entry is a string or array of strings,
+   * it uses {@linkcode glob | tinyglobby's glob function} to resolve
+   * the potential glob patterns. If it's an `object`, it directly uses
+   * the provided entry object.
+   *
+   * @example
+   *
+   * ```ts
+   * import { defineConfig } from 'tsup'
+   *
+   * export default defineConfig({
+   *   entry: { index: 'src/index.ts' },
+   *   format: ['esm', 'cjs'],
+   *   experimentalDts: { entry: 'src/**\/*.ts' },
+   *   // experimentalDts: { entry: 'src/**\/*.ts' }
+   *   // becomes experimentalDts: { entry: { index: 'src/index.ts', types: 'src/types.ts } }
+   * })
+   * ```
+   */
+  const resolvedEntryPaths =
+    typeof experimentalDtsEntry === 'string' ||
+    Array.isArray(experimentalDtsEntry)
+      ? await glob(experimentalDtsEntry)
+      : experimentalDtsEntry
+
+  // Fallback to `options.entry` if we end up with an empty object.
+  const experimentalDtsObjectEntry =
+    Object.keys(toObjectEntry(resolvedEntryPaths)).length === 0
+      ? toObjectEntry(options.entry)
+      : toObjectEntry(resolvedEntryPaths)
+
+  const normalizedExperimentalDtsOptions: NormalizedExperimentalDtsConfig = {
+    compilerOptions: {
+      ...(tsconfig.data.compilerOptions || {}),
+      ...(options.experimentalDts?.compilerOptions || {}),
+    },
+
+    entry: experimentalDtsObjectEntry,
+  }
+
+  return normalizedExperimentalDtsOptions
+}
+
+/**
+ * Normalizes the initial experimental DTS configuration
+ * into a consistent {@linkcode NormalizedExperimentalDtsConfig | experimentalDts config object}.
+ *
+ * This function handles different types of
+ * {@linkcode NormalizedExperimentalDtsConfig | experimentalDts} inputs:
+ * - If {@linkcode experimentalDts} is a `boolean`, it returns a default object with an empty entry (`{ entry: {} }`) if `true`, or `undefined` if `false`.
+ * - If {@linkcode experimentalDts} is a `string`, it returns an object with the string as the `entry` property.
+ * - If {@linkcode experimentalDts} is already an object ({@linkcode NormalizedExperimentalDtsConfig}), it returns the object as is.
+ *
+ * The function focuses specifically on normalizing the **initial** {@linkcode NormalizedExperimentalDtsConfig | experimentalDts configuration}.
+ *
+ * @param experimentalDts - The {@linkcode NormalizedExperimentalDtsConfig | experimentalDts} value, which can be a `boolean`, `string`, `object`, or `undefined`.
+ * @returns A normalized {@linkcode NormalizedExperimentalDtsConfig | experimentalDts config object}, or `undefined` if input was `false` or `undefined`.
+ *
+ * @internal
+ */
+export const normalizeInitialExperimentalDtsOptions = async (
+  experimentalDts: boolean | string | ExperimentalDtsConfig | undefined,
+): Promise<NormalizedExperimentalDtsConfig | undefined> => {
+  if (experimentalDts == null) {
+    return
+  }
+  if (typeof experimentalDts === 'boolean')
+    return experimentalDts ? { entry: {} } : undefined
+  if (typeof experimentalDts === 'string') {
+    return { entry: toObjectEntry(await glob(experimentalDts)) }
+  }
+  return {
+    ...experimentalDts,
+    entry:
+      experimentalDts?.entry == null
+        ? {}
+        : toObjectEntry(
+            typeof experimentalDts?.entry === 'string' ||
+              Array.isArray(experimentalDts.entry)
+              ? await glob(experimentalDts.entry)
+              : experimentalDts.entry,
+          ),
   }
 }
