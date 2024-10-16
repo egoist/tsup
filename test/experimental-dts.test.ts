@@ -345,3 +345,195 @@ test('experimentalDts.entry can be an array of globs', async ({
     indexDtsContent,
   )
 })
+
+test('experimentalDts can be a string', async ({ expect, task }) => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'src/types.ts': `export type Person = { name: string }`,
+      'src/index.ts': `export const foo = [1, 2, 3]\nexport type { Person } from './types.js'`,
+      'tsup.config.ts': `export default ${JSON.stringify(
+        {
+          name: task.name,
+          entry: ['src/**/*.ts'],
+          format: ['esm', 'cjs'],
+          experimentalDts: 'src/index.ts',
+        } satisfies Options,
+        null,
+        2,
+      )}`,
+      'package.json': JSON.stringify(
+        {
+          name: 'testing-experimental-dts-can-be-a-string',
+          description: task.name,
+          type: 'module',
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            outDir: './dist',
+            rootDir: './src',
+            skipLibCheck: true,
+            strict: true,
+          },
+          include: ['src'],
+        },
+        null,
+        2,
+      ),
+    },
+    {
+      entry: [],
+    },
+  )
+
+  expect(outFiles).toStrictEqual([
+    'index.cjs',
+    'index.d.cts',
+    'index.d.ts',
+    'index.js',
+    'types.cjs',
+    'types.js',
+  ])
+
+  const indexDtsContent = `export declare const foo: number[];\r\n\r\nexport declare type Person = {\r\n    name: string;\r\n};\r\n\r\nexport { }\r\n`
+
+  expect(await getFileContent('dist/index.d.ts')).toStrictEqual(indexDtsContent)
+
+  expect(await getFileContent('dist/index.d.cts')).toStrictEqual(
+    indexDtsContent,
+  )
+})
+
+test('experimentalDts can be a string of glob pattern', async ({
+  expect,
+  task,
+}) => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'src/types.ts': `export type Person = { name: string }`,
+      'src/index.ts': `export const foo = [1, 2, 3]\nexport type { Person } from './types.js'`,
+      'tsup.config.ts': `export default ${JSON.stringify(
+        {
+          name: task.name,
+          entry: { index: 'src/index.ts' },
+          format: ['esm', 'cjs'],
+          experimentalDts: 'src/**/*.ts',
+        } satisfies Options,
+        null,
+        2,
+      )}`,
+      'package.json': JSON.stringify(
+        {
+          name: 'testing-experimental-dts-can-be-a-string-of-glob-pattern',
+          description: task.name,
+          type: 'module',
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            outDir: './dist',
+            rootDir: './src',
+            skipLibCheck: true,
+            strict: true,
+          },
+          include: ['src'],
+        },
+        null,
+        2,
+      ),
+    },
+    {
+      entry: [],
+    },
+  )
+
+  expect(outFiles).toStrictEqual([
+    'index.cjs',
+    'index.d.cts',
+    'index.d.ts',
+    'index.js',
+    'types.d.cts',
+    'types.d.ts',
+  ])
+
+  const indexDtsContent = `export declare const foo: number[];\r\n\r\nexport declare type Person = {\r\n    name: string;\r\n};\r\n\r\nexport { }\r\n`
+
+  expect(await getFileContent('dist/index.d.ts')).toStrictEqual(indexDtsContent)
+
+  expect(await getFileContent('dist/index.d.cts')).toStrictEqual(
+    indexDtsContent,
+  )
+})
+
+test('experimentalDts.entry can be a string of glob pattern', async ({
+  expect,
+  task,
+}) => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'src/types.ts': `export type Person = { name: string }`,
+      'src/index.ts': `export const foo = [1, 2, 3]\nexport type { Person } from './types.js'`,
+      'tsup.config.ts': `export default ${JSON.stringify(
+        {
+          name: task.name,
+          entry: { index: 'src/index.ts' },
+          format: ['esm', 'cjs'],
+          experimentalDts: { entry: 'src/**/*.ts' },
+        } satisfies Options,
+        null,
+        2,
+      )}`,
+      'package.json': JSON.stringify(
+        {
+          name: 'testing-experimental-dts-entry-can-be-a-string-of-glob-pattern',
+          description: task.name,
+          type: 'module',
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            outDir: './dist',
+            rootDir: './src',
+            skipLibCheck: true,
+            strict: true,
+          },
+          include: ['src'],
+        },
+        null,
+        2,
+      ),
+    },
+    {
+      entry: [],
+    },
+  )
+
+  expect(outFiles).toStrictEqual([
+    'index.cjs',
+    'index.d.cts',
+    'index.d.ts',
+    'index.js',
+    'types.d.cts',
+    'types.d.ts',
+  ])
+
+  const indexDtsContent = `export declare const foo: number[];\r\n\r\nexport declare type Person = {\r\n    name: string;\r\n};\r\n\r\nexport { }\r\n`
+
+  expect(await getFileContent('dist/index.d.ts')).toStrictEqual(indexDtsContent)
+
+  expect(await getFileContent('dist/index.d.cts')).toStrictEqual(
+    indexDtsContent,
+  )
+})
