@@ -160,14 +160,16 @@ const normalizeOptions = async (
       const experimentalDtsObjectEntry =
         Object.keys(
           toObjectEntry(
-            Array.isArray(experimentalDtsEntry)
+            Array.isArray(experimentalDtsEntry) ||
+              typeof experimentalDtsEntry === 'string'
               ? await glob(experimentalDtsEntry)
               : experimentalDtsEntry,
           ),
         ).length === 0
           ? toObjectEntry(options.entry)
           : toObjectEntry(
-              Array.isArray(experimentalDtsEntry)
+              Array.isArray(experimentalDtsEntry) ||
+                typeof experimentalDtsEntry === 'string'
                 ? await glob(experimentalDtsEntry)
                 : experimentalDtsEntry,
             )
