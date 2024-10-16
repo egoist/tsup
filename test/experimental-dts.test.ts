@@ -3,17 +3,17 @@ import type { Options } from '../src/index.js'
 import { getTestName, run } from './utils'
 
 test.for([
-  { moduleResolution: 'NodeNext', module: 'NodeNext' },
-  { moduleResolution: 'Node16', module: 'Node16' },
-  { moduleResolution: 'Bundler', module: 'ESNext' },
-  { moduleResolution: 'Bundler', module: 'Preserve' },
-  { moduleResolution: 'Node10', module: 'ESNext' },
-  { moduleResolution: 'Node10', module: 'CommonJS' },
-  { moduleResolution: 'Node', module: 'ESNext' },
-  { moduleResolution: 'Node', module: 'CommonJS' },
+  { moduleResolution: 'NodeNext', moduleKind: 'NodeNext' },
+  { moduleResolution: 'Node16', moduleKind: 'Node16' },
+  { moduleResolution: 'Bundler', moduleKind: 'ESNext' },
+  { moduleResolution: 'Bundler', moduleKind: 'Preserve' },
+  { moduleResolution: 'Node10', moduleKind: 'ESNext' },
+  { moduleResolution: 'Node10', moduleKind: 'CommonJS' },
+  { moduleResolution: 'Node', moduleKind: 'ESNext' },
+  { moduleResolution: 'Node', moduleKind: 'CommonJS' },
 ] as const)(
-  "experimentalDts works with TypeScript's $moduleResolution module resolution and module set to $module",
-  async ({ moduleResolution, module }, { expect, task }) => {
+  "experimentalDts works with TypeScript's $moduleResolution module resolution and module set to $moduleKind",
+  async ({ moduleResolution, moduleKind }, { expect, task }) => {
     const { getFileContent, outFiles } = await run(
       getTestName(),
       {
@@ -41,7 +41,7 @@ test.for([
         'tsconfig.json': JSON.stringify(
           {
             compilerOptions: {
-              module,
+              module: moduleKind,
               moduleResolution,
               outDir: './dist',
               rootDir: './src',
