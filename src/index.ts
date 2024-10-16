@@ -8,13 +8,7 @@ import kill from 'tree-kill'
 import { version } from '../package.json'
 import { PrettyError, handleError } from './errors'
 import { getAllDepsHash, loadTsupConfig } from './load'
-import {
-  type MaybePromise,
-  debouncePromise,
-  removeFiles,
-  slash,
-  toObjectEntry,
-} from './utils'
+import { type MaybePromise, debouncePromise, removeFiles, slash } from './utils'
 import { createLogger, setSilent } from './log'
 import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
@@ -26,15 +20,13 @@ import { treeShakingPlugin } from './plugins/tree-shaking'
 import { copyPublicDir, isInPublicDir } from './lib/public-dir'
 import { terserPlugin } from './plugins/terser'
 import { runTypeScriptCompiler } from './tsc'
-import { runDtsRollup } from './api-extractor'
+import {
+  normalizeExperimentalDtsOptions,
+  normalizeInitialExperimentalDtsOptions,
+  runDtsRollup,
+} from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
-import type {
-  Format,
-  KILL_SIGNAL,
-  NormalizedExperimentalDtsConfig,
-  NormalizedOptions,
-  Options,
-} from './options'
+import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
 
 export type { Format, Options, NormalizedOptions }
 
@@ -99,14 +91,9 @@ const normalizeOptions = async (
           ? { entry: _options.dts }
           : _options.dts,
 
-    experimentalDts:
-      typeof _options.experimentalDts === 'boolean'
-        ? _options.experimentalDts
-          ? { entry: {} }
-          : undefined
-        : typeof _options.experimentalDts === 'string'
-          ? { entry: _options.experimentalDts }
-          : _options.experimentalDts,
+    experimentalDts: normalizeInitialExperimentalDtsOptions(
+      _options.experimentalDts,
+    ),
   }
 
   setSilent(options.silent)
@@ -154,38 +141,12 @@ const normalizeOptions = async (
     }
 
     if (options.experimentalDts) {
-      const experimentalDtsEntry =
-        options.experimentalDts.entry || options.entry
-
-      const experimentalDtsObjectEntry =
-        Object.keys(
-          toObjectEntry(
-            Array.isArray(experimentalDtsEntry) ||
-              typeof experimentalDtsEntry === 'string'
-              ? await glob(experimentalDtsEntry)
-              : experimentalDtsEntry,
-          ),
-        ).length === 0
-          ? toObjectEntry(options.entry)
-          : toObjectEntry(
-              Array.isArray(experimentalDtsEntry) ||
-                typeof experimentalDtsEntry === 'string'
-                ? await glob(experimentalDtsEntry)
-                : experimentalDtsEntry,
-            )
-
-      const normalizedExperimentalDtsOptions: NormalizedExperimentalDtsConfig =
-        {
-          compilerOptions: {
-            ...(tsconfig.data.compilerOptions || {}),
-            ...(options.experimentalDts.compilerOptions || {}),
-          },
-
-          entry: experimentalDtsObjectEntry,
-        }
-
-      options.experimentalDts = normalizedExperimentalDtsOptions
+      options.experimentalDts = await normalizeExperimentalDtsOptions(
+        options,
+        tsconfig,
+      )
     }
+
     if (!options.target) {
       options.target = tsconfig.data?.compilerOptions?.target?.toLowerCase()
     }
