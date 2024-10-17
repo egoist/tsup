@@ -8,13 +8,7 @@ import kill from 'tree-kill'
 import { version } from '../package.json'
 import { PrettyError, handleError } from './errors'
 import { getAllDepsHash, loadTsupConfig } from './load'
-import {
-  type MaybePromise,
-  debouncePromise,
-  removeFiles,
-  slash,
-  toObjectEntry,
-} from './utils'
+import { type MaybePromise, debouncePromise, removeFiles, slash } from './utils'
 import { createLogger, setSilent } from './log'
 import { runEsbuild } from './esbuild'
 import { shebang } from './plugins/shebang'
@@ -26,7 +20,11 @@ import { treeShakingPlugin } from './plugins/tree-shaking'
 import { copyPublicDir, isInPublicDir } from './lib/public-dir'
 import { terserPlugin } from './plugins/terser'
 import { runTypeScriptCompiler } from './tsc'
-import { runDtsRollup } from './api-extractor'
+import {
+  normalizeExperimentalDtsOptions,
+  normalizeInitialExperimentalDtsOptions,
+  runDtsRollup,
+} from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
 import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
 
@@ -92,20 +90,10 @@ const normalizeOptions = async (
         : typeof _options.dts === 'string'
           ? { entry: _options.dts }
           : _options.dts,
-    experimentalDts: _options.experimentalDts
-      ? typeof _options.experimentalDts === 'boolean'
-        ? _options.experimentalDts
-          ? { entry: {} }
-          : undefined
-        : typeof _options.experimentalDts === 'string'
-          ? {
-              entry: toObjectEntry(_options.experimentalDts),
-            }
-          : {
-              ..._options.experimentalDts,
-              entry: toObjectEntry(_options.experimentalDts.entry || {}),
-            }
-      : undefined,
+
+    experimentalDts: normalizeInitialExperimentalDtsOptions(
+      _options.experimentalDts,
+    ),
   }
 
   setSilent(options.silent)
@@ -151,17 +139,14 @@ const normalizeOptions = async (
         ...(options.dts.compilerOptions || {}),
       }
     }
+
     if (options.experimentalDts) {
-      options.experimentalDts.compilerOptions = {
-        ...(tsconfig.data.compilerOptions || {}),
-        ...(options.experimentalDts.compilerOptions || {}),
-      }
-      options.experimentalDts.entry = toObjectEntry(
-        Object.keys(options.experimentalDts.entry).length > 0
-          ? options.experimentalDts.entry
-          : options.entry,
+      options.experimentalDts = await normalizeExperimentalDtsOptions(
+        options,
+        tsconfig,
       )
     }
+
     if (!options.target) {
       options.target = tsconfig.data?.compilerOptions?.target?.toLowerCase()
     }
@@ -252,7 +237,7 @@ export async function build(_options: Options) {
               worker.on('message', (data) => {
                 if (data === 'error') {
                   terminateWorker()
-                  reject(new Error('error occured in dts build'))
+                  reject(new Error('error occurred in dts build'))
                 } else if (data === 'success') {
                   terminateWorker()
                   resolve()

@@ -1,10 +1,6 @@
 import path from 'node:path'
+import { glob } from 'tinyglobby'
 import { handleError } from './errors'
-import {
-  type ExportDeclaration,
-  formatAggregationExports,
-  formatDistributionExports,
-} from './exports'
 import { loadPkg } from './load'
 import { createLogger } from './log'
 import {
@@ -13,9 +9,13 @@ import {
   getApiExtractor,
   removeFiles,
   toAbsolutePath,
-  writeFileSync,
+  toObjectEntry,
 } from './utils'
-import type { Format, NormalizedOptions } from './options'
+import type {
+  Format,
+  NormalizedExperimentalDtsConfig,
+  NormalizedOptions,
+} from './options'
 import type {
   ExtractorResult,
   IConfigFile,
@@ -85,55 +85,71 @@ function rollupDtsFile(
 
 async function rollupDtsFiles(
   options: NormalizedOptions,
-  exports: ExportDeclaration[],
+  exports: {
+    /**
+     * **Source file name** to **Output file name** mapping.
+     * (`src/index.ts` \=> `.tsup/declaration/index.d.ts`)
+     */
+    fileMapping: Map<string, string>
+  },
   format: Format,
 ) {
+  if (!options.experimentalDts || !options.experimentalDts?.entry) {
+    return
+  }
+
+  /**
+   * **`.tsup/declaration`** directory
+   */
   const declarationDir = ensureTempDeclarationDir()
   const outDir = options.outDir || 'dist'
   const pkg = await loadPkg(process.cwd())
   const dtsExtension = defaultOutExtension({ format, pkgType: pkg.type }).dts
-
-  let dtsInputFilePath = path.join(
-    declarationDir,
-    `_tsup-dts-aggregation${dtsExtension}`,
-  )
-  // @microsoft/api-extractor doesn't support `.d.mts` and `.d.cts` file as a
-  // entrypoint yet. So we replace the extension here as a temporary workaround.
-  //
-  // See the issue for more details:
-  // https://github.com/microsoft/rushstack/pull/4196
-  dtsInputFilePath = dtsInputFilePath
-    .replace(/\.d\.mts$/, '.dmts.d.ts')
-    .replace(/\.d\.cts$/, '.dcts.d.ts')
-
-  const dtsOutputFilePath = path.join(outDir, `_tsup-dts-rollup${dtsExtension}`)
-
-  writeFileSync(
-    dtsInputFilePath,
-    formatAggregationExports(exports, declarationDir),
-  )
-
-  rollupDtsFile(
-    dtsInputFilePath,
-    dtsOutputFilePath,
-    options.tsconfig || 'tsconfig.json',
-  )
+  const tsconfig = options.tsconfig || 'tsconfig.json'
 
   for (let [out, sourceFileName] of Object.entries(
-    options.experimentalDts!.entry,
+    options.experimentalDts.entry,
   )) {
+    out = path.basename(out)
+    /**
+     * **Source file name** (`src/index.ts`)
+     *
+     * @example
+     *
+     * ```ts
+     * import { defineConfig } from 'tsup'
+     *
+     * export default defineConfig({
+     *   entry: { index: 'src/index.ts' },
+     *   // Here `src/index.ts` is our `sourceFileName`.
+     * })
+     * ```
+     */
     sourceFileName = toAbsolutePath(sourceFileName)
+    /**
+     * **Output file name** (`dist/index.d.ts`)
+     *
+     * @example
+     *
+     * ```ts
+     * import { defineConfig } from 'tsup'
+     *
+     * export default defineConfig({
+     *  entry: { index: 'src/index.ts' },
+     * // Here `dist/index.d.ts` is our `outFileName`.
+     * })
+     * ```
+     */
     const outFileName = path.join(outDir, out + dtsExtension)
 
-    // Find all declarations that are exported from the current source file
-    const currentExports = exports.filter(
-      (declaration) => declaration.sourceFileName === sourceFileName,
-    )
+    /**
+     * **Input file path** (`.tsup/declaration/index.d.ts`)
+     */
+    const inputFilePath =
+      exports.fileMapping.get(sourceFileName) ||
+      `${path.join(declarationDir, out)}.d.ts`
 
-    writeFileSync(
-      outFileName,
-      formatDistributionExports(currentExports, outFileName, dtsOutputFilePath),
-    )
+    rollupDtsFile(inputFilePath, outFileName, tsconfig)
   }
 }
 
@@ -145,7 +161,13 @@ async function cleanDtsFiles(options: NormalizedOptions) {
 
 export async function runDtsRollup(
   options: NormalizedOptions,
-  exports?: ExportDeclaration[],
+  exports?: {
+    /**
+     * **Source file name** to **Output file name** mapping.
+     * (`src/index.ts` \=> `.tsup/declaration/index.d.ts`)
+     */
+    fileMapping: Map<string, string>
+  },
 ) {
   try {
     const start = Date.now()
@@ -155,7 +177,7 @@ export async function runDtsRollup(
     logger.info('dts', 'Build start')
 
     if (!exports) {
-      throw new Error('Unexpected internal error: dts exports is not define')
+      throw new Error('Unexpected internal error: dts exports is not defined')
     }
     await cleanDtsFiles(options)
     for (const format of options.format) {
@@ -166,4 +188,101 @@ export async function runDtsRollup(
     handleError(error)
     logger.error('dts', 'Build error')
   }
+}
+
+/**
+ * Normalizes the
+ * {@linkcode NormalizedExperimentalDtsConfig | experimental DTS options}
+ * by resolving entry paths and merging the provided
+ * TypeScript configuration options.
+ *
+ * @param options - The options containing entry points and experimental DTS configuration.
+ * @param tsconfig - The loaded TypeScript configuration data.
+ * @returns The normalized experimental DTS configuration.
+ *
+ * @internal
+ */
+export const normalizeExperimentalDtsOptions = async (
+  options: Partial<NormalizedOptions>,
+  tsconfig: any,
+) => {
+  if (options.entry == null) {
+    return
+  }
+
+  const experimentalDtsEntry = options.experimentalDts?.entry || options.entry
+
+  /**
+   * Resolves the entry paths for the experimental DTS configuration.
+   * If the entry is a string or array of strings,
+   * it uses {@linkcode glob | tinyglobby's glob function} to resolve
+   * the potential glob patterns. If it's an `object`, it directly uses
+   * the provided entry object.
+   *
+   * @example
+   *
+   * ```ts
+   * import { defineConfig } from 'tsup'
+   *
+   * export default defineConfig({
+   *   entry: { index: 'src/index.ts' },
+   *   format: ['esm', 'cjs'],
+   *   experimentalDts: { entry: 'src/**\/*.ts' },
+   *   // experimentalDts: { entry: 'src/**\/*.ts' }
+   *   // becomes experimentalDts: { entry: { index: 'src/index.ts', types: 'src/types.ts } }
+   * })
+   * ```
+   */
+  const resolvedEntryPaths =
+    typeof experimentalDtsEntry === 'string' ||
+    Array.isArray(experimentalDtsEntry)
+      ? await glob(experimentalDtsEntry)
+      : experimentalDtsEntry
+
+  // Fallback to `options.entry` if we end up with an empty object.
+  const experimentalDtsObjectEntry =
+    Object.keys(toObjectEntry(resolvedEntryPaths)).length === 0
+      ? toObjectEntry(options.entry)
+      : toObjectEntry(resolvedEntryPaths)
+
+  const normalizedExperimentalDtsOptions: NormalizedExperimentalDtsConfig = {
+    compilerOptions: {
+      ...(tsconfig.data.compilerOptions || {}),
+      ...(options.experimentalDts?.compilerOptions || {}),
+    },
+
+    entry: experimentalDtsObjectEntry,
+  }
+
+  return normalizedExperimentalDtsOptions
+}
+
+/**
+ * Normalizes the initial experimental DTS configuration
+ * into a consistent {@linkcode NormalizedExperimentalDtsConfig | experimentalDts config object}.
+ *
+ * This function handles different types of
+ * {@linkcode NormalizedExperimentalDtsConfig | experimentalDts} inputs:
+ * - If {@linkcode experimentalDts} is a `boolean`, it returns a default object with an empty entry (`{ entry: {} }`) if `true`, or `undefined` if `false`.
+ * - If {@linkcode experimentalDts} is a `string`, it returns an object with the string as the `entry` property.
+ * - If {@linkcode experimentalDts} is already an object ({@linkcode NormalizedExperimentalDtsConfig}), it returns the object as is.
+ *
+ * The function focuses specifically on normalizing the **initial** {@linkcode NormalizedExperimentalDtsConfig | experimentalDts configuration}.
+ *
+ * @param experimentalDts - The {@linkcode NormalizedExperimentalDtsConfig | experimentalDts} value, which can be a `boolean`, `string`, `object`, or `undefined`.
+ * @returns A normalized {@linkcode NormalizedExperimentalDtsConfig | experimentalDts config object}, or `undefined` if input was `false` or `undefined`.
+ *
+ * @internal
+ */
+export const normalizeInitialExperimentalDtsOptions = (
+  experimentalDts:
+    | boolean
+    | string
+    | NormalizedExperimentalDtsConfig
+    | undefined,
+): NormalizedExperimentalDtsConfig | undefined => {
+  if (typeof experimentalDts === 'boolean')
+    return experimentalDts ? { entry: {} } : undefined
+  if (typeof experimentalDts === 'string') return { entry: experimentalDts }
+  return experimentalDts
 }
