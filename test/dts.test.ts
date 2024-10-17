@@ -258,29 +258,29 @@ test('should emit declaration files with experimentalDts', async () => {
         export function sharedFunction<T>(value: T): T | null {
           return value || null
         }
-        
+
         type sharedType = {
           shared: boolean
         }
-        
+
         export type { sharedType }
     `,
     'src/server.ts': `
         export * from './shared'
 
         /**
-         * Comment for server render function 
+         * Comment for server render function
          */
         export function render(options: ServerRenderOptions): string {
           return JSON.stringify(options)
         }
-        
+
         export interface ServerRenderOptions {
           /**
            * Comment for ServerRenderOptions.stream
-           * 
+           *
            * @public
-           * 
+           *
            * @my_custom_tag
            */
           stream: boolean
@@ -298,7 +298,7 @@ test('should emit declaration files with experimentalDts', async () => {
         import * as ServerThirdPartyNamespace from 'react-dom';
         export { ServerThirdPartyNamespace }
 
-        // Export a third party module 
+        // Export a third party module
         export * from 'react-dom/server';
 
     `,
@@ -308,7 +308,7 @@ test('should emit declaration files with experimentalDts', async () => {
         export function render(options: ClientRenderOptions): string {
           return JSON.stringify(options)
         }
-        
+
         export interface ClientRenderOptions {
           document: boolean
         }
@@ -472,4 +472,120 @@ test('declaration files with multiple entrypoints #316', async () => {
     await getFileContent('dist/bar/index.d.ts'),
     'dist/bar/index.d.ts',
   ).toMatchSnapshot()
+})
+
+test('custom dts output extension', async ({ expect, task }) => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/types.ts': `export type Person = { name: string }`,
+      'src/index.ts': `export const foo = [1, 2, 3]\nexport type { Person } from './types'`,
+      'tsup.config.ts': `export default {
+        name: '${task.name}',
+        entry: { index: 'src/index.ts' },
+        dts: true,
+        format: ['esm', 'cjs'],
+        outExtension({ format }) {
+          return {
+            js: format === 'esm' ? '.cjs' : '.mjs',
+            dts: format === 'esm' ? '.d.cts' : '.d.mts',
+          }
+        },
+    }`,
+      'package.json': JSON.stringify(
+        {
+          name: 'custom-dts-output-extension',
+          description: task.name,
+          type: 'module',
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            outDir: './dist',
+            rootDir: './src',
+            moduleResolution: 'Bundler',
+            module: 'ESNext',
+            strict: true,
+            skipLibCheck: true,
+          },
+          include: ['src'],
+        },
+        null,
+        2,
+      ),
+    },
+    {
+      entry: [],
+    },
+  )
+  expect(outFiles).toStrictEqual([
+    'index.cjs',
+    'index.d.cts',
+    'index.d.mts',
+    'index.mjs',
+  ])
+})
+
+test('custom dts output extension with api-extractor', async ({
+  expect,
+  task,
+}) => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/types.ts': `export type Person = { name: string }`,
+      'src/index.ts': `export const foo = [1, 2, 3]\nexport type { Person } from './types'`,
+      'tsup.config.ts': `export default {
+        name: '${task.name}',
+        entry: { index: 'src/index.ts' },
+        format: ['esm', 'cjs'],
+        experimentalDts: true,
+        outExtension({ format }) {
+          return {
+            js: format === 'cjs' ? '.cjs' : '.mjs',
+            dts: format === 'cjs' ? '.d.cts' : '.d.mts',
+          }
+        },
+      }`,
+      'package.json': JSON.stringify(
+        {
+          name: 'custom-dts-output-extension-with-api-extractor',
+          description: task.name,
+          type: 'module',
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            outDir: './dist',
+            rootDir: './src',
+            moduleResolution: 'Bundler',
+            module: 'ESNext',
+            strict: true,
+            skipLibCheck: true,
+          },
+          include: ['src'],
+        },
+        null,
+        2,
+      ),
+    },
+    {
+      entry: [],
+    },
+  )
+
+  expect(outFiles).toStrictEqual([
+    '_tsup-dts-rollup.d.cts',
+    '_tsup-dts-rollup.d.mts',
+    'index.cjs',
+    'index.d.cts',
+    'index.d.mts',
+    'index.mjs',
+  ])
 })
