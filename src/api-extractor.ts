@@ -49,6 +49,7 @@ function rollupDtsFile(
       tsconfigFilePath,
     },
     projectFolder: cwd,
+    newlineKind: 'lf',
   }
   const prepareOptions: IExtractorConfigPrepareOptions = {
     configObject,
