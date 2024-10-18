@@ -208,7 +208,7 @@ export async function build(_options: Options) {
             )
           }
 
-          experimentalDtsTask()
+          await experimentalDtsTask()
 
           if (options.dts) {
             await new Promise<void>((resolve, reject) => {
@@ -345,8 +345,6 @@ export async function build(_options: Options) {
                   })
                 }),
               ])
-
-              experimentalDtsTask()
 
               if (options.onSuccess) {
                 if (typeof options.onSuccess === 'function') {
