@@ -174,6 +174,7 @@ function emit(compilerOptions?: any, tsconfig?: string) {
       ...rawTsconfig.data,
       compilerOptions: {
         ...rawTsconfig.data?.compilerOptions,
+        ...compilerOptions,
 
         // Enable declaration emit and disable javascript emit
         noEmit: false,
@@ -197,7 +198,13 @@ function emit(compilerOptions?: any, tsconfig?: string) {
   )
 
   const fileMapping = emitDtsFiles(program, host)
-  return getExports(program, fileMapping)
+  return {
+    /**
+     * **Source file name** to **Output file name** mapping.
+     * (`src/index.ts` \=> `.tsup/declaration/index.d.ts`)
+     */
+    fileMapping,
+  }
 }
 
 export function runTypeScriptCompiler(options: NormalizedOptions) {
