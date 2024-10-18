@@ -40,6 +40,40 @@ export type DtsConfig = {
 }
 
 export type ExperimentalDtsConfig = {
+  /**
+   * When set to `true`, this option will emit only
+   * TypeScript declaration (`.d.ts`) files and skip generating the
+   * corresponding JavaScript files during the build process.
+   *
+   * @example
+   * <caption>#### Generate only TypeScript declaration files</caption>
+   *
+   * ```ts
+   * import { defineConfig } from 'tsup'
+   *
+   * export default defineConfig({
+   *   entry: { index: 'src/index.ts' },
+   *   format: ['esm', 'cjs'],
+   *   experimentalDts: { only: true },
+   * })
+   * ```
+   *
+   * @default false
+   *
+   * @since 8.4.0
+   *
+   * #### CLI Equivalent:
+   * You can use the following CLI commands to achieve the same result:
+   *
+   * ```bash
+   * tsup src/index.ts --experimental-dts-only
+   * # or
+   * tsup src/index.ts --experimentalDts-only
+   * # or
+   * tsup src/index.ts --experimentalDtsOnly
+   * ```
+   */
+  only?: boolean
   entry?: InputOption
   /**
    * Overrides `compilerOptions`
@@ -258,7 +292,8 @@ export type Options = {
   removeNodeProtocol?: boolean
 }
 
-export interface NormalizedExperimentalDtsConfig {
+export interface NormalizedExperimentalDtsConfig extends ExperimentalDtsConfig {
+  only: boolean
   entry: { [entryAlias: string]: string }
   compilerOptions?: any
 }
