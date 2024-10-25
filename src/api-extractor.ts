@@ -93,7 +93,7 @@ async function rollupDtsFiles(
   }
 
   /**
-   * **`.tsup/declaration`** directory
+   * `.tsup/declaration` directory
    */
   const declarationDir = ensureTempDeclarationDir()
   const outDir = options.outDir || 'dist'
@@ -127,7 +127,7 @@ async function rollupDtsFiles(
     options.experimentalDts.entry,
   )) {
     /**
-     * **Source file name** (`src/index.ts`)
+     * Source file name (`src/index.ts`)
      *
      * @example
      *
@@ -142,7 +142,7 @@ async function rollupDtsFiles(
      */
     sourceFileName = toAbsolutePath(sourceFileName)
     /**
-     * **Output file name** (`dist/index.d.ts`)
+     * Output file name (`dist/index.d.ts`)
      *
      * @example
      *
