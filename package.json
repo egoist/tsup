@@ -22,13 +22,13 @@
     "tsup-node": "dist/cli-node.js"
   },
   "scripts": {
-    "dev": "npm run build-fast -- --watch",
+    "dev": "pnpm run build-fast -- --watch",
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
-    "prepublishOnly": "npm run build",
-    "test": "npm run build && npm run test-only",
+    "prepublishOnly": "pnpm run build",
+    "test": "pnpm run build && pnpm run test-only",
     "format": "prettier --write .",
     "test-only": "vitest run",
-    "build-fast": "npm run build -- --no-dts",
+    "build-fast": "pnpm run build -- --no-dts",
     "release": "bumpp"
   },
   "peerDependencies": {
