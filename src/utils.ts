@@ -1,9 +1,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import resolveFrom from 'resolve-from'
+import type { InputOption } from 'rollup'
 import strip from 'strip-json-comments'
 import { glob } from 'tinyglobby'
-import type { Entry, Format } from './options'
+import type {
+  Entry,
+  Format,
+  NormalizedExperimentalDtsConfig,
+  NormalizedOptions,
+  Options,
+} from './options'
 
 export type MaybePromise<T> = T | Promise<T>
 
@@ -241,4 +248,177 @@ export function trimDtsExtension(fileName: string) {
 export function writeFileSync(filePath: string, content: string) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true })
   fs.writeFileSync(filePath, content)
+}
+
+/**
+ * Replaces TypeScript declaration file
+ * extensions (`.d.ts`, `.d.mts`, `.d.cts`)
+ * with their corresponding JavaScript variants (`.js`, `.mjs`, `.cjs`).
+ *
+ * @param dtsFilePath - The file path to be transformed.
+ * @returns The updated file path with the JavaScript extension.
+ *
+ * @internal
+ */
+export function replaceDtsWithJsExtensions(dtsFilePath: string) {
+  return dtsFilePath.replace(
+    /\.d\.(ts|mts|cts)$/,
+    (_, fileExtension: string) => {
+      switch (fileExtension) {
+        case 'ts':
+          return '.js'
+        case 'mts':
+          return '.mjs'
+        case 'cts':
+          return '.cjs'
+        default:
+          return ''
+      }
+    },
+  )
+}
+
+/**
+ * Converts an array of {@link NormalizedOptions.entry | entry paths}
+ * into an object where the keys represent the output
+ * file names (without extensions) and the values
+ * represent the corresponding input file paths.
+ *
+ * @param arrayOfEntries - An array of file path entries as strings.
+ * @returns An object where the keys are the output file name and the values are the input file name.
+ *
+ * @example
+ *
+ * ```ts
+ * import { defineConfig } from 'tsup'
+ *
+ * export default defineConfig({
+ *   entry: ['src/index.ts', 'src/types.ts'],
+ *   // Becomes `{ index: 'src/index.ts', types: 'src/types.ts' }`
+ * })
+ * ```
+ *
+ * @internal
+ */
+const convertArrayEntriesToObjectEntries = (arrayOfEntries: string[]) => {
+  const objectEntries = Object.fromEntries(
+    arrayOfEntries.map(
+      (entry) =>
+        [
+          path.posix.join(
+            ...entry
+              .split(path.posix.sep)
+              .slice(1, -1)
+              .concat(path.parse(entry).name),
+          ),
+          entry,
+        ] as const,
+    ),
+  )
+
+  return objectEntries
+}
+
+/**
+ * Resolves and standardizes entry paths into an object format. If the provided
+ * entry is a string or an array of strings, it resolves any potential glob
+ * patterns amd converts the result into an entry object. If the input is
+ * already an object, it is returned as-is.
+ *
+ * @example
+ *
+ * ```ts
+ * import { defineConfig } from 'tsup'
+ *
+ * export default defineConfig({
+ *   entry: { index: 'src/index.ts' },
+ *   format: ['esm', 'cjs'],
+ *   experimentalDts: { entry: 'src/**\/*.ts' },
+ *   // becomes experimentalDts: { entry: { index: 'src/index.ts', types: 'src/types.ts } }
+ * })
+ * ```
+ *
+ * @internal
+ */
+const resolveEntryPaths = async (entryPaths: InputOption) => {
+  const resolvedEntryPaths =
+    typeof entryPaths === 'string' || Array.isArray(entryPaths)
+      ? convertArrayEntriesToObjectEntries(await glob(entryPaths))
+      : entryPaths
+
+  return resolvedEntryPaths
+}
+
+/**
+ * Resolves the
+ * {@link NormalizedExperimentalDtsConfig | experimental DTS config} by
+ * resolving entry paths and merging the provided TypeScript configuration
+ * options.
+ *
+ * @param options - The options containing entry points and experimental DTS
+ * configuration.
+ * @param tsconfig - The loaded TypeScript configuration data.
+ *
+ * @internal
+ */
+export const resolveExperimentalDtsConfig = async (
+  options: NormalizedOptions,
+  tsconfig: any,
+): Promise<NormalizedExperimentalDtsConfig> => {
+  const resolvedEntryPaths = await resolveEntryPaths(
+    options.experimentalDts?.entry || options.entry,
+  )
+
+  // Fallback to `options.entry` if we end up with an empty object.
+  const experimentalDtsObjectEntry =
+    Object.keys(resolvedEntryPaths).length === 0
+      ? Array.isArray(options.entry)
+        ? convertArrayEntriesToObjectEntries(options.entry)
+        : options.entry
+      : resolvedEntryPaths
+
+  const normalizedExperimentalDtsConfig: NormalizedExperimentalDtsConfig = {
+    compilerOptions: {
+      ...(tsconfig.data.compilerOptions || {}),
+      ...(options.experimentalDts?.compilerOptions || {}),
+    },
+
+    entry: experimentalDtsObjectEntry,
+  }
+
+  return normalizedExperimentalDtsConfig
+}
+
+/**
+ * Resolves the initial experimental DTS configuration into a consistent
+ * {@link NormalizedExperimentalDtsConfig} object.
+ *
+ * @internal
+ */
+export const resolveInitialExperimentalDtsConfig = async (
+  experimentalDts: Options['experimentalDts'],
+): Promise<NormalizedExperimentalDtsConfig | undefined> => {
+  if (experimentalDts == null) {
+    return
+  }
+
+  if (typeof experimentalDts === 'boolean')
+    return experimentalDts ? { entry: {} } : undefined
+
+  if (typeof experimentalDts === 'string') {
+    // Treats the string as a glob pattern, resolving it to entry paths and
+    // returning an object with the `entry` property.
+    return {
+      entry: convertArrayEntriesToObjectEntries(await glob(experimentalDts)),
+    }
+  }
+
+  return {
+    ...experimentalDts,
+
+    entry:
+      experimentalDts?.entry == null
+        ? {}
+        : await resolveEntryPaths(experimentalDts.entry),
+  }
 }
