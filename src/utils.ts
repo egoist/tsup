@@ -322,7 +322,7 @@ const convertArrayEntriesToObjectEntries = (arrayOfEntries: string[]) => {
 /**
  * Resolves and standardizes entry paths into an object format. If the provided
  * entry is a string or an array of strings, it resolves any potential glob
- * patterns amd converts the result into an entry object. If the input is
+ * patterns and converts the result into an entry object. If the input is
  * already an object, it is returned as-is.
  *
  * @example
