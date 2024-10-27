@@ -149,7 +149,9 @@ const getRollupConfig = async (
         entryFileNames: `[name]${outputExtension}`,
         chunkFileNames: `[name]-[hash]${outputExtension}`,
         plugins: [
-          format === 'cjs' && options.cjsInterop && FixDtsDefaultCjsExportsPlugin(),
+          format === 'cjs' &&
+            options.cjsInterop &&
+            FixDtsDefaultCjsExportsPlugin(),
         ].filter(Boolean),
       }
     }),
