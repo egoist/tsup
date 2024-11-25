@@ -353,8 +353,6 @@ export async function build(_options: Options) {
                   onSuccessProcess = exec(options.onSuccess, [], {
                     nodeOptions: { shell: true, stdio: 'inherit' },
                   })
-
-                  await onSuccessProcess
                   if (
                     onSuccessProcess.exitCode &&
                     onSuccessProcess.exitCode !== 0
