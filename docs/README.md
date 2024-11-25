@@ -213,7 +213,7 @@ The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `
 
 TypeScript declaration maps are mainly used to quickly jump to the source code associate with imported objects. Without declaration maps, `Go to Definition` in IDEs will go to the type defition and not the relevant source code. `Go to Type Definition` will always go to the type definition.
 
-Declaration maps and source TS files should be included in all published TypeScript packages.
+Declaration maps and source TS files should be included in all TypeScript packages.
 
 Unfortunately, [Tsup is not able to generate those files](https://github.com/egoist/tsup/issues/564). Instead, you should use the TypeScript compiler directly, by running the following command after the build is done: `tsc --emitDeclarationOnly --declaration`.
 
