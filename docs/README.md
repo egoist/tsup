@@ -193,7 +193,7 @@ This will emit `./dist/index.js` and `./dist/index.d.ts`. When emitting multiple
 
 If you have multiple entry files, each entry will get a corresponding `.d.ts` file. So when you only want to generate a declaration file for a single entry, use `--dts <entry>` format, e.g. `--dts src/index.ts`.
 
-Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file, if that's somehow a requirement, try the experimental `--dts-resolve` flag instead.
+Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file. If that's somehow a requirement, try the experimental `--dts-resolve` flag instead.
 
 Since tsup version 8.0.0, you can also use `--experimental-dts` flag to generate declaration files. This flag use [@microsoft/api-extractor](https://www.npmjs.com/package/@microsoft/api-extractor) to generate declaration files, which is more reliable than the previous `--dts` flag. It's still experimental and we are looking for feedbacks.
 
