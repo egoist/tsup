@@ -425,7 +425,7 @@ export default defineConfig({
 
 ### Minify output
 
-You can also minify the output, resulting into lower bundle sizes by using the `--minify` flag.
+You can also minify the output by using the `--minify` flag, resulting in lower bundle sizes.
 
 ```bash
 tsup src/index.ts --minify
