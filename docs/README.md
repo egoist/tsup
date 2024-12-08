@@ -54,7 +54,7 @@ This will output `dist/index.js` and `dist/cli.js`.
 
 ### Excluding packages
 
-By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `package.json` are always excluded, you can also use `--external <module|pkgJson>` flag to mark other packages or other special `package.json`'s `dependencies` and `peerDependencies` as external.
+By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `package.json` are always excluded. You can also use the `--external <module|pkgJson>` flag to mark other packages or other special `package.json`'s `dependencies` and `peerDependencies` as external.
 
 ### Excluding all packages
 
