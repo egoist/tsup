@@ -531,7 +531,7 @@ module.exports = {
 
 Pass the `--metafile` flag to tell esbuild to produce some metadata about the build in JSON format. You can feed the output file to analysis tools like [bundle buddy](https://www.bundle-buddy.com/esbuild) to visualize the modules in your bundle and how much space each one takes up.
 
-The file outputs as `metafile-{format}.json`, e.g. `tsup --format cjs,esm` will generate `metafile-cjs.json` and `metafile-esm.json`.
+Metafiles will be generated as `metafile-{format}.json`, e.g. `tsup --format cjs,esm` will generate `metafile-cjs.json` and `metafile-esm.json`.
 
 ### Custom esbuild plugin and options
 
