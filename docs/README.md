@@ -376,7 +376,7 @@ tsup src/index.ts --watch
 
 Turn on watch mode. This means that after the initial build, tsup will continue to watch for changes in any of the resolved files.
 
-> INFO: By default it always ignores `dist`, `node_modules` & `.git`
+> INFO: By default, `--watch` always ignores `dist`, `node_modules` & `.git`
 
 ```bash
 tsup src/index.ts --watch --ignore-watch ignore-this-folder-too
