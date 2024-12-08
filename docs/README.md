@@ -269,7 +269,7 @@ dist
 
 Read more about [`esm` support in Node.js](https://nodejs.org/api/esm.html#esm_enabling).
 
-If you don't want extensions like `.mjs` or `.cjs`, e.g. you want your library to be used in a bundler (or environment) that doesn't support those, you can enable `--legacy-output` flag:
+If you don't want extensions like `.mjs` or `.cjs`, e.g. you want your library to be used in a bundler (or environment) that doesn't support those, you can pass the `--legacy-output` flag:
 
 ```bash
 tsup src/index.ts --format esm,cjs,iife --legacy-output
