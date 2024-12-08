@@ -169,7 +169,7 @@ The associated output file names can be defined as follows:
 tsup --entry.foo src/a.ts --entry.bar src/b.ts
 ```
 
-It's equivalent to the following `tsup.config.ts`:
+This is equivalent to the following `tsup.config.ts`:
 
 ```ts
 export default defineConfig({
