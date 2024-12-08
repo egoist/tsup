@@ -275,7 +275,7 @@ If you don't want extensions like `.mjs` or `.cjs`, e.g. you want your library t
 tsup src/index.ts --format esm,cjs,iife --legacy-output
 ```
 
-..which outputs to:
+...which results in:
 
 ```bash
 dist
@@ -519,7 +519,7 @@ npm i postcss -D
 yarn add postcss --dev
 ```
 
-..and populate a `postcss.config.js` in your project
+...and populate a `postcss.config.js` in your project
 
 ```js
 module.exports = {
