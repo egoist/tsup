@@ -344,7 +344,7 @@ The value for `target` defaults to `compilerOptions.target` in your `tsconfig.js
 
 #### ES5 support
 
-You can use `--target es5` to compile the code down to es5, in this target your code will be transpiled by esbuild to es2020 first, and then transpiled to es5 by [SWC](https://swc.rs).
+You can use `--target es5` to compile the code down to es5. In this target your code will be transpiled by esbuild to es2020 first, and then transpiled to es5 by [SWC](https://swc.rs).
 
 ### Compile-time environment variables
 
@@ -489,7 +489,7 @@ esbuild has [tree shaking](https://esbuild.github.io/api/#tree-shaking) enabled 
 tsup src/index.ts --treeshake
 ```
 
-This flag above will enable Rollup for tree shaking, and it's equivalent to the following `tsup.config.ts`:
+This flag will enable Rollup for tree shaking. It's equivalent to the following `tsup.config.ts`:
 
 ```ts
 import { defineConfig } from 'tsup'
@@ -607,13 +607,13 @@ You can also use custom tsconfig.json file configurations by using the `--tsconf
 tsup --tsconfig tsconfig.prod.json
 ```
 
-By default, tsup try to find the `tsconfig.json` file in the current directory, if it's not found, it will use the default tsup config.
+By default, tsup tries to find the `tsconfig.json` file in the current directory. If it can't find one, it will use the default tsup config.
 
 ## Troubleshooting
 
 ### error: No matching export in "xxx.ts" for import "xxx"
 
-This usually happens when you have `emitDecoratorMetadata` enabled in your tsconfig.json, in this mode we use [SWC](https://swc.rs) to transpile decorators to JavaScript so exported types will be eliminated, that's why esbuild won't be able to find corresponding exports. You can fix this by changing your import statement from `import { SomeType }` to `import { type SomeType }` or `import type { SomeType }`.
+This usually happens when you have `emitDecoratorMetadata` enabled in your tsconfig.json, in this mode we use [SWC](https://swc.rs) to transpile decorators to JavaScript so exported types will be eliminated. That's why esbuild won't be able to find corresponding exports. You can fix this by changing your import statement from `import { SomeType }` to `import { type SomeType }` or `import type { SomeType }`.
 
 ## License
 
