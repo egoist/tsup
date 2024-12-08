@@ -243,7 +243,7 @@ tsup index.ts --sourcemap inline
 
 Supported format: `esm`, `cjs`, (default) and `iife`.
 
-You can bundle in multiple formats in one go:
+You can bundle to multiple formats in one go:
 
 ```bash
 tsup src/index.ts --format esm,cjs,iife
