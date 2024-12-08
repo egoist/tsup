@@ -288,7 +288,7 @@ dist
 
 ### Output extension
 
-You can also change the output extension of the files by using `outExtension` option:
+You can also change the output extension of the files by using the `outExtension` option:
 
 ```ts
 export default defineConfig({
@@ -319,7 +319,7 @@ type Result = { js?: string }
 
 ### Code Splitting
 
-Code splitting currently only works with the `esm` output format, and it's enabled by default. If you want code splitting for `cjs` output format as well, try using `--splitting` flag which is an experimental feature to get rid of [the limitation in esbuild](https://esbuild.github.io/api/#splitting).
+Code splitting currently only works with the `esm` output format, and it's enabled by default. If you want code splitting for the `cjs` output format as well, try using the `--splitting` flag which is an experimental feature to get rid of [the limitation in esbuild](https://esbuild.github.io/api/#splitting).
 
 To disable code splitting altogether, try the `--no-splitting` flag instead.
 
@@ -348,7 +348,7 @@ You can use `--target es5` to compile the code down to es5, in this target your 
 
 ### Compile-time environment variables
 
-You can use `--env` flag to define compile-time environment variables:
+You can use the `--env` flag to define compile-time environment variables:
 
 ```bash
 tsup src/index.ts --env.NODE_ENV production
@@ -356,9 +356,9 @@ tsup src/index.ts --env.NODE_ENV production
 
 Note that `--env.VAR_NAME` only recognizes `process.env.VAR_NAME` and `import.meta.env.VAR_NAME`. If you use `process.env`, it will only take effect when it is used as a built-in global variable. Therefore, do not import `process` from `node:process`.
 
-### Building CLI app
+### Building a CLI app
 
-When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the output file executable, so you don't have to run `chmod +x dist/cli.js`.
+When an entry file like `src/cli.ts` contains a hashbang like `#!/bin/env node`, tsup will automatically make the output file executable, so you don't have to run `chmod +x dist/cli.js`.
 
 ### Interop with CommonJS
 
@@ -386,13 +386,13 @@ tsup src/index.ts --watch --ignore-watch ignore-this-folder-too
 
 ### onSuccess
 
-You can specify command to be executed after a successful build, specially useful for **Watch mode**
+You can specify a command to be executed after a successful build, specially useful for **Watch mode**
 
 ```bash
 tsup src/index.ts --watch --onSuccess "node dist/index.js"
 ```
 
-`onSuccess` can also be a `function` that returns `Promise`. For this to work, you need to use `tsup.config.ts` instead of the cli flag:
+`onSuccess` can also be a `function` that returns a `Promise`. For this to work, you need to use `tsup.config.ts` instead of the cli flag:
 
 ```ts
 import { defineConfig } from 'tsup'
@@ -431,7 +431,7 @@ You can also minify the output, resulting into lower bundle sizes by using the `
 tsup src/index.ts --minify
 ```
 
-To use [Terser](https://github.com/terser/terser) instead of esbuild for minification, pass terser as argument value
+To use [Terser](https://github.com/terser/terser) instead of esbuild for minification, pass `terser` as an argument to `--minify`
 
 ```bash
 tsup src/index.ts --minify terser
@@ -529,7 +529,7 @@ module.exports = {
 
 ### Metafile
 
-Passing `--metafile` flag to tell esbuild to produce some metadata about the build in JSON format. You can feed the output file to analysis tools like [bundle buddy](https://www.bundle-buddy.com/esbuild) to visualize the modules in your bundle and how much space each one takes up.
+Pass the `--metafile` flag to tell esbuild to produce some metadata about the build in JSON format. You can feed the output file to analysis tools like [bundle buddy](https://www.bundle-buddy.com/esbuild) to visualize the modules in your bundle and how much space each one takes up.
 
 The file outputs as `metafile-{format}.json`, e.g. `tsup --format cjs,esm` will generate `metafile-cjs.json` and `metafile-esm.json`.
 
@@ -577,9 +577,9 @@ export default defineConfig({
 - When building the cjs bundle, it will compile `import.meta.url` as `typeof document === "undefined" ? new URL("file:" + __filename).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href`
 - When building the esm bundle, it will compile `__dirname` as `path.dirname(fileURLToPath(import.meta.url))`
 
-### Copy files to output directory
+### Copy static files to the output directory
 
-Use `--publicDir` flag to copy files inside `./public` folder to the output directory.
+Use the `--publicDir` option to copy files inside `./public` folder to the output directory.
 
 You can also specify a custom directory using `--publicDir another-directory`.
 
@@ -599,7 +599,7 @@ await build({
 
 For all available options for the `build` function, please see [the API docs](https://jsdocs.io/package/tsup).
 
-### Using custom tsconfig.json
+### Using a custom tsconfig.json
 
 You can also use custom tsconfig.json file configurations by using the `--tsconfig` flag:
 
