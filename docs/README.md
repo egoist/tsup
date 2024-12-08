@@ -205,9 +205,9 @@ npm i @microsoft/api-extractor -D
 yarn add @microsoft/api-extractor --dev
 ```
 
-#### Emit declaration file only
+#### Emit declaration file(s) only
 
-The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `tsc`. Using this flag will only emit the declaration file, without the JavaScript files.
+The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `tsc`. Using this flag will only emit the declaration file(s), without the JavaScript files.
 
 #### Generate TypeScript declaration maps (.d.ts.map)
 
