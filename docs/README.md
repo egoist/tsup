@@ -22,7 +22,7 @@ Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. An
 
 ## Install
 
-Install it locally in your project folder:
+Install tsup locally in your project folder:
 
 ```bash
 npm i tsup -D
