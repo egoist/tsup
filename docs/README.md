@@ -155,7 +155,7 @@ Provide the following configuration in your `.vscode/settings.json` (or global) 
 
 ### Multiple entrypoints
 
-Beside using positional arguments `tsup [...files]` to specify multiple entrypoints, you can also use the cli flag `--entry`:
+Besides using positional arguments (`tsup [...files]`) to specify multiple entry points, you can also use the `--entry` CLI flag.
 
 ```bash
 # Outputs `dist/a.js` and `dist/b.js`.
