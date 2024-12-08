@@ -249,7 +249,7 @@ You can bundle to multiple formats in one go:
 tsup src/index.ts --format esm,cjs,iife
 ```
 
-That will output files in following folder structure:
+That will output files in the following folder structure:
 
 ```bash
 dist
