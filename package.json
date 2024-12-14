@@ -22,7 +22,7 @@
     "tsup-node": "dist/cli-node.js"
   },
   "scripts": {
-    "dev": "pnpm run build-fast -- --watch",
+    "dev": "pnpm run build --watch --no-dts",
     "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
     "prepublishOnly": "pnpm run build",
     "test": "pnpm run build && pnpm run test-only",
