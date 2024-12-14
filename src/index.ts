@@ -30,7 +30,7 @@ import { runTypeScriptCompiler } from './tsc'
 import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
 import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
-import type { Plugin } from './plugin';
+import type { Plugin } from './plugin'
 
 export type { Format, Options, NormalizedOptions, Plugin }
 
