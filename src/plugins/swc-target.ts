@@ -38,6 +38,7 @@ export const swcTarget = (): Plugin => {
       const result = await swc.transform(code, {
         filename: info.path,
         sourceMaps: this.options.sourcemap,
+        sourceRoot: this.options.sourceRoot,
         minify: Boolean(this.options.minify),
         jsc: {
           target,
