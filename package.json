@@ -1,6 +1,6 @@
 {
   "name": "tsup",
-  "version": "8.3.5",
+  "version": "8.3.6",
   "packageManager": "pnpm@9.12.2",
   "description": "Bundle your TypeScript library with no config, powered by esbuild",
   "license": "MIT",
