@@ -30,6 +30,9 @@ import { runTypeScriptCompiler } from './tsc'
 import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
 import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
+import { createReadStream, createWriteStream } from 'node:fs'
+import LRU from 'lru-cache'
+import { watch } from 'chokidar'
 
 export type { Format, Options, NormalizedOptions }
 
@@ -455,4 +458,108 @@ export async function build(_options: Options) {
       },
     ),
   )
+}
+
+const streamFile = (sourcePath: string, destPath: string) => {
+  return new Promise<void>((resolve, reject) => {
+    const readStream = createReadStream(sourcePath)
+    const writeStream = createWriteStream(destPath)
+
+    readStream.on('error', reject)
+    writeStream.on('error', reject)
+    writeStream.on('finish', resolve)
+
+    readStream.pipe(writeStream)
+  })
+}
+
+const cache = new LRU<string, any>({
+  max: 500,
+  maxAge: 1000 * 60 * 60, // 1 hour
+})
+
+const getCachedResult = (key: string) => {
+  return cache.get(key)
+}
+
+const setCachedResult = (key: string, value: any) => {
+  cache.set(key, value)
+}
+
+const startWatcher = async (options: NormalizedOptions) => {
+  if (!options.watch) return
+
+  const customIgnores = options.ignoreWatch
+    ? Array.isArray(options.ignoreWatch)
+      ? options.ignoreWatch
+      : [options.ignoreWatch]
+    : []
+
+  const ignored = [
+    '**/{.git,node_modules}/**',
+    options.outDir,
+    ...customIgnores,
+  ]
+
+  const watchPaths =
+    typeof options.watch === 'boolean'
+      ? '.'
+      : Array.isArray(options.watch)
+        ? options.watch.filter((path) => typeof path === 'string')
+        : options.watch
+
+  logger.info(
+    'CLI',
+    `Watching for changes in ${
+      Array.isArray(watchPaths)
+        ? watchPaths.map((v) => `"${v}"`).join(' | ')
+        : `"${watchPaths}"`
+    }`,
+  )
+  logger.info(
+    'CLI',
+    `Ignoring changes in ${ignored
+      .map((v) => `"${v}"`)
+      .join(' | ')}`,
+  )
+
+  const watcher = watch(await glob(watchPaths), {
+    ignoreInitial: true,
+    ignorePermissionErrors: true,
+    ignored: (p) => globSync(p, { ignore: ignored }).length === 0,
+  })
+  watcher.on('all', async (type, file) => {
+    file = slash(file)
+
+    if (
+      options.publicDir &&
+      isInPublicDir(options.publicDir, file)
+    ) {
+      logger.info('CLI', `Change in public dir: ${file}`)
+      copyPublicDir(options.publicDir, options.outDir)
+      return
+    }
+
+    // By default we only rebuild when imported files change
+    // If you specify custom `watch`, a string or multiple strings
+    // We rebuild when those files change
+    let shouldSkipChange = false
+
+    if (options.watch === true) {
+      if (file === 'package.json' && !buildDependencies.has(file)) {
+        const currentHash = await getAllDepsHash(process.cwd())
+        shouldSkipChange = currentHash === depsHash
+        depsHash = currentHash
+      } else if (!buildDependencies.has(file)) {
+        shouldSkipChange = true
+      }
+    }
+
+    if (shouldSkipChange) {
+      return
+    }
+
+    logger.info('CLI', `Change detected: ${type} ${file}`)
+    debouncedBuildAll()
+  })
 }
