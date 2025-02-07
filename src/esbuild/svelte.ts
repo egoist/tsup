@@ -101,11 +101,11 @@ export const sveltePlugin = ({
           )
           const result = svelte.compile(preprocess.code, {
             filename,
-            css: false,
+            css: 'external',
           })
 
           let contents = result.js.code
-          if (css && result.css.code) {
+          if (css && result.css && result.css.code) {
             const cssPath = useSvelteCssExtension(filename)
             css.set(cssPath, result.css.code)
             // Directly prepend the `import` statement as sourcemap doesn't matter for now
