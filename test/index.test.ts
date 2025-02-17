@@ -217,7 +217,7 @@ test('onSuccess: use a function from config file', async () => {
             await new Promise((resolve) => {
               setTimeout(() => {
                 console.log('world')
-                resolve('')  
+                resolve('')
               }, 1_000)
             })
           }
@@ -601,7 +601,7 @@ test('use rollup for treeshaking --format cjs', async () => {
       }`,
       'input.tsx': `
       import ReactSelect from 'react-select'
-      
+
       export const Component = (props: {}) => {
         return <ReactSelect {...props} />
       };
@@ -924,4 +924,53 @@ test('generate sourcemap with --treeshake', async () => {
         expect(sourceMap.file).toBe(outputFileName)
       }),
   )
+})
+
+test('windows: complex path handling', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src\\nested\\input.ts': `export const foo = 1`,
+      'src\\other\\path\\test.ts': `export const bar = 2`,
+    },
+    {
+      entry: [
+        String.raw`src\nested\input.ts`,
+        String.raw`src\other\path\test.ts`
+      ],
+    },
+  )
+  expect(outFiles.sort()).toEqual(['nested/input.js', 'other/path/test.js'])
+})
+
+test('windows: object entry with backslashes', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src\\nested\\input.ts': `export const foo = 1`,
+    },
+    {
+      entry: {
+        'custom-name': String.raw`src\nested\input.ts`,
+      },
+    },
+  )
+  expect(outFiles).toEqual(['custom-name.js'])
+})
+
+test('windows: mixed path separators', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/nested\\input.ts': `export const foo = 1`,
+      'src\\other/test.ts': `export const bar = 2`,
+    },
+    {
+      entry: [
+        'src/nested\\input.ts',
+        String.raw`src\other/test.ts`
+      ],
+    },
+  )
+  expect(outFiles.sort()).toEqual(['nested/input.js', 'other/test.js'])
 })
