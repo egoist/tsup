@@ -17,7 +17,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: corepack enable
+      - uses: pnpm/action-setup@v4.1.0
+        name: Install pnpm
 
       - uses: actions/setup-node@v4
         with:
