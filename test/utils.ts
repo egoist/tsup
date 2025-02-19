@@ -37,25 +37,58 @@ export const run = async (
   // Write entry files on disk
   await Promise.all(
     Object.keys(files).map(async (name) => {
-      // Only normalize paths that contain Windows-style backslashes
-      const normalizedName = name.includes('\\') ? name.replace(/\\/g, '/') : name
+      // Normalize all paths to forward slashes for consistency
+      const normalizedName = name.replace(/\\/g, '/')
       const filePath = path.resolve(testDir, normalizedName)
       const parentDir = path.dirname(filePath)
       await fsp.mkdir(parentDir, { recursive: true })
-      return fsp.writeFile(filePath, files[name], 'utf8')
+      await fsp.writeFile(filePath, files[name], 'utf8')
     }),
   )
 
-  const normalizeEntry = (entry: string) => entry.includes('\\') ? entry.replace(/\\/g, '/') : entry
+  const normalizeEntry = (entry: string) => {
+    // Always normalize to forward slashes for consistency across platforms
+    // This handles Windows paths, Unix paths, and preserves glob patterns
+    const normalized = entry.replace(/\\/g, '/')
 
-  const args = [
-    ...(options.flags || []),
-    ...(Array.isArray(options.entry)
-      ? options.entry.map(normalizeEntry)
-      : options.entry
-        ? Object.entries(options.entry).map(([key, value]) => `--entry.${key}=${normalizeEntry(value)}`)
-        : ['input.ts']),
-  ]
+    // If it's a glob pattern, return as is
+    if (normalized.includes('*')) {
+      return normalized
+    }
+
+    // For non-glob entries, just normalize slashes but preserve the path structure
+    return normalized
+  }
+
+  let entryArgs: string[] = []
+  let flagArgs: string[] = []
+
+  // Handle entries first
+  if (!options.entry) {
+    // Default to input.ts if it exists
+    const defaultEntry = path.resolve(testDir, 'input.ts')
+    if (fs.existsSync(defaultEntry)) {
+      entryArgs.push('input.ts')
+    }
+  } else if (Array.isArray(options.entry)) {
+    // For array entries, normalize each entry
+    entryArgs.push(...options.entry.map(normalizeEntry))
+  } else {
+    // For object entries, normalize values
+    flagArgs.push(
+      ...Object.entries(options.entry).map(
+        ([key, value]) => `--entry.${key}=${normalizeEntry(value)}`
+      )
+    )
+  }
+
+  // Add other flags after entries
+  if (options.flags) {
+    flagArgs.push(...options.flags)
+  }
+
+  // Combine args with entries first, then flags
+  const args = [...entryArgs, ...flagArgs]
 
   // Run tsup cli
   const processPromise = exec(bin, args, {
