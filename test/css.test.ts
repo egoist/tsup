@@ -2,7 +2,7 @@ import { expect, test } from 'vitest'
 import { getTestName, run } from './utils'
 
 test('import css', async () => {
-  const { output, outFiles } = await run(getTestName(), {
+  const { output, outFiles, getFileContent } = await run(getTestName(), {
     'input.ts': `
     import './foo.css'
     `,
@@ -21,6 +21,40 @@ test('import css', async () => {
   })
 
   expect(output, `""`).toMatchSnapshot()
+  expect(await getFileContent("dist/input.css")).not.toContain("$color")
+  expect(outFiles).toEqual(['input.css', 'input.js'])
+})
+
+test('support alternative postcss file extension', async () => {
+  const { output, outFiles, getFileContent } = await run(getTestName(), {
+    'input.ts': `
+    import './foo.postcss'
+    `,
+    'postcss.config.js': `
+    module.exports = {
+      plugins: [require('postcss-simple-vars')()]
+    }
+    `,
+    'foo.postcss': `
+  $color: blue;
+
+  .foo {
+    color: $color;
+  }
+    `,
+    'tsup.config.ts': `
+      export default {
+        loader: {
+          '.postcss': 'css'
+        },
+        postcssFileExtensions: ['postcss']
+      }
+      `,
+  })
+  
+
+  expect(output, `""`).toMatchSnapshot()
+  expect(await getFileContent("dist/input.css")).not.toContain("$color")
   expect(outFiles).toEqual(['input.css', 'input.js'])
 })
 
