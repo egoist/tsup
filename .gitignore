@@ -6,3 +6,4 @@ playground
 .idea
 .DS_Store
 .eslintcache
+.pnpm-store
