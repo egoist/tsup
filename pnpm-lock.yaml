@@ -26,6 +26,9 @@ importers:
       esbuild:
         specifier: ^0.25.0
         version: 0.25.0
+      fix-dts-default-cjs-exports:
+        specifier: ^1.0.0
+        version: 1.0.0
       joycon:
         specifier: ^3.1.1
         version: 3.1.1
@@ -1073,6 +1076,9 @@ packages:
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
+
+  fix-dts-default-cjs-exports@1.0.0:
+    resolution: {integrity: sha512-i9Vd++WOWo6JilNgZvNvmy1T0r+/j7vikghQSEhKIuDwz4GjUrYj+Z18zlL7MleYNxE+xE6t3aG7LiAwA1P+dg==}
 
   flat@6.0.1:
     resolution: {integrity: sha512-/3FfIa8mbrg3xE7+wAhWeV+bd7L2Mof+xtZb5dRDKZ+wDvYJK4WDYeIOuOhre5Yv5aQObZrlbRmk3RTSiuQBtw==}
@@ -2532,6 +2538,12 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
     optional: true
+
+  fix-dts-default-cjs-exports@1.0.0:
+    dependencies:
+      magic-string: 0.30.17
+      mlly: 1.7.4
+      rollup: 4.34.8
 
   flat@6.0.1: {}
 
