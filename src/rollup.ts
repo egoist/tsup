@@ -11,6 +11,7 @@ import { getProductionDeps, loadPkg } from './load'
 import { reportSize } from './lib/report-size'
 import type { NormalizedOptions } from './'
 import type { InputOptions, OutputOptions, Plugin } from 'rollup'
+import { FixDtsDefaultCjsExportsPlugin } from 'fix-dts-default-cjs-exports/rollup'
 
 const logger = createLogger()
 
@@ -89,25 +90,6 @@ const getRollupConfig = async (
     },
   }
 
-  const fixCjsExport: Plugin = {
-    name: 'tsup:fix-cjs-export',
-    renderChunk(code, info) {
-      if (
-        info.type !== 'chunk' ||
-        !/\.(ts|cts)$/.test(info.fileName) ||
-        !info.isEntry ||
-        info.exports?.length !== 1 ||
-        info.exports[0] !== 'default'
-      )
-        return
-
-      return code.replace(
-        /(?<=(?<=[;}]|^)\s*export\s*){\s*([\w$]+)\s*as\s+default\s*}/,
-        `= $1`,
-      )
-    },
-  }
-
   return {
     inputConfig: {
       input: dtsOptions.entry,
@@ -167,7 +149,7 @@ const getRollupConfig = async (
         entryFileNames: `[name]${outputExtension}`,
         chunkFileNames: `[name]-[hash]${outputExtension}`,
         plugins: [
-          format === 'cjs' && options.cjsInterop && fixCjsExport,
+          format === 'cjs' && options.cjsInterop && FixDtsDefaultCjsExportsPlugin(),
         ].filter(Boolean),
       }
     }),
