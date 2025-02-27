@@ -42,13 +42,13 @@ This will output `dist/index.js` and `dist/cli.js`.
 
 ## 📚 Documentation
 
-For complete usages, please dive into the [docs](https://tsup.egoist.dev).
+Check out the [docs](https://tsup.egoist.dev) for a full usage guide.
 
 For all configuration options, please see [the API docs](https://jsdocs.io/package/tsup).
 
 ## 💬 Discussions
 
-Head over to the [discussions](https://github.com/egoist/tsup/discussions) to share your ideas.
+Head over to [discussions](https://github.com/egoist/tsup/discussions) to share your ideas.
 
 ## Sponsors
 
