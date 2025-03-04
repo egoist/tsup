@@ -66,4 +66,36 @@ describe('swcPlugin', () => {
       swcrc: false,
     })
   })
+  test('swcPlugin transforms TypeScript code and use given plugin swc option', async () => {
+    const { swc, onLoad } = await getFixture({
+      jsc: {
+        transform: {
+          useDefineForClassFields: true,
+        },
+      },
+    })
+
+    await onLoad({
+      path: 'file.ts',
+    })
+
+    expect(swc.transformFile).toHaveBeenCalledWith('file.ts', {
+      configFile: false,
+      jsc: {
+        keepClassNames: true,
+        parser: {
+          decorators: true,
+          syntax: 'typescript',
+        },
+        target: 'es2022',
+        transform: {
+          decoratorMetadata: true,
+          legacyDecorator: true,
+          useDefineForClassFields: true,
+        },
+      },
+      sourceMaps: true,
+      swcrc: false,
+    })
+  })
 })

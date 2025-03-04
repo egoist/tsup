@@ -4,6 +4,7 @@ import type { MinifyOptions } from 'terser'
 import type { MarkRequired } from 'ts-essentials'
 import type { Plugin } from './plugin'
 import type { TreeshakingStrategy } from './plugins/tree-shaking'
+import type { SwcPluginConfig } from './esbuild/swc.js'
 
 export type KILL_SIGNAL = 'SIGKILL' | 'SIGTERM'
 
@@ -256,6 +257,8 @@ export type Options = {
    * @default true
    */
   removeNodeProtocol?: boolean
+  
+  swc?: SwcPluginConfig;
 }
 
 export interface NormalizedExperimentalDtsConfig {
@@ -272,4 +275,5 @@ export type NormalizedOptions = Omit<
   tsconfigResolvePaths: Record<string, string[]>
   tsconfigDecoratorMetadata?: boolean
   format: Format[]
+  swc?: SwcPluginConfig
 }

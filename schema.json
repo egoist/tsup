@@ -181,6 +181,9 @@
             }
           ]
         },
+        "swc": {
+          "type": "object"
+        },
         "globalName": {
           "type": "string"
         },
