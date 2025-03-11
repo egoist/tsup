@@ -97,5 +97,13 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "esbuild",
+      "svelte-preprocess"
+    ]
   }
 }
