@@ -9,4 +9,16 @@ const getImportMetaUrl = () =>
     : (document.currentScript && document.currentScript.src) ||
       new URL('main.js', document.baseURI).href
 
+const getImportMetaFilename = () =>
+  typeof document === 'undefined'
+    ? __filename
+    : undefined
+
+const getImportMetaDirname = () =>
+  typeof document === 'undefined'
+    ? __dirname
+    : undefined
+
 export const importMetaUrl = /* @__PURE__ */ getImportMetaUrl()
+export const importMetaFilename = /* @__PURE__ */ getImportMetaFilename()
+export const importMetaDirname = /* @__PURE__ */ getImportMetaDirname()
