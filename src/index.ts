@@ -346,6 +346,8 @@ export async function build(_options: Options) {
                 }),
               ])
 
+              copyPublicDir(options.publicDir, options.outDir)
+
               if (options.onSuccess) {
                 if (typeof options.onSuccess === 'function') {
                   onSuccessCleanup = await options.onSuccess()
@@ -445,7 +447,6 @@ export async function build(_options: Options) {
             logger.info('CLI', `Target: ${options.target}`)
 
             await buildAll()
-            copyPublicDir(options.publicDir, options.outDir)
 
             startWatcher()
           }
