@@ -325,6 +325,9 @@ const convertArrayEntriesToObjectEntries = (arrayOfEntries: string[]) => {
  * patterns and converts the result into an entry object. If the input is
  * already an object, it is returned as-is.
  *
+ * @param entryPaths - The entry paths to resolve. Can be a string, an array of strings, or an object.
+ * @returns A {@linkcode Promise | promise} that resolves to the standardized entry paths in object format.
+ *
  * @example
  *
  * ```ts
@@ -358,6 +361,7 @@ const resolveEntryPaths = async (entryPaths: InputOption) => {
  * @param options - The options containing entry points and experimental DTS
  * configuration.
  * @param tsconfig - The loaded TypeScript configuration data.
+ * @returns A {@linkcode Promise | promise} that resolves to the normalized experimental DTS configuration, or `undefined` if no entry or experimental DTS option is provided.
  *
  * @internal
  */
@@ -378,6 +382,8 @@ export const resolveExperimentalDtsConfig = async (
       : resolvedEntryPaths
 
   const normalizedExperimentalDtsConfig: NormalizedExperimentalDtsConfig = {
+    only: options.experimentalDts?.only || false,
+
     compilerOptions: {
       ...(tsconfig.data.compilerOptions || {}),
       ...(options.experimentalDts?.compilerOptions || {}),
@@ -390,8 +396,23 @@ export const resolveExperimentalDtsConfig = async (
 }
 
 /**
- * Resolves the initial experimental DTS configuration into a consistent
- * {@link NormalizedExperimentalDtsConfig} object.
+ * Resolves the initial experimental DTS configuration
+ * into a consistent
+ * {@linkcode NormalizedExperimentalDtsConfig | experimentalDts config object}.
+ *
+ * This function handles different types of
+ * {@linkcode NormalizedExperimentalDtsConfig | experimentalDts} inputs:
+ * - If {@linkcode experimentalDts} is a `boolean`:
+ *   - if `true`, it returns a default object with an empty entry (`{ entry: {} }`).
+ *   - if `false`, it returns `undefined`.
+ * - If {@linkcode experimentalDts} is a `string`, it treats the string as a glob pattern, resolving it to entry paths and returning an object with the `entry` property.
+ * - If {@linkcode experimentalDts} is already an object ({@linkcode NormalizedExperimentalDtsConfig}), it resolves {@linkcode NormalizedExperimentalDtsConfig.entry | the entry paths} (if necessary) and returns the object with the updated entries.
+ *
+ * The function focuses specifically on normalizing the **initial**
+ * {@linkcode NormalizedExperimentalDtsConfig | experimentalDts configuration}.
+ *
+ * @param experimentalDts - The {@linkcode NormalizedExperimentalDtsConfig | experimentalDts} value, which can be a `boolean`, `string`, `object`, or `undefined`.
+ * @returns A {@linkcode Promise | promise} that resolves to a normalized {@linkcode NormalizedExperimentalDtsConfig | experimentalDts config object}, or `undefined` if the input was `false` or `undefined`.
  *
  * @internal
  */
@@ -403,18 +424,22 @@ export const resolveInitialExperimentalDtsConfig = async (
   }
 
   if (typeof experimentalDts === 'boolean')
-    return experimentalDts ? { entry: {} } : undefined
+    return experimentalDts ? { only: false, entry: {} } : undefined
 
   if (typeof experimentalDts === 'string') {
     // Treats the string as a glob pattern, resolving it to entry paths and
     // returning an object with the `entry` property.
     return {
+      only: false,
+
       entry: convertArrayEntriesToObjectEntries(await glob(experimentalDts)),
     }
   }
 
   return {
     ...experimentalDts,
+
+    only: experimentalDts?.only || false,
 
     entry:
       experimentalDts?.entry == null
