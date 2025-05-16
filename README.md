@@ -1,3 +1,6 @@
+> [!WARNING]
+> This project is not actively maintained anymore. Please consider using [tsdown](https://github.com/rolldown/tsdown/) instead. Read more in [the migration guide](https://tsdown.dev/guide/migrate-from-tsup).
+
 # tsup
 
 [![npm version](https://badgen.net/npm/v/tsup)](https://npm.im/tsup) [![npm downloads](https://badgen.net/npm/dm/tsup)](https://npm.im/tsup)
