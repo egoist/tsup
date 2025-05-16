@@ -111,6 +111,8 @@ const getRollupConfig = async (
         dtsPlugin.default({
           tsconfig: options.tsconfig,
           compilerOptions: {
+            // Skip code generation when error occurs
+            noEmitOnError: true,
             ...compilerOptions,
             baseUrl: compilerOptions.baseUrl || '.',
             // Ensure ".d.ts" modules are generated
@@ -118,8 +120,6 @@ const getRollupConfig = async (
             // Skip ".js" generation
             noEmit: false,
             emitDeclarationOnly: true,
-            // Skip code generation when error occurs
-            noEmitOnError: true,
             // Avoid extra work
             checkJs: false,
             declarationMap: false,
