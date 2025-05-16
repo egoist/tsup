@@ -9,7 +9,10 @@ import type { Logger } from '../log'
 
 export type SwcPluginConfig = { logger: Logger } & Options
 
-export const swcPlugin = ({ logger, ...swcOptions }: SwcPluginConfig): Plugin => {
+export const swcPlugin = ({
+  logger,
+  ...swcOptions
+}: SwcPluginConfig): Plugin => {
   return {
     name: 'swc',
 

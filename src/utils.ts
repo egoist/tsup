@@ -4,6 +4,7 @@ import resolveFrom from 'resolve-from'
 import type { InputOption } from 'rollup'
 import strip from 'strip-json-comments'
 import { glob } from 'tinyglobby'
+import { loadPkg } from './load.js'
 import type {
   Entry,
   Format,
@@ -421,4 +422,41 @@ export const resolveInitialExperimentalDtsConfig = async (
         ? {}
         : await resolveEntryPaths(experimentalDts.entry),
   }
+}
+
+/**
+ * Resolves the
+ * {@linkcode NormalizedOptions.outputExtensionMap | output extension map}
+ * for each specified {@linkcode Format | format}
+ * in the provided {@linkcode options}.
+ *
+ * @param options - The normalized options containing format and output extension details.
+ * @returns A {@linkcode Promise | promise} that resolves to a {@linkcode Map}, where each key is a {@linkcode Format | format} and each value is an object containing the resolved output extensions for both `js` and `dts` files.
+ *
+ * @internal
+ */
+export const resolveOutputExtensionMap = async (
+  options: NormalizedOptions,
+): Promise<NormalizedOptions['outputExtensionMap']> => {
+  const pkg = await loadPkg(process.cwd())
+
+  const formatOutExtension = new Map(
+    options.format.map((format) => {
+      const outputExtensions = options.outExtension?.({
+        format,
+        options,
+        pkgType: pkg.type,
+      })
+
+      return [
+        format,
+        {
+          ...defaultOutExtension({ format, pkgType: pkg.type }),
+          ...(outputExtensions || {}),
+        },
+      ] as const
+    }),
+  )
+
+  return formatOutExtension
 }
