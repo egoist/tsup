@@ -85,7 +85,7 @@ const parseSourceMap = (map?: string | object | null) => {
   return typeof map === 'string' ? JSON.parse(map) : map
 }
 
-const isJS = (path: string) => /\.(js|mjs|cjs)$/.test(path)
+const isJS = (path: string) => /\.(jsx?|mjs|cjs)$/.test(path)
 const isCSS = (path: string) => /\.css$/.test(path)
 
 export class PluginContainer {
