@@ -2,19 +2,20 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.222.0/containers/javascript-node
 {
   "name": "Node.js",
-  "build": {
-    "dockerfile": "Dockerfile",
-    // Update 'VARIANT' to pick a Node version: 16, 14, 12.
-    // Append -bullseye or -buster to pin to an OS version.
-    // Use -bullseye variants on local arm64/Apple Silicon.
-    "args": { "VARIANT": "16-bullseye" }
+ 
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:18-bullseye",
+
+  "customizations": {
+    // Set *default* container specific settings.json values on container create.
+    "settings": {},
+
+    // Add the IDs of extensions you want installed when the container is created.
+    "extensions": ["dbaeumer.vscode-eslint"],
+
+    "features": {
+      "ghcr.io/devcontainers-extra/features/pnpm:2": {}
+    }
   },
-
-  // Set *default* container specific settings.json values on container create.
-  "settings": {},
-
-  // Add the IDs of extensions you want installed when the container is created.
-  "extensions": ["dbaeumer.vscode-eslint"],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
