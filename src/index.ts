@@ -108,7 +108,9 @@ const normalizeOptions = async (
   }
 
   if (Array.isArray(entry)) {
-    options.entry = await glob(entry)
+    // Normalize Windows paths before passing to glob
+    const normalizedEntry = entry.map(slash)
+    options.entry = await glob(normalizedEntry)
     // Ensure entry exists
     if (!options.entry || options.entry.length === 0) {
       throw new PrettyError(`Cannot find ${entry}`)
@@ -116,14 +118,18 @@ const normalizeOptions = async (
       logger.info('CLI', `Building entry: ${options.entry.join(', ')}`)
     }
   } else {
+    const normalizedEntry: Record<string, string> = {}
     Object.keys(entry).forEach((alias) => {
       const filename = entry[alias]!
-      if (!fs.existsSync(filename)) {
+      // Normalize Windows paths for each entry
+      const normalizedFilename = slash(filename)
+      if (!fs.existsSync(normalizedFilename)) {
         throw new PrettyError(`Cannot find ${alias}: ${filename}`)
       }
+      normalizedEntry[alias] = normalizedFilename
     })
-    options.entry = entry
-    logger.info('CLI', `Building entry: ${JSON.stringify(entry)}`)
+    options.entry = normalizedEntry
+    logger.info('CLI', `Building entry: ${JSON.stringify(normalizedEntry)}`)
   }
 
   const tsconfig = loadTsConfig(process.cwd(), options.tsconfig)

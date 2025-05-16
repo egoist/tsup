@@ -217,7 +217,7 @@ test('onSuccess: use a function from config file', async () => {
             await new Promise((resolve) => {
               setTimeout(() => {
                 console.log('world')
-                resolve('')  
+                resolve('')
               }, 1_000)
             })
           }
@@ -601,7 +601,7 @@ test('use rollup for treeshaking --format cjs', async () => {
       }`,
       'input.tsx': `
       import ReactSelect from 'react-select'
-      
+
       export const Component = (props: {}) => {
         return <ReactSelect {...props} />
       };
@@ -924,4 +924,103 @@ test('generate sourcemap with --treeshake', async () => {
         expect(sourceMap.file).toBe(outputFileName)
       }),
   )
+})
+
+test('windows: complex path handling', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src\\nested\\input.ts': `export const foo = 1`,
+      'src\\other\\path\\test.ts': `export const bar = 2`,
+    },
+    {
+      entry: [
+        String.raw`src\nested\input.ts`,
+        String.raw`src\other\path\test.ts`
+      ],
+    },
+  )
+  expect(outFiles.sort()).toEqual(['nested/input.js', 'other/path/test.js'])
+})
+
+test('windows: object entry with backslashes', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src\\nested\\input.ts': `export const foo = 1`,
+    },
+    {
+      entry: {
+        'custom-name': String.raw`src\nested\input.ts`,
+      },
+    },
+  )
+  expect(outFiles).toEqual(['custom-name.js'])
+})
+
+test('windows: mixed path separators', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/nested\\input.ts': `export const foo = 1`,
+      'src\\other/test.ts': `export const bar = 2`,
+    },
+    {
+      entry: [
+        'src/nested\\input.ts',
+        String.raw`src\other/test.ts`
+      ],
+    },
+  )
+  expect(outFiles.sort()).toEqual(['nested/input.js', 'other/test.js'])
+})
+
+test('path normalization handles mixed path styles', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src\\foo\\input.ts': `export const foo = 1`,
+      'src/bar/input.ts': `export const bar = 2`,
+      'src\\baz/input.ts': `export const baz = 3`,
+    },
+    {
+      entry: [
+        'src\\foo\\input.ts',
+        'src/bar/input.ts',
+        'src\\baz/input.ts'
+      ],
+      flags: ['--format', 'cjs'],
+    },
+  )
+  expect(outFiles.sort()).toEqual([
+    'bar/input.js',
+    'baz/input.js',
+    'foo/input.js',
+  ])
+})
+
+test('path normalization with glob patterns', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src\\types\\foo.ts': `export type Foo = string`,
+      'src/types/bar.ts': `export type Bar = number`,
+      'src\\types\\baz.ts': `export type Baz = boolean`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['src/**/*.ts'],
+          format: ['cjs'],
+        }
+      `,
+    },
+    {
+      entry: ['src/**/*.ts'],
+      flags: ['--format', 'cjs'],
+    },
+  )
+  expect(outFiles.sort()).toEqual([
+    'bar.js',
+    'baz.js',
+    'foo.js',
+  ])
 })
