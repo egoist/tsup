@@ -64,7 +64,7 @@
     "postcss-load-config": "^6.0.1",
     "resolve-from": "^5.0.0",
     "rollup": "^4.34.8",
-    "source-map": "0.8.0-beta.0",
+    "source-map": "^0.7.6",
     "sucrase": "^3.35.0",
     "tinyexec": "^0.3.2",
     "tinyglobby": "^0.2.11",
