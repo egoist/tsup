@@ -93,7 +93,7 @@
     "tsup": "8.3.6",
     "typescript": "5.7.3",
     "vitest": "3.0.6",
-    "wait-for-expect": "3.0.2"
+    "wait-for-expect": "4.0.0"
   },
   "engines": {
     "node": ">=18"
