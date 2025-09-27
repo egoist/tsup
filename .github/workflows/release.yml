@@ -1,9 +1,5 @@
 name: Release
 
-permissions:
-  contents: write
-  id-token: write
-
 on:
   push:
     tags:
@@ -11,33 +7,9 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: pnpm/action-setup@v4.1.0
-        name: Install pnpm
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: pnpm
-          registry-url: https://registry.npmjs.org
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - run: npx changelogithub
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build
-        run: pnpm build
-
-      - name: Publish to NPM
-        run: pnpm publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+    uses: sxzz/workflows/.github/workflows/release.yml@v1
+    with:
+      publish: true
+    permissions:
+      contents: write
+      id-token: write
