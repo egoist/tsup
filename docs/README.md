@@ -615,6 +615,7 @@ When you use legacy TypeScript decorator by enabling `emitDecoratorMetadata` in 
 decorators. In this case, you can give extra swc configuration in the `tsup.config.ts` file.
 
 For example, if you have to define `useDefineForClassFields`, you can do that as follows:
+
 ```ts
 import { defineConfig } from 'tsup'
 
@@ -626,10 +627,10 @@ export default defineConfig({
   swc: {
     jsc: {
       transform: {
-        useDefineForClassFields: true
-      }
-    }
-  }
+        useDefineForClassFields: true,
+      },
+    },
+  },
 })
 ```
 
@@ -648,9 +649,9 @@ Note: some SWC options cannot be configured:
   "keepClassNames": true,
   "target": "es2022"
 }
- ```
+```
 
-You can also define a custom `.swcrc` configuration file. Just set `swcrc` to `true` 
+You can also define a custom `.swcrc` configuration file. Just set `swcrc` to `true`
 in `tsup.config.ts` to allow SWC plugin to discover automatically your custom swc config file.
 
 ```ts
@@ -662,8 +663,8 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   swc: {
-    swcrc: true
-  }
+    swcrc: true,
+  },
 })
 ```
 
