@@ -564,7 +564,7 @@ test('proper sourcemap sources path when swc is enabled', async () => {
     },
   )
   const map = await getFileContent('dist/input.js.map')
-  expect(map).toContain(`["input.ts"]`)
+  expect(map).toContain(`["../input.ts"]`)
 })
 
 // Fixing https://github.com/evanw/esbuild/issues/1794

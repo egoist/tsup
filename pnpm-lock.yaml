@@ -24,7 +24,7 @@ importers:
         specifier: ^4.4.0
         version: 4.4.3
       esbuild:
-        specifier: ^0.25.0
+        specifier: ^0.25.1
         version: 0.25.12
       fix-dts-default-cjs-exports:
         specifier: ^1.0.0
