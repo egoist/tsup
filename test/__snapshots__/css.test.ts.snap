@@ -10,6 +10,11 @@ exports[`import css in --dts 1`] = `
 "
 `;
 
+exports[`support alternative postcss file extension 1`] = `
+""use strict";
+"
+`;
+
 exports[`support tailwindcss postcss plugin 1`] = `
 ""use strict";
 "
