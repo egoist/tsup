@@ -7,7 +7,7 @@
   "homepage": "https://tsup.egoist.dev/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/egoist/tsup.git"
+    "url": "git+https://github.com/egoist/tsup.git"
   },
   "author": "EGOIST",
   "files": [
