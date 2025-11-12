@@ -257,8 +257,8 @@ export type Options = {
    * @default true
    */
   removeNodeProtocol?: boolean
-  
-  swc?: SwcPluginConfig;
+
+  swc?: SwcPluginConfig
 }
 
 export interface NormalizedExperimentalDtsConfig {
