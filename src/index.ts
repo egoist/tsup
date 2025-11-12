@@ -426,6 +426,20 @@ export async function build(_options: Options) {
                 let shouldSkipChange = false
 
                 if (options.watch === true) {
+                  // If tsup.config changes, close current watcher and rerun build
+                  if (
+                    [
+                      'tsup.config.ts',
+                      'tsup.config.js',
+                      'tsup.config.cjs',
+                      'tsup.config.mjs',
+                      'tsup.config.json'
+                    ].includes(file)
+                  ) {
+                    await watcher.close();
+                    await build(_options)
+                    return;
+                  }
                   if (file === 'package.json' && !buildDependencies.has(file)) {
                     const currentHash = await getAllDepsHash(process.cwd())
                     shouldSkipChange = currentHash === depsHash
