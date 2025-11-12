@@ -138,7 +138,7 @@ export async function runEsbuild(
         skipNodeModulesBundle: options.skipNodeModulesBundle,
         tsconfigResolvePaths: options.tsconfigResolvePaths,
       }),
-    options.tsconfigDecoratorMetadata && swcPlugin({ logger }),
+    options.tsconfigDecoratorMetadata && swcPlugin({ ...options.swc, logger }),
     nativeNodeModulesPlugin(),
     postcssPlugin({
       css,

@@ -1,7 +1,7 @@
 {
   "name": "tsup",
-  "version": "8.4.0",
-  "packageManager": "pnpm@10.4.1",
+  "version": "8.5.0",
+  "packageManager": "pnpm@10.22.0",
   "description": "Bundle your TypeScript library with no config, powered by esbuild",
   "license": "MIT",
   "homepage": "https://tsup.egoist.dev/",
@@ -64,7 +64,7 @@
     "postcss-load-config": "^6.0.1",
     "resolve-from": "^5.0.0",
     "rollup": "^4.34.8",
-    "source-map": "0.8.0-beta.0",
+    "source-map": "^0.7.6",
     "sucrase": "^3.35.0",
     "tinyexec": "^0.3.2",
     "tinyglobby": "^0.2.11",

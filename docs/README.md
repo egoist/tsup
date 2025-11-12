@@ -609,6 +609,64 @@ tsup --tsconfig tsconfig.prod.json
 
 By default, tsup try to find the `tsconfig.json` file in the current directory, if it's not found, it will use the default tsup config.
 
+### Using custom Swc configuration
+
+When you use legacy TypeScript decorator by enabling `emitDecoratorMetadata` in your tsconfig, tsup will automatically use [SWC](https://swc.rs) to transpile
+decorators. In this case, you can give extra swc configuration in the `tsup.config.ts` file.
+
+For example, if you have to define `useDefineForClassFields`, you can do that as follows:
+```ts
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+  swc: {
+    jsc: {
+      transform: {
+        useDefineForClassFields: true
+      }
+    }
+  }
+})
+```
+
+Note: some SWC options cannot be configured:
+
+```json
+{
+  "parser": {
+    "syntax": "typescript",
+    "decorators": true
+  },
+  "transform": {
+    "legacyDecorator": true,
+    "decoratorMetadata": true
+  },
+  "keepClassNames": true,
+  "target": "es2022"
+}
+ ```
+
+You can also define a custom `.swcrc` configuration file. Just set `swcrc` to `true` 
+in `tsup.config.ts` to allow SWC plugin to discover automatically your custom swc config file.
+
+```ts
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+  swc: {
+    swcrc: true
+  }
+})
+```
+
 ## Troubleshooting
 
 ### error: No matching export in "xxx.ts" for import "xxx"

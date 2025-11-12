@@ -3,11 +3,13 @@
  */
 import path from 'node:path'
 import { localRequire } from '../utils'
-import type { JscConfig } from '@swc/core'
+import type { JscConfig, Options } from '@swc/core'
 import type { Plugin } from 'esbuild'
 import type { Logger } from '../log'
 
-export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
+export type SwcPluginConfig = { logger: Logger } & Options
+
+export const swcPlugin = ({ logger, ...swcOptions }: SwcPluginConfig): Plugin => {
   return {
     name: 'swc',
 
@@ -29,11 +31,14 @@ export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
         const isTs = /\.tsx?$/.test(args.path)
 
         const jsc: JscConfig = {
+          ...swcOptions.jsc,
           parser: {
+            ...swcOptions.jsc?.parser,
             syntax: isTs ? 'typescript' : 'ecmascript',
             decorators: true,
           },
           transform: {
+            ...swcOptions.jsc?.transform,
             legacyDecorator: true,
             decoratorMetadata: true,
           },
@@ -42,10 +47,11 @@ export const swcPlugin = ({ logger }: { logger: Logger }): Plugin => {
         }
 
         const result = await swc.transformFile(args.path, {
+          ...swcOptions,
           jsc,
           sourceMaps: true,
           configFile: false,
-          swcrc: false,
+          swcrc: swcOptions.swcrc ?? false,
         })
 
         let code = result.code
