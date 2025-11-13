@@ -14,6 +14,7 @@ import {
   removeFiles,
   resolveExperimentalDtsConfig,
   resolveInitialExperimentalDtsConfig,
+  resolveOutputExtensionMap,
   slash,
 } from './utils'
 import { createLogger, setSilent } from './log'
@@ -77,14 +78,17 @@ const normalizeOptions = async (
     ...optionsOverride,
   }
 
+  const formats =
+    typeof _options.format === 'string'
+      ? [_options.format]
+      : _options.format || ['cjs']
+
   const options: Partial<NormalizedOptions> = {
     outDir: 'dist',
     removeNodeProtocol: true,
     ..._options,
-    format:
-      typeof _options.format === 'string'
-        ? [_options.format as Format]
-        : _options.format || ['cjs'],
+    format: formats,
+
     dts:
       typeof _options.dts === 'boolean'
         ? _options.dts
@@ -160,6 +164,10 @@ const normalizeOptions = async (
   if (!options.target) {
     options.target = 'node16'
   }
+
+  options.outputExtensionMap = await resolveOutputExtensionMap(
+    options as NormalizedOptions,
+  )
 
   return options as NormalizedOptions
 }
