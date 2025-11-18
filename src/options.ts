@@ -38,6 +38,15 @@ export type DtsConfig = {
    * This option takes higher priority than `compilerOptions` in tsconfig.json
    */
   compilerOptions?: any
+  /**
+   * The dts plugin will by default flag *all* external libraries as `external`,
+   * and thus prevent them from be bundled.
+   * If you set the `respectExternal` option to `true`, the plugin will not do
+   * any default classification, but rather use the `external` option as
+   * configured via rollup.
+   * @link https://github.com/Swatinem/rollup-plugin-dts/blob/03a8728db66648e68d59497e1c05bb38cf4ff3a9/src/index.ts#L17
+   */
+  respectExternal?: boolean;
 }
 
 export type ExperimentalDtsConfig = {
