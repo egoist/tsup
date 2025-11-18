@@ -3,7 +3,8 @@ import fs from 'node:fs'
 import { Worker } from 'node:worker_threads'
 import { loadTsConfig } from 'bundle-require'
 import { exec, type Result as ExecChild } from 'tinyexec'
-import { glob, globSync } from 'tinyglobby'
+import { glob } from 'tinyglobby'
+import { toMatcher } from 'glob-to-regex.js'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { PrettyError, handleError } from './errors'
@@ -406,7 +407,7 @@ export async function build(_options: Options) {
               const watcher = watch(await glob(watchPaths), {
                 ignoreInitial: true,
                 ignorePermissionErrors: true,
-                ignored: (p) => globSync(p, { ignore: ignored }).length === 0,
+                ignored: toMatcher(ignored),
               })
               watcher.on('all', async (type, file) => {
                 file = slash(file)
