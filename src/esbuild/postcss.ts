@@ -7,10 +7,12 @@ export const postcssPlugin = ({
   css,
   inject,
   cssLoader,
+  fileExtensions = ["css"]
 }: {
   css?: Map<string, string>
   inject?: boolean | ((css: string, fileId: string) => string | Promise<string>)
-  cssLoader?: Loader
+  cssLoader?: Loader,
+  fileExtensions?: string[]
 }): Plugin => {
   return {
     name: 'postcss',
@@ -77,7 +79,7 @@ export const postcssPlugin = ({
         },
       )
 
-      build.onLoad({ filter: /\.css$/ }, async (args) => {
+      build.onLoad({ filter: new RegExp(fileExtensions.map(ext => `\\.${ext}$`).join("|")) }, async (args) => {
         let contents: string
 
         if (css && args.path.endsWith('.svelte.css')) {

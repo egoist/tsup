@@ -221,6 +221,11 @@ export type Options = {
     | boolean
     | ((css: string, fileId: string) => string | Promise<string>)
   /**
+   * Allowed postcss file extensions
+   * @default ["css"]
+   */
+  postcssFileExtensions?: string[]
+  /**
    * Inject cjs and esm shims if needed
    * @default false
    */
