@@ -481,69 +481,73 @@ test('declaration files with multiple entrypoints #316', async () => {
   ).toMatchSnapshot()
 })
 
-test('dts chunks should have proper js extensions in imports', async () => {
+test('dts should rewrite .ts import extensions to .mjs for esm format', async () => {
   const { getFileContent, outFiles } = await run(
     getTestName(),
     {
-      'src/entry1.ts': `
-        import type { SharedType } from './shared.ts'
-        export function fn1(value: SharedType) { return value }
-      `,
-      'src/entry2.ts': `
-        import type { SharedType } from './shared.ts'
-        export function fn2(value: SharedType) { return value }
-      `,
-      'src/shared.ts': `export type SharedType = string`,
+      'src/input.ts': `export type { Foo } from './types.ts'`,
+      'src/types.ts': `export type Foo = string`,
       'tsup.config.ts': `
         export default {
-          entry: ['src/entry1.ts', 'src/entry2.ts'],
+          entry: ['src/input.ts'],
           format: ['esm'],
-          dts: true
+          dts: { only: true },
+          external: [/\\.\\/types/]
         }
       `,
     },
     { entry: [] },
   )
-  expect(outFiles).toContain('entry1.d.mts')
-  expect(outFiles).toContain('entry2.d.mts')
-  const sharedChunk = outFiles.find(
-    (f) => f.startsWith('shared-') && f.endsWith('.d.mts'),
-  )
-  expect(sharedChunk).toBeDefined()
-
-  const entry1Dts = await getFileContent('dist/entry1.d.mts')
-  expect(entry1Dts).toMatch(/from ['"]\.\/shared-[^'"]+\.mjs['"]/)
-  expect(entry1Dts).not.toContain('.ts')
+  expect(outFiles).toContain('input.d.mts')
+  const dts = await getFileContent('dist/input.d.mts')
+  expect(dts).toContain('./types.mjs')
+  expect(dts).not.toContain('./types.ts')
 })
 
-test('dts chunks should have proper js extensions (type: module)', async () => {
+test('dts should rewrite .ts import extensions to .cjs for cjs format with type:module', async () => {
   const { getFileContent, outFiles } = await run(
     getTestName(),
     {
-      'src/entry1.ts': `
-        import type { SharedType } from './shared.ts'
-        export function fn1(value: SharedType) { return value }
-      `,
-      'src/entry2.ts': `
-        import type { SharedType } from './shared.ts'
-        export function fn2(value: SharedType) { return value }
-      `,
-      'src/shared.ts': `export type SharedType = string`,
+      'src/input.ts': `export type { Foo } from './types.ts'`,
+      'src/types.ts': `export type Foo = string`,
       'package.json': `{ "type": "module" }`,
       'tsup.config.ts': `
         export default {
-          entry: ['src/entry1.ts', 'src/entry2.ts'],
-          format: ['esm'],
-          dts: true
+          entry: ['src/input.ts'],
+          format: ['cjs'],
+          dts: { only: true },
+          external: [/\\.\\/types/]
         }
       `,
     },
     { entry: [] },
   )
-  expect(outFiles).toContain('entry1.d.ts')
-  expect(outFiles).toContain('entry2.d.ts')
+  expect(outFiles).toContain('input.d.cts')
+  const dts = await getFileContent('dist/input.d.cts')
+  expect(dts).toContain('./types.cjs')
+  expect(dts).not.toContain('./types.ts')
+})
 
-  const entry1Dts = await getFileContent('dist/entry1.d.ts')
-  expect(entry1Dts).toMatch(/from ['"]\.\/shared-[^'"]+\.js['"]/)
-  expect(entry1Dts).not.toContain('.ts')
+test('dts should rewrite .ts import extensions to .js for esm format with type:module', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'src/input.ts': `export type { Foo } from './types.ts'`,
+      'src/types.ts': `export type Foo = string`,
+      'package.json': `{ "type": "module" }`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: ['esm'],
+          dts: { only: true },
+          external: [/\\.\\/types/]
+        }
+      `,
+    },
+    { entry: [] },
+  )
+  expect(outFiles).toContain('input.d.ts')
+  const dts = await getFileContent('dist/input.d.ts')
+  expect(dts).toContain('./types.js')
+  expect(dts).not.toContain('./types.ts')
 })

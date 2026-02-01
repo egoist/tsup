@@ -21,8 +21,10 @@ const RELATIVE_TS_IMPORT_PATTERN =
 const getOutputExtension = (tsExt: string, outputPath: string): string => {
   if (tsExt === '.mts') return '.mjs'
   if (tsExt === '.cts') return '.cjs'
-  if (outputPath.endsWith('.mjs') || outputPath.endsWith('.d.mts')) return '.mjs'
-  if (outputPath.endsWith('.cjs') || outputPath.endsWith('.d.cts')) return '.cjs'
+  if (outputPath.endsWith('.mjs') || outputPath.endsWith('.d.mts'))
+    return '.mjs'
+  if (outputPath.endsWith('.cjs') || outputPath.endsWith('.d.cts'))
+    return '.cjs'
   return '.js'
 }
 
@@ -34,7 +36,9 @@ const rewriteDtsImportExtensionsPlugin = (): Plugin => ({
       RELATIVE_TS_IMPORT_PATTERN,
       (_, pathWithoutExt, tsExt, query = '') => {
         touched = true
-        return pathWithoutExt + getOutputExtension(tsExt, chunk.fileName) + query
+        return (
+          pathWithoutExt + getOutputExtension(tsExt, chunk.fileName) + query
+        )
       },
     )
     if (!touched) return null
