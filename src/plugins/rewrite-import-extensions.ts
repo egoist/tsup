@@ -18,13 +18,17 @@ export const rewriteImportExtensions = (): Plugin => {
     renderChunk(code, info) {
       if (!/\.(js|mjs|cjs)$/.test(info.path)) return
 
+      let touched = false
+
       const rewritten = code.replace(
         RELATIVE_IMPORT_PATTERN,
-        (_, pathWithoutExt, tsExt) =>
-          pathWithoutExt + getOutputExtension(tsExt, info.path),
+        (_, pathWithoutExt, tsExt) => {
+          touched = true
+          return pathWithoutExt + getOutputExtension(tsExt, info.path)
+        },
       )
 
-      if (rewritten === code) return
+      if (!touched) return
 
       return { code: rewritten }
     },
