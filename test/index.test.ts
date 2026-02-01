@@ -1040,3 +1040,21 @@ test('rewrite dynamic import with .ts extension', async () => {
   expect(output).toContain('./foo.js')
   expect(output).not.toContain('./foo.ts')
 })
+
+test('rewrite .ts import extensions with query string', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `import data from './data.ts?raw';\nexport { data };`,
+      'data.ts': `export default 'data'`,
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts', 'data.ts'],
+    },
+  )
+  expect(outFiles).toContain('input.js')
+  const output = await getFileContent('dist/input.js')
+  expect(output).toContain('./data.js?raw')
+  expect(output).not.toContain('./data.ts')
+})

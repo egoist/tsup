@@ -9,7 +9,7 @@ const getOutputExtension = (tsExt: string, outputPath: string): string => {
 }
 
 const RELATIVE_IMPORT_PATTERN =
-  /(?<=(?:from\s+|import\s*\(|require\s*\()['"])(\.\.?\/[^'"]*)(\.(?:ts|tsx|mts|cts))(?=['"])/g
+  /(?<=(?:from\s+|import\s*\(|require\s*\()['"])(\.\.?\/[^'"]*)(\.(?:ts|tsx|mts|cts))(\?[^'"]*)?(?=['"])/g
 
 export const rewriteImportExtensions = (): Plugin => {
   return {
@@ -22,9 +22,9 @@ export const rewriteImportExtensions = (): Plugin => {
 
       const rewritten = code.replace(
         RELATIVE_IMPORT_PATTERN,
-        (_, pathWithoutExt, tsExt) => {
+        (_, pathWithoutExt, tsExt, query = '') => {
           touched = true
-          return pathWithoutExt + getOutputExtension(tsExt, info.path)
+          return pathWithoutExt + getOutputExtension(tsExt, info.path) + query
         },
       )
 
