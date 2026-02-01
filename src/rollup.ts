@@ -12,39 +12,9 @@ import { reportSize } from './lib/report-size'
 import type { NormalizedOptions } from './'
 import type { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { FixDtsDefaultCjsExportsPlugin } from 'fix-dts-default-cjs-exports/rollup'
+import { rewriteDtsImportExtensionsPlugin } from './plugins/rewrite-dts-import-extensions'
 
 const logger = createLogger()
-
-const RELATIVE_TS_IMPORT_PATTERN =
-  /(?<=(?:from\s+|import\s*\(|require\s*\()['"])(\.\.?\/[^'"]*)(\.(?:ts|tsx|mts|cts))(\?[^'"]*)?(?=['"])/g
-
-const getOutputExtension = (tsExt: string, outputPath: string): string => {
-  if (tsExt === '.mts') return '.mjs'
-  if (tsExt === '.cts') return '.cjs'
-  if (outputPath.endsWith('.mjs') || outputPath.endsWith('.d.mts'))
-    return '.mjs'
-  if (outputPath.endsWith('.cjs') || outputPath.endsWith('.d.cts'))
-    return '.cjs'
-  return '.js'
-}
-
-const rewriteDtsImportExtensionsPlugin = (): Plugin => ({
-  name: 'tsup:rewrite-dts-import-extensions',
-  renderChunk(code, chunk) {
-    let touched = false
-    const rewritten = code.replace(
-      RELATIVE_TS_IMPORT_PATTERN,
-      (_, pathWithoutExt, tsExt, query = '') => {
-        touched = true
-        return (
-          pathWithoutExt + getOutputExtension(tsExt, chunk.fileName) + query
-        )
-      },
-    )
-    if (!touched) return null
-    return { code: rewritten, map: null }
-  },
-})
 
 const parseCompilerOptions = (compilerOptions?: any) => {
   if (!compilerOptions) return {}
