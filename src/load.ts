@@ -67,8 +67,18 @@ export async function loadTsupConfig(
       return {}
     }
 
+    const cacheDir = path.join(
+      path.dirname(configPath),
+      'node_modules/.cache/tsup',
+    )
+    await fs.promises.mkdir(cacheDir, { recursive: true })
     const config = await bundleRequire({
       filepath: configPath,
+      getOutputFile(filepath, format) {
+        const base = path.basename(filepath).replace(/\.[^.]+$/, '')
+        const ext = format === 'esm' ? 'mjs' : 'cjs'
+        return path.join(cacheDir, `${base}.bundled_${Date.now()}.${ext}`)
+      },
     })
     return {
       path: configPath,

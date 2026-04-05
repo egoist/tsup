@@ -1,19 +1,15 @@
-> [!WARNING]
-> This project is not actively maintained anymore. Please consider using [tsdown](https://github.com/rolldown/tsdown/) instead. Read more in [the migration guide](https://tsdown.dev/guide/migrate-from-tsup).
+# tsup (personal fork)
 
-# tsup
+A personal patch fork of [egoist/tsup](https://github.com/egoist/tsup) to keep it working through the TypeScript 6.x lifecycle. May be retired once the project moves fully to tsdown.
 
-[![npm version](https://badgen.net/npm/v/tsup)](https://npm.im/tsup) [![npm downloads](https://badgen.net/npm/dm/tsup)](https://npm.im/tsup)
+## 🔧 Changes from upstream
 
-Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
-
-## 👀 What can it bundle?
-
-Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. And TypeScript `.ts`, `.tsx`. [CSS support is experimental](https://tsup.egoist.dev/#css-support).
+- **TypeScript 6.0 compatibility** — `baseUrl` was deprecated in TS 6.0 and will be removed in TS 7.0. Rather than silencing the error, `baseUrl` is now automatically translated into an equivalent `paths` catch-all entry (`"*": ["<baseUrl>/*"]`) when TS 6+ is detected, preserving identical resolution behaviour without the deprecation warning. Users on TS < 6 are unaffected.
+- **`outDir` respected from tsconfig** — tsup now reads `compilerOptions.outDir` from your `tsconfig.json` and uses it as the output directory when you have not explicitly set one via `--out-dir` or your tsup config. The value is resolved relative to the tsconfig file, so it works correctly regardless of where tsup is invoked from.
+- **DTS build performance fix** — type declaration generation could be up to 10× slower when tsup was run from outside the project root. The underlying cause was a hardcoded `'./'` passed to TypeScript's path resolver; it now uses the tsconfig file's own directory, giving TypeScript the correct anchor from the start.
+- **Temp config file no longer pollutes the working directory** — the bundled config file that tsup writes during startup (previously `tsup.config.bundled_*.mjs` next to your config) is now written to `node_modules/.cache/tsup/`, keeping it out of reach of linters and version control.
 
 ## ⚙️ Install
-
-Install it locally in your project folder:
 
 ```bash
 npm i tsup -D
@@ -23,52 +19,15 @@ yarn add tsup --dev
 pnpm add tsup -D
 ```
 
-You can also install it globally but it's not recommended.
-
 ## 📖 Usage
-
-### Bundle files
 
 ```bash
 tsup [...files]
 ```
 
-Files are written into `./dist`.
+Files are written into `./dist` by default, or the `outDir` from your `tsconfig.json` if set.
 
-You can bundle multiple files in one go:
-
-```bash
-tsup src/index.ts src/cli.ts
-```
-
-This will output `dist/index.js` and `dist/cli.js`.
-
-## 📚 Documentation
-
-For complete usages, please dive into the [docs](https://tsup.egoist.dev).
-
-For all configuration options, please see [the API docs](https://jsdocs.io/package/tsup).
-
-## 💬 Discussions
-
-Head over to the [discussions](https://github.com/egoist/tsup/discussions) to share your ideas.
-
-## Sponsors
-
-<p align="center">
-  <a href="https://chromatic.com" target="_blank"><picture>
-  <source media="(prefers-color-scheme: dark)" width="500" srcset="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Group 2 (2).png">
-  <img alt="Ship UIs faster with automated workflows for Storybook"  width="500" src="https://fastly.jsdelivr.net/gh/egoist-bot/images@main/uPic/Group%202%20(1).png">
-</picture></a>
-</p>
-
-<p align="center">
-<a href="https://github.com/sponsors/egoist" target="_blank"><img src="https://sponsors-images.egoist.dev/sponsors.svg" alt="sponsors"></a>
-</p>
-
-## Project Stats
-
-![Alt](https://repobeats.axiom.co/api/embed/4ef361ec8445b33c2dab451e1d23784015834c72.svg 'Repobeats analytics image')
+For full documentation see the [original tsup docs](https://tsup.egoist.dev) and [API reference](https://jsdocs.io/package/tsup).
 
 ## License
 

@@ -16,7 +16,7 @@ export async function main(options: Options = {}) {
       ignoreOptionDefaultValue: true,
     })
     .option('--entry.* <file>', 'Use a key-value pair as entry files')
-    .option('-d, --out-dir <dir>', 'Output directory', { default: 'dist' })
+    .option('-d, --out-dir <dir>', 'Output directory')
     .option('--format <format>', 'Bundle format, "cjs", "iife", "esm"', {
       default: 'cjs',
     })

@@ -153,6 +153,16 @@ const normalizeOptions = async (
     if (!options.target) {
       options.target = tsconfig.data?.compilerOptions?.target?.toLowerCase()
     }
+
+    // Honour tsconfig outDir only when the user has not explicitly set one
+    // (either via tsup config or --out-dir flag). Resolve relative to the
+    // tsconfig file so paths like "./lib" work from any working directory.
+    if (!_options.outDir && tsconfig.data?.compilerOptions?.outDir) {
+      options.outDir = path.resolve(
+        path.dirname(tsconfig.path),
+        tsconfig.data.compilerOptions.outDir,
+      )
+    }
   } else if (options.tsconfig) {
     throw new PrettyError(`Cannot find tsconfig: ${options.tsconfig}`)
   }

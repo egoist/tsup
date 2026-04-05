@@ -15,12 +15,12 @@ import { FixDtsDefaultCjsExportsPlugin } from 'fix-dts-default-cjs-exports/rollu
 
 const logger = createLogger()
 
-const parseCompilerOptions = (compilerOptions?: any) => {
+const parseCompilerOptions = (compilerOptions?: any, basePath?: string) => {
   if (!compilerOptions) return {}
   const { options } = ts.parseJsonConfigFileContent(
     { compilerOptions },
     ts.sys,
-    './',
+    basePath || './',
   )
   return options
 }
@@ -29,6 +29,45 @@ const parseCompilerOptions = (compilerOptions?: any) => {
 // the mjs build of rollup-plugin-dts uses `import.meta.url` which makes Node throws syntax error
 // since tsup is published as a commonjs module for now
 const dtsPlugin: typeof import('rollup-plugin-dts') = require('rollup-plugin-dts')
+
+/**
+ * In TypeScript 6.0, `baseUrl` was deprecated (it will be removed in TS 7.0).
+ * Its path-resolution role should be expressed via `paths` instead.
+ *
+ * - TS < 6 : pass `baseUrl` through unchanged (and keep the `|| '.'` default
+ *   that rollup-plugin-dts has historically relied on).
+ * - TS >= 6, baseUrl set by the user: drop `baseUrl` and inject an equivalent
+ *   `"*": ["<baseUrl>/*"]` catch-all into `paths` so resolution is identical.
+ * - TS >= 6, no baseUrl: emit nothing — never inject the deprecated default.
+ *
+ * See https://github.com/microsoft/TypeScript/issues/62207
+ */
+const resolveBaseUrl = (
+  compilerOptions: ts.CompilerOptions,
+  typescript: typeof ts,
+): Partial<ts.CompilerOptions> => {
+  const tsMajor = parseInt(typescript.versionMajorMinor.split('.')[0], 10)
+
+  if (tsMajor < 6) {
+    // Legacy behaviour: rollup-plugin-dts needs a baseUrl to resolve paths;
+    // fall back to '.' when the user hasn't set one.
+    return { baseUrl: compilerOptions.baseUrl || '.' }
+  }
+
+  // TS 6+: baseUrl is deprecated. If the user set it, translate it into a
+  // paths catch-all so that bare-specifier resolution keeps working.
+  if (compilerOptions.baseUrl) {
+    const existingPaths: ts.MapLike<string[]> = compilerOptions.paths ?? {}
+    // Only add the catch-all if the user hasn't already defined one.
+    const paths: ts.MapLike<string[]> = existingPaths['*']
+      ? existingPaths
+      : { '*': [`${compilerOptions.baseUrl}/*`], ...existingPaths }
+    return { paths }
+  }
+
+  // No baseUrl at all — emit nothing.
+  return {}
+}
 
 type RollupConfig = {
   inputConfig: InputOptions
@@ -40,7 +79,10 @@ const getRollupConfig = async (
 ): Promise<RollupConfig> => {
   setSilent(options.silent)
 
-  const compilerOptions = parseCompilerOptions(options.dts?.compilerOptions)
+  const compilerOptions = parseCompilerOptions(
+    options.dts?.compilerOptions,
+    options.tsconfig ? path.dirname(options.tsconfig) : undefined,
+  )
 
   const dtsOptions = options.dts || {}
   dtsOptions.entry = dtsOptions.entry || options.entry
@@ -112,7 +154,7 @@ const getRollupConfig = async (
           tsconfig: options.tsconfig,
           compilerOptions: {
             ...compilerOptions,
-            baseUrl: compilerOptions.baseUrl || '.',
+            ...resolveBaseUrl(compilerOptions, ts),
             // Ensure ".d.ts" modules are generated
             declaration: true,
             // Skip ".js" generation

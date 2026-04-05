@@ -91,7 +91,7 @@
     "terser": "^5.39.0",
     "ts-essentials": "10.0.4",
     "tsup": "8.3.6",
-    "typescript": "5.7.3",
+    "typescript": "6.0.2",
     "vitest": "3.0.6",
     "wait-for-expect": "3.0.2"
   },
