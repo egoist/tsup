@@ -169,6 +169,7 @@ export async function runEsbuild(
       jsxFactory: options.jsxFactory,
       jsxFragment: options.jsxFragment,
       sourcemap: options.sourcemap ? 'external' : false,
+      sourceRoot: options.sourceRoot,
       target: options.target,
       banner,
       footer,

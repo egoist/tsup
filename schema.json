@@ -235,6 +235,10 @@
             }
           ]
         },
+        "sourceRoot": {
+          "type": "string",
+          "description": "The value of the `sourceRoot` field in the source map"
+        },
         "noExternal": {
           "type": "array",
           "items": {
