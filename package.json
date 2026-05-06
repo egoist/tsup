@@ -59,6 +59,7 @@
     "debug": "^4.4.0",
     "esbuild": "^0.27.0",
     "fix-dts-default-cjs-exports": "^1.0.0",
+    "glob-to-regex.js": "^1.2.0",
     "joycon": "^3.1.1",
     "picocolors": "^1.1.1",
     "postcss-load-config": "^6.0.1",
