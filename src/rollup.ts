@@ -20,7 +20,7 @@ const parseCompilerOptions = (compilerOptions?: any) => {
   const { options } = ts.parseJsonConfigFileContent(
     { compilerOptions },
     ts.sys,
-    './',
+    path.resolve('./'),
   )
   return options
 }
