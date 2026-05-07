@@ -29,6 +29,7 @@ import { terserPlugin } from './plugins/terser'
 import { runTypeScriptCompiler } from './tsc'
 import { runDtsRollup } from './api-extractor'
 import { cjsInterop } from './plugins/cjs-interop'
+import { rewriteImportExtensions } from './plugins/rewrite-import-extensions'
 import type { Format, KILL_SIGNAL, NormalizedOptions, Options } from './options'
 
 export type { Format, Options, NormalizedOptions }
@@ -313,6 +314,7 @@ export async function build(_options: Options) {
                 ...options.format.map(async (format, index) => {
                   const pluginContainer = new PluginContainer([
                     shebang(),
+                    rewriteImportExtensions(),
                     ...(options.plugins || []),
                     treeShakingPlugin({
                       treeshake: options.treeshake,

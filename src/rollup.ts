@@ -12,6 +12,7 @@ import { reportSize } from './lib/report-size'
 import type { NormalizedOptions } from './'
 import type { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { FixDtsDefaultCjsExportsPlugin } from 'fix-dts-default-cjs-exports/rollup'
+import { rewriteDtsImportExtensionsPlugin } from './plugins/rewrite-dts-import-extensions'
 
 const logger = createLogger()
 
@@ -149,6 +150,7 @@ const getRollupConfig = async (
         entryFileNames: `[name]${outputExtension}`,
         chunkFileNames: `[name]-[hash]${outputExtension}`,
         plugins: [
+          rewriteDtsImportExtensionsPlugin(),
           format === 'cjs' &&
             options.cjsInterop &&
             FixDtsDefaultCjsExportsPlugin(),

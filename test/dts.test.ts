@@ -480,3 +480,74 @@ test('declaration files with multiple entrypoints #316', async () => {
     'dist/bar/index.d.ts',
   ).toMatchSnapshot()
 })
+
+test('dts should rewrite .ts import extensions to .mjs for esm format', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'src/input.ts': `export type { Foo } from './types.ts'`,
+      'src/types.ts': `export type Foo = string`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: ['esm'],
+          dts: { only: true },
+          external: [/\\.\\/types/]
+        }
+      `,
+    },
+    { entry: [] },
+  )
+  expect(outFiles).toContain('input.d.mts')
+  const dts = await getFileContent('dist/input.d.mts')
+  expect(dts).toContain('./types.mjs')
+  expect(dts).not.toContain('./types.ts')
+})
+
+test('dts should rewrite .ts import extensions to .cjs for cjs format with type:module', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'src/input.ts': `export type { Foo } from './types.ts'`,
+      'src/types.ts': `export type Foo = string`,
+      'package.json': `{ "type": "module" }`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: ['cjs'],
+          dts: { only: true },
+          external: [/\\.\\/types/]
+        }
+      `,
+    },
+    { entry: [] },
+  )
+  expect(outFiles).toContain('input.d.cts')
+  const dts = await getFileContent('dist/input.d.cts')
+  expect(dts).toContain('./types.cjs')
+  expect(dts).not.toContain('./types.ts')
+})
+
+test('dts should rewrite .ts import extensions to .js for esm format with type:module', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'src/input.ts': `export type { Foo } from './types.ts'`,
+      'src/types.ts': `export type Foo = string`,
+      'package.json': `{ "type": "module" }`,
+      'tsup.config.ts': `
+        export default {
+          entry: ['src/input.ts'],
+          format: ['esm'],
+          dts: { only: true },
+          external: [/\\.\\/types/]
+        }
+      `,
+    },
+    { entry: [] },
+  )
+  expect(outFiles).toContain('input.d.ts')
+  const dts = await getFileContent('dist/input.d.ts')
+  expect(dts).toContain('./types.js')
+  expect(dts).not.toContain('./types.ts')
+})

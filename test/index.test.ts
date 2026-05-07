@@ -925,3 +925,136 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('rewrite .ts import extensions with bundle:false', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `import { foo } from './foo.ts';\nexport { foo };`,
+      'foo.ts': `export const foo = 'foo'`,
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts', 'foo.ts'],
+    },
+  )
+  expect(outFiles).toContain('input.js')
+  expect(outFiles).toContain('foo.js')
+  const output = await getFileContent('dist/input.js')
+  expect(output).toContain('./foo.js')
+  expect(output).not.toContain('./foo.ts')
+})
+
+test('rewrite .ts import extensions to .mjs for esm format', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `import { foo } from './foo.ts';\nexport { foo };`,
+      'foo.ts': `export const foo = 'foo'`,
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts', 'foo.ts'],
+      flags: ['--format', 'esm'],
+    },
+  )
+  expect(outFiles).toContain('input.mjs')
+  const output = await getFileContent('dist/input.mjs')
+  expect(output).toContain('./foo.mjs')
+  expect(output).not.toContain('./foo.ts')
+})
+
+test('rewrite .ts import extensions to .cjs for cjs format with type:module', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `import { foo } from './foo.ts';\nexport { foo };`,
+      'foo.ts': `export const foo = 'foo'`,
+      'package.json': JSON.stringify({ type: 'module' }),
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts', 'foo.ts'],
+      flags: ['--format', 'cjs'],
+    },
+  )
+  expect(outFiles).toContain('input.cjs')
+  const output = await getFileContent('dist/input.cjs')
+  expect(output).toContain('./foo.cjs')
+  expect(output).not.toContain('./foo.ts')
+})
+
+test('rewrite .mts and .cts import extensions', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `import { foo } from './foo.mts';\nimport { bar } from './bar.cts';\nexport { foo, bar };`,
+      'foo.mts': `export const foo = 'foo'`,
+      'bar.cts': `export const bar = 'bar'`,
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts', 'foo.mts', 'bar.cts'],
+    },
+  )
+  expect(outFiles).toContain('input.js')
+  const output = await getFileContent('dist/input.js')
+  expect(output).toContain('./foo.mjs')
+  expect(output).toContain('./bar.cjs')
+  expect(output).not.toContain('.mts')
+  expect(output).not.toContain('.cts')
+})
+
+test('rewrite export from with .ts extension', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export { foo } from './foo.ts';`,
+      'foo.ts': `export const foo = 'foo'`,
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts', 'foo.ts'],
+    },
+  )
+  expect(outFiles).toContain('input.js')
+  const output = await getFileContent('dist/input.js')
+  expect(output).toContain('./foo.js')
+  expect(output).not.toContain('./foo.ts')
+})
+
+test('rewrite dynamic import with .ts extension', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const load = () => import('./foo.ts');`,
+      'foo.ts': `export const foo = 'foo'`,
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts', 'foo.ts'],
+    },
+  )
+  expect(outFiles).toContain('input.js')
+  const output = await getFileContent('dist/input.js')
+  expect(output).toContain('./foo.js')
+  expect(output).not.toContain('./foo.ts')
+})
+
+test('rewrite .ts import extensions with query string', async () => {
+  const { getFileContent, outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `import data from './data.ts?raw';\nexport { data };`,
+      'data.ts': `export default 'data'`,
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts', 'data.ts'],
+    },
+  )
+  expect(outFiles).toContain('input.js')
+  const output = await getFileContent('dist/input.js')
+  expect(output).toContain('./data.js?raw')
+  expect(output).not.toContain('./data.ts')
+})
