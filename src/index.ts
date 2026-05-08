@@ -258,7 +258,7 @@ export async function build(_options: Options) {
         }
 
         const mainTasks = async () => {
-          if (!options.dts?.only) {
+          if (!options.experimentalDts?.only && !options.dts?.only) {
             let onSuccessProcess: ExecChild | undefined
             let onSuccessCleanup: (() => any) | undefined | void
             /** Files imported by the entry */
