@@ -217,7 +217,7 @@ test('onSuccess: use a function from config file', async () => {
             await new Promise((resolve) => {
               setTimeout(() => {
                 console.log('world')
-                resolve('')  
+                resolve('')
               }, 1_000)
             })
           }
@@ -601,7 +601,7 @@ test('use rollup for treeshaking --format cjs', async () => {
       }`,
       'input.tsx': `
       import ReactSelect from 'react-select'
-      
+
       export const Component = (props: {}) => {
         return <ReactSelect {...props} />
       };
