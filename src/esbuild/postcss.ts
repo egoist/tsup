@@ -24,9 +24,12 @@ export const postcssPlugin = ({
         if (configCache) {
           return configCache
         }
+        const postCssCtx = {
+          tsupOptions: build.initialOptions
+        }
 
         try {
-          const result = await loadConfig({}, process.cwd())
+          const result = await loadConfig(postCssCtx, process.cwd())
           configCache = result
           return result
         } catch (error: any) {
