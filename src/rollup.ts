@@ -105,7 +105,7 @@ const getRollupConfig = async (
       },
       plugins: [
         tsupCleanPlugin,
-        tsResolveOptions && tsResolvePlugin(tsResolveOptions),
+        tsResolveOptions && tsResolvePlugin({...tsResolveOptions, platform: options.platform}),
         jsonPlugin(),
         ignoreFiles,
         dtsPlugin.default({

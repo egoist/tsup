@@ -23,11 +23,14 @@ const resolveModule = (
 export type TsResolveOptions = {
   resolveOnly?: Array<string | RegExp>
   ignore?: (source: string, importer?: string) => boolean
+  /** When 'browser', resolve browser field mappings for DTS generation */
+  platform?: 'node' | 'browser' | 'neutral'
 }
 
 export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
   resolveOnly,
   ignore,
+  platform,
 } = {}) => {
   const resolveExtensions = ['.d.ts', '.ts']
 
@@ -95,6 +98,15 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
           basedir,
           extensions: resolveExtensions,
           packageFilter(pkg) {
+            // When platform is browser, resolve the browser field for DTS
+            // This ensures --platform browser + --dts uses the correct type paths
+            if (platform === 'browser' && pkg.browser && typeof pkg.browser === 'object') {
+              const typesPath = pkg.types || pkg.typings
+              if (typesPath && pkg.browser[typesPath]) {
+                pkg.main = pkg.browser[typesPath]
+                return pkg
+              }
+            }
             pkg.main = pkg.types || pkg.typings
             return pkg
           },
