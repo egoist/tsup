@@ -501,6 +501,8 @@ export default defineConfig({
 
 This option has the same type as the `treeshake` option in Rollup, [see more](https://rollupjs.org/guide/en/#treeshake).
 
+Note that this Rollup pass only post-processes the code esbuild already emitted to remove additional dead code — esbuild is still used to bundle the rest of the build. Setting `treeshake` to `false` (the default) simply skips this extra Rollup pass; esbuild's own built-in tree shaking still runs regardless of this option, since it can't be disabled.
+
 ### What about type checking?
 
 esbuild is fast because it doesn't perform any type checking, you already get type checking from your IDE like VS Code or WebStorm.
