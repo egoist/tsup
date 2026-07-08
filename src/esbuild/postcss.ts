@@ -78,6 +78,12 @@ export const postcssPlugin = ({
       )
 
       build.onLoad({ filter: /\.css$/ }, async (args) => {
+        // Bail on *.module.css so a user-supplied loader/plugin (e.g. esbuild's
+        // built-in `local-css` loader) can handle CSS Modules.
+        if (args.path.endsWith('.module.css')) {
+          return null
+        }
+
         let contents: string
 
         if (css && args.path.endsWith('.svelte.css')) {
