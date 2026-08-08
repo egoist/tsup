@@ -34,6 +34,7 @@
   "peerDependencies": {
     "@microsoft/api-extractor": "^7.36.0",
     "@swc/core": "^1",
+    "@typescript/typescript6": "^6",
     "postcss": "^8.4.12",
     "typescript": ">=4.5.0"
   },
@@ -42,6 +43,9 @@
       "optional": true
     },
     "@swc/core": {
+      "optional": true
+    },
+    "@typescript/typescript6": {
       "optional": true
     },
     "postcss": {
@@ -83,7 +87,7 @@
     "postcss-simple-vars": "7.0.1",
     "prettier": "3.5.1",
     "resolve": "1.22.10",
-    "rollup-plugin-dts": "6.1.1",
+    "rollup-plugin-dts": "6.5.1",
     "sass": "1.85.0",
     "strip-json-comments": "5.0.1",
     "svelte": "5.19.9",

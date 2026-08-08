@@ -1,6 +1,7 @@
 import { parentPort } from 'node:worker_threads'
 import path from 'node:path'
-import ts from 'typescript'
+import type * as TypeScript from 'typescript'
+import { loadTypeScript } from './lib/typescript'
 import jsonPlugin from '@rollup/plugin-json'
 import resolveFrom from 'resolve-from'
 import { handleError } from './errors'
@@ -15,7 +16,7 @@ import { FixDtsDefaultCjsExportsPlugin } from 'fix-dts-default-cjs-exports/rollu
 
 const logger = createLogger()
 
-const parseCompilerOptions = (compilerOptions?: any) => {
+const parseCompilerOptions = (ts: typeof TypeScript, compilerOptions?: any) => {
   if (!compilerOptions) return {}
   const { options } = ts.parseJsonConfigFileContent(
     { compilerOptions },
@@ -40,7 +41,8 @@ const getRollupConfig = async (
 ): Promise<RollupConfig> => {
   setSilent(options.silent)
 
-  const compilerOptions = parseCompilerOptions(options.dts?.compilerOptions)
+  const ts = loadTypeScript()
+  const compilerOptions = parseCompilerOptions(ts, options.dts?.compilerOptions)
 
   const dtsOptions = options.dts || {}
   dtsOptions.entry = dtsOptions.entry || options.entry

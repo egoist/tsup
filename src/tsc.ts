@@ -1,6 +1,7 @@
 import { dirname } from 'node:path'
 import { loadTsConfig } from 'bundle-require'
-import ts from 'typescript'
+import type * as TypeScript from 'typescript'
+import { loadTypeScript } from './lib/typescript'
 import { handleError } from './errors'
 import { createLogger } from './log'
 import { ensureTempDeclarationDir, toAbsolutePath } from './utils'
@@ -34,7 +35,7 @@ class AliasPool {
  * Get all export declarations from root files.
  */
 function getExports(
-  program: ts.Program,
+  program: TypeScript.Program,
   fileMapping: Map<string, string>,
 ): ExportDeclaration[] {
   const checker = program.getTypeChecker()
@@ -86,10 +87,14 @@ function getExports(
  *
  * @returns The mapping from source TS file paths to output declaration file paths
  */
-function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
+function emitDtsFiles(
+  ts: typeof TypeScript,
+  program: TypeScript.Program,
+  host: TypeScript.CompilerHost,
+) {
   const fileMapping = new Map<string, string>()
 
-  const writeFile: ts.WriteFileCallback = (
+  const writeFile: TypeScript.WriteFileCallback = (
     fileName,
     text,
     writeByteOrderMark,
@@ -161,6 +166,7 @@ function emitDtsFiles(program: ts.Program, host: ts.CompilerHost) {
 }
 
 function emit(compilerOptions?: any, tsconfig?: string) {
+  const ts = loadTypeScript()
   const cwd = process.cwd()
   const rawTsconfig = loadTsConfig(cwd, tsconfig)
   if (!rawTsconfig) {
@@ -188,16 +194,16 @@ function emit(compilerOptions?: any, tsconfig?: string) {
     tsconfig ? dirname(tsconfig) : './',
   )
 
-  const options: ts.CompilerOptions = parsedTsconfig.options
+  const options: TypeScript.CompilerOptions = parsedTsconfig.options
 
-  const host: ts.CompilerHost = ts.createCompilerHost(options)
-  const program: ts.Program = ts.createProgram(
+  const host: TypeScript.CompilerHost = ts.createCompilerHost(options)
+  const program: TypeScript.Program = ts.createProgram(
     parsedTsconfig.fileNames,
     options,
     host,
   )
 
-  const fileMapping = emitDtsFiles(program, host)
+  const fileMapping = emitDtsFiles(ts, program, host)
   return getExports(program, fileMapping)
 }
 
