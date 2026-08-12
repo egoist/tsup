@@ -43,6 +43,21 @@ tsup src/index.ts src/cli.ts
 
 This will output `dist/index.js` and `dist/cli.js`.
 
+### Generate declaration files with TypeScript 7
+
+TypeScript 7 does not currently expose the compiler API that tsup uses to
+generate declaration files. If your project uses TypeScript 7 with `--dts` or
+`--experimental-dts`, install the official TypeScript 6 compatibility API as
+well:
+
+```bash
+npm install --save-dev typescript@7 @typescript/typescript6
+```
+
+Your project will continue to use the TypeScript 7 compiler. The compatibility
+package is only used internally by tsup while generating declarations.
+TypeScript 4.5 through 6 users do not need this additional package.
+
 ## 📚 Documentation
 
 For complete usages, please dive into the [docs](https://tsup.egoist.dev).

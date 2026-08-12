@@ -1,678 +1,228 @@
 ```js preact
 import { html } from 'docup'
 
-export default () => {
-  const isPreview = location.hostname !== 'tsup.egoist.dev'
-
-  if (!isPreview) return null
-
-  return html`
-    <div class="message message_type__warning">
-      This is a preview version of the docs.
-    </div>
-  `
-}
+export default () => html`
+  <div class="message message_type__warning">
+    本站是由社区维护的非官方中文文档，与 tsup 作者及官方项目无隶属关系。tsup
+    已不再积极维护，新项目建议考虑
+    <a href="https://tsdown.dev/guide/migrate-from-tsup">tsdown</a>。
+  </div>
+`
 ```
 
-Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
+# tsup 中文文档
 
-## What can it bundle?
+基于 [esbuild](https://github.com/evanw/esbuild) 的零配置 TypeScript 库打包工具。
 
-Anything that's supported by Node.js natively, namely `.js`, `.json`, `.mjs`. And TypeScript `.ts`, `.tsx`. [CSS support is experimental](#css-support).
+## 可以打包什么？
 
-## Install
+支持 Node.js 原生支持的 `.js`、`.json`、`.mjs` 文件，以及 TypeScript 的 `.ts`、`.tsx` 文件。CSS 支持仍处于实验阶段。
 
-Install it locally in your project folder:
+## 安装
+
+建议把 tsup 安装为项目的开发依赖：
 
 ```bash
-npm i tsup -D
-# Or Yarn
+npm install tsup --save-dev
+# Yarn
 yarn add tsup --dev
-# Or pnpm
-pnpm add tsup -D
+# pnpm
+pnpm add tsup --save-dev
 ```
 
-You can also install it globally but it's not recommended.
+不推荐全局安装。
 
-## Usage
+## 快速开始
 
-### Bundle files
+### 打包文件
 
 ```bash
-tsup [...files]
+tsup src/index.ts
 ```
 
-Files are written into `./dist`.
-
-You can bundle multiple files in one go:
+构建产物默认写入 `./dist`。一次也可以传入多个入口：
 
 ```bash
 tsup src/index.ts src/cli.ts
 ```
 
-This will output `dist/index.js` and `dist/cli.js`.
+### 使用配置文件
 
-### Excluding packages
+tsup 会自动读取 `tsup.config.ts`、`tsup.config.js`、`tsup.config.cjs`、`tsup.config.json`，也支持 `package.json` 中的 `tsup` 字段。
 
-By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `package.json` are always excluded, you can also use `--external <module|pkgJson>` flag to mark other packages or other special `package.json`'s `dependencies` and `peerDependencies` as external.
+```ts
+import { defineConfig } from 'tsup'
 
-### Excluding all packages
+export default defineConfig({
+  entry: ['src/index.ts'],
+  format: ['esm', 'cjs'],
+  dts: true,
+  sourcemap: true,
+  clean: true,
+})
+```
 
-If you are using **tsup** to build for **Node.js** applications/APIs, usually bundling dependencies is not needed, and it can even break things, for instance, while outputting to [ESM](https://nodejs.org/api/esm.html).
+使用 `--config` 指定其他配置文件，或使用 `--no-config` 禁用配置文件。
 
-tsup automatically excludes packages specified in the `dependencies` and `peerDependencies` fields in the `package.json`, but if it somehow doesn't exclude some packages, this library also has a special executable `tsup-node` that automatically skips bundling any Node.js package.
+### 多入口
+
+```bash
+tsup --entry src/index.ts --entry src/cli.ts
+```
+
+也可以指定输出名称：
+
+```bash
+tsup --entry.main src/index.ts --entry.cli src/cli.ts
+```
+
+### 排除依赖
+
+`package.json` 中的 `dependencies` 和 `peerDependencies` 默认不会被打进产物。其他模块可通过 `--external` 排除：
+
+```bash
+tsup src/index.ts --external react
+```
+
+为 Node.js 应用或 API 打包时通常无需打包依赖，也可以使用 `tsup-node`：
 
 ```bash
 tsup-node src/index.ts
 ```
 
-All other CLI flags still apply to this command. You can still use the `noExternal` option to reinclude packages in the bundle,
-for example packages that belong to a local monorepository.
+### 输出格式
 
-**If the regular `tsup` command doesn't work for you, please submit an issue with a link to your repo so we can make the default command better.**
-
-### Using custom configuration
-
-You can also use `tsup` using file configurations or in a property inside your `package.json`, and you can even use `TypeScript` and have type-safety while you are using it.
-
-> INFO: Most of these options can be overwritten using the CLI options
-
-You can use any of these files:
-
-- `tsup.config.ts`
-- `tsup.config.js`
-- `tsup.config.cjs`
-- `tsup.config.json`
-- `tsup` property in your `package.json`
-
-> INFO: In all the custom files you can export the options either as `tsup`, `default` or `module.exports =`
-
-You can also specify a custom filename using the `--config` flag, or passing `--no-config` to disable config files.
-
-[Check out all available options](https://jsdocs.io/package/tsup).
-
-#### TypeScript / JavaScript
-
-```ts
-import { defineConfig } from 'tsup'
-
-export default defineConfig({
-  entry: ['src/index.ts'],
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-})
-```
-
-#### Conditional config
-
-If the config needs to be conditionally determined based on CLI flags, it can export a function instead:
-
-```ts
-import { defineConfig } from 'tsup'
-
-export default defineConfig((options) => {
-  return {
-    minify: !options.watch,
-  }
-})
-```
-
-The `options` here is derived from CLI flags.
-
-#### package.json
-
-```json
-{
-  "tsup": {
-    "entry": ["src/index.ts"],
-    "splitting": false,
-    "sourcemap": true,
-    "clean": true
-  },
-  "scripts": {
-    "build": "tsup"
-  }
-}
-```
-
-#### JSON Schema Store
-
-Developers who are using [vscode](https://code.visualstudio.com/) or text editor which supports the JSON Language Server can leverage the [tsup schema store](https://cdn.jsdelivr.net/npm/tsup/schema.json) via CDN. This schema store will provide intellisense capabilities such as completions, validations and descriptions within JSON file configurations like the `tsup.config.json` and `package.json` (tsup) property.
-
-Provide the following configuration in your `.vscode/settings.json` (or global) settings file:
-
-```json
-{
-  "json.schemas": [
-    {
-      "url": "https://cdn.jsdelivr.net/npm/tsup/schema.json",
-      "fileMatch": ["package.json", "tsup.config.json"]
-    }
-  ]
-}
-```
-
-### Multiple entrypoints
-
-Beside using positional arguments `tsup [...files]` to specify multiple entrypoints, you can also use the cli flag `--entry`:
+支持 `esm`、`cjs` 和 `iife`，默认输出 `cjs`：
 
 ```bash
-# Outputs `dist/a.js` and `dist/b.js`.
-tsup --entry src/a.ts --entry src/b.ts
+tsup src/index.ts --format esm,cjs
 ```
 
-The associated output file names can be defined as follows:
+ESM 默认启用代码分割，可使用 `--no-splitting` 关闭。
+
+### 生成类型声明
 
 ```bash
-# Outputs `dist/foo.js` and `dist/bar.js`.
-tsup --entry.foo src/a.ts --entry.bar src/b.ts
+tsup src/index.ts --dts
 ```
 
-It's equivalent to the following `tsup.config.ts`:
-
-```ts
-export default defineConfig({
-  // Outputs `dist/a.js` and `dist/b.js`.
-  entry: ['src/a.ts', 'src/b.ts'],
-  // Outputs `dist/foo.js` and `dist/bar.js`
-  entry: {
-    foo: 'src/a.ts',
-    bar: 'src/b.ts',
-  },
-})
-```
-
-### Generate declaration file
+只输出声明文件：
 
 ```bash
-tsup index.ts --dts
+tsup src/index.ts --dts-only
 ```
 
-This will emit `./dist/index.js` and `./dist/index.d.ts`. When emitting multiple [bundle formats](#bundle-formats), one declaration file per bundle format is generated. This is required for consumers to get accurate type checking with TypeScript. Note that declaration files generated by any tool other than `tsc` are not guaranteed to be error-free, so it's a good idea to test the output with `tsc` or a tool like [@arethetypeswrong/cli](https://www.npmjs.com/package/@arethetypeswrong/cli) before publishing.
+声明文件构建应在发布前通过 `tsc` 或 `@arethetypeswrong/cli` 验证。`--experimental-dts` 使用 `@microsoft/api-extractor`，需要单独安装该可选依赖。
 
-If you have multiple entry files, each entry will get a corresponding `.d.ts` file. So when you only want to generate declaration file for a single entry, use `--dts <entry>` format, e.g. `--dts src/index.ts`.
-
-Note that `--dts` does not resolve external (aka in `node_modules`) types used in the `.d.ts` file, if that's somehow a requirement, try the experimental `--dts-resolve` flag instead.
-
-Since tsup version 8.0.0, you can also use `--experimental-dts` flag to generate declaration files. This flag use [@microsoft/api-extractor](https://www.npmjs.com/package/@microsoft/api-extractor) to generate declaration files, which is more reliable than the previous `--dts` flag. It's still experimental and we are looking for feedbacks.
-
-To use `--experimental-dts`, you would need to install `@microsoft/api-extractor`, as it's a peer dependency of tsup:
+### Source Map
 
 ```bash
-npm i @microsoft/api-extractor -D
-# Or Yarn
-yarn add @microsoft/api-extractor --dev
+tsup src/index.ts --sourcemap
 ```
 
-#### Emit declaration file only
+开发场景可使用 `--sourcemap inline`，生产环境不建议内联 Source Map。
 
-The `--dts-only` flag is the equivalent of the `emitDeclarationOnly` option in `tsc`. Using this flag will only emit the declaration file, without the JavaScript files.
-
-#### Generate TypeScript declaration maps (.d.ts.map)
-
-TypeScript declaration maps are mainly used to quickly jump to type definitions in the context of a monorepo (see [source issue](https://github.com/Microsoft/TypeScript/issues/14479) and [official documentation](https://www.typescriptlang.org/tsconfig/#declarationMap)).
-
-They should not be included in a published NPM package and should not be confused with sourcemaps.
-
-[Tsup is not able to generate those files](https://github.com/egoist/tsup/issues/564). Instead, you should use the TypeScript compiler directly, by running the following command after the build is done: `tsc --emitDeclarationOnly --declaration`.
-
-You can combine this command with Tsup [`onSuccess`](https://tsup.egoist.dev/#onsuccess) callback.
-
-### Generate sourcemap file
+### 目标环境
 
 ```bash
-tsup index.ts --sourcemap
+tsup src/index.ts --target node18
+tsup src/index.ts --target es2020
 ```
 
-This will emit `./dist/index.js` and `./dist/index.js.map`.
+支持 Chrome、Edge、Firefox、Node.js、Safari 等运行环境及 ECMAScript 版本。
 
-If you set multiple entry files, each entry will get a corresponding `.map` file.
-
-If you want to inline sourcemap, you can try:
-
-```bash
-tsup index.ts --sourcemap inline
-```
-
-> Warning: Note that inline sourcemap is solely used for development, e.g. when developing a browser extension and the access to `.map` file is not allowed, and it's not recommended for production.
-
-> Warning: Source map is not supported in `--dts` build.
-
-### Bundle formats
-
-Supported format: `esm`, `cjs`, (default) and `iife`.
-
-You can bundle in multiple formats in one go:
-
-```bash
-tsup src/index.ts --format esm,cjs,iife
-```
-
-That will output files in following folder structure:
-
-```bash
-dist
-├── index.mjs         # esm
-├── index.global.js   # iife
-└── index.js          # cjs
-```
-
-If the `type` field in your `package.json` is set to `module`, the filenames will be slightly different:
-
-```bash
-dist
-├── index.js          # esm
-├── index.global.js   # iife
-└── index.cjs         # cjs
-```
-
-Read more about [`esm` support in Node.js](https://nodejs.org/api/esm.html#esm_enabling).
-
-If you don't want extensions like `.mjs` or `.cjs`, e.g. you want your library to be used in a bundler (or environment) that doesn't support those, you can enable `--legacy-output` flag:
-
-```bash
-tsup src/index.ts --format esm,cjs,iife --legacy-output
-```
-
-..which outputs to:
-
-```bash
-dist
-├── esm
-│   └── index.js
-├── iife
-│   └── index.js
-└── index.js
-```
-
-### Output extension
-
-You can also change the output extension of the files by using `outExtension` option:
-
-```ts
-export default defineConfig({
-  outExtension({ format }) {
-    return {
-      js: `.${format}.js`,
-    }
-  },
-})
-```
-
-This will generate your files to `[name].[format].js`.
-
-The signature of `outExtension` is:
-
-```ts
-type OutExtension = (ctx: Context) => Result
-
-type Context = {
-  options: NormalizedOptions
-  format: Format
-  /** "type" field in project's package.json */
-  pkgType?: string
-}
-
-type Result = { js?: string }
-```
-
-### Code Splitting
-
-Code splitting currently only works with the `esm` output format, and it's enabled by default. If you want code splitting for `cjs` output format as well, try using `--splitting` flag which is an experimental feature to get rid of [the limitation in esbuild](https://esbuild.github.io/api/#splitting).
-
-To disable code splitting altogether, try the `--no-splitting` flag instead.
-
-### Target environment
-
-You can use the `target` option in `tsup.config.ts` or the `--target` flag to set the target environment for the generated JavaScript and/or CSS code. Each target environment is an environment name followed by a version number. The following environment names are currently supported:
-
-- chrome
-- edge
-- firefox
-- hermes
-- ie
-- ios
-- node
-- opera
-- rhino
-- safari
-
-In addition, you can also specify JavaScript language versions such as `es2020`.
-
-The value for `target` defaults to `compilerOptions.target` in your `tsconfig.json`, or `node14` if unspecified. For more information check out esbuild's [target](https://esbuild.github.io/api/#target) option.
-
-#### ES5 support
-
-You can use `--target es5` to compile the code down to es5, in this target your code will be transpiled by esbuild to es2020 first, and then transpiled to es5 by [SWC](https://swc.rs).
-
-### Compile-time environment variables
-
-You can use `--env` flag to define compile-time environment variables:
-
-```bash
-tsup src/index.ts --env.NODE_ENV production
-```
-
-Note that `--env.VAR_NAME` only recognizes `process.env.VAR_NAME` and `import.meta.env.VAR_NAME`. If you use `process.env`, it will only take effect when it is used as a built-in global variable. Therefore, do not import `process` from `node:process`.
-
-### Building CLI app
-
-When an entry file like `src/cli.ts` contains hashbang like `#!/bin/env node` tsup will automatically make the output file executable, so you don't have to run `chmod +x dist/cli.js`.
-
-### Interop with CommonJS
-
-By default, esbuild will transform `export default x` to `module.exports.default = x` in CommonJS, but you can change this behavior by using the `--cjsInterop` flag: If there are only default exports and no named exports, it will be transformed to `module.exports = x` instead.
-
-```bash
-tsup src/index.ts --cjsInterop
-```
-
-### Watch mode
+### 监听模式
 
 ```bash
 tsup src/index.ts --watch
 ```
 
-Turn on watch mode. This means that after the initial build, tsup will continue to watch for changes in any of the resolved files.
-
-> INFO: By default it always ignores `dist`, `node_modules` & `.git`
-
-```bash
-tsup src/index.ts --watch --ignore-watch ignore-this-folder-too
-```
-
-> INFO: You can specify more than a folder repeating "--ignore-watch", for example: `tsup src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2`
-
-### onSuccess
-
-You can specify command to be executed after a successful build, specially useful for **Watch mode**
+构建成功后执行命令：
 
 ```bash
 tsup src/index.ts --watch --onSuccess "node dist/index.js"
 ```
 
-`onSuccess` can also be a `function` that returns `Promise`. For this to work, you need to use `tsup.config.ts` instead of the cli flag:
-
-```ts
-import { defineConfig } from 'tsup'
-
-export default defineConfig({
-  async onSuccess() {
-    // Start some long running task
-    // Like a server
-  },
-})
-```
-
-You can return a cleanup function in `onSuccess`:
-
-```ts
-import { defineConfig } from 'tsup'
-
-export default defineConfig({
-  onSuccess() {
-    const server = http.createServer((req, res) => {
-      res.end('Hello World!')
-    })
-    server.listen(3000)
-    return () => {
-      server.close()
-    }
-  },
-})
-```
-
-### Minify output
-
-You can also minify the output, resulting into lower bundle sizes by using the `--minify` flag.
+### 压缩
 
 ```bash
 tsup src/index.ts --minify
 ```
 
-To use [Terser](https://github.com/terser/terser) instead of esbuild for minification, pass terser as argument value
+也可以安装 Terser 后使用 `--minify terser`。
+
+### 编译期环境变量
 
 ```bash
-tsup src/index.ts --minify terser
+tsup src/index.ts --env.NODE_ENV production
 ```
 
-> NOTE: You must have terser installed. Install it with `npm install -D terser`
+该选项只替换代码中的 `process.env.NODE_ENV` 和 `import.meta.env.NODE_ENV`。
 
-In `tsup.config.js`, you can pass `terserOptions` which will be passed to `terser.minify` as it is.
+### Tree Shaking
 
-### Custom loader
-
-Esbuild loader list:
-
-```ts
-type Loader =
-  | 'js'
-  | 'jsx'
-  | 'ts'
-  | 'tsx'
-  | 'css'
-  | 'json'
-  | 'text'
-  | 'base64'
-  | 'file'
-  | 'dataurl'
-  | 'binary'
-  | 'copy'
-  | 'default'
-```
-
-To use a custom loader via CLI flag:
-
-```bash
-tsup --loader ".jpg=base64" --loader ".webp=file"
-```
-
-Or via `tsup.config.ts`:
-
-```ts
-import { defineConfig } from 'tsup'
-
-export default defineConfig({
-  loader: {
-    '.jpg': 'base64',
-    '.webp': 'file',
-  },
-})
-```
-
-### Tree shaking
-
-esbuild has [tree shaking](https://esbuild.github.io/api/#tree-shaking) enabled by default, but sometimes it's not working very well, see [#1794](https://github.com/evanw/esbuild/issues/1794) [#1435](https://github.com/evanw/esbuild/issues/1435), so tsup offers an additional option to let you use Rollup for tree shaking instead:
+esbuild 默认启用 Tree Shaking。需要 Rollup 进一步处理时可使用：
 
 ```bash
 tsup src/index.ts --treeshake
 ```
 
-This flag above will enable Rollup for tree shaking, and it's equivalent to the following `tsup.config.ts`:
+### CSS 与静态文件
 
-```ts
-import { defineConfig } from 'tsup'
+CSS 支持处于实验阶段。安装 PostCSS 后，tsup 会读取项目中的 PostCSS 配置。
 
-export default defineConfig({
-  treeshake: true,
-})
-```
-
-This option has the same type as the `treeshake` option in Rollup, [see more](https://rollupjs.org/guide/en/#treeshake).
-
-### What about type checking?
-
-esbuild is fast because it doesn't perform any type checking, you already get type checking from your IDE like VS Code or WebStorm.
-
-Additionally, if you want type checking at build time, you can enable `--dts`, which will run a real TypeScript compiler to generate declaration file so you get type checking as well.
-
-### CSS support
-
-esbuild has [experimental CSS support](https://esbuild.github.io/content-types/#css), and tsup allows you to use PostCSS plugins on top of native CSS support.
-
-To use PostCSS, you need to install PostCSS:
+使用 `--publicDir` 可把静态目录复制到输出目录：
 
 ```bash
-npm i postcss -D
-# Or Yarn
-yarn add postcss --dev
+tsup src/index.ts --publicDir public
 ```
 
-..and populate a `postcss.config.js` in your project
-
-```js
-module.exports = {
-  plugins: [require('tailwindcss')(), require('autoprefixer')()],
-}
-```
-
-### Metafile
-
-Passing `--metafile` flag to tell esbuild to produce some metadata about the build in JSON format. You can feed the output file to analysis tools like [bundle buddy](https://www.bundle-buddy.com/esbuild) to visualize the modules in your bundle and how much space each one takes up.
-
-The file outputs as `metafile-{format}.json`, e.g. `tsup --format cjs,esm` will generate `metafile-cjs.json` and `metafile-esm.json`.
-
-### Custom esbuild plugin and options
-
-Use `esbuildPlugins` and `esbuildOptions` respectively in `tsup.config.ts`:
+### JavaScript API
 
 ```ts
-import { defineConfig } from 'tsup'
+import { build } from 'tsup'
 
-export default defineConfig({
-  esbuildPlugins: [YourPlugin],
-  esbuildOptions(options, context) {
-    options.define.foo = '"bar"'
-  },
+await build({
+  entry: ['src/index.ts'],
+  format: ['esm', 'cjs'],
+  dts: true,
+  sourcemap: true,
 })
 ```
 
-The `context` argument for `esbuildOptions`:
+完整配置类型请参考 [tsup API 文档](https://jsdocs.io/package/tsup)。
 
-- `context.format`: `cjs`, `esm`, `iife`
+## 常见问题
 
-See all options [here](https://esbuild.github.io/api/#build-api), and [how to write an esbuild plugin](https://esbuild.github.io/plugins/#using-plugins).
+### tsup 会进行类型检查吗？
 
----
+不会。esbuild 只负责转换和打包。开发时可依靠编辑器检查类型，并在 CI 或构建流程中单独运行 `tsc --noEmit`。启用 `--dts` 时 TypeScript 编译器会参与声明文件生成。
 
-For more details:
+### 找不到某个导出
+
+使用装饰器元数据时，类型导入可能在 SWC 转换后被移除。请把仅用作类型的导入改为：
+
+```ts
+import type { SomeType } from './types'
+```
+
+### 如何查看全部命令行选项？
 
 ```bash
 tsup --help
 ```
 
-### Inject cjs and esm shims
+## 从 tsup 迁移到 tsdown
 
-Enabling this option will fill in some code when building esm/cjs to make it work, such as `__dirname` which is only available in the cjs module and `import.meta.url` which is only available in the esm module
+tsup 已不再积极维护。新项目优先评估 tsdown；现有项目迁移前应检查插件、声明文件和 CJS/ESM 输出行为。请参阅 [官方迁移指南](https://tsdown.dev/guide/migrate-from-tsup)。
 
-```ts
-import { defineConfig } from 'tsup'
+## 相关链接
 
-export default defineConfig({
-  shims: true,
-})
-```
+- [英文原文](/en/)
+- [tsup GitHub 仓库](https://github.com/egoist/tsup)
+- [完整 API 文档](https://jsdocs.io/package/tsup)
+- [tsdown 迁移指南](https://tsdown.dev/guide/migrate-from-tsup)
 
-- When building the cjs bundle, it will compile `import.meta.url` as `typeof document === "undefined" ? new URL("file:" + __filename).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href`
-- When building the esm bundle, it will compile `__dirname` as `path.dirname(fileURLToPath(import.meta.url))`
+## 许可证与声明
 
-### Copy files to output directory
-
-Use `--publicDir` flag to copy files inside `./public` folder to the output directory.
-
-You can also specify a custom directory using `--publicDir another-directory`.
-
-### JavaScript API
-
-If you want to use `tsup` in your Node.js program, you can use the JavaScript API:
-
-```js
-import { build } from 'tsup'
-
-await build({
-  entry: ['src/index.ts'],
-  sourcemap: true,
-  dts: true,
-})
-```
-
-For all available options for the `build` function, please see [the API docs](https://jsdocs.io/package/tsup).
-
-### Using custom tsconfig.json
-
-You can also use custom tsconfig.json file configurations by using the `--tsconfig` flag:
-
-```bash
-tsup --tsconfig tsconfig.prod.json
-```
-
-By default, tsup try to find the `tsconfig.json` file in the current directory, if it's not found, it will use the default tsup config.
-
-### Using custom Swc configuration
-
-When you use legacy TypeScript decorator by enabling `emitDecoratorMetadata` in your tsconfig, tsup will automatically use [SWC](https://swc.rs) to transpile
-decorators. In this case, you can give extra swc configuration in the `tsup.config.ts` file.
-
-For example, if you have to define `useDefineForClassFields`, you can do that as follows:
-```ts
-import { defineConfig } from 'tsup'
-
-export default defineConfig({
-  entry: ['src/index.ts'],
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-  swc: {
-    jsc: {
-      transform: {
-        useDefineForClassFields: true
-      }
-    }
-  }
-})
-```
-
-Note: some SWC options cannot be configured:
-
-```json
-{
-  "parser": {
-    "syntax": "typescript",
-    "decorators": true
-  },
-  "transform": {
-    "legacyDecorator": true,
-    "decoratorMetadata": true
-  },
-  "keepClassNames": true,
-  "target": "es2022"
-}
- ```
-
-You can also define a custom `.swcrc` configuration file. Just set `swcrc` to `true` 
-in `tsup.config.ts` to allow SWC plugin to discover automatically your custom swc config file.
-
-```ts
-import { defineConfig } from 'tsup'
-
-export default defineConfig({
-  entry: ['src/index.ts'],
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-  swc: {
-    swcrc: true
-  }
-})
-```
-
-## Troubleshooting
-
-### error: No matching export in "xxx.ts" for import "xxx"
-
-This usually happens when you have `emitDecoratorMetadata` enabled in your tsconfig.json, in this mode we use [SWC](https://swc.rs) to transpile decorators to JavaScript so exported types will be eliminated, that's why esbuild won't be able to find corresponding exports. You can fix this by changing your import statement from `import { SomeType }` to `import { type SomeType }` or `import type { SomeType }`.
-
-## License
-
-MIT &copy; [EGOIST](https://github.com/sponsors/egoist)
+原项目采用 MIT License，版权所有 © EGOIST。本中文站为非官方社区翻译与整理，使用时请同时遵守原项目许可证。
