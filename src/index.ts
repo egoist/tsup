@@ -253,6 +253,14 @@ export async function build(_options: Options) {
                   }
                 }
               })
+              worker.on('error', reject)
+              worker.on('exit', (code) => {
+                reject(
+                  new Error(
+                    `dts build worker exited with code ${code} without reporting a result`,
+                  ),
+                )
+              })
             })
           }
         }

@@ -462,6 +462,34 @@ test('dts only: ignore files', async () => {
   `)
 })
 
+test('dts worker exiting without a result should fail the build', async () => {
+  await expect(
+    run(
+      getTestName(),
+      {
+        'input.ts': `export const greet = (to: string) => \`hello \${to}\``,
+        // Inherited by the dts worker via execArgv; the main thread is left running.
+        'kill-dts-worker.cjs': `const { isMainThread } = require('node:worker_threads')
+if (!isMainThread) process.exit(0)
+`,
+      },
+      {
+        flags: ['--dts'],
+        env: {
+          NODE_OPTIONS: [
+            process.env.NODE_OPTIONS,
+            '--require ./kill-dts-worker.cjs',
+          ]
+            .filter(Boolean)
+            .join(' '),
+        },
+      },
+    ),
+  ).rejects.toThrowError(
+    'dts build worker exited with code 0 without reporting a result',
+  )
+})
+
 test('declaration files with multiple entrypoints #316', async () => {
   const { getFileContent } = await run(
     getTestName(),
