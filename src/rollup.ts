@@ -30,6 +30,35 @@ const parseCompilerOptions = (compilerOptions?: any) => {
 // since tsup is published as a commonjs module for now
 const dtsPlugin: typeof import('rollup-plugin-dts') = require('rollup-plugin-dts')
 
+// Compiler options passed to rollup-plugin-dts for the virtual compiler host.
+// `baseUrl` is only forwarded when the tsconfig actually defines it:
+// TypeScript 6.0 graduated TS5101 (`baseUrl` without `paths`) from a warning
+// to a hard error, so injecting a default breaks every `dts: true` build
+// whose tsconfig omits `baseUrl` (#1413).
+export const getDtsCompilerOptions = (compilerOptions: any) => {
+  // Strip baseUrl up-front so an explicit `undefined` can't leak through
+  // the spread below and look like a configured value.
+  const { baseUrl, ...rest } = compilerOptions
+  return {
+    ...rest,
+    ...(baseUrl ? { baseUrl } : {}),
+    // Ensure ".d.ts" modules are generated
+    declaration: true,
+    // Skip ".js" generation
+    noEmit: false,
+    emitDeclarationOnly: true,
+    // Skip code generation when error occurs
+    noEmitOnError: true,
+    // Avoid extra work
+    checkJs: false,
+    declarationMap: false,
+    skipLibCheck: true,
+    preserveSymlinks: false,
+    // Ensure we can parse the latest code
+    target: ts.ScriptTarget.ESNext,
+  }
+}
+
 type RollupConfig = {
   inputConfig: InputOptions
   outputConfig: OutputOptions[]
@@ -110,24 +139,7 @@ const getRollupConfig = async (
         ignoreFiles,
         dtsPlugin.default({
           tsconfig: options.tsconfig,
-          compilerOptions: {
-            ...compilerOptions,
-            baseUrl: compilerOptions.baseUrl || '.',
-            // Ensure ".d.ts" modules are generated
-            declaration: true,
-            // Skip ".js" generation
-            noEmit: false,
-            emitDeclarationOnly: true,
-            // Skip code generation when error occurs
-            noEmitOnError: true,
-            // Avoid extra work
-            checkJs: false,
-            declarationMap: false,
-            skipLibCheck: true,
-            preserveSymlinks: false,
-            // Ensure we can parse the latest code
-            target: ts.ScriptTarget.ESNext,
-          },
+          compilerOptions: getDtsCompilerOptions(compilerOptions),
         }),
       ].filter(Boolean),
       external: [
