@@ -49,6 +49,10 @@ export const treeShakingPlugin = ({
         sourcemap: !!this.options.sourcemap,
         compact: !!this.options.minify,
         name,
+        // Keep the `exports.default` shape (with the `__esModule` marker)
+        // instead of collapsing to `module.exports =`, which would no longer
+        // match the generated `.d.ts` (`export default`) and breaks `attw`
+        ...(this.format === 'cjs' ? { exports: 'named' as const } : {}),
       })
 
       for (const file of result.output) {
