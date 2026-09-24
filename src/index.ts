@@ -253,6 +253,20 @@ export async function build(_options: Options) {
                   }
                 }
               })
+              // A worker that dies without posting a message must fail the
+              // build. Without these handlers the promise stays pending
+              // forever and tsup exits 0 with no .d.ts files emitted (#1410)
+              worker.on('error', (error) => {
+                terminateWorker()
+                reject(error)
+              })
+              worker.on('exit', (code) => {
+                reject(
+                  new Error(
+                    `dts worker exited with code ${code} without posting a result`,
+                  ),
+                )
+              })
             })
           }
         }
