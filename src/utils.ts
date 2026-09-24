@@ -301,22 +301,11 @@ export function replaceDtsWithJsExtensions(dtsFilePath: string) {
  * @internal
  */
 const convertArrayEntriesToObjectEntries = (arrayOfEntries: string[]) => {
-  const objectEntries = Object.fromEntries(
-    arrayOfEntries.map(
-      (entry) =>
-        [
-          path.posix.join(
-            ...entry
-              .split(path.posix.sep)
-              .slice(1, -1)
-              .concat(path.parse(entry).name),
-          ),
-          entry,
-        ] as const,
-    ),
-  )
-
-  return objectEntries
+  // Reuse the same ancestor-based key derivation as `toObjectEntry` so that
+  // entries sharing a basename in different directories (e.g. `src/index.ts`
+  // and `lib/index.ts`) don't silently overwrite each other. Deriving keys by
+  // merely dropping the first path segment caused the later entry to be lost.
+  return toObjectEntry(arrayOfEntries) as Record<string, string>
 }
 
 /**
