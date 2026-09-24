@@ -125,6 +125,12 @@ const getRollupConfig = async (
             declarationMap: false,
             skipLibCheck: true,
             preserveSymlinks: false,
+            // `composite` requires every file in the program to be listed in
+            // the project, which breaks the virtual program used for dts
+            // bundling (TS6307) even when `tsc -p` works fine — tsup doesn't
+            // do incremental project-reference builds, so disable it here
+            // See https://github.com/egoist/tsup/issues/1364
+            composite: false,
             // Ensure we can parse the latest code
             target: ts.ScriptTarget.ESNext,
           },
