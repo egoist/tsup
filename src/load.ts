@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import JoyCon from 'joycon'
 import { bundleRequire } from 'bundle-require'
@@ -69,6 +70,16 @@ export async function loadTsupConfig(
 
     const config = await bundleRequire({
       filepath: configPath,
+      // Bundle the config into the OS temp dir instead of next to the
+      // config file, so parallel tooling (linters, watchers) never sees
+      // the temp file and a crashed build can't leave it behind (#1349)
+      getOutputFile: (_filepath, format) =>
+        path.join(
+          os.tmpdir(),
+          `tsup.config.bundled_${Math.random()
+            .toString(36)
+            .slice(2)}.${format === 'esm' ? 'mjs' : 'cjs'}`,
+        ),
     })
     return {
       path: configPath,
