@@ -79,6 +79,38 @@ export async function removeFiles(patterns: string[], dir: string) {
   files.forEach((file) => fs.existsSync(file) && fs.unlinkSync(file))
 }
 
+/**
+ * Records the `.d.ts` files written by the last dts build, so the `clean`
+ * step can remove outputs of entries that no longer exist without touching
+ * unrelated `.d.ts` files (e.g. files copied from `publicDir`).
+ *
+ * See https://github.com/egoist/tsup/issues/1366
+ */
+const dtsManifestPath = () =>
+  path.join(process.cwd(), '.tsup', 'dts-outputs.json')
+
+export async function readDtsOutputManifest(): Promise<string[]> {
+  try {
+    const raw = await fs.promises.readFile(dtsManifestPath(), 'utf8')
+    const parsed: unknown = JSON.parse(raw)
+    return Array.isArray(parsed)
+      ? parsed.filter((p): p is string => typeof p === 'string')
+      : []
+  } catch {
+    return []
+  }
+}
+
+export async function writeDtsOutputManifest(files: string[]): Promise<void> {
+  const filePath = dtsManifestPath()
+  await fs.promises.mkdir(path.dirname(filePath), { recursive: true })
+  await fs.promises.writeFile(
+    filePath,
+    JSON.stringify([...new Set(files)]),
+    'utf8',
+  )
+}
+
 export function debouncePromise<T extends unknown[]>(
   fn: (...args: T) => Promise<void>,
   delay: number,
