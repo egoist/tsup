@@ -1,3 +1,4 @@
+import fsp from 'node:fs/promises'
 import path from 'node:path'
 import { expect, test } from 'vitest'
 import { slash } from '../src/utils'
@@ -479,4 +480,13 @@ test('declaration files with multiple entrypoints #316', async () => {
     await getFileContent('dist/bar/index.d.ts'),
     'dist/bar/index.d.ts',
   ).toMatchSnapshot()
+})
+
+test('published d.ts does not import a dangling ./types.cts (#1375)', async () => {
+  const dts = await fsp.readFile(
+    path.resolve(__dirname, '../dist/index.d.ts'),
+    'utf8',
+  )
+  expect(dts).not.toContain(`from './types.cts'`)
+  expect(dts).toContain(`from '@jridgewell/trace-mapping'`)
 })
