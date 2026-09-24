@@ -1,3 +1,4 @@
+import fsp from 'node:fs/promises'
 import path from 'node:path'
 import { expect, test } from 'vitest'
 import { slash } from '../src/utils'
@@ -479,4 +480,37 @@ test('declaration files with multiple entrypoints #316', async () => {
     await getFileContent('dist/bar/index.d.ts'),
     'dist/bar/index.d.ts',
   ).toMatchSnapshot()
+})
+
+test('dts build fails loudly when the dts worker dies without posting a message (#1410)', async () => {
+  const title = getTestName().replace(/[^a-zA-Z0-9]/g, '-')
+  const testDir = path.resolve(__dirname, '.cache', title)
+  await fsp.mkdir(path.resolve(testDir, 'src'), { recursive: true })
+  await fsp.writeFile(
+    path.resolve(testDir, 'src/input.ts'),
+    `export const foo = 'foo'\n`,
+  )
+  await fsp.writeFile(
+    path.resolve(testDir, 'tsconfig.json'),
+    `{ "compilerOptions": { "strict": true, "skipLibCheck": true } }`,
+  )
+  // --require is inherited by worker threads through execArgv, so this
+  // kills the dts worker before it can post a message. The main thread
+  // is left untouched.
+  const preload = path.resolve(testDir, 'kill-worker.cjs')
+  await fsp.writeFile(
+    preload,
+    `const { isMainThread } = require('node:worker_threads')\nif (!isMainThread) process.exit(0)\n`,
+  )
+  const bin = path.resolve(__dirname, '../dist/cli-default.js')
+  const { exec } = await import('tinyexec')
+  const proc = exec(
+    process.execPath,
+    ['--require', preload, bin, 'src/input.ts', '--dts'],
+    { nodeOptions: { cwd: testDir } },
+  )
+  const { stderr } = await proc
+  // Used to hang forever and exit 0 with no .d.ts emitted
+  expect(proc.exitCode).not.toBe(0)
+  expect(stderr).toContain('dts worker exited')
 })
