@@ -105,6 +105,14 @@ export async function main(options: Options = {}) {
       Object.assign(options, {
         ...flags,
       })
+      if (flags.entry) {
+        // `--entry.*` makes cac return a plain string when the flag is used
+        // only once, an array when it's repeated, and an object for the
+        // `--entry.alias <file>` usage — normalize the single-use string
+        // into an array so it isn't treated as an entry-alias map.
+        options.entry =
+          typeof flags.entry === 'string' ? [flags.entry] : flags.entry
+      }
       if (!options.entry && files.length > 0) {
         options.entry = files.map(slash)
       }
