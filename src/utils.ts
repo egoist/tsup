@@ -3,7 +3,7 @@ import path from 'node:path'
 import resolveFrom from 'resolve-from'
 import type { InputOption } from 'rollup'
 import strip from 'strip-json-comments'
-import { glob } from 'tinyglobby'
+import { glob as tinyglobbyGlob, type GlobOptions } from 'tinyglobby'
 import type {
   Entry,
   Format,
@@ -72,11 +72,47 @@ export function pathExists(p: string) {
 }
 
 export async function removeFiles(patterns: string[], dir: string) {
-  const files = await glob(patterns, {
+  const files = await tinyglobbyGlob(patterns, {
     cwd: dir,
     absolute: true,
   })
   files.forEach((file) => fs.existsSync(file) && fs.unlinkSync(file))
+}
+
+const isNegativePattern = (pattern: string) =>
+  pattern.startsWith('!') && !pattern.startsWith('!(')
+
+/**
+ * Glob files, honoring negative patterns in order like globby did.
+ *
+ * tinyglobby applies every negative pattern to the whole result regardless
+ * of order, so a negative entry pattern followed by a positive one matches
+ * nothing. Process patterns sequentially instead: a positive pattern listed
+ * after a negative one re-includes the files it matches.
+ *
+ * See https://github.com/egoist/tsup/issues/1297
+ */
+export async function glob(
+  patterns: string | readonly string[],
+  options?: Omit<GlobOptions, 'patterns'>,
+): Promise<string[]> {
+  const list = Array.isArray(patterns) ? patterns : [patterns]
+  if (!list.some(isNegativePattern)) {
+    return tinyglobbyGlob(patterns, options)
+  }
+  const result = new Set<string>()
+  for (const pattern of list) {
+    if (isNegativePattern(pattern)) {
+      for (const match of await tinyglobbyGlob(pattern.slice(1), options)) {
+        result.delete(match)
+      }
+    } else {
+      for (const match of await tinyglobbyGlob(pattern, options)) {
+        result.add(match)
+      }
+    }
+  }
+  return [...result]
 }
 
 export function debouncePromise<T extends unknown[]>(
