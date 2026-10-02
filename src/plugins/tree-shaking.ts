@@ -48,6 +48,9 @@ export const treeShakingPlugin = ({
         file: info.path,
         sourcemap: !!this.options.sourcemap,
         compact: !!this.options.minify,
+        // Rollup defaults to the deprecated `assert` keyword for import
+        // attributes. Keep the modern `with` keyword the input used.
+        importAttributesKey: 'with',
         name,
       })
 
