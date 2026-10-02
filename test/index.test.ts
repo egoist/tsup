@@ -742,6 +742,27 @@ test('treeshake should work with hashbang', async () => {
   `)
 })
 
+test('treeshake keeps `with` import attributes instead of rewriting to `assert`', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `import data from './data.json' with { type: 'json' }
+export const getData = () => data`,
+      'data.json': `{ "hello": "world" }`,
+      'tsup.config.ts': `export default {
+        treeshake: true,
+        bundle: false,
+        target: 'esnext',
+        format: ['esm'],
+      }`,
+    },
+    {},
+  )
+  const content = await getFileContent('dist/input.mjs')
+  expect(content).toContain(`with { type: 'json' }`)
+  expect(content).not.toContain('assert')
+})
+
 test('support target in tsconfig.json', async () => {
   const { getFileContent } = await run(
     getTestName(),
