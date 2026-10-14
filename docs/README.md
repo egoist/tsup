@@ -56,6 +56,8 @@ This will output `dist/index.js` and `dist/cli.js`.
 
 By default tsup bundles all `import`-ed modules but `dependencies` and `peerDependencies` in your `package.json` are always excluded, you can also use `--external <module|pkgJson>` flag to mark other packages or other special `package.json`'s `dependencies` and `peerDependencies` as external.
 
+**IMPORTANT**: IIFE output is not supported with `--external` option.
+
 ### Excluding all packages
 
 If you are using **tsup** to build for **Node.js** applications/APIs, usually bundling dependencies is not needed, and it can even break things, for instance, while outputting to [ESM](https://nodejs.org/api/esm.html).
