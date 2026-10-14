@@ -1,9 +1,13 @@
 import path from 'node:path'
 import fs from 'node:fs'
+import { spawn } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import { expect, test } from 'vitest'
 import waitForExpect from 'wait-for-expect'
 import { debouncePromise } from '../src/utils'
 import { getTestName, run } from './utils'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 test('simple', async () => {
   const { output, outFiles } = await run(getTestName(), {
@@ -925,3 +929,68 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('watch mode rebuilds when a plugin-returned watchFile changes', async () => {
+  const testDir = path.resolve(__dirname, '.cache', 'watch-plugin-watchfiles')
+  await fs.promises.rm(testDir, { recursive: true, force: true })
+  await fs.promises.mkdir(testDir, { recursive: true })
+  await fs.promises.writeFile(
+    path.join(testDir, 'input.ts'),
+    `export const greeting = 'hello'\n`,
+  )
+  const depFile = path.join(testDir, 'dep.txt')
+  await fs.promises.writeFile(depFile, 'token=1\n')
+  await fs.promises.writeFile(
+    path.join(testDir, 'tsup.config.ts'),
+    `import path from 'node:path'
+export default {
+  entry: ['input.ts'],
+  format: ['cjs'],
+  esbuildPlugins: [
+    {
+      name: 'watch-files-test-plugin',
+      setup(build: any) {
+        build.onLoad({ filter: /input\\.ts$/ }, (args: any) => ({
+          contents: 'export const greeting = "hello"',
+          loader: 'ts',
+          watchFiles: [path.resolve(path.dirname(args.path), 'dep.txt')],
+        }))
+      },
+    },
+  ],
+}
+`,
+  )
+
+  const bin = path.resolve(__dirname, '../dist/cli-default.js')
+  const child = spawn(process.execPath, [bin, '--watch'], { cwd: testDir })
+  let logs = ''
+  child.stdout.on('data', (data) => {
+    logs += data.toString()
+  })
+  child.stderr.on('data', (data) => {
+    logs += data.toString()
+  })
+
+  try {
+    await waitForExpect(() => {
+      expect(logs).toContain('Build success')
+    }, 25000)
+
+    // Wait until the watcher is up and its initial scan settled,
+    // otherwise the change below can be missed
+    await waitForExpect(() => {
+      expect(logs).toContain('Watching for changes')
+    }, 25000)
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    await fs.promises.writeFile(depFile, 'token=2\n')
+
+    await waitForExpect(() => {
+      expect(logs).toMatch(/Change detected.*dep\.txt/)
+    }, 25000)
+  } finally {
+    child.kill('SIGKILL')
+    await new Promise((resolve) => child.on('close', resolve))
+  }
+}, 50000)
