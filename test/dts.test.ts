@@ -480,3 +480,24 @@ test('declaration files with multiple entrypoints #316', async () => {
     'dist/bar/index.d.ts',
   ).toMatchSnapshot()
 })
+
+test('dts build succeeds when tsconfig sets composite: true (#1364)', async () => {
+  const { outFiles, getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `export { ref } from './ref'\nexport const main = 1`,
+      'ref.ts': `export const ref = 'ref'`,
+      'tsconfig.json': JSON.stringify({
+        compilerOptions: { composite: true, target: 'esnext' },
+        include: ['input.ts', 'ref.ts'],
+      }),
+    },
+    {
+      flags: ['--dts'],
+    },
+  )
+  expect(outFiles).toEqual(['input.d.ts', 'input.js'])
+  const content = await getFileContent('dist/input.d.ts')
+  expect(content).toContain('declare const ref')
+  expect(content).toContain('declare const main')
+})
