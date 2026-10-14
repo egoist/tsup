@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { builtinModules } from 'node:module'
 import _resolve from 'resolve'
-import createDebug from 'debug'
+import { createDebug } from 'obug'
 import type { PluginImpl } from 'rollup'
 
 const debug = createDebug('tsup:ts-resolve')

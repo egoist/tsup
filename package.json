@@ -61,11 +61,11 @@
     "bundle-require": "^5.1.0",
     "cac": "^7.1.0",
     "chokidar": "^4.0.3",
-    "consola": "^3.4.0",
-    "debug": "^4.4.0",
+    "consola": "^3.4.2",
     "esbuild": "^0.27.0",
     "fix-dts-default-cjs-exports": "^1.0.1",
     "joycon": "^3.1.1",
+    "obug": "^3.0.0",
     "picocolors": "^1.1.1",
     "postcss-load-config": "^6.0.1",
     "resolve-from": "^5.0.0",
@@ -80,7 +80,6 @@
     "@microsoft/api-extractor": "^7.59.4",
     "@rollup/plugin-json": "6.1.0",
     "@swc/core": "1.16.18",
-    "@types/debug": "4.1.12",
     "@types/node": "26.6.5",
     "@types/resolve": "1.20.6",
     "bumpp": "^12.3.0",
@@ -102,6 +101,6 @@
     "wait-for-expect": "3.0.2"
   },
   "engines": {
-    "node": ">=18"
+    "node": "^22.18.0 || ^24.11.0 || >=26.0.0"
   }
 }
