@@ -608,7 +608,6 @@ test('use rollup for treeshaking --format cjs', async () => {
       `,
       'tsconfig.json': `{
         "compilerOptions": {
-          "baseUrl": ".",
           "esModuleInterop": true,
           "isolatedModules": true,
           "jsx": "react-jsx",
@@ -750,7 +749,6 @@ test('support target in tsconfig.json', async () => {
       'foo.ts': `export default 'foo'`,
       'tsconfig.json': `{
         "compilerOptions": {
-          "baseUrl":".",
           "target": "esnext"
         }
       }`,
@@ -771,7 +769,6 @@ test('override target in tsconfig.json', async () => {
         'foo.ts': `export default 'foo'`,
         'tsconfig.json': `{
           "compilerOptions": {
-            "baseUrl":".",
             "target": "esnext"
           }
         }`,
@@ -790,7 +787,6 @@ test(`should generate export {} when there are no exports in source file`, async
     'input.ts': `const a = 'a'`,
     'tsconfig.json': `{
         "compilerOptions": {
-          "baseUrl":".",
           "target": "esnext",
         }
       }`,

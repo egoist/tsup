@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["es2022"],
+    "lib": ["es2023"],
     "moduleDetection": "force",
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -12,6 +12,7 @@
     "declaration": true,
     "declarationDir": "dist",
     "outDir": "./dist",
+    "noEmit": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
