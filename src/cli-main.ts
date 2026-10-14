@@ -43,6 +43,12 @@ export async function main(options: Options = {}) {
       'Generate declaration file (experimental)',
     )
     .option(
+      '--experimental-dts-only',
+      'Emit declaration files only (experimental)',
+    )
+    .alias('--experimentalDts-only')
+    .alias('--experimentalDtsOnly')
+    .option(
       '--sourcemap [inline]',
       'Generate external sourcemap, or inline source: --sourcemap inline',
     )
@@ -133,6 +139,19 @@ export async function main(options: Options = {}) {
           options.dts.only = true
         }
       }
+
+      if (flags.experimentalDts || flags.experimentalDtsOnly) {
+        options.experimentalDts = {}
+
+        if (typeof flags.experimentalDts === 'string') {
+          options.experimentalDts.entry = flags.experimentalDts
+        }
+
+        if (flags.experimentalDtsOnly) {
+          options.experimentalDts.only = true
+        }
+      }
+
       if (flags.inject) {
         const inject = ensureArray(flags.inject)
         options.inject = inject
