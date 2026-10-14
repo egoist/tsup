@@ -925,3 +925,18 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('single --entry flag builds instead of failing with "Cannot find 0"', async () => {
+  // https://github.com/egoist/tsup/issues/1322
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'input.ts': `export const foo = 'foo'`,
+    },
+    {
+      entry: [],
+      flags: ['--entry', 'input.ts'],
+    },
+  )
+  expect(outFiles).toEqual(['input.js'])
+})
