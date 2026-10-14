@@ -85,7 +85,10 @@ const parseSourceMap = (map?: string | object | null) => {
   return typeof map === 'string' ? JSON.parse(map) : map
 }
 
-const isJS = (path: string) => /\.(js|mjs|cjs)$/.test(path)
+// `.jsx` (and friends) matter because `outExtension` can remap the `.js`
+// output extension — such files must still be treated as chunks so their
+// sourcemaps are written instead of being dropped as assets.
+const isJS = (path: string) => /\.(js|mjs|cjs|jsx)$/.test(path)
 const isCSS = (path: string) => /\.css$/.test(path)
 
 export class PluginContainer {

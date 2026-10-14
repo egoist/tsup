@@ -925,3 +925,24 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('sourcemap is emitted when outExtension remaps .js to .jsx', async () => {
+  // https://github.com/egoist/tsup/issues/1302
+  const { outFiles, getFileContent } = await run(
+    getTestName(),
+    {
+      'input.tsx': `export const Component = () => <div>hi</div>`,
+      'tsup.config.ts': `export default {
+        outExtension: () => ({ js: '.jsx' }),
+      }`,
+    },
+    {
+      entry: ['input.tsx'],
+      flags: ['--sourcemap'],
+    },
+  )
+  expect(outFiles).toEqual(['input.jsx', 'input.jsx.map'])
+  expect(await getFileContent('dist/input.jsx')).toContain(
+    '//# sourceMappingURL=input.jsx.map',
+  )
+})
