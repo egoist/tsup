@@ -925,3 +925,24 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('treeshake keeps esModule default export shape in cjs output', async () => {
+  const { getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `const getValue = () => 42\nexport default getValue\n`,
+    },
+    {
+      flags: ['--treeshake', '--format', 'cjs'],
+    },
+  )
+
+  const output = await getFileContent('dist/input.js')
+  // A default-only entry must keep the `exports.default` shape (with the
+  // `__esModule` marker) like a non-treeshaken build does. Collapsing to
+  // `module.exports =` no longer matches the generated `.d.ts`
+  // (`export default`) and is flagged by attw as an incorrect default export.
+  expect(output).toContain('__esModule')
+  expect(output).toContain('exports.default')
+  expect(output).not.toMatch(/module\.exports\s*=\s*[^_]/)
+})
