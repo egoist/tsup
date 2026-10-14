@@ -1,3 +1,6 @@
+packages:
+  - test
+
 allowBuilds:
   '@parcel/watcher': false
   '@swc/core': false
