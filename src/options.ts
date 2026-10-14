@@ -270,5 +270,14 @@ export type NormalizedOptions = Omit<
   tsconfigResolvePaths: Record<string, string[]>
   tsconfigDecoratorMetadata?: boolean
   format: Format[]
+
+  /**
+   * Custom file extension per each
+   * {@linkcode Format | module format}.
+   *
+   * @since 8.6.0
+   */
+  outputExtensionMap: Map<Format, OutExtensionObject>
+
   swc?: SwcPluginConfig
 }
