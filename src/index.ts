@@ -212,7 +212,11 @@ export async function build(_options: Options) {
 
           if (options.dts) {
             await new Promise<void>((resolve, reject) => {
-              const worker = new Worker(path.join(__dirname, './rollup.js'))
+              const worker = new Worker(
+                // `.ts` when tsup is running from its own source, see the
+                // `build` script in tsup's package.json
+                path.join(__dirname, `./rollup${path.extname(__filename)}`),
+              )
 
               const terminateWorker = () => {
                 if (options.watch) return

@@ -29,7 +29,7 @@
   },
   "scripts": {
     "dev": "pnpm run build-fast --watch",
-    "build": "tsup src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
+    "build": "tsx src/cli-default.ts src/cli-*.ts src/index.ts src/rollup.ts --clean --splitting",
     "prepublishOnly": "pnpm run build",
     "test": "pnpm run build && pnpm run test-only",
     "format": "prettier --write .",
@@ -95,7 +95,7 @@
     "svelte-preprocess": "^6.0.5",
     "terser": "^5.51.2",
     "ts-essentials": "^10.2.1",
-    "tsup": "^8.5.1",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "vitest": "^5.0.4"
   },
