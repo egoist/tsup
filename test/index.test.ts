@@ -925,3 +925,23 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('preserve import attributes with --treeshake and bundle: false', async () => {
+  const { outFiles, getFileContent } = await run(
+    getTestName(),
+    {
+      'input.ts': `import data from './data.json' with { type: 'json' }\nexport default data`,
+      'data.json': `{ "hello": "world" }`,
+      'tsup.config.ts': `export default { bundle: false }`,
+    },
+    {
+      entry: ['input.ts'],
+      flags: ['--treeshake', '--target', 'esnext', '--format', 'esm'],
+    },
+  )
+
+  expect(outFiles).toContain('input.mjs')
+  const output = await getFileContent('dist/input.mjs')
+  expect(output).toContain(`with { type: 'json' }`)
+  expect(output).not.toContain('assert')
+})
