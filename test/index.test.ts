@@ -1,7 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs'
-import { expect, test } from 'vitest'
-import waitForExpect from 'wait-for-expect'
+import { expect, test, vi } from 'vitest'
 import { debouncePromise } from '../src/utils'
 import { getTestName, run } from './utils'
 
@@ -289,7 +288,7 @@ test('debounce promise', async () => {
     debounceFunction()
     debounceFunction()
 
-    await waitForExpect(() => {
+    await vi.waitFor(() => {
       equal(n, 1)
     })
     await sleep(100)
@@ -298,7 +297,7 @@ test('debounce promise', async () => {
 
     debounceFunction()
 
-    await waitForExpect(() => {
+    await vi.waitFor(() => {
       equal(n, 2)
     })
   } catch (error: any) {
