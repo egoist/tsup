@@ -259,7 +259,7 @@
           "markdownDescription": "You may want to disable code splitting sometimes: [`#255`](https://github.com/egoist/tsup/issues/255)"
         },
         "clean": {
-          "description": "Clean output directory before each buil",
+          "description": "Clean output directory before each build",
           "oneOf": [
             {
               "type": "boolean"
