@@ -1,6 +1,6 @@
 {
   "name": "tsup",
-  "version": "8.5.1",
+  "version": "9.0.0",
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
