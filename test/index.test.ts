@@ -925,3 +925,17 @@ test('generate sourcemap with --treeshake', async () => {
       }),
   )
 })
+
+test('entry glob: positive pattern after negative re-includes files (#1297)', async () => {
+  const { outFiles } = await run(
+    getTestName(),
+    {
+      'src/dir-prefix-foo/a.ts': `export const a = 1`,
+      'src/dir-prefix-special/b.ts': `export const b = 2`,
+    },
+    {
+      entry: ['!src/**/dir-prefix*/**/*', 'src/dir-prefix-special/**/*'],
+    },
+  )
+  expect(outFiles).toEqual(['b.js'])
+})

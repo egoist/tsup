@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { Worker } from 'node:worker_threads'
 import { loadTsConfig } from 'bundle-require'
 import { exec, type Result as ExecChild } from 'tinyexec'
-import { glob, globSync } from 'tinyglobby'
+import { globSync } from 'tinyglobby'
 import kill from 'tree-kill'
 import { version } from '../package.json'
 import { PrettyError, handleError } from './errors'
@@ -11,6 +11,7 @@ import { getAllDepsHash, loadTsupConfig } from './load'
 import {
   type MaybePromise,
   debouncePromise,
+  glob,
   removeFiles,
   resolveExperimentalDtsConfig,
   resolveInitialExperimentalDtsConfig,
