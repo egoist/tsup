@@ -1,4 +1,5 @@
 import path from 'node:path'
+import fs from 'node:fs'
 import { handleError } from './errors'
 import {
   type ExportDeclaration,
@@ -11,8 +12,9 @@ import {
   defaultOutExtension,
   ensureTempDeclarationDir,
   getApiExtractor,
-  removeFiles,
+  readDtsOutputManifest,
   toAbsolutePath,
+  writeDtsOutputManifest,
   writeFileSync,
 } from './utils'
 import type { Format, NormalizedOptions } from './options'
@@ -87,9 +89,9 @@ async function rollupDtsFiles(
   options: NormalizedOptions,
   exports: ExportDeclaration[],
   format: Format,
-) {
+): Promise<string[]> {
   if (!options.experimentalDts || !options.experimentalDts?.entry) {
-    return
+    return []
   }
 
   /**
@@ -122,6 +124,8 @@ async function rollupDtsFiles(
   )
 
   rollupDtsFile(dtsInputFilePath, dtsOutputFilePath, tsconfig)
+
+  const written = [dtsOutputFilePath]
 
   for (let [out, sourceFileName] of Object.entries(
     options.experimentalDts.entry,
@@ -166,13 +170,38 @@ async function rollupDtsFiles(
       outFileName,
       formatDistributionExports(currentExports, outFileName, dtsOutputFilePath),
     )
+    written.push(outFileName)
   }
+
+  return written.map((file) => path.resolve(file))
 }
 
 async function cleanDtsFiles(options: NormalizedOptions) {
-  if (options.clean) {
-    await removeFiles(['**/*.d.{ts,mts,cts}'], options.outDir)
+  const entry = options.experimentalDts?.entry
+  if (!options.clean || !entry) {
+    return
   }
+  const outDir = path.resolve(options.outDir || 'dist')
+  const pkg = await loadPkg(process.cwd())
+  // Only remove the files this step generates (the intermediate rollup file
+  // plus each entry output, per format). Anything else ending in `.d.ts`
+  // (e.g. files copied from `publicDir`) must be left alone.
+  // See https://github.com/egoist/tsup/issues/1366
+  const precise = options.format.flatMap((format) => {
+    const dtsExtension = defaultOutExtension({ format, pkgType: pkg.type }).dts
+    return [
+      path.join(outDir, `_tsup-dts-rollup${dtsExtension}`),
+      ...Object.keys(entry).map((out) =>
+        path.join(outDir, `${out}${dtsExtension}`),
+      ),
+    ]
+  })
+  // Also remove outputs of entries that no longer exist
+  const previous = (await readDtsOutputManifest()).filter((file) =>
+    file.startsWith(`${outDir}${path.sep}`),
+  )
+  const files = [...new Set([...precise, ...previous])]
+  await Promise.all(files.map((file) => fs.promises.rm(file, { force: true })))
 }
 
 export async function runDtsRollup(
@@ -190,9 +219,17 @@ export async function runDtsRollup(
       throw new Error('Unexpected internal error: dts exports is not define')
     }
     await cleanDtsFiles(options)
+    const written: string[] = []
     for (const format of options.format) {
-      await rollupDtsFiles(options, exports, format)
+      written.push(...(await rollupDtsFiles(options, exports, format)))
     }
+    // Remember generated files so a later `clean` can remove outputs of
+    // entries that no longer exist. After a clean build the manifest holds
+    // exactly what was written; otherwise it accumulates.
+    const previous = await readDtsOutputManifest()
+    await writeDtsOutputManifest(
+      options.clean ? written : [...previous, ...written],
+    )
     logger.success('dts', `⚡️ Build success in ${getDuration()}`)
   } catch (error) {
     handleError(error)
