@@ -144,6 +144,7 @@ export async function runEsbuild(
       css,
       inject: options.injectStyle,
       cssLoader: loader['.css'],
+      fileExtensions: options.postcssFileExtensions
     }),
     sveltePlugin({ css }),
     ...(options.esbuildPlugins || []),
