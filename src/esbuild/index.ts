@@ -9,7 +9,7 @@ import {
 import consola from 'consola'
 import { getProductionDeps, loadPkg } from '../load'
 import { type Logger, getSilent } from '../log'
-import { defaultOutExtension, truthy } from '../utils'
+import { defaultOutExtension, slash, truthy } from '../utils'
 import { nodeProtocolPlugin } from './node-protocol'
 import { externalPlugin } from './external'
 import { postcssPlugin } from './postcss'
@@ -56,6 +56,58 @@ const generateExternal = async (external: (string | RegExp)[]) => {
   }
 
   return result
+}
+
+/**
+ * Wrap an esbuild plugin so `watchFiles` returned by its `onLoad`/`onResolve`
+ * hooks are merged into `buildDependencies`.
+ *
+ * Files loaded entirely inside a plugin (e.g. `@vanilla-extract/esbuild-plugin`
+ * resolving `.css.ts` dependencies) never appear in the metafile, so without
+ * this watch mode would not rebuild when they change.
+ */
+const withWatchFilesCollection = (
+  plugin: EsbuildPlugin,
+  buildDependencies: Set<string>,
+): EsbuildPlugin => {
+  if (!plugin.setup) return plugin
+  const { setup } = plugin
+  const collect = (result: { watchFiles?: string[] } | null | undefined) => {
+    for (const file of result?.watchFiles || []) {
+      buildDependencies.add(slash(path.relative(process.cwd(), file)))
+    }
+    return result
+  }
+  return {
+    ...plugin,
+    setup(build) {
+      return setup.call(
+        plugin,
+        new Proxy(build, {
+          get(target, prop, receiver) {
+            if (prop === 'onLoad' || prop === 'onResolve') {
+              const original = (
+                Reflect.get(target, prop, receiver) as (
+                  ...args: any[]
+                ) => void
+              ).bind(target)
+              return (options: any, callback?: any) => {
+                const wrap =
+                  (cb: (...args: any[]) => any) =>
+                  (...args: any[]) =>
+                    Promise.resolve(cb(...args)).then(collect)
+                return typeof options === 'function'
+                  ? original(wrap(options))
+                  : original(options, wrap(callback))
+              }
+            }
+            const value = Reflect.get(target, prop, receiver)
+            return typeof value === 'function' ? value.bind(target) : value
+          },
+        }),
+      )
+    },
+  }
 }
 
 export async function runEsbuild(
@@ -199,7 +251,9 @@ export async function runEsbuild(
         platform === 'node'
           ? ['module', 'main']
           : ['browser', 'module', 'main'],
-      plugins: esbuildPlugins.filter(truthy),
+      plugins: esbuildPlugins
+        .filter(truthy)
+        .map((plugin) => withWatchFilesCollection(plugin, buildDependencies)),
       define: {
         TSUP_FORMAT: JSON.stringify(format),
         ...(format === 'cjs' && injectShims
