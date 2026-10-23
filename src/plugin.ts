@@ -1,9 +1,5 @@
 import path from 'node:path'
-import {
-  type RawSourceMap,
-  SourceMapConsumer,
-  SourceMapGenerator,
-} from 'source-map'
+import { SourceMapConsumer, SourceMapGenerator } from 'source-map-js'
 import { outputFile } from './fs'
 import type {
   BuildOptions as EsbuildOptions,
@@ -13,12 +9,12 @@ import type {
 import type { Format, NormalizedOptions } from '.'
 import type { Logger } from './log'
 import { slash, type MaybePromise } from './utils'
-import type { SourceMap } from 'rollup'
+import type { ExistingRawSourceMap, SourceMap } from 'rollup'
 
 export type ChunkInfo = {
   type: 'chunk'
   code: string
-  map?: string | RawSourceMap | null
+  map?: string | ExistingRawSourceMap | null
   path: string
   /**
    * Sets the file mode
@@ -162,17 +158,16 @@ export class PluginContainer {
             if (result) {
               info.code = result.code
               if (result.map) {
-                const originalConsumer = await new SourceMapConsumer(
+                const originalConsumer = new SourceMapConsumer(
                   parseSourceMap(info.map),
                 )
-                const newConsumer = await new SourceMapConsumer(
+                const newConsumer = new SourceMapConsumer(
                   parseSourceMap(result.map),
                 )
                 const generator = SourceMapGenerator.fromSourceMap(newConsumer)
                 generator.applySourceMap(originalConsumer, info.path)
-                info.map = generator.toJSON()
-                originalConsumer.destroy()
-                newConsumer.destroy()
+                // `source-map-js` types `version` as a string but emits a number
+                info.map = generator.toJSON() as unknown as ExistingRawSourceMap
               }
             }
           }
@@ -228,7 +223,7 @@ export class PluginContainer {
 
 const getSourcemapComment = (
   inline: boolean,
-  map: RawSourceMap | string | null | undefined,
+  map: ExistingRawSourceMap | string | null | undefined,
   filepath: string,
   isCssFile: boolean,
 ) => {

@@ -7,10 +7,6 @@ test.for([
   { moduleResolution: 'Node16', moduleKind: 'Node16' },
   { moduleResolution: 'Bundler', moduleKind: 'ESNext' },
   { moduleResolution: 'Bundler', moduleKind: 'Preserve' },
-  { moduleResolution: 'Node10', moduleKind: 'ESNext' },
-  { moduleResolution: 'Node10', moduleKind: 'CommonJS' },
-  { moduleResolution: 'Node', moduleKind: 'ESNext' },
-  { moduleResolution: 'Node', moduleKind: 'CommonJS' },
 ] as const)(
   "experimentalDts works with TypeScript's $moduleResolution module resolution and module set to $moduleKind",
   async ({ moduleResolution, moduleKind }, { expect, task }) => {

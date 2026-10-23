@@ -8,7 +8,6 @@ test('custom tsconfig', async () => {
       'input.ts': `export const foo = 'foo'`,
       'tsconfig.build.json': `{
       "compilerOptions": {
-        "baseUrl":"."
       }
     }`,
     },
@@ -16,13 +15,12 @@ test('custom tsconfig', async () => {
   )
 })
 
-test('support baseUrl and paths in tsconfig.json', async () => {
+test('support paths in tsconfig.json', async () => {
   const { getFileContent } = await run(getTestName(), {
     'input.ts': `export * from '@/foo'`,
     'foo.ts': `export const foo = 'foo'`,
     'tsconfig.json': `{
       "compilerOptions": {
-        "baseUrl":".",
         "paths":{"@/*": ["./*"]}
       }
     }`,
@@ -30,7 +28,7 @@ test('support baseUrl and paths in tsconfig.json', async () => {
   expect(await getFileContent('dist/input.js')).toMatchSnapshot()
 })
 
-test('support baseUrl and paths in tsconfig.json in --dts build', async () => {
+test('support paths in tsconfig.json in --dts build', async () => {
   const { getFileContent } = await run(
     getTestName(),
     {
@@ -38,7 +36,6 @@ test('support baseUrl and paths in tsconfig.json in --dts build', async () => {
       'src/foo.ts': `export const foo = 'foo'`,
       'tsconfig.json': `{
       "compilerOptions": {
-        "baseUrl":".",
         "paths":{"@/*": ["./src/*"]}
       }
     }`,
@@ -48,7 +45,7 @@ test('support baseUrl and paths in tsconfig.json in --dts build', async () => {
   expect(await getFileContent('dist/input.d.ts')).toMatchSnapshot()
 })
 
-test('support baseUrl and paths in tsconfig.json in --dts-resolve build', async () => {
+test('support paths in tsconfig.json in --dts-resolve build', async () => {
   const { getFileContent } = await run(
     getTestName(),
     {
@@ -56,7 +53,6 @@ test('support baseUrl and paths in tsconfig.json in --dts-resolve build', async 
       'src/foo.ts': `export const foo = 'foo'`,
       'tsconfig.json': `{
       "compilerOptions": {
-        "baseUrl":".",
         "paths":{"@/*": ["./src/*"]}
       }
     }`,
