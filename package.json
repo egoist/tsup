@@ -64,6 +64,7 @@
     "consola": "^3.4.2",
     "esbuild": "^0.28.2",
     "fix-dts-default-cjs-exports": "^1.0.1",
+    "@jridgewell/trace-mapping": "^0.3.31",
     "joycon": "^3.1.1",
     "obug": "^3.0.0",
     "picocolors": "^1.1.1",
