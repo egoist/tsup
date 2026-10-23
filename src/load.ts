@@ -1,5 +1,4 @@
 import fs from 'node:fs'
-import os from 'node:os'
 import path from 'node:path'
 import JoyCon from 'joycon'
 import { bundleRequire } from 'bundle-require'
@@ -75,9 +74,12 @@ export async function loadTsupConfig(
     // the file itself, so the temp file has to stay inside the project for
     // imports like `defineConfig` from 'tsup' or a project-local dep to
     // keep resolving. Same fix Vite made (vitejs/vite#18509). If
-    // node_modules is not writable, fall back to the OS temp dir.
+    // node_modules/.tsup-temp can't be created, fall back to the config
+    // directory itself (where bundle-require wrote before): the temp file
+    // has to stay inside the project either way, an OS temp dir would
+    // break those imports.
     const configDir = path.dirname(configPath)
-    let outputDir = os.tmpdir()
+    let outputDir = configDir
     try {
       const tempDir = path.join(configDir, 'node_modules', '.tsup-temp')
       fs.mkdirSync(tempDir, { recursive: true })
@@ -86,6 +88,17 @@ export async function loadTsupConfig(
 
     const config = await bundleRequire({
       filepath: configPath,
+      esbuildOptions: {
+        define: {
+          // bundle-require rewrites __dirname, __filename and
+          // import.meta.url to the original config file, but not the
+          // native import.meta.dirname / import.meta.filename. Point
+          // those at the original file too, so they don't follow the
+          // bundled file into node_modules/.tsup-temp.
+          'import.meta.dirname': JSON.stringify(configDir),
+          'import.meta.filename': JSON.stringify(configPath),
+        },
+      },
       getOutputFile: (_filepath, format) =>
         path.join(
           outputDir,
