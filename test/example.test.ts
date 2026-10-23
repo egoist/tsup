@@ -11,6 +11,8 @@ test('bundle vue and ts-essentials with --dts --dts-resolve flag', async () => {
     },
     {
       flags: ['--dts', '--dts-resolve'],
+      // resolving the types of these two needs more than the default heap
+      env: { NODE_OPTIONS: '--max-old-space-size=8192' },
     },
   )
 })

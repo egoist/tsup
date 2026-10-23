@@ -15,9 +15,7 @@ import type {
 export type MaybePromise<T> = T | Promise<T>
 
 export type External =
-  | string
-  | RegExp
-  | ((id: string, parentId?: string) => boolean)
+  string | RegExp | ((id: string, parentId?: string) => boolean)
 
 export function isExternal(
   externals: External | External[],

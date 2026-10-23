@@ -1,26 +1,12 @@
 name: Publish Any Commit
 on: [push, pull_request]
 
+permissions: {}
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4.1.0
-        name: Install pnpm
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build
-        run: pnpm build
-
-      - run: pnpx pkg-pr-new publish
+  release:
+    if: github.repository == 'egoist/tsup'
+    uses: sxzz/workflows/.github/workflows/release-commit.yml@main
+    with:
+      compact: true
+      comment-with-dev: true

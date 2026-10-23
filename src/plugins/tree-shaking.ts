@@ -3,9 +3,7 @@ import { type TreeshakingOptions, type TreeshakingPreset, rollup } from 'rollup'
 import type { Plugin } from '../plugin'
 
 export type TreeshakingStrategy =
-  | boolean
-  | TreeshakingOptions
-  | TreeshakingPreset
+  boolean | TreeshakingOptions | TreeshakingPreset
 
 export const treeShakingPlugin = ({
   treeshake,
