@@ -1,6 +1,6 @@
-import { defineConfig } from 'tsup'
+import type { Options } from './src/index'
 
-export default defineConfig({
+export default {
   name: 'tsup',
   target: 'node18',
   dts: {
@@ -9,4 +9,4 @@ export default defineConfig({
     // otherwise `Options` will not be exported by `tsup`, not sure how this happens, probably a bug in rollup-plugin-dts
     entry: './src/index.ts',
   },
-})
+} satisfies Options

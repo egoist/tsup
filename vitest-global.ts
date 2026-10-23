@@ -1,12 +1,9 @@
 import path from 'node:path'
 import fs from 'node:fs/promises'
-import { exec } from 'tinyexec'
 
 export default async function setup() {
-  const testDir = path.resolve(__dirname, 'test')
-  const cacheDir = path.resolve(testDir, '.cache')
+  // Fixture dependencies live in the `tsup-test` workspace package and are
+  // installed by `pnpm install` in the project root
+  const cacheDir = path.resolve(__dirname, 'test', '.cache')
   await fs.rm(cacheDir, { recursive: true, force: true })
-  console.log(`Installing dependencies in ./test folder`)
-  await exec('pnpm', ['i'], { nodeOptions: { cwd: testDir } })
-  console.log(`Done... start testing..`)
 }

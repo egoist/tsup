@@ -89,10 +89,7 @@ export type EsTarget =
   | 'esnext'
 
 export type Target =
-  | BrowserTarget
-  | BrowserTargetWithVersion
-  | EsTarget
-  | (string & {})
+  BrowserTarget | BrowserTargetWithVersion | EsTarget | (string & {})
 
 export type Entry = string[] | Record<string, string>
 
@@ -127,8 +124,7 @@ export type Options = {
   watch?: boolean | string | (string | boolean)[]
   ignoreWatch?: string[] | string
   onSuccess?:
-    | string
-    | (() => Promise<void | undefined | (() => void | Promise<void>)>)
+    string | (() => Promise<void | undefined | (() => void | Promise<void>)>)
   jsxFactory?: string
   jsxFragment?: string
   outDir?: string
@@ -218,8 +214,7 @@ export type Options = {
    * @default {false}
    */
   injectStyle?:
-    | boolean
-    | ((css: string, fileId: string) => string | Promise<string>)
+    boolean | ((css: string, fileId: string) => string | Promise<string>)
   /**
    * Inject cjs and esm shims if needed
    * @default false
@@ -257,8 +252,8 @@ export type Options = {
    * @default true
    */
   removeNodeProtocol?: boolean
-  
-  swc?: SwcPluginConfig;
+
+  swc?: SwcPluginConfig
 }
 
 export interface NormalizedExperimentalDtsConfig {

@@ -112,7 +112,6 @@ const getRollupConfig = async (
           tsconfig: options.tsconfig,
           compilerOptions: {
             ...compilerOptions,
-            baseUrl: compilerOptions.baseUrl || '.',
             // Ensure ".d.ts" modules are generated
             declaration: true,
             // Skip ".js" generation

@@ -10,6 +10,7 @@ jobs:
     uses: sxzz/workflows/.github/workflows/release.yml@main
     with:
       publish: true
+      stage: true
     permissions:
       contents: write
       id-token: write

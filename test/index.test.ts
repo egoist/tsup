@@ -1,7 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs'
-import { expect, test } from 'vitest'
-import waitForExpect from 'wait-for-expect'
+import { expect, test, vi } from 'vitest'
 import { debouncePromise } from '../src/utils'
 import { getTestName, run } from './utils'
 
@@ -289,7 +288,7 @@ test('debounce promise', async () => {
     debounceFunction()
     debounceFunction()
 
-    await waitForExpect(() => {
+    await vi.waitFor(() => {
       equal(n, 1)
     })
     await sleep(100)
@@ -298,7 +297,7 @@ test('debounce promise', async () => {
 
     debounceFunction()
 
-    await waitForExpect(() => {
+    await vi.waitFor(() => {
       equal(n, 2)
     })
   } catch (error: any) {
@@ -608,7 +607,6 @@ test('use rollup for treeshaking --format cjs', async () => {
       `,
       'tsconfig.json': `{
         "compilerOptions": {
-          "baseUrl": ".",
           "esModuleInterop": true,
           "isolatedModules": true,
           "jsx": "react-jsx",
@@ -750,7 +748,6 @@ test('support target in tsconfig.json', async () => {
       'foo.ts': `export default 'foo'`,
       'tsconfig.json': `{
         "compilerOptions": {
-          "baseUrl":".",
           "target": "esnext"
         }
       }`,
@@ -771,7 +768,6 @@ test('override target in tsconfig.json', async () => {
         'foo.ts': `export default 'foo'`,
         'tsconfig.json': `{
           "compilerOptions": {
-            "baseUrl":".",
             "target": "esnext"
           }
         }`,
@@ -790,7 +786,6 @@ test(`should generate export {} when there are no exports in source file`, async
     'input.ts': `const a = 'a'`,
     'tsconfig.json': `{
         "compilerOptions": {
-          "baseUrl":".",
           "target": "esnext",
         }
       }`,

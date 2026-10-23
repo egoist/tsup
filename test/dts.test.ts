@@ -47,14 +47,12 @@ test(`custom tsconfig should pass to dts plugin`, async () => {
     'input.ts': `export const foo = { name: 'foo'}`,
     'tsconfig.json': `{
         "compilerOptions": {
-          "baseUrl":".",
           "target": "esnext",
           "incremental": true
         }
       }`,
     'tsconfig.build.json': `{
         "compilerOptions": {
-          "baseUrl":".",
           "target": "esnext"
         }
       }`,
