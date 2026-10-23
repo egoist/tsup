@@ -67,8 +67,45 @@ export async function loadTsupConfig(
       return {}
     }
 
+    // Write the bundled config under the project's node_modules instead
+    // of next to the config file, so parallel tooling (linters, watchers)
+    // never sees it and a crashed build can't leave it in the project
+    // (#1349). Node resolves bare imports in the bundled file relative to
+    // the file itself, so the temp file has to stay inside the project for
+    // imports like `defineConfig` from 'tsup' or a project-local dep to
+    // keep resolving. Same fix Vite made (vitejs/vite#18509). If
+    // node_modules/.tsup-temp can't be created, fall back to the config
+    // directory itself (where bundle-require wrote before): the temp file
+    // has to stay inside the project either way, an OS temp dir would
+    // break those imports.
+    const configDir = path.dirname(configPath)
+    let outputDir = configDir
+    try {
+      const tempDir = path.join(configDir, 'node_modules', '.tsup-temp')
+      fs.mkdirSync(tempDir, { recursive: true })
+      outputDir = tempDir
+    } catch {}
+
     const config = await bundleRequire({
       filepath: configPath,
+      esbuildOptions: {
+        define: {
+          // bundle-require rewrites __dirname, __filename and
+          // import.meta.url to the original config file, but not the
+          // native import.meta.dirname / import.meta.filename. Point
+          // those at the original file too, so they don't follow the
+          // bundled file into node_modules/.tsup-temp.
+          'import.meta.dirname': JSON.stringify(configDir),
+          'import.meta.filename': JSON.stringify(configPath),
+        },
+      },
+      getOutputFile: (_filepath, format) =>
+        path.join(
+          outputDir,
+          `tsup.config.bundled_${Math.random()
+            .toString(36)
+            .slice(2)}.${format === 'esm' ? 'mjs' : 'cjs'}`,
+        ),
     })
     return {
       path: configPath,
