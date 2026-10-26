@@ -60,7 +60,7 @@
   "dependencies": {
     "bundle-require": "^5.1.0",
     "cac": "^7.1.0",
-    "chokidar": "^5.0.0",
+    "chokidar": "^6.0.0",
     "consola": "^3.4.2",
     "esbuild": "^0.28.2",
     "fix-dts-default-cjs-exports": "^1.0.1",
