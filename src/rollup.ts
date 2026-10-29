@@ -1,20 +1,25 @@
 import { parentPort } from 'node:worker_threads'
+import fs from 'node:fs'
 import path from 'node:path'
 import ts from 'typescript'
 import jsonPlugin from '@rollup/plugin-json'
 import resolveFrom from 'resolve-from'
 import { handleError } from './errors'
-import { defaultOutExtension, removeFiles, toObjectEntry } from './utils'
+import {
+  defaultOutExtension,
+  readDtsOutputManifest,
+  toObjectEntry,
+  writeDtsOutputManifest,
+} from './utils'
 import { type TsResolveOptions, tsResolvePlugin } from './rollup/ts-resolve'
 import { createLogger, setSilent } from './log'
 import { getProductionDeps, loadPkg } from './load'
 import { reportSize } from './lib/report-size'
-import type { NormalizedOptions } from './'
+import type { Format, NormalizedOptions } from './'
 import type { InputOptions, OutputOptions, Plugin } from 'rollup'
 import { FixDtsDefaultCjsExportsPlugin } from 'fix-dts-default-cjs-exports/rollup'
 
 const logger = createLogger()
-
 const parseCompilerOptions = (compilerOptions?: any) => {
   if (!compilerOptions) return {}
   const { options } = ts.parseJsonConfigFileContent(
@@ -72,11 +77,46 @@ const getRollupConfig = async (
   const pkg = await loadPkg(process.cwd())
   const deps = await getProductionDeps(process.cwd())
 
+  const getDtsExtension = (format: Format) =>
+    options.outExtension?.({ format, options, pkgType: pkg.type }).dts ||
+    defaultOutExtension({ format, pkgType: pkg.type }).dts
+
+  // Entry chunk names, matching the `[name]` rollup uses in `entryFileNames`.
+  // Only these files may be removed by the `clean` step: anything else ending
+  // in `.d.ts` (e.g. files copied from `publicDir`) must be left alone.
+  // See https://github.com/egoist/tsup/issues/1366
+  const getEntryChunkNames = (): string[] => {
+    const entry = dtsOptions.entry
+    if (Array.isArray(entry)) {
+      return entry.length === 1
+        ? [path.parse(entry[0]).name]
+        : Object.keys(toObjectEntry(entry))
+    }
+    if (typeof entry === 'string') {
+      return [path.parse(entry).name]
+    }
+    return Object.keys(entry)
+  }
+
   const tsupCleanPlugin: Plugin = {
     name: 'tsup:clean',
     async buildStart() {
       if (options.clean) {
-        await removeFiles(['**/*.d.{ts,mts,cts}'], options.outDir)
+        const outDir = path.resolve(options.outDir || 'dist')
+        const precise = options.format.flatMap((format) =>
+          getEntryChunkNames().map(
+            (name) => path.join(outDir, `${name}${getDtsExtension(format)}`),
+          ),
+        )
+        // Also remove outputs of entries that no longer exist, but never
+        // touch `.d.ts` files this step didn't generate (e.g. from publicDir)
+        const previous = (await readDtsOutputManifest()).filter((file) =>
+          file.startsWith(`${outDir}${path.sep}`),
+        )
+        const files = [...new Set([...precise, ...previous])]
+        await Promise.all(
+          files.map((file) => fs.promises.rm(file, { force: true })),
+        )
       }
     },
   }
@@ -136,9 +176,7 @@ const getRollupConfig = async (
       ],
     },
     outputConfig: options.format.map((format): OutputOptions => {
-      const outputExtension =
-        options.outExtension?.({ format, options, pkgType: pkg.type }).dts ||
-        defaultOutExtension({ format, pkgType: pkg.type }).dts
+      const outputExtension = getDtsExtension(format)
       return {
         dir: options.outDir || 'dist',
         format: 'esm',
@@ -157,7 +195,7 @@ const getRollupConfig = async (
   }
 }
 
-async function runRollup(options: RollupConfig) {
+async function runRollup(options: RollupConfig, clean?: boolean) {
   const { rollup } = await import('rollup')
   try {
     const start = Date.now()
@@ -168,6 +206,16 @@ async function runRollup(options: RollupConfig) {
     const bundle = await rollup(options.inputConfig)
     const results = await Promise.all(options.outputConfig.map(bundle.write))
     const outputs = results.flatMap((result) => result.output)
+    const written = results.flatMap((result, index) =>
+      result.output.map((info) =>
+        path.resolve(options.outputConfig[index].dir || '.', info.fileName),
+      ),
+    )
+    // Remember generated files so a later `clean` can remove outputs of
+    // entries that no longer exist. After a clean build the manifest holds
+    // exactly what was written; otherwise it accumulates.
+    const previous = await readDtsOutputManifest()
+    await writeDtsOutputManifest(clean ? written : [...previous, ...written])
     logger.success('dts', `⚡️ Build success in ${getDuration()}`)
     reportSize(
       logger,
@@ -199,11 +247,15 @@ async function watchRollup(options: {
     ...options.inputConfig,
     plugins: options.inputConfig.plugins,
     output: options.outputConfig,
-  }).on('event', (event) => {
+  }).on('event', async (event) => {
     if (event.code === 'START') {
       logger.info('dts', 'Build start')
     } else if (event.code === 'BUNDLE_END') {
       logger.success('dts', `⚡️ Build success in ${event.duration}ms`)
+      // Keep the manifest current so a later `clean` also removes
+      // outputs produced during watch. Same bookkeeping as runRollup.
+      const previous = await readDtsOutputManifest()
+      await writeDtsOutputManifest([...previous, ...event.output])
       parentPort?.postMessage('success')
     } else if (event.code === 'ERROR') {
       logger.error('dts', 'Build failed')
@@ -218,7 +270,7 @@ const startRollup = async (options: NormalizedOptions) => {
     watchRollup(config)
   } else {
     try {
-      await runRollup(config)
+      await runRollup(config, options.clean)
       parentPort?.postMessage('success')
     } catch {
       parentPort?.postMessage('error')
