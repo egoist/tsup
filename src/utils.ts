@@ -104,6 +104,12 @@ export async function readDtsOutputManifest(): Promise<string[]> {
 export async function writeDtsOutputManifest(files: string[]): Promise<void> {
   const filePath = dtsManifestPath()
   await fs.promises.mkdir(path.dirname(filePath), { recursive: true })
+  // The manifest holds absolute local paths; keep `.tsup` out of git,
+  // same as ensureTempDeclarationDir does for the declaration dir.
+  const gitIgnorePath = path.join(path.dirname(filePath), '.gitignore')
+  if (!fs.existsSync(gitIgnorePath)) {
+    writeFileSync(gitIgnorePath, '**/*\n')
+  }
   await fs.promises.writeFile(
     filePath,
     JSON.stringify([...new Set(files)]),
