@@ -248,11 +248,15 @@ async function watchRollup(options: {
     ...options.inputConfig,
     plugins: options.inputConfig.plugins,
     output: options.outputConfig,
-  }).on('event', (event) => {
+  }).on('event', async (event) => {
     if (event.code === 'START') {
       logger.info('dts', 'Build start')
     } else if (event.code === 'BUNDLE_END') {
       logger.success('dts', `⚡️ Build success in ${event.duration}ms`)
+      // Keep the manifest current so a later `clean` also removes
+      // outputs produced during watch. Same bookkeeping as runRollup.
+      const previous = await readDtsOutputManifest()
+      await writeDtsOutputManifest([...previous, ...event.output])
       parentPort?.postMessage('success')
     } else if (event.code === 'ERROR') {
       logger.error('dts', 'Build failed')
