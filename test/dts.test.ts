@@ -41,6 +41,37 @@ test('enable --dts-resolve for specific module', async () => {
   expect(content).toMatchSnapshot()
 })
 
+test('bundle relative declarations within selected dts.resolve packages', async () => {
+  const { getFileContent } = await run(getTestName(), {
+    'input.ts': `export type { Selected } from 'chosen'
+      export type { Unselected } from 'unselected'
+      `,
+    'node_modules/chosen/index.d.ts': `
+      export type { Selected } from './internal'
+      `,
+    'node_modules/chosen/internal.d.ts': `
+      export interface Selected { kind: 'selected'; value: number }
+      `,
+    'node_modules/chosen/package.json': `{ "name": "chosen", "version": "1.0.0", "types": "index.d.ts" }`,
+    'node_modules/unselected/index.d.ts': `
+      export interface Unselected { kind: 'unselected'; value: number }
+      `,
+    'node_modules/unselected/package.json': `{ "name": "unselected", "version": "1.0.0", "types": "index.d.ts" }`,
+    'tsup.config.ts': `
+      export default {
+        dts: {
+          resolve: ['chosen']
+        },
+      }
+      `,
+  })
+  const content = await getFileContent('dist/input.d.ts')
+  expect(content).toContain('interface Selected')
+  expect(content).toContain('export type { Selected }')
+  expect(content).toContain("export { Unselected } from 'unselected'")
+  expect(content).not.toContain('./internal')
+})
+
 test(`custom tsconfig should pass to dts plugin`, async () => {
   const { outFiles } = await run(getTestName(), {
     'input.ts': `export const foo = { name: 'foo'}`,

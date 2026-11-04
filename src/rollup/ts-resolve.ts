@@ -50,17 +50,6 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
         return null
       }
 
-      if (resolveOnly) {
-        const shouldResolve = resolveOnly.some((v) => {
-          if (typeof v === 'string') return v === source
-          return v.test(source)
-        })
-        if (!shouldResolve) {
-          debug('skipped by matching resolveOnly: %s', source)
-          return null
-        }
-      }
-
       // Skip absolute path
       if (path.isAbsolute(source)) {
         debug(`skipped absolute path: %s`, source)
@@ -77,6 +66,17 @@ export const tsResolvePlugin: PluginImpl<TsResolveOptions> = ({
           basedir,
           extensions: resolveExtensions,
         })
+      }
+
+      if (resolveOnly) {
+        const shouldResolve = resolveOnly.some((v) => {
+          if (typeof v === 'string') return v === source
+          return v.test(source)
+        })
+        if (!shouldResolve) {
+          debug('skipped by matching resolveOnly: %s', source)
+          return null
+        }
       }
 
       let id: string | null = null
