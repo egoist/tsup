@@ -58,6 +58,8 @@
     }
   },
   "dependencies": {
+    "@jridgewell/trace-mapping": "^0.3.31",
+    "@swc/types": "^0.1.28",
     "bundle-require": "^5.1.0",
     "cac": "^7.1.0",
     "chokidar": "^5.0.0",
