@@ -219,10 +219,34 @@ export async function build(_options: Options) {
                 path.join(__dirname, `./rollup${path.extname(__filename)}`),
               )
 
+              let settled = false
+              const settle = (fn: () => void) => {
+                if (settled) return
+                settled = true
+                fn()
+              }
+
               const terminateWorker = () => {
                 if (options.watch) return
                 worker.terminate()
               }
+
+              worker.on('error', (error) => {
+                settle(() => reject(error))
+                terminateWorker()
+              })
+
+              worker.on('exit', (code) => {
+                settle(() =>
+                  reject(
+                    new Error(
+                      code === 0
+                        ? 'dts worker exited unexpectedly before completing'
+                        : `dts worker exited with code ${code}`,
+                    ),
+                  ),
+                )
+              })
 
               worker.postMessage({
                 configName: item?.name,
@@ -244,11 +268,11 @@ export async function build(_options: Options) {
               })
               worker.on('message', (data) => {
                 if (data === 'error') {
+                  settle(() => reject(new Error('error occurred in dts build')))
                   terminateWorker()
-                  reject(new Error('error occurred in dts build'))
                 } else if (data === 'success') {
+                  settle(() => resolve())
                   terminateWorker()
-                  resolve()
                 } else {
                   const { type, text } = data
                   if (type === 'log') {
